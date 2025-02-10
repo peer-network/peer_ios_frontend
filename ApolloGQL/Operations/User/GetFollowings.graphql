@@ -1,0 +1,16 @@
+query GetFollowings($userid: String, $offset: Int, $limit: Int) {
+    follows(userid: $userid, offset: $offset, limit: $limit) {
+        status
+        counter
+        ResponseCode
+        affectedRows {
+            following {
+                id
+                username
+                img
+                isfollowed
+                isfollowing
+            }
+        }
+    }
+}

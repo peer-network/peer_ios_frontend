@@ -1,0 +1,49 @@
+query Getallposts($postOffset: Int, $postLimit: Int, $commentOffset: Int, $commentLimit: Int, $from: Date, $to: Date, $filterBy: String, $sortBy: String, $title: String, $tag: String) {
+    getallposts(postOffset: $postOffset, postLimit: $postLimit, commentOffset: $commentOffset, commentLimit: $commentLimit, from: $from, to: $to, filterBy: $filterBy, sortBy: $sortBy, title: $title, tag: $tag) {
+        status
+        counter
+        ResponseCode
+        affectedRows {
+            id
+            contenttype
+            title
+            media
+            mediadescription
+            createdat
+            amountlikes
+            amountviews
+            amountcomments
+            amountdislikes
+            isliked
+            isviewed
+            isreported
+            isdisliked
+            issaved
+            tags
+            user {
+                id
+                username
+                img
+                isfollowed
+                isfollowing
+            }
+            comments {
+                commentid
+                userid
+                postid
+                parentid
+                content
+                amountlikes
+                isliked
+                createdat
+                user {
+                    id
+                    username
+                    img
+                    isfollowed
+                    isfollowing
+                }
+            }
+        }
+    }
+}

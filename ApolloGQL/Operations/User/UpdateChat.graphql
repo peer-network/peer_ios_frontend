@@ -1,0 +1,13 @@
+mutation UpdateChat($chatid: String!, $name: String, $image: String) {
+    updateChat(
+        input: { chatid: $chatid, name: $name, image: $image }
+    ) {
+        status
+        ResponseCode
+        affectedRows {
+            image
+            name
+            chatid
+        }
+    }
+}

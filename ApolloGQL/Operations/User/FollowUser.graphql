@@ -1,0 +1,7 @@
+mutation FollowUser($userid: String!) {
+    userFollow(userid: $userid) {
+        status
+        isfollowing
+        ResponseCode
+    }
+}

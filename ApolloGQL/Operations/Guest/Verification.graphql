@@ -1,0 +1,6 @@
+mutation Verification($userid: String!) {
+    verifiedAccount(userid: $userid) {
+        status
+        ResponseCode
+    }
+}
