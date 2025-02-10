@@ -1,6 +1,0 @@
-mutation UpdateMail($email: String!, $password: String!) {
-    updateMail(email: $email, password: $password) {
-        status
-        ResponseCode
-    }
-}

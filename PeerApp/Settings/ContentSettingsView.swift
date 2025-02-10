@@ -8,14 +8,14 @@
 import SwiftUI
 import DesignSystem
 import Environment
-import Feed
+//import Feed
 import SFSafeSymbols
 
 struct ContentSettingsView: View {
     @EnvironmentObject private var theme: Theme
     @EnvironmentObject private var userPreferences: UserPreferences
     
-    @StateObject private var contentFilter = FeedContentFilter.shared
+//    @StateObject private var contentFilter = FeedContentFilter.shared
     
     var body: some View {
         Form {
@@ -41,18 +41,18 @@ struct ContentSettingsView: View {
             .listRowBackground(theme.primaryBackgroundColor)
             
             Section("Content Filter") {
-                Toggle(isOn: $contentFilter.showText) {
-                    Label("Text Posts", systemSymbol: .textAlignleft)
-                }
-                Toggle(isOn: $contentFilter.showPhoto) {
-                    Label("Image Posts", systemSymbol: .photo)
-                }
-                Toggle(isOn: $contentFilter.showVideo) {
-                    Label("Video Posts", systemSymbol: .playRectangle)
-                }
-                Toggle(isOn: $contentFilter.showAudio) {
-                    Label("Audio Posts", systemSymbol: .waveform)
-                }
+//                Toggle(isOn: $contentFilter.showText) {
+//                    Label("Text Posts", systemSymbol: .textAlignleft)
+//                }
+//                Toggle(isOn: $contentFilter.showPhoto) {
+//                    Label("Image Posts", systemSymbol: .photo)
+//                }
+//                Toggle(isOn: $contentFilter.showVideo) {
+//                    Label("Video Posts", systemSymbol: .playRectangle)
+//                }
+//                Toggle(isOn: $contentFilter.showAudio) {
+//                    Label("Audio Posts", systemSymbol: .waveform)
+//                }
             }
             .listRowBackground(theme.primaryBackgroundColor)
         }

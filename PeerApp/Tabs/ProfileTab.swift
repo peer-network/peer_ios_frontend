@@ -8,7 +8,7 @@
 import SwiftUI
 import Environment
 import DesignSystem
-import Profile
+//import Profile
 
 struct ProfileTab: View {
     @EnvironmentObject private var theme: Theme
@@ -19,13 +19,15 @@ struct ProfileTab: View {
     var body: some View {
         NavigationStack(path: $router.path) {
             if let userId = accountManager.userId {
-                ProfileView(userId: userId, isCurrentUser: true)
+//                ProfileView(userId: userId, isCurrentUser: true)
+                EmptyView()
                     .withAppRouter()
                     .withSheetDestinations(sheetDestinations: $router.presentedSheet)
                     .toolbarBackground(theme.primaryBackgroundColor.opacity(0.30), for: .navigationBar)
                     .id(userId)
             } else {
-                ProfileView(user: .placeholder(), isCurrentUser: true)
+                EmptyView()
+//                ProfileView(user: .placeholder(), isCurrentUser: true)
                     .redacted(reason: .placeholder)
                     .allowsHitTesting(false)
             }

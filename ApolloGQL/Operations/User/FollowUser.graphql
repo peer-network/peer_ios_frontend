@@ -1,4 +1,4 @@
-mutation FollowUser($userid: String!) {
+mutation FollowUser($userid: ID!) {
     userFollow(userid: $userid) {
         status
         isfollowing

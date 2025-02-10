@@ -23,31 +23,37 @@ directive @defer(
 ) on FRAGMENT_SPREAD | INLINE_FRAGMENT
 
 type Subscription {
-  getChatMessages(chatid: String!): AddChatmessageResponse
-  setChatMessages(chatid: String!, content: String!): AddChatmessageResponse
+  getChatMessages(chatid: ID!): AddChatmessageResponse
+  setChatMessages(chatid: ID!, content: String!): AddChatmessageResponse
 }
 
 type Query {
   hello: HelloResponse
-  searchuser(userid: String, username: String, offset: Int, limit: Int): UserSearchResponse
+  searchuser(userid: ID, email: String, username: String, status: Int, verified: Int, ip: String, offset: Int, limit: Int): UserSearchResponse
   getallusers(offset: Int, limit: Int): UserSearchResponse
-  searchpost(title: String, postid: String, tag: String, commentOffset: Int, commentLimit: Int): PostResponse
-  getallposts(postOffset: Int, postLimit: Int, commentOffset: Int, commentLimit: Int, from: Date, to: Date, filterBy: String, sortBy: String, title: String, tag: String): PostResponse
-  readMessages(chatid: String!, offset: Int, limit: Int): AddChatmessageResponse!
-  searchchat(chatid: String!, messageOffset: Int, messageLimit: Int): ChatResponse
-  getallchats(offset: Int, limit: Int, messageOffset: Int, messageLimit: Int, from: Date, to: Date, sortBy: String): ChatResponse
-  follows(offset: Int, limit: Int, userid: String): UserFollows
-  followrelations(offset: Int, limit: Int, userid: String): RelationsFollow
-  profile(userid: String, postLimit: Int): ProfileInfo
+  profile(userid: ID, postLimit: Int): ProfileInfo
+  follows(userid: ID, offset: Int, limit: Int): UserFollows
+  followrelations(userid: ID, offset: Int, limit: Int): RelationsFollow
   friends(offset: Int, limit: Int): UserFriends
-  wallet(offset: Int, limit: Int!): UserWallet
-  userwallet(userid: String, postid: String, fromid: String, offset: Int, limit: Int): UserWallet
+  searchpost(title: String, postid: ID, tag: String, commentOffset: Int, commentLimit: Int): PostResponse
+  getallposts(filterBy: [FilterType], sortBy: SortType, title: String, tag: String, from: Date, to: Date, postOffset: Int, postLimit: Int, commentOffset: Int, commentLimit: Int): PostResponse
+  getpostinfo(postid: ID!): StandardResponse
+  getcommentinfo(commentid: ID!): StandardResponse
+  parentcomments(parent: ID!): CommentResponse
   tags(offset: Int, limit: Int): TagSearchResponse
-  dailyfree: DailyResponse
-  currentliquidity: CurrentLiquidity
-  tokenprice: TokenPrice
-  getuserinfo: GetUserInfo
-  parentcomments(parent: String!): CommentResponse
+  tagsearch(tagname: String!, offset: Int, limit: Int): GenericResponse
+  searchchat(chatid: ID!, messageOffset: Int, messageLimit: Int): ChatResponse
+  getallchats(sortBy: String, from: Date, to: Date, offset: Int, limit: Int, messageOffset: Int, messageLimit: Int): ChatResponse
+  readMessages(chatid: ID!, offset: Int, limit: Int): AddChatmessageResponse!
+  dailyfreestatus: StandardResponse
+  getpercentbeforetransaction(tokenAmount: Int!): StandardResponse
+  refreshmarketcap: StandardResponse
+  globalwins: DefaultResponse
+  gemster: StandardResponse
+  gemsters(day: DayType!): GenericResponse
+  currentliquidity: StandardResponse
+  getuserinfo: StandardResponse
+  fetchwinslog(day: DayType!, offset: Int, limit: Int): GenericResponse
 }
 
 type Mutation {
@@ -58,38 +64,103 @@ type Mutation {
   updatePrivateProfile: DefaultResponse
   updateBiography(biography: String!): DefaultResponse
   updateProfilePicture(img: String!): DefaultResponse
-  userFollow(userid: String!): setFollowUseresponse
+  userFollow(userid: ID!): setFollowUseresponse
   deleteAccount(password: String!): DefaultResponse
   createChat(input: CreateChatInput!): AddChatResponse!
   updateChat(input: UpdateChatInput!): AddChatResponse!
   addParticipants(input: CreateChatParticipantsInput!): AddChatResponse!
   remParticipants(input: CreateChatParticipantsInput!): AddChatResponse!
-  addMessage(chatid: String!, content: String!): AddChatmessageResponse!
-  remMessage(chatid: String!, messid: Int!): DefaultResponse!
-  deleteChat(id: String!): DefaultResponse
+  addMessage(chatid: ID!, content: String!): AddChatmessageResponse!
+  remMessage(chatid: ID!, messid: Int!): DefaultResponse!
+  deleteChat(id: ID!): DefaultResponse
   createFeed(input: CreateFeedInput!): AddPostResponse!
-  createPost(input: CreatePostInput!): AddPostResponse!
-  likePost(postid: String!): DefaultResponse
-  dislikePost(postid: String!): DefaultResponse
-  reportPost(postid: String!): DefaultResponse
-  viewPost(postid: String!): DefaultResponse
-  savePost(postid: String!): ToggleResponse
-  sharePost(postid: String!): DefaultResponse
-  createComment(input: CreateCommentInput!): CommentResponse
-  likeComment(commentid: String!): setLikeOnCommentresponse
-  reportComment(commentid: String!): setLikeOnCommentresponse
-  deletePost(id: String!): DefaultResponse
-  walletgenerator(userid: String, tokens: Int): UserWallet
+  likeComment(commentid: ID!): DefaultResponse
+  reportComment(commentid: ID!): DefaultResponse
+  deletePost(id: ID!): DefaultResponse
+  contactus(name: String!, email: String!, message: String!): StandardResponse
+  createPost(action: PostenType!, input: CreatePostInput!): StandardResponse!
+  createComment(action: CommentsType!, input: CreateCommentInput!): StandardResponse!
+  resolveActionPost(postid: ID!, action: ActionType!): StandardResponse!
 }
+
+scalar Decimal
+
+enum ActionType {
+  LIKE
+  DISLIKE
+  REPORT
+  VIEW
+  SHARE
+  SAVE
+}
+
+enum PostenType {
+  POST
+}
+
+enum CommentsType {
+  COMMENT
+}
+
+enum FilterType {
+  IMAGE
+  AUDIO
+  VIDEO
+  TEXT
+  FOLLOWED
+  FOLLOWER
+}
+
+enum SortType {
+  NEWEST
+  FOLLOWER
+  FOLLOWED
+  TRENDING
+  LIKES
+  DISLIKES
+  VIEWS
+  COMMENTS
+}
+
+enum DayType {
+  D0
+  D1
+  D2
+  D3
+  D4
+  D5
+  W0
+  M0
+  Y0
+}
+
+input DailyResponseInput {
+  liken: Int
+  comments: Int
+  posten: Int
+}
+
+type GenericResponse {
+  status: String!
+  counter: Int!
+  ResponseCode: String
+  affectedRows: JSON
+}
+
+type StandardResponse {
+  status: String!
+  ResponseCode: String
+  affectedRows: JSON
+}
+
+scalar JSON
 
 scalar Date
 
 scalar Tags
 
 type HelloResponse {
-  root: String
-  args: String
-  context: String
+  userroles: Int
   currentuserid: String
 }
 
@@ -100,20 +171,12 @@ type DailyResponse {
 }
 
 type CurrentLiquidity {
-  currentliquidity: Float
-}
-
-type TokenPrice {
-  capid: Int
-  btc: Float
-  token: Float
-  gems: Float
-  createdat: Date
+  currentliquidity: Decimal
 }
 
 type GetUserInfo {
-  userid: String!
-  liquidity: Float!
+  userid: ID!
+  liquidity: Decimal!
   amountposts: Int!
   amounttrending: Int!
   amountfollower: Int!
@@ -129,7 +192,7 @@ type ChatResponse {
 }
 
 type Chat {
-  id: String!
+  id: ID!
   image: String!
   name: String!
   createdat: Date
@@ -139,23 +202,18 @@ type Chat {
 }
 
 type ChatMessage {
-  id: Int!
+  id: ID!
+  senderid: ID!
+  chatid: ID!
   content: String!
-  senderid: String!
-  chatid: String!
   createdat: Date!
 }
 
 type ChatParticipant {
-  userid: String!
+  userid: ID!
   img: String!
   username: String!
   hasaccess: Int!
-}
-
-type setLikeOnCommentresponse {
-  status: String!
-  ResponseCode: String
 }
 
 type setFollowUseresponse {
@@ -165,7 +223,7 @@ type setFollowUseresponse {
 }
 
 type ProfilPostMed {
-  id: String!
+  id: ID!
   title: String
   contenttype: String!
   media: String!
@@ -197,8 +255,8 @@ type AddPostResponse {
 }
 
 type Postinfo {
-  postid: String!
-  userid: String!
+  postid: ID!
+  userid: ID!
   title: String!
   media: String!
   mediadescription: String!
@@ -212,9 +270,7 @@ type AddChatResponse {
 }
 
 type Chatinfo {
-  image: String
-  name: String
-  chatid: String
+  chatid: ID
 }
 
 type AddChatmessageResponse {
@@ -224,10 +280,10 @@ type AddChatmessageResponse {
 }
 
 type Chatmessageinfo {
-  messid: Int
-  userid: String
+  messid: ID
+  chatid: ID
+  userid: ID
   content: String
-  chatid: String
   createdat: Date
 }
 
@@ -238,7 +294,7 @@ type Userinforesponse {
 }
 
 type Userinfo {
-  userid: String
+  userid: ID
   img: String
   username: String
   biography: String
@@ -247,23 +303,32 @@ type Userinfo {
 
 type UserFriends {
   status: String!
+  counter: Int!
   ResponseCode: String
   affectedRows: [Userinfo]
 }
 
 type User {
-  id: String
+  id: ID
+  situation: String
+  email: String
   username: String
+  password: String
   status: Int
+  verified: Int
   slug: Int
+  roles_mask: Int
+  ip: String
   img: String
   biography: String
+  liquidity: Decimal
   createdat: Date
   updatedat: Date
 }
 
 type Profile {
-  id: String
+  id: ID
+  situation: String
   username: String
   status: Int
   slug: Int
@@ -288,7 +353,7 @@ type ProfileInfo {
 }
 
 type ProfilUser {
-  id: String!
+  id: ID!
   username: String!
   img: String
   isfollowed: Boolean
@@ -328,7 +393,7 @@ type UserSearchResponse {
 }
 
 type Tag {
-  tagid: Int!
+  tagid: ID!
   name: String!
 }
 
@@ -347,31 +412,33 @@ type PostResponse {
 }
 
 type Post {
-  id: String!
+  id: ID!
   contenttype: String!
   title: String!
   media: String!
+  cover: String!
   mediadescription: String!
   createdat: Date!
   amountlikes: Int!
   amountviews: Int!
   amountcomments: Int!
   amountdislikes: Int!
+  amounttrending: Int!
   isliked: Boolean!
   isviewed: Boolean!
   isreported: Boolean!
   isdisliked: Boolean!
   issaved: Boolean!
-  tags: Tags!
+  tags: [String]!
   user: ProfilUser!
   comments: [Comment!]!
 }
 
 type Comment {
-  commentid: String!
-  userid: String!
-  postid: String!
-  parentid: String
+  commentid: ID!
+  userid: ID!
+  postid: ID!
+  parentid: ID
   content: String!
   amountlikes: Int!
   isliked: Boolean!
@@ -388,10 +455,10 @@ type CommentResponse {
 
 type Wallet {
   token: String!
-  userid: String!
-  postid: String!
-  fromid: String!
-  numbers: Float!
+  userid: ID!
+  postid: ID!
+  fromid: ID!
+  numbers: Decimal!
   whereby: Int!
   createdat: Date!
 }
@@ -412,14 +479,15 @@ input RegisterInput {
 input CreatePostInput {
   title: String!
   media: String!
+  cover: String
   mediadescription: String!
   contenttype: String!
   tags: [String!]
 }
 
 input CreateCommentInput {
-  postid: String!
-  parentid: String
+  postid: ID!
+  parentid: ID
   content: String!
 }
 
@@ -430,20 +498,20 @@ input CreateChatInput {
 }
 
 input UpdateChatInput {
-  chatid: String!
+  chatid: ID!
   name: String
   image: String
 }
 
 input CreateChatParticipantsInput {
-  chatid: String!
+  chatid: ID!
   recipients: [String!]!
 }
 
 input CreateFeedInput {
+  feedid: ID!
   title: String!
   media: String!
-  feedid: String!
   mediadescription: String
   contenttype: String!
 }

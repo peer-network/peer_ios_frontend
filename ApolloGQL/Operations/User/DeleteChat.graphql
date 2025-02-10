@@ -1,6 +1,0 @@
-mutation DeleteChat($id: String!) {
-    deleteChat(id: $id) {
-        status
-        ResponseCode
-    }
-}

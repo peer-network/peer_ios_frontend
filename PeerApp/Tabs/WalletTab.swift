@@ -8,7 +8,7 @@
 import SwiftUI
 import DesignSystem
 import Environment
-import Wallet
+//import Wallet
 
 struct WalletTab: View {
     @EnvironmentObject private var theme: Theme
@@ -17,7 +17,8 @@ struct WalletTab: View {
     
     var body: some View {
         NavigationStack(path: $router.path) {
-            WalletView()
+//            WalletView()
+            EmptyView()
                 .withAppRouter()
                 .withSheetDestinations(sheetDestinations: $router.presentedSheet)
         }

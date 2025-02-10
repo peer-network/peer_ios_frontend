@@ -1,8 +1,6 @@
 query Hello {
     hello {
-        root
-        args
-        context
+        userroles
         currentuserid
     }
 }

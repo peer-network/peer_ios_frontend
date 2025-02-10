@@ -7,9 +7,9 @@
 
 import SwiftUI
 import Environment
-import Profile
+//import Profile
 import DesignSystem
-import Feed
+//import Feed
 import Models
 import LinkPresentation
 
@@ -18,17 +18,21 @@ extension View {
         navigationDestination(for: RouterDestination.self) { destination in
             switch destination {
                 case .followers(let id):
-                    ProfilesListView(mode: .followers(userId: id))
+//                    ProfilesListView(mode: .followers(userId: id))
+                    EmptyView()
                 case .following(let id):
-                    ProfilesListView(mode: .followings(userId: id))
+//                    ProfilesListView(mode: .followings(userId: id))
+                    EmptyView()
                 case .settingsHaptic:
                     HapticSettingsView()
                 case .settingsTabs:
                     TabbarEntriesSettingsView()
                 case .accountDetail(let id):
-                    ProfileView(userId: id, isCurrentUser: AccountManager.shared.isCurrentUser(id: id))
+//                    ProfileView(userId: id, isCurrentUser: AccountManager.shared.isCurrentUser(id: id))
+                    EmptyView()
                 case .hashTag(let tag):
-                    FeedView(type: .hashTag(tag: tag))
+//                    FeedView(type: .hashTag(tag: tag))
+                    EmptyView()
                 case .settingsTheme:
                     DisplaySettingsView()
                 case .postDetailsWithPost(let post):
@@ -43,7 +47,8 @@ extension View {
         sheet(item: sheetDestinations) { destination in
             switch destination {
                 case .postEditor:
-                    PostEditorView()
+//                    PostEditorView()
+                    EmptyView()
                         .withEnvironments()
                 case .about:
                     Color.red
@@ -53,10 +58,14 @@ extension View {
                         .withEnvironments()
                         .preferredColorScheme(Theme.shared.selectedScheme == .dark ? .dark : .light)
                 case .userEditInfo(let user, let bio):
-                    EditProfileView(user: user, bio: bio)
+                    EmptyView()
+//                    EditProfileView(user: user, bio: bio)
                         .withEnvironments()
                 case .feedContentFilter:
-                    NavigationSheet { FeedContentFilterView() }
+                    NavigationSheet {
+//                        FeedContentFilterView()
+                        EmptyView()
+                    }
                         .presentationDetents([.medium])
                         .presentationBackground(.thinMaterial)
                         .withEnvironments()
