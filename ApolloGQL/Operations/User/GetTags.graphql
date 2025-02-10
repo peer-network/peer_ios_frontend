@@ -1,0 +1,11 @@
+query Tags($limit: Int, $offset: Int) {
+    tags(limit: $limit, offset: $offset) {
+        status
+        counter
+        ResponseCode
+        affectedRows {
+            tagid
+            name
+        }
+    }
+}

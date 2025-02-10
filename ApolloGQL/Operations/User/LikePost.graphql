@@ -1,0 +1,6 @@
+mutation LikePost($postid: String!) {
+    likePost(postid: $postid) {
+        status
+        ResponseCode
+    }
+}

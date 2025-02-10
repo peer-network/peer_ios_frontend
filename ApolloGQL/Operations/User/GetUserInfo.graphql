@@ -1,0 +1,11 @@
+query Getuserinfo {
+    getuserinfo {
+        userid
+        liquidity
+        amountposts
+        amounttrending
+        amountfollower
+        amountfollowed
+        updatedat
+    }
+}

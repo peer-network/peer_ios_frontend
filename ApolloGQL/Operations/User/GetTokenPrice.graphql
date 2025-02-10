@@ -1,0 +1,9 @@
+query Tokenprice {
+    tokenprice {
+        capid
+        btc
+        token
+        gems
+        createdat
+    }
+}
