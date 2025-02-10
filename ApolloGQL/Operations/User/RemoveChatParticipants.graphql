@@ -1,0 +1,13 @@
+mutation RemoveParticipants($chatid: String!, $recipients: [String!]!) {
+    remParticipants(
+        input: { chatid: $chatid, recipients: $recipients }
+    ) {
+        status
+        ResponseCode
+        affectedRows {
+            image
+            name
+            chatid
+        }
+    }
+}

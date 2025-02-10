@@ -1,0 +1,8 @@
+query Hello {
+    hello {
+        root
+        args
+        context
+        currentuserid
+    }
+}

@@ -1,0 +1,13 @@
+query Friends($limit: Int, $offset: Int) {
+    friends(limit: $limit, offset: $offset) {
+        status
+        ResponseCode
+        affectedRows {
+            userid
+            img
+            username
+            biography
+            updatedat
+        }
+    }
+}

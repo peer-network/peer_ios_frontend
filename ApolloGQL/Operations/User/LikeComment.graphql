@@ -1,0 +1,6 @@
+mutation LikeComment($commentid: String!) {
+    likeComment(commentid: $commentid) {
+        status
+        ResponseCode
+    }
+}
