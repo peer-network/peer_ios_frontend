@@ -1,6 +1,0 @@
-mutation ReportPost($postid: String!) {
-    reportPost(postid: $postid) {
-        status
-        ResponseCode
-    }
-}

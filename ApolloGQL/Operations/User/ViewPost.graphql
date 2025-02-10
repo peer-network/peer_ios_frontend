@@ -1,6 +1,0 @@
-mutation ViewPost($postid: String!) {
-    viewPost(postid: $postid) {
-        status
-        ResponseCode
-    }
-}

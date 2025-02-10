@@ -8,7 +8,7 @@
 import SwiftUI
 import DesignSystem
 import Environment
-import Feed
+//import Feed
 import Models
 
 @MainActor
@@ -31,18 +31,18 @@ struct DisplaySettingsView: View {
     
     @State private var isFontSelectorPresented = false
     
-    private let previewPostViewModel = RowPostViewModel(post: .settingsPlaceholder(), router: Router())
+//    private let previewPostViewModel = RowPostViewModel(post: .settingsPlaceholder(), router: Router())
     
     var body: some View {
         VStack {
-            RowPostExternalView(viewModel: previewPostViewModel)
-                .allowsHitTesting(false)
-                .padding(.horizontal, .layoutPadding)
-                .background(theme.primaryBackgroundColor)
-                .cornerRadius(8)
-                .padding(.horizontal, 20)
-                .padding(.top, 20)
-                .background(theme.secondaryBackgroundColor)
+//            RowPostExternalView(viewModel: previewPostViewModel)
+//                .allowsHitTesting(false)
+//                .padding(.horizontal, .layoutPadding)
+//                .background(theme.primaryBackgroundColor)
+//                .cornerRadius(8)
+//                .padding(.horizontal, 20)
+//                .padding(.top, 20)
+//                .background(theme.secondaryBackgroundColor)
             
             Form {
                 themeSection

@@ -36,7 +36,7 @@ struct ReportView: View {
                         isSendingReport = true
                         Task {
                             do {
-                                let _ = try await GQLClient.shared.mutate(mutation: ReportPostMutation(postid: post.id)) // TODO: Handle error
+//                                let _ = try await GQLClient.shared.mutate(mutation: ReportPostMutation(postid: post.id)) // TODO: Handle error
                                 dismiss()
                                 isSendingReport = false
                             } catch {

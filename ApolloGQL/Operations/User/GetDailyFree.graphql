@@ -1,7 +1,7 @@
 query Dailyfree {
-    dailyfree {
-        liken
-        comments
-        posten
+    dailyfreestatus {
+        status
+        ResponseCode
+        affectedRows
     }
 }

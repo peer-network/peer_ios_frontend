@@ -1,6 +1,0 @@
-mutation DislikePost($postid: String!) {
-    dislikePost(postid: $postid) {
-        status
-        ResponseCode
-    }
-}
