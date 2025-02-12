@@ -8,20 +8,17 @@
 
 /* Begin PBXBuildFile section */
 		7E043B5B2D43EAD300CD365B /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = 7E043B5A2D43EAD300CD365B /* Auth */; };
-		7E0ECFB52D413E6500A99A5A /* Wallet in Frameworks */ = {isa = PBXBuildFile; productRef = 7E0ECFB42D413E6500A99A5A /* Wallet */; };
-		7E2E2C672D2407A600C05B31 /* Profile in Frameworks */ = {isa = PBXBuildFile; productRef = 7E2E2C662D2407A600C05B31 /* Profile */; };
 		7E37A0FB2D2BF13200936C78 /* ButtonKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7E37A0FA2D2BF13200936C78 /* ButtonKit */; };
 		7E3C09872D130AEF001D8227 /* Networking in Frameworks */ = {isa = PBXBuildFile; productRef = 7E3C09862D130AEF001D8227 /* Networking */; };
 		7E3C09892D130B1E001D8227 /* GQLOperationsGuest in Frameworks */ = {isa = PBXBuildFile; productRef = 7E3C09882D130B1E001D8227 /* GQLOperationsGuest */; };
 		7E3C098B2D130EBF001D8227 /* GQLOperationsUser in Frameworks */ = {isa = PBXBuildFile; productRef = 7E3C098A2D130EBF001D8227 /* GQLOperationsUser */; };
 		7E3C09912D13160F001D8227 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 7E3C09902D13160F001D8227 /* KeychainSwift */; };
+		7EB688752D5A491F0060E573 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 7EB688742D5A491F0060E573 /* SFSafeSymbols */; };
 		7ECFE78A2D1577AB002D98DD /* Environment in Frameworks */ = {isa = PBXBuildFile; productRef = 7ECFE7892D1577AB002D98DD /* Environment */; };
-		7ECFE79B2D15B670002D98DD /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 7ECFE79A2D15B670002D98DD /* SFSafeSymbols */; };
 		7ED0F7A72D0DD8410027A49B /* PayloadModification.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7ED0F7A02D0DD8410027A49B /* PayloadModification.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		7ED27FE62D4BCF3100A6EFE0 /* TokenKeychainManager in Frameworks */ = {isa = PBXBuildFile; productRef = 7ED27FE52D4BCF3100A6EFE0 /* TokenKeychainManager */; };
 		7EE1447B2D1435DD0054FBB2 /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 7EE1447A2D1435DD0054FBB2 /* DesignSystem */; };
 		7EE144D32D1454AB0054FBB2 /* Environment in Frameworks */ = {isa = PBXBuildFile; productRef = 7EE144D22D1454AB0054FBB2 /* Environment */; };
-		7EE897A42D26CDF3001F6DA0 /* Feed in Frameworks */ = {isa = PBXBuildFile; productRef = 7EE897A32D26CDF3001F6DA0 /* Feed */; };
 		7EE9D1772D369DAA00D03B20 /* MediaUI in Frameworks */ = {isa = PBXBuildFile; productRef = 7E8DFE652D31304700C1725E /* MediaUI */; settings = {ATTRIBUTES = (Required, ); }; };
 		7EEBA9C22D4CF2BF001B6E76 /* FeedNew in Frameworks */ = {isa = PBXBuildFile; productRef = 7EEBA9C12D4CF2BF001B6E76 /* FeedNew */; };
 /* End PBXBuildFile section */
@@ -144,20 +141,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				7EE9D1772D369DAA00D03B20 /* MediaUI in Frameworks */,
-				7EE897A42D26CDF3001F6DA0 /* Feed in Frameworks */,
-				7E2E2C672D2407A600C05B31 /* Profile in Frameworks */,
 				7EE1447B2D1435DD0054FBB2 /* DesignSystem in Frameworks */,
 				7E3C09892D130B1E001D8227 /* GQLOperationsGuest in Frameworks */,
 				7E3C098B2D130EBF001D8227 /* GQLOperationsUser in Frameworks */,
-				7ECFE79B2D15B670002D98DD /* SFSafeSymbols in Frameworks */,
 				7E043B5B2D43EAD300CD365B /* Auth in Frameworks */,
+				7EB688752D5A491F0060E573 /* SFSafeSymbols in Frameworks */,
 				7ED27FE62D4BCF3100A6EFE0 /* TokenKeychainManager in Frameworks */,
 				7EEBA9C22D4CF2BF001B6E76 /* FeedNew in Frameworks */,
 				7E3C09912D13160F001D8227 /* KeychainSwift in Frameworks */,
 				7EE144D32D1454AB0054FBB2 /* Environment in Frameworks */,
 				7E3C09872D130AEF001D8227 /* Networking in Frameworks */,
 				7E37A0FB2D2BF13200936C78 /* ButtonKit in Frameworks */,
-				7E0ECFB52D413E6500A99A5A /* Wallet in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -258,15 +252,12 @@
 				7E3C09902D13160F001D8227 /* KeychainSwift */,
 				7EE1447A2D1435DD0054FBB2 /* DesignSystem */,
 				7EE144D22D1454AB0054FBB2 /* Environment */,
-				7ECFE79A2D15B670002D98DD /* SFSafeSymbols */,
-				7E2E2C662D2407A600C05B31 /* Profile */,
-				7EE897A32D26CDF3001F6DA0 /* Feed */,
 				7E37A0FA2D2BF13200936C78 /* ButtonKit */,
 				7E8DFE652D31304700C1725E /* MediaUI */,
-				7E0ECFB42D413E6500A99A5A /* Wallet */,
 				7E043B5A2D43EAD300CD365B /* Auth */,
 				7ED27FE52D4BCF3100A6EFE0 /* TokenKeychainManager */,
 				7EEBA9C12D4CF2BF001B6E76 /* FeedNew */,
+				7EB688742D5A491F0060E573 /* SFSafeSymbols */,
 			);
 			productName = PeerApp;
 			productReference = 7ECF06D72D0C6DA200CA7852 /* PeerApp.app */;
@@ -910,14 +901,6 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = Auth;
 		};
-		7E0ECFB42D413E6500A99A5A /* Wallet */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Wallet;
-		};
-		7E2E2C662D2407A600C05B31 /* Profile */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Profile;
-		};
 		7E37A0FA2D2BF13200936C78 /* ButtonKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 7E37A0F92D2BF13200936C78 /* XCRemoteSwiftPackageReference "ButtonKit" */;
@@ -944,14 +927,14 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = MediaUI;
 		};
-		7ECFE7892D1577AB002D98DD /* Environment */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Environment;
-		};
-		7ECFE79A2D15B670002D98DD /* SFSafeSymbols */ = {
+		7EB688742D5A491F0060E573 /* SFSafeSymbols */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 7ECFE7992D15B670002D98DD /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
 			productName = SFSafeSymbols;
+		};
+		7ECFE7892D1577AB002D98DD /* Environment */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Environment;
 		};
 		7ED27FE52D4BCF3100A6EFE0 /* TokenKeychainManager */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -964,10 +947,6 @@
 		7EE144D22D1454AB0054FBB2 /* Environment */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Environment;
-		};
-		7EE897A32D26CDF3001F6DA0 /* Feed */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = Feed;
 		};
 		7EEBA9C12D4CF2BF001B6E76 /* FeedNew */ = {
 			isa = XCSwiftPackageProductDependency;

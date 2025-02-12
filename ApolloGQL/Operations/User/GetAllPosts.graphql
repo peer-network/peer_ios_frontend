@@ -1,5 +1,16 @@
-query Getallposts($postOffset: Int, $postLimit: Int, $commentOffset: Int, $commentLimit: Int, $from: Date, $to: Date, $filterBy: String, $sortBy: String, $title: String, $tag: String) {
-    getallposts(postOffset: $postOffset, postLimit: $postLimit, commentOffset: $commentOffset, commentLimit: $commentLimit, from: $from, to: $to, filterBy: $filterBy, sortBy: $sortBy, title: $title, tag: $tag) {
+query GetAllPosts($filterBy: [FilterType], $sortBy: SortType, $title: String, $tag: String, $from: Date, $to: Date, $postOffset: Int, $postLimit: Int, $commentOffset: Int, $commentLimit: Int) {
+	getallposts(
+        filterBy: $filterBy
+        commentLimit: $commentLimit
+        commentOffset: $commentOffset
+        postLimit: $postLimit
+        postOffset: $postOffset
+        to: $to
+        from: $from
+        tag: $tag
+        title: $title
+        sortBy: $sortBy
+    ) {
         status
         counter
         ResponseCode
@@ -8,12 +19,14 @@ query Getallposts($postOffset: Int, $postLimit: Int, $commentOffset: Int, $comme
             contenttype
             title
             media
+            cover
             mediadescription
             createdat
             amountlikes
             amountviews
             amountcomments
             amountdislikes
+            amounttrending
             isliked
             isviewed
             isreported
@@ -26,23 +39,6 @@ query Getallposts($postOffset: Int, $postLimit: Int, $commentOffset: Int, $comme
                 img
                 isfollowed
                 isfollowing
-            }
-            comments {
-                commentid
-                userid
-                postid
-                parentid
-                content
-                amountlikes
-                isliked
-                createdat
-                user {
-                    id
-                    username
-                    img
-                    isfollowed
-                    isfollowing
-                }
             }
         }
     }

@@ -1,4 +1,4 @@
-mutation Verification($userid: String!) {
+mutation Verification($userid: ID!) {
     verifiedAccount(userid: $userid) {
         status
         ResponseCode

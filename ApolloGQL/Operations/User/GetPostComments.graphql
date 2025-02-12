@@ -1,0 +1,27 @@
+query GetPostComments($postid: ID!) {
+    searchpost(postid: $postid) {
+        status
+        counter
+        ResponseCode
+        affectedRows {
+            amountcomments
+            comments {
+                commentid
+                userid
+                postid
+                parentid
+                content
+                amountlikes
+                isliked
+                createdat
+                user {
+                    id
+                    username
+                    img
+                    isfollowed
+                    isfollowing
+                }
+            }
+        }
+    }
+}

@@ -1,6 +1,0 @@
-mutation ReportComment($commentid: String!) {
-    reportComment(commentid: $commentid) {
-        status
-        ResponseCode
-    }
-}
