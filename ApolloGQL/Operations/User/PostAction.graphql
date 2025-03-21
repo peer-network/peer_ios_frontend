@@ -2,6 +2,5 @@ mutation PostAction($postid: ID!, $action: ActionType!) {
     resolveActionPost(postid: $postid, action: $action) {
         status
         ResponseCode
-        affectedRows
     }
 }

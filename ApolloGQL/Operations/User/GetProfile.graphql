@@ -1,0 +1,22 @@
+query GetProfile($userid: ID!) {
+	profile(
+        userid: $userid
+    ) {
+        status
+        ResponseCode
+        affectedRows {
+            id
+            username
+            status
+            slug
+            img
+            biography
+            amountposts
+            amounttrending
+            isfollowed
+            isfollowing
+            amountfollowed
+            amountfollower
+        }
+    }
+}

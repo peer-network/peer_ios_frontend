@@ -1,0 +1,14 @@
+query SearchTags($tagname: String!, $offset: Int, $limit: Int) {
+	tagsearch(
+        tagname: $tagname
+        offset: $offset
+        limit: $limit
+    ) {
+        status
+        counter
+        ResponseCode
+        affectedRows {
+            name
+        }
+    }
+}

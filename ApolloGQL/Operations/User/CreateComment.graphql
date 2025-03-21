@@ -1,0 +1,10 @@
+mutation CreateComment($postid: ID!, $parentid: ID, $content: String!) {
+    createComment(
+        action: COMMENT
+        input: { content: $content, parentid: $parentid, postid: $postid }
+    ) {
+        status
+        ResponseCode
+        affectedRows
+    }
+}

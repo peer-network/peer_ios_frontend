@@ -1,6 +1,5 @@
-query Hello {
+query HelloUser {
     hello {
-        userroles
         currentuserid
     }
 }

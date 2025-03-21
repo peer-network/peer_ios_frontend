@@ -1,0 +1,22 @@
+query SearchUser($userid: ID, $username: String, $offset: Int, $limit: Int) {
+	searchuser(
+        userid: $userid
+        username: $username
+        offset: $offset
+        limit: $limit
+    ) {
+        status
+        counter
+        ResponseCode
+        affectedRows {
+            id
+            username
+            status
+            slug
+            img
+            biography
+            createdat
+            updatedat
+        }
+    }
+}
