@@ -1,0 +1,6 @@
+mutation BlockUser($userid: ID!) {
+    userBlock(userid: $userid) {
+        status
+        ResponseCode
+    }
+}

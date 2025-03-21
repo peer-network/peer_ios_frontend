@@ -1,21 +1,9 @@
-query GetAllPosts($filterBy: [FilterType!], $IgnorList: IgnoredList, $sortBy: SortType, $title: String, $tag: String, $from: Date, $to: Date, $postOffset: Int, $postLimit: Int, $commentOffset: Int, $commentLimit: Int, $postid: ID, $userid: ID) {
-	getallposts(
-        filterBy: $filterBy
-        IgnorList: $IgnorList
-        commentLimit: $commentLimit
-        commentOffset: $commentOffset
-        postLimit: $postLimit
-        postOffset: $postOffset
-        to: $to
-        from: $from
-        tag: $tag
-        title: $title
-        sortBy: $sortBy
-        postid: $postid
-        userid: $userid
+mutation CreatePost($contenttype: ContenType!, $title: String!, $media: [String!], $mediadescription: String, $tags: [String!], $cover: [String!]) {
+    createPost(
+        action: POST
+        input: { contenttype: $contenttype, title: $title, media: $media, mediadescription: $mediadescription, tags: $tags, cover: $cover }
     ) {
         status
-        counter
         ResponseCode
         affectedRows {
             id
