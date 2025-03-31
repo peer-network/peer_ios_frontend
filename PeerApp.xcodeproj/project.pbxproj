@@ -270,13 +270,11 @@
 			buildConfigurationList = 7ECF06FB2D0C6DA300CA7852 /* Build configuration list for PBXNativeTarget "PeerApp" */;
 			buildPhases = (
 				7EDDD5632D5A00F700A17D5B /* SwiftLint Run Script */,
-				ACE2D55A2D8D827F00DE0762 /* Build Setup Xcode Cloud Run Script */,
 				7ECF06D32D0C6DA200CA7852 /* Sources */,
 				7ECF06D42D0C6DA200CA7852 /* Frameworks */,
 				7ECF06D52D0C6DA200CA7852 /* Resources */,
 				7ED0F7AC2D0DD8410027A49B /* Embed Foundation Extensions */,
 				ACCB74B12D8ABFC4006E630C /* Firebase Crashlytics Run Script */,
-				ACE2D55B2D8D82E200DE0762 /* Testflight Upload Xcode Cloud Run Script */,
 			);
 			buildRules = (
 			);
@@ -514,44 +512,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
-		};
-		ACE2D55A2D8D827F00DE0762 /* Build Setup Xcode Cloud Run Script */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Build Setup Xcode Cloud Run Script";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "bash \"${PROJECT_DIR}/Scripts/ci_build_setup.sh\"\n";
-		};
-		ACE2D55B2D8D82E200DE0762 /* Testflight Upload Xcode Cloud Run Script */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Testflight Upload Xcode Cloud Run Script";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "bash \"${PROJECT_DIR}/Scripts/ci_testflight_upload.sh\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
