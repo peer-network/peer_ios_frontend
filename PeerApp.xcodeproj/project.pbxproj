@@ -90,8 +90,8 @@
 		AC8295F12D876DAD00C554D1 /* Explore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Explore; path = Packages/Explore; sourceTree = "<group>"; };
 		ACCAB48A2D81DE23001C1041 /* Analytics */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Analytics; path = Packages/Analytics; sourceTree = "<group>"; };
 		ACCAB48B2D81E07E001C1041 /* RemoteConfig */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = RemoteConfig; path = Packages/RemoteConfig; sourceTree = "<group>"; };
-		ACDF9D152D9A84B700832C1E /* PostCreation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = PostCreation; sourceTree = "<group>"; };
-		ACDF9D162D9A84B700832C1E /* ProfileNew */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = ProfileNew; sourceTree = "<group>"; };
+		ACDF9D152D9A84B700832C1E /* PostCreation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = PostCreation; path = Packages/PostCreation; sourceTree = "<group>"; };
+		ACDF9D162D9A84B700832C1E /* ProfileNew */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ProfileNew; path = Packages/ProfileNew; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -145,16 +145,6 @@
 				7ED0F7AB2D0DD8410027A49B /* Exceptions for "PayloadModification" folder in "PayloadModification" target */,
 			);
 			path = PayloadModification;
-			sourceTree = "<group>";
-		};
-		ACE2D5522D8D798100DE0762 /* Scripts */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = Scripts;
-			sourceTree = "<group>";
-		};
-		ACE2D5542D8D7A2300DE0762 /* ReleaseNotes */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ReleaseNotes;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -217,8 +207,6 @@
 		7ECF06CE2D0C6DA200CA7852 = {
 			isa = PBXGroup;
 			children = (
-				ACE2D5542D8D7A2300DE0762 /* ReleaseNotes */,
-				ACE2D5522D8D798100DE0762 /* Scripts */,
 				7ECF06D92D0C6DA200CA7852 /* PeerApp */,
 				7ECF06EA2D0C6DA300CA7852 /* PeerAppTests */,
 				7ECF06F42D0C6DA300CA7852 /* PeerAppUITests */,
