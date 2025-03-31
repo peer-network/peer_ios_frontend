@@ -7,70 +7,73 @@
 
 import SwiftUI
 import Environment
-//import Profile
+import ProfileNew
 import DesignSystem
-//import Feed
+import FeedNew
 import Models
 import LinkPresentation
+import Explore
 
 extension View {
     func withAppRouter() -> some View {
         navigationDestination(for: RouterDestination.self) { destination in
             switch destination {
-                case .followers(let id):
-//                    ProfilesListView(mode: .followers(userId: id))
-                    EmptyView()
-                case .following(let id):
-//                    ProfilesListView(mode: .followings(userId: id))
-                    EmptyView()
-                case .settingsHaptic:
-                    HapticSettingsView()
-                case .settingsTabs:
-                    TabbarEntriesSettingsView()
                 case .accountDetail(let id):
-//                    ProfileView(userId: id, isCurrentUser: AccountManager.shared.isCurrentUser(id: id))
-                    EmptyView()
+                    ProfileView(userId: id)
+                        .toolbar(.hidden, for: .navigationBar)
                 case .hashTag(let tag):
-//                    FeedView(type: .hashTag(tag: tag))
-                    EmptyView()
-                case .settingsTheme:
-                    DisplaySettingsView()
+                    SearchView(searchTag: tag)
+                        .toolbar(.hidden, for: .navigationBar)
                 case .postDetailsWithPost(let post):
-                    Color.red //
-                case .settingsContent:
-                    ContentSettingsView()
+                    FullScreenPostView(post: post)
+                        .toolbar(.hidden, for: .navigationBar)
+                case .settings:
+                    SettingsView()
+                        .toolbar(.hidden, for: .navigationBar)
             }
         }
     }
-    
+
     func withSheetDestinations(sheetDestinations: Binding<SheetDestination?>) -> some View {
         sheet(item: sheetDestinations) { destination in
             switch destination {
-                case .postEditor:
-//                    PostEditorView()
-                    EmptyView()
+                case .following(let users):
+                    ProfilesSheetView(type: .following, users: users)
+                        .presentationDragIndicator(.hidden)
+                        .presentationCornerRadius(24)
+                        .presentationBackground(.ultraThinMaterial)
+                        .presentationDetents([.fraction(0.75), .large])
+                        .presentationContentInteraction(.resizes)
                         .withEnvironments()
-                case .about:
-                    Color.red
+                case .followers(let users):
+                    ProfilesSheetView(type: .followers, users: users)
+                        .presentationDragIndicator(.hidden)
+                        .presentationCornerRadius(24)
+                        .presentationBackground(.ultraThinMaterial)
+                        .presentationDetents([.fraction(0.75), .large])
+                        .presentationContentInteraction(.resizes)
                         .withEnvironments()
-                case .settings:
-                    SettingsTab(isModal: true)
+                case .friends(let users):
+                    ProfilesSheetView(type: .friends, users: users)
+                        .presentationDragIndicator(.hidden)
+                        .presentationCornerRadius(24)
+                        .presentationBackground(.ultraThinMaterial)
+                        .presentationDetents([.fraction(0.75), .large])
+                        .presentationContentInteraction(.resizes)
                         .withEnvironments()
-                        .preferredColorScheme(Theme.shared.selectedScheme == .dark ? .dark : .light)
-                case .userEditInfo(let user, let bio):
-                    EmptyView()
-//                    EditProfileView(user: user, bio: bio)
-                        .withEnvironments()
-                case .feedContentFilter:
-                    NavigationSheet {
-//                        FeedContentFilterView()
-                        EmptyView()
-                    }
-                        .presentationDetents([.medium])
-                        .presentationBackground(.thinMaterial)
-                        .withEnvironments()
-                case .reportPost(let post):
-                    ReportView(post: post)
+                case .comments(let post, let isBackgroundWhite):
+                    CommentsView(post: post)
+                        .presentationDragIndicator(.hidden)
+                        .presentationCornerRadius(24)
+                        .ifCondition(!isBackgroundWhite) {
+                            $0.presentationBackground(.ultraThinMaterial)
+                        }
+                        .ifCondition(isBackgroundWhite) {
+                            $0.presentationBackground(Color.white)
+                        }
+                        .presentationDetents([.fraction(0.75), .large])
+                        .presentationContentInteraction(.resizes)
+                        .environment(\.isBackgroundWhite, isBackgroundWhite ? true : false)
                         .withEnvironments()
                 case .shareImage(let image, let post):
                     ActivityView(image: image, post: post)
@@ -78,11 +81,9 @@ extension View {
             }
         }
     }
-    
+
     func withEnvironments() -> some View {
-        environmentObject(UserPreferences.shared)
-            .environmentObject(Theme.shared)
-            .environmentObject(AccountManager.shared)
+        environmentObject(AccountManager.shared)
             .environmentObject(QuickLook.shared)
     }
 }
@@ -90,16 +91,16 @@ extension View {
 struct ActivityView: UIViewControllerRepresentable {
     let image: UIImage
     let post: Post
-    
+
     class LinkDelegate: NSObject, UIActivityItemSource {
         let image: UIImage
         let post: Post
-        
+
         init(image: UIImage, post: Post) {
             self.image = image
             self.post = post
         }
-        
+
         func activityViewControllerLinkMetadata(_: UIActivityViewController) -> LPLinkMetadata? {
             let imageProvider = NSItemProvider(object: image)
             let metadata = LPLinkMetadata()
@@ -107,20 +108,20 @@ struct ActivityView: UIViewControllerRepresentable {
             metadata.title = post.title
             return metadata
         }
-        
+
         func activityViewControllerPlaceholderItem(_: UIActivityViewController) -> Any {
             image
         }
-        
+
         func activityViewController(_: UIActivityViewController, itemForActivityType _: UIActivity.ActivityType?) -> Any?
         {
             nil
         }
     }
-    
+
     func makeUIViewController(context _: UIViewControllerRepresentableContext<ActivityView>) -> UIActivityViewController {
         UIActivityViewController(activityItems: [image, LinkDelegate(image: image, post: post)], applicationActivities: nil)
     }
-    
+
     func updateUIViewController(_: UIActivityViewController, context _: UIViewControllerRepresentableContext<ActivityView>) {}
 }

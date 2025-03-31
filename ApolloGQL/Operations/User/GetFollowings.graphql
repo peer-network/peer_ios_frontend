@@ -1,16 +1,16 @@
 query GetFollowings($userid: ID, $offset: Int, $limit: Int) {
-	followrelations(
+	follows(
         userid: $userid
         offset: $offset
         limit: $limit
     ) {
         status
-        counter
         ResponseCode
         affectedRows {
             following {
                 id
                 username
+                slug
                 img
                 isfollowed
                 isfollowing

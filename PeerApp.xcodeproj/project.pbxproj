@@ -8,11 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		7E043B5B2D43EAD300CD365B /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = 7E043B5A2D43EAD300CD365B /* Auth */; };
+		7E36935F2D5FA27200B36BD4 /* ProfileNew in Frameworks */ = {isa = PBXBuildFile; productRef = 7E36935E2D5FA27200B36BD4 /* ProfileNew */; };
 		7E37A0FB2D2BF13200936C78 /* ButtonKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7E37A0FA2D2BF13200936C78 /* ButtonKit */; };
 		7E3C09872D130AEF001D8227 /* Networking in Frameworks */ = {isa = PBXBuildFile; productRef = 7E3C09862D130AEF001D8227 /* Networking */; };
 		7E3C09892D130B1E001D8227 /* GQLOperationsGuest in Frameworks */ = {isa = PBXBuildFile; productRef = 7E3C09882D130B1E001D8227 /* GQLOperationsGuest */; };
 		7E3C098B2D130EBF001D8227 /* GQLOperationsUser in Frameworks */ = {isa = PBXBuildFile; productRef = 7E3C098A2D130EBF001D8227 /* GQLOperationsUser */; };
 		7E3C09912D13160F001D8227 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 7E3C09902D13160F001D8227 /* KeychainSwift */; };
+		7E47E8F22D5B536A008A4A3D /* PostCreation in Frameworks */ = {isa = PBXBuildFile; productRef = 7E47E8F12D5B536A008A4A3D /* PostCreation */; };
 		7EB688752D5A491F0060E573 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 7EB688742D5A491F0060E573 /* SFSafeSymbols */; };
 		7ECFE78A2D1577AB002D98DD /* Environment in Frameworks */ = {isa = PBXBuildFile; productRef = 7ECFE7892D1577AB002D98DD /* Environment */; };
 		7ED0F7A72D0DD8410027A49B /* PayloadModification.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7ED0F7A02D0DD8410027A49B /* PayloadModification.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -21,6 +23,14 @@
 		7EE144D32D1454AB0054FBB2 /* Environment in Frameworks */ = {isa = PBXBuildFile; productRef = 7EE144D22D1454AB0054FBB2 /* Environment */; };
 		7EE9D1772D369DAA00D03B20 /* MediaUI in Frameworks */ = {isa = PBXBuildFile; productRef = 7E8DFE652D31304700C1725E /* MediaUI */; settings = {ATTRIBUTES = (Required, ); }; };
 		7EEBA9C22D4CF2BF001B6E76 /* FeedNew in Frameworks */ = {isa = PBXBuildFile; productRef = 7EEBA9C12D4CF2BF001B6E76 /* FeedNew */; };
+		AC6614E52D71F02000069AB5 /* Wallet in Frameworks */ = {isa = PBXBuildFile; productRef = AC6614E42D71F02000069AB5 /* Wallet */; };
+		AC8295F32D876DD700C554D1 /* Explore in Frameworks */ = {isa = PBXBuildFile; productRef = AC8295F22D876DD700C554D1 /* Explore */; };
+		ACCAB4772D8196A4001C1041 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = ACCAB4762D8196A4001C1041 /* FirebaseAnalytics */; };
+		ACCAB47B2D819FE9001C1041 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = ACCAB47A2D819FE9001C1041 /* FirebaseCrashlytics */; };
+		ACCAB47D2D81B710001C1041 /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = ACCAB47C2D81B710001C1041 /* FirebaseRemoteConfig */; };
+		ACCAB48D2D81E500001C1041 /* RemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = ACCAB48C2D81E500001C1041 /* RemoteConfig */; };
+		ACCB74B32D8AD1CF006E630C /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = ACCB74B22D8AD1CF006E630C /* FirebaseMessaging */; };
+		ACDA53F22D886382000D6E0F /* FirebasePerformance in Frameworks */ = {isa = PBXBuildFile; productRef = ACDA53F12D886382000D6E0F /* FirebasePerformance */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,7 +74,8 @@
 /* Begin PBXFileReference section */
 		7E043B592D43EA4C00CD365B /* Auth */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Auth; path = Packages/Auth; sourceTree = "<group>"; };
 		7E0ECFB32D412C4300A99A5A /* Wallet */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Wallet; path = Packages/Wallet; sourceTree = "<group>"; };
-		7E2EEA392D19659B0022B381 /* Profile */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Profile; path = Packages/Profile; sourceTree = "<group>"; };
+		7E36935D2D5FA08000B36BD4 /* ProfileNew */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ProfileNew; path = /Volumes/T7/Programming/Work/peer_new/PeerApp/Packages/ProfileNew; sourceTree = "<absolute>"; };
+		7E47E8F02D5B5135008A4A3D /* PostCreation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = PostCreation; path = /Volumes/T7/Programming/Work/peer_new/PeerApp/Packages/PostCreation; sourceTree = "<absolute>"; };
 		7EB325A02D11909200DBF2AF /* GQLOperationsGuest */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = GQLOperationsGuest; path = ApolloGQL/Packages/GQLOperationsGuest; sourceTree = "<group>"; };
 		7ECF06D72D0C6DA200CA7852 /* PeerApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PeerApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7ECF06E72D0C6DA300CA7852 /* PeerAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PeerAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -75,10 +86,12 @@
 		7ED0F7A02D0DD8410027A49B /* PayloadModification.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PayloadModification.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		7ED27FE42D4BC6A000A6EFE0 /* TokenKeychainManager */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = TokenKeychainManager; path = Packages/TokenKeychainManager; sourceTree = "<group>"; };
 		7EE144782D142B150054FBB2 /* DesignSystem */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = DesignSystem; path = Packages/DesignSystem; sourceTree = "<group>"; };
-		7EE144CF2D144ACC0054FBB2 /* Feed */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Feed; path = Packages/Feed; sourceTree = "<group>"; };
 		7EE144D02D1452230054FBB2 /* Models */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Models; path = Packages/Models; sourceTree = "<group>"; };
 		7EE144D12D1454770054FBB2 /* Environment */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Environment; path = Packages/Environment; sourceTree = "<group>"; };
 		7EEBA9C02D4CDC97001B6E76 /* FeedNew */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FeedNew; path = Packages/FeedNew; sourceTree = "<group>"; };
+		AC8295F12D876DAD00C554D1 /* Explore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Explore; path = Packages/Explore; sourceTree = "<group>"; };
+		ACCAB48A2D81DE23001C1041 /* Analytics */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Analytics; path = Packages/Analytics; sourceTree = "<group>"; };
+		ACCAB48B2D81E07E001C1041 /* RemoteConfig */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = RemoteConfig; path = Packages/RemoteConfig; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -99,6 +112,7 @@
 		7EE144592D141F450054FBB2 /* Exceptions for "PeerApp" folder in "PayloadModification" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				"Extensions/UINavigationController+Extensions.swift",
 				"Extensions/UserDefaults+Extensions.swift",
 			);
 			target = 7ED0F79F2D0DD8410027A49B /* PayloadModification */;
@@ -133,6 +147,16 @@
 			path = PayloadModification;
 			sourceTree = "<group>";
 		};
+		ACE2D5522D8D798100DE0762 /* Scripts */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Scripts;
+			sourceTree = "<group>";
+		};
+		ACE2D5542D8D7A2300DE0762 /* ReleaseNotes */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ReleaseNotes;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -145,12 +169,22 @@
 				7E3C09892D130B1E001D8227 /* GQLOperationsGuest in Frameworks */,
 				7E3C098B2D130EBF001D8227 /* GQLOperationsUser in Frameworks */,
 				7E043B5B2D43EAD300CD365B /* Auth in Frameworks */,
+				AC6614E52D71F02000069AB5 /* Wallet in Frameworks */,
 				7EB688752D5A491F0060E573 /* SFSafeSymbols in Frameworks */,
+				7E47E8F22D5B536A008A4A3D /* PostCreation in Frameworks */,
+				ACCAB48D2D81E500001C1041 /* RemoteConfig in Frameworks */,
 				7ED27FE62D4BCF3100A6EFE0 /* TokenKeychainManager in Frameworks */,
+				AC8295F32D876DD700C554D1 /* Explore in Frameworks */,
+				ACCAB47D2D81B710001C1041 /* FirebaseRemoteConfig in Frameworks */,
 				7EEBA9C22D4CF2BF001B6E76 /* FeedNew in Frameworks */,
+				ACCAB4772D8196A4001C1041 /* FirebaseAnalytics in Frameworks */,
+				ACDA53F22D886382000D6E0F /* FirebasePerformance in Frameworks */,
 				7E3C09912D13160F001D8227 /* KeychainSwift in Frameworks */,
 				7EE144D32D1454AB0054FBB2 /* Environment in Frameworks */,
+				ACCAB47B2D819FE9001C1041 /* FirebaseCrashlytics in Frameworks */,
+				7E36935F2D5FA27200B36BD4 /* ProfileNew in Frameworks */,
 				7E3C09872D130AEF001D8227 /* Networking in Frameworks */,
+				ACCB74B32D8AD1CF006E630C /* FirebaseMessaging in Frameworks */,
 				7E37A0FB2D2BF13200936C78 /* ButtonKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -183,21 +217,26 @@
 		7ECF06CE2D0C6DA200CA7852 = {
 			isa = PBXGroup;
 			children = (
+				ACE2D5542D8D7A2300DE0762 /* ReleaseNotes */,
+				ACE2D5522D8D798100DE0762 /* Scripts */,
 				7ECF06D92D0C6DA200CA7852 /* PeerApp */,
 				7ECF06EA2D0C6DA300CA7852 /* PeerAppTests */,
 				7ECF06F42D0C6DA300CA7852 /* PeerAppUITests */,
 				7ED0F7A12D0DD8410027A49B /* PayloadModification */,
+				ACCAB48A2D81DE23001C1041 /* Analytics */,
 				7E043B592D43EA4C00CD365B /* Auth */,
 				7EE144782D142B150054FBB2 /* DesignSystem */,
 				7EE144D12D1454770054FBB2 /* Environment */,
+				AC8295F12D876DAD00C554D1 /* Explore */,
 				7EEBA9C02D4CDC97001B6E76 /* FeedNew */,
-				7EE144CF2D144ACC0054FBB2 /* Feed */,
 				7EB325A02D11909200DBF2AF /* GQLOperationsGuest */,
 				7ECF07102D0C8EA100CA7852 /* GQLOperationsUser */,
 				7ECFE79E2D15CB96002D98DD /* MediaUI */,
 				7EE144D02D1452230054FBB2 /* Models */,
 				7ECF07042D0C6DE300CA7852 /* Networking */,
-				7E2EEA392D19659B0022B381 /* Profile */,
+				7E47E8F02D5B5135008A4A3D /* PostCreation */,
+				7E36935D2D5FA08000B36BD4 /* ProfileNew */,
+				ACCAB48B2D81E07E001C1041 /* RemoteConfig */,
 				7ED27FE42D4BC6A000A6EFE0 /* TokenKeychainManager */,
 				7E0ECFB32D412C4300A99A5A /* Wallet */,
 				7ECF07062D0C76F500CA7852 /* Frameworks */,
@@ -230,11 +269,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7ECF06FB2D0C6DA300CA7852 /* Build configuration list for PBXNativeTarget "PeerApp" */;
 			buildPhases = (
-				7EDDD5632D5A00F700A17D5B /* ShellScript */,
+				7EDDD5632D5A00F700A17D5B /* SwiftLint Run Script */,
+				ACE2D55A2D8D827F00DE0762 /* Build Setup Xcode Cloud Run Script */,
 				7ECF06D32D0C6DA200CA7852 /* Sources */,
 				7ECF06D42D0C6DA200CA7852 /* Frameworks */,
 				7ECF06D52D0C6DA200CA7852 /* Resources */,
 				7ED0F7AC2D0DD8410027A49B /* Embed Foundation Extensions */,
+				ACCB74B12D8ABFC4006E630C /* Firebase Crashlytics Run Script */,
+				ACE2D55B2D8D82E200DE0762 /* Testflight Upload Xcode Cloud Run Script */,
 			);
 			buildRules = (
 			);
@@ -258,6 +300,16 @@
 				7ED27FE52D4BCF3100A6EFE0 /* TokenKeychainManager */,
 				7EEBA9C12D4CF2BF001B6E76 /* FeedNew */,
 				7EB688742D5A491F0060E573 /* SFSafeSymbols */,
+				7E47E8F12D5B536A008A4A3D /* PostCreation */,
+				7E36935E2D5FA27200B36BD4 /* ProfileNew */,
+				AC6614E42D71F02000069AB5 /* Wallet */,
+				ACCAB4762D8196A4001C1041 /* FirebaseAnalytics */,
+				ACCAB47A2D819FE9001C1041 /* FirebaseCrashlytics */,
+				ACCAB47C2D81B710001C1041 /* FirebaseRemoteConfig */,
+				ACCAB48C2D81E500001C1041 /* RemoteConfig */,
+				AC8295F22D876DD700C554D1 /* Explore */,
+				ACDA53F12D886382000D6E0F /* FirebasePerformance */,
+				ACCB74B22D8AD1CF006E630C /* FirebaseMessaging */,
 			);
 			productName = PeerApp;
 			productReference = 7ECF06D72D0C6DA200CA7852 /* PeerApp.app */;
@@ -372,6 +424,7 @@
 				7ECFE7992D15B670002D98DD /* XCRemoteSwiftPackageReference "SFSafeSymbols" */,
 				7E2EEA6F2D1991A10022B381 /* XCLocalSwiftPackageReference "Packages/Networking" */,
 				7E37A0F92D2BF13200936C78 /* XCRemoteSwiftPackageReference "ButtonKit" */,
+				ACCAB4752D8196A4001C1041 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7ECF06D82D0C6DA200CA7852 /* Products */;
@@ -418,7 +471,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		7EDDD5632D5A00F700A17D5B /* ShellScript */ = {
+		7EDDD5632D5A00F700A17D5B /* SwiftLint Run Script */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 12;
@@ -428,6 +481,7 @@
 			);
 			inputPaths = (
 			);
+			name = "SwiftLint Run Script";
 			outputFileListPaths = (
 			);
 			outputPaths = (
@@ -436,6 +490,68 @@
 			shellPath = /bin/sh;
 			shellScript = "exit 0 # remove in prod\nif [[ \"$(uname -m)\" == arm64 ]]; then\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\nif which swiftlint > /dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
 			showEnvVarsInLog = 0;
+		};
+		ACCB74B12D8ABFC4006E630C /* Firebase Crashlytics Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}",
+				"$(SRCROOT)/${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}",
+				"$(SRCROOT)/${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist",
+				"$(SRCROOT)/$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info.plist",
+				"$(SRCROOT)/$(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)",
+				"$(SRCROOT)/${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}.debug.dylib",
+			);
+			name = "Firebase Crashlytics Run Script";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${BUILD_DIR%/Build/*}/SourcePackages/checkouts/firebase-ios-sdk/Crashlytics/run\"\n";
+		};
+		ACE2D55A2D8D827F00DE0762 /* Build Setup Xcode Cloud Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Build Setup Xcode Cloud Run Script";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "bash \"${PROJECT_DIR}/Scripts/ci_build_setup.sh\"\n";
+		};
+		ACE2D55B2D8D82E200DE0762 /* Testflight Upload Xcode Cloud Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Testflight Upload Xcode Cloud Run Script";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "bash \"${PROJECT_DIR}/Scripts/ci_testflight_upload.sh\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -523,7 +639,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -546,6 +662,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				"OTHER_LDFLAGS[arch=*]" = "-ObjC";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -602,6 +719,7 @@
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				"OTHER_LDFLAGS[arch=*]" = "-ObjC";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
@@ -615,7 +733,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = PeerApp/PeerApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_ASSET_PATHS = "\"PeerApp/Preview Content\"";
 				DEVELOPMENT_TEAM = 87KY57MADB;
 				ENABLE_PREVIEWS = YES;
@@ -625,16 +743,18 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Upload photos & videos to attach to your posts.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Allow app to save images to your photo library.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Upload photos & videos to attach to your posts.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.brightlight.PeerApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -654,7 +774,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = PeerApp/PeerApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_ASSET_PATHS = "\"PeerApp/Preview Content\"";
 				DEVELOPMENT_TEAM = 87KY57MADB;
 				ENABLE_PREVIEWS = YES;
@@ -664,16 +784,18 @@
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				INFOPLIST_KEY_NSCameraUsageDescription = "Upload photos & videos to attach to your posts.";
 				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Allow app to save images to your photo library.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Upload photos & videos to attach to your posts.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = ru.brightlight.PeerApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -769,7 +891,7 @@
 				INFOPLIST_FILE = PayloadModification/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = PayloadModification;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -796,7 +918,7 @@
 				INFOPLIST_FILE = PayloadModification/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = PayloadModification;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -894,12 +1016,24 @@
 				minimumVersion = 5.3.0;
 			};
 		};
+		ACCAB4752D8196A4001C1041 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.9.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
 		7E043B5A2D43EAD300CD365B /* Auth */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Auth;
+		};
+		7E36935E2D5FA27200B36BD4 /* ProfileNew */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = ProfileNew;
 		};
 		7E37A0FA2D2BF13200936C78 /* ButtonKit */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -922,6 +1056,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 7E3C098F2D13160F001D8227 /* XCRemoteSwiftPackageReference "keychain-swift" */;
 			productName = KeychainSwift;
+		};
+		7E47E8F12D5B536A008A4A3D /* PostCreation */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PostCreation;
 		};
 		7E8DFE652D31304700C1725E /* MediaUI */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -951,6 +1089,43 @@
 		7EEBA9C12D4CF2BF001B6E76 /* FeedNew */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FeedNew;
+		};
+		AC6614E42D71F02000069AB5 /* Wallet */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Wallet;
+		};
+		AC8295F22D876DD700C554D1 /* Explore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Explore;
+		};
+		ACCAB4762D8196A4001C1041 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = ACCAB4752D8196A4001C1041 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		ACCAB47A2D819FE9001C1041 /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = ACCAB4752D8196A4001C1041 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
+		};
+		ACCAB47C2D81B710001C1041 /* FirebaseRemoteConfig */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = ACCAB4752D8196A4001C1041 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseRemoteConfig;
+		};
+		ACCAB48C2D81E500001C1041 /* RemoteConfig */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = RemoteConfig;
+		};
+		ACCB74B22D8AD1CF006E630C /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = ACCAB4752D8196A4001C1041 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
+		};
+		ACDA53F12D886382000D6E0F /* FirebasePerformance */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = ACCAB4752D8196A4001C1041 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebasePerformance;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

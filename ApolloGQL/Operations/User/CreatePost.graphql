@@ -27,6 +27,7 @@ mutation CreatePost($contenttype: ContenType!, $title: String!, $media: [String!
             user {
                 id
                 username
+                slug
                 img
                 isfollowed
                 isfollowing

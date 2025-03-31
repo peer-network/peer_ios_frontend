@@ -6,95 +6,62 @@
 //
 
 import SwiftUI
-import SFSafeSymbols
+import DesignSystem
 
 enum AppTab: Int, Identifiable, CaseIterable {
     case feed
-    case notifications
     case explore
-    case profile
-    case chats
-    case settings
     case newPost
-    case reels
     case wallet
-    
+    case profile
+
     var id: Int {
         rawValue
     }
     
     @ViewBuilder
-    func makeContentView(selectedTab: Binding<AppTab>) -> some View {
+    func makeContentView() -> some View {
         switch self {
             case .feed:
                 FeedTab()
-            case .notifications:
-                Color.red
             case .explore:
-                Color.red
+                ExploreTab()
+            case .newPost:
+                PostCreationTab()
             case .profile:
                 ProfileTab()
-            case .chats:
-                Color.red
-            case .settings:
-                SettingsTab(isModal: false)
-            case .newPost:
-                VStack {}
-            case .reels:
-                Color.red
             case .wallet:
-                FeedNewTab()
+                WalletTab()
         }
     }
     
-    @ViewBuilder
-    var label: some View {
-        Label(title, systemSymbol: iconSymbol)
-    }
-    
-    var title: String {
+    var icon: Image {
         switch self {
             case .feed:
-                "Feed"
-            case .notifications:
-                "Notifications"
+                Icons.house
             case .explore:
-                "Explore"
+                Icons.magnifyingglass
             case .profile:
-                "Profile"
-            case .chats:
-                "Chats"
-            case .settings:
-                "Settings"
+                Icons.person
             case .newPost:
-                "New Post"
-            case .reels:
-                "Videos"
+                Icons.plustSquare
             case .wallet:
-                "Wallet"
+                Icons.wallet
         }
     }
-    
-    var iconSymbol: SFSymbol {
+
+    var iconFilled: Image {
         switch self {
             case .feed:
-                    .rectangleStack
-            case .notifications:
-                    .bell
+                Icons.houseFill
             case .explore:
-                    .magnifyingglass
+                Icons.magnifyingglassFill
             case .profile:
-                    .personCropCircle
-            case .chats:
-                    .bubbleLeft
-            case .settings:
-                    .gearshape
+                Icons.personFill
             case .newPost:
-                    .squareAndPencil
-            case .reels:
-                    .playRectangle
+                Icons.plustSquareFill
             case .wallet:
-                    .bitcoinsignCircle
+                Icons.walletFill
         }
     }
 }
@@ -105,13 +72,13 @@ final class AppTabManager: ObservableObject {
     }
     
     class Storage {
-        @AppStorage(TabEntries.first.rawValue) var firstTab = AppTab.wallet
-        @AppStorage(TabEntries.second.rawValue) var secondTab = AppTab.newPost
-        @AppStorage(TabEntries.third.rawValue) var thirdTab = AppTab.feed
-        @AppStorage(TabEntries.fourth.rawValue) var fourthTab = AppTab.chats
+        @AppStorage(TabEntries.first.rawValue) var firstTab = AppTab.feed
+        @AppStorage(TabEntries.second.rawValue) var secondTab = AppTab.explore
+        @AppStorage(TabEntries.third.rawValue) var thirdTab = AppTab.newPost
+        @AppStorage(TabEntries.fourth.rawValue) var fourthTab = AppTab.wallet
         @AppStorage(TabEntries.fifth.rawValue) var fifthTab = AppTab.profile
     }
-    
+
     private let storage = Storage()
     
     static let shared = AppTabManager()
