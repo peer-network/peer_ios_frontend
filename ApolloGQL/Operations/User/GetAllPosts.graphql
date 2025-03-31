@@ -15,7 +15,6 @@ query GetAllPosts($filterBy: [FilterType!], $IgnorList: IgnoredList, $sortBy: So
         userid: $userid
     ) {
         status
-        counter
         ResponseCode
         affectedRows {
             id
@@ -39,6 +38,7 @@ query GetAllPosts($filterBy: [FilterType!], $IgnorList: IgnoredList, $sortBy: So
             user {
                 id
                 username
+                slug
                 img
                 isfollowed
                 isfollowing

@@ -1,0 +1,115 @@
+//
+//  User.swift
+//  Models
+//
+//  Created by Артем Васин on 23.12.24.
+//
+
+import GQLOperationsUser
+import Foundation
+
+public struct User: Identifiable, Hashable {
+    public let id: String
+    public let username: String
+    public let status: Int
+    public let slug: Int
+    public let image: String
+    public let biography: String
+    public let postsAmount: Int
+    public let isFollowed: Bool
+    public let isFollowing: Bool
+    public let amountFollowers: Int
+    public let amountFollowing: Int
+    public let amountFriends: Int
+
+    public var imageURL: URL? {
+        guard image != "" else { return nil }
+        return URL(string: "\(Constants.mediaURL)\(image)")
+    }
+
+    public var bioURL: URL? {
+        URL(string: "\(Constants.mediaURL)\(biography)")
+    }
+
+    public init(
+        id: String,
+        username: String,
+        status: Int,
+        slug: Int,
+        image: String,
+        biography: String,
+        postsAmount: Int,
+        isFollowed: Bool,
+        isFollowing: Bool,
+        amountFollowers: Int,
+        amountFollowing: Int,
+        amountFriends: Int
+    ) {
+        self.id = id
+        self.username = username
+        self.status = status
+        self.slug = slug
+        self.image = image
+        self.biography = biography
+        self.postsAmount = postsAmount
+        self.isFollowed = isFollowed
+        self.isFollowing = isFollowing
+        self.amountFollowers = amountFollowers
+        self.amountFollowing = amountFollowing
+        self.amountFriends = amountFriends
+    }
+
+    public init?(gqlUser: GetProfileQuery.Data.Profile.AffectedRows) {
+        guard
+            let id = gqlUser.id,
+            let username = gqlUser.username,
+            let status = gqlUser.status,
+            let slug = gqlUser.slug,
+            let image = gqlUser.img,
+            let biography = gqlUser.biography,
+            let postsAmount = gqlUser.amountposts,
+            let isFollowed = gqlUser.isfollowed,
+            let isFollowing = gqlUser.isfollowing,
+            let amountFollowers = gqlUser.amountfollowed,
+            let amountFollowing = gqlUser.amountfollower
+        else {
+            return nil
+        }
+
+        self.id = id
+        self.username = username
+        self.status = status
+        self.slug = slug
+        self.image = image
+        self.biography = biography
+        self.postsAmount = postsAmount
+        self.isFollowed = isFollowed
+        self.isFollowing = isFollowing
+        self.amountFollowers = amountFollowers
+        self.amountFollowing = amountFollowing
+        self.amountFriends = gqlUser.amountfriends
+    }
+}
+
+extension User {
+    public static func placeholder() -> User {
+        return User(
+            id: UUID().uuidString,
+            username: "Username",
+            status: 1,
+            slug: 1,
+            image: "https://dummyimage.com/200x200/000/fff",
+            biography: "This is a placeholder biography.",
+            postsAmount: 10,
+            isFollowed: false,
+            isFollowing: false,
+            amountFollowers: 30,
+            amountFollowing: 20,
+            amountFriends: 10
+        )
+    }
+
+    public static func placeholders() -> [User] {
+        return Array(repeating: .placeholder(), count: 10)
+    }
+}

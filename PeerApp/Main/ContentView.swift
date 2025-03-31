@@ -12,70 +12,91 @@ import DesignSystem
 struct ContentView: View {
     @EnvironmentObject private var userPreferences: UserPreferences
     @EnvironmentObject private var theme: Theme
-    
+    @EnvironmentObject private var audioManager: AudioSessionManager
+
     @Binding var selectedTab: AppTab
     @ObservedObject var appRouter: Router
-    
+
     @State private var selectedTabScrollToTop: Int = -1
-    
+    @State private var selectedTabEmptyPath: Int = -1
+
     @StateObject private var tabManager = AppTabManager.shared
-    
+
     var body: some View {
-        tabBarView
-    }
-    
-    @ViewBuilder
-    private var tabBarView: some View {
-        TabView(
-          selection: .init(
-            get: {
-              selectedTab
-            },
-            set: { newTab in
-              updateTab(with: newTab)
-            })
-        ) {
-            ForEach(tabManager.tabs) { tab in
-                tab.makeContentView(selectedTab: $selectedTab)
-                    .tabItem {
-                        if userPreferences.showTabLabel {
-                            tab.label
-                                .environment(\.symbolVariants, tab == selectedTab ? .fill : .none)
-                        } else {
-                            Image(systemSymbol: tab.iconSymbol)
-                        }
+        VStack(spacing: 0) {
+            ZStack(alignment: .bottom) {
+                TabView(selection: $selectedTab) {
+                    ForEach(tabManager.tabs, id: \.self) { tab in
+                        tab.makeContentView()
+                            .apply {
+                                if #available(iOS 18.0, *) {
+                                    $0.toolbarVisibility(.hidden, for: .tabBar)
+                                } else {
+                                    $0.toolbar(.hidden, for: .tabBar)
+                                }
+                            }
                     }
-                    .tag(tab)
-                    .badge(badgeFor(tab: tab))
-                    .toolbarBackground(theme.primaryBackgroundColor.opacity(0.30), for: .tabBar)
+                }
+
+                if audioManager.currentPlayerObject != nil, !audioManager.isInRestrictedView {
+                    FloatingAudioPanelView()
+                        .padding(.horizontal, 10)
+                        .padding(.bottom, 4)
+                        .transition(.move(edge: .bottom).animation(.linear))
+                        .animation(.linear, value: audioManager.isInRestrictedView)
+                }
             }
+            
+            tabBarView
         }
         .withSheetDestinations(sheetDestinations: $appRouter.presentedSheet)
         .environment(\.selectedTabScrollToTop, selectedTabScrollToTop)
+        .environment(\.selectedTabEmptyPath, selectedTabEmptyPath)
+        .ignoresSafeArea(.keyboard)
     }
-    
-    private func updateTab(with newTab: AppTab) {
-        if newTab == .newPost {
-            appRouter.presentedSheet = .postEditor
-            return
+
+    private var tabBarView: some View {
+        HStack(spacing: 0) {
+            ForEach(tabManager.tabs, id: \.self) { tab in
+                Button {
+                    withAnimation {
+                        updateTab(with: tab)
+                    }
+                } label: {
+                    Group {
+                        if tab == selectedTab {
+                            tab.iconFilled
+                                .iconSize(height: 22)
+                        } else {
+                            tab.icon
+                                .iconSize(height: 22)
+                        }
+                    }
+                    .foregroundStyle(Color.white)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 50)
+                    .contentShape(Rectangle())
+                }
+            }
         }
-        
+        .background(Color.backgroundDark)
+    }
+
+    private func updateTab(with newTab: AppTab) {
         HapticManager.shared.fireHaptic(.tabSelection)
         
         if selectedTab == newTab {
             selectedTabScrollToTop = newTab.rawValue
+            selectedTabEmptyPath = newTab.rawValue
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 selectedTabScrollToTop = -1
+                selectedTabEmptyPath = -1
             }
         } else {
             selectedTabScrollToTop = -1
+            selectedTabEmptyPath = -1
         }
         
         selectedTab = newTab
-    }
-    
-    private func badgeFor(tab: AppTab) -> Int {
-        // TODO: Implement
-        return 0
     }
 }

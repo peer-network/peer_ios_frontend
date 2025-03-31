@@ -1,0 +1,78 @@
+//
+//  WalletViewModel.swift
+//  Wallet
+//
+//  Created by Артем Васин on 22.01.25.
+//
+
+import SwiftUI
+import GQLOperationsUser
+import Networking
+
+@MainActor
+final class WalletViewModel: ObservableObject {
+    
+    @Published var countdown: String = "00:00:00"
+    @Published var currentLiquidity: Double = 0
+
+    private var timer: Timer?
+
+    init() {
+        startTimer()
+        Task {
+            await fetchCurrentLiquidity()
+        }
+    }
+    
+    func fetchCurrentLiquidity() async {
+        do {
+            let result = try await GQLClient.shared.fetch(query: GetLiquidityQuery(), cachePolicy: .fetchIgnoringCacheCompletely)
+
+            if let value = result.currentliquidity.currentliquidity {
+                currentLiquidity = Double(value) ?? 0
+            }
+        } catch {
+
+        }
+    }
+
+    private func startTimer() {
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+            Task {
+                await self?.updateCountdown()
+            }
+        }
+    }
+
+    private func updateCountdown() async {
+        let now = Foundation.Date()
+        let calendar = Calendar(identifier: .gregorian)
+        guard let cetTimeZone = TimeZone(identifier: "CET") else { return }
+
+        // Convert current time to CET
+        let cetNow = now.convertToTimeZone(cetTimeZone)
+
+        // Find next reset at 00:00 CET
+        let nextReset = calendar.nextDate(
+            after: cetNow,
+            matching: DateComponents(hour: 0, minute: 0, second: 0),
+            matchingPolicy: .nextTimePreservingSmallerComponents
+        ) ?? cetNow
+
+        let timeLeft = Int(nextReset.timeIntervalSince(cetNow))
+        if timeLeft <= 0 {
+            //                await fetchWalletData() // Fetch when countdown hits zero
+            // also fetch daily free here
+        }
+
+        let hours = (timeLeft / 3600) % 24
+        let minutes = (timeLeft / 60) % 60
+        let seconds = timeLeft % 60
+        countdown = String(format: "%02d : %02d : %02d", hours, minutes, seconds)
+    }
+
+    deinit {
+        timer?.invalidate()
+    }
+}

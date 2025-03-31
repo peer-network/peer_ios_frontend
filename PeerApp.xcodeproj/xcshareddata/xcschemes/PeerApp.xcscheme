@@ -50,6 +50,12 @@
             ReferencedContainer = "container:PeerApp.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "-FIRAnalyticsVerboseLoggingEnabled"
+            isEnabled = "NO">
+         </CommandLineArgument>
+      </CommandLineArguments>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

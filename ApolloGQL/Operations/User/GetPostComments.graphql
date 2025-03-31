@@ -1,7 +1,6 @@
 query GetPostComments($postid: ID!, $commentLimit: Int, $commentOffset: Int) {
     getallposts(postid: $postid, commentLimit: $commentLimit, commentOffset: $commentOffset) {
         status
-        counter
         ResponseCode
         affectedRows {
             amountcomments
@@ -17,6 +16,7 @@ query GetPostComments($postid: ID!, $commentLimit: Int, $commentOffset: Int) {
                 user {
                     id
                     username
+                    slug
                     img
                     isfollowed
                     isfollowing

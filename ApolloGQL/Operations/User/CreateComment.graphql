@@ -1,10 +1,29 @@
 mutation CreateComment($postid: ID!, $parentid: ID, $content: String!) {
     createComment(
         action: COMMENT
-        input: { content: $content, parentid: $parentid, postid: $postid }
+        postid: $postid
+        parentid: $parentid
+        content: $content
     ) {
         status
         ResponseCode
-        affectedRows
+        affectedRows {
+            commentid
+            userid
+            postid
+            parentid
+            content
+            createdat
+            amountlikes
+            isliked
+            user {
+                id
+                username
+                slug
+                img
+                isfollowed
+                isfollowing
+            }
+        }
     }
 }

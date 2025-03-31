@@ -1,20 +1,15 @@
-query GetFriends($userid: ID, $offset: Int, $limit: Int) {
-	followrelations(
-        userid: $userid
+query GetFriends($offset: Int, $limit: Int) {
+	friends(
         offset: $offset
         limit: $limit
     ) {
         status
-        counter
         ResponseCode
         affectedRows {
-            friends {
-                id
-                username
-                img
-                isfollowed
-                isfollowing
-            }
+            userid
+            img
+            username
+            slug
         }
     }
 }

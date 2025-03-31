@@ -17,7 +17,6 @@ extension View {
 }
 
 private struct SafariRouter: ViewModifier {
-    @EnvironmentObject private var userPreferences: UserPreferences
     @EnvironmentObject private var router: Router
     
     @StateObject private var safariManager = InAppSafariManager()
@@ -34,15 +33,16 @@ private struct SafariRouter: ViewModifier {
         // TODO: Add deeplinks here too when they are ready
             .onAppear {
                 router.urlHandler = { url in
-                    guard userPreferences.preferredBrowser == .inAppSafari else {
-                        return .systemAction
-                    }
+//                    guard userPreferences.preferredBrowser == .inAppSafari else {
+//                        return .systemAction
+//                    }
                     // SFSafariViewController only supports http:// or https://.
                     guard let scheme = url.scheme,
                           ["http", "https"].contains(scheme.lowercased())
                     else {
                         return .systemAction
                     }
+
                     return safariManager.open(url)
                 }
             }
@@ -65,11 +65,11 @@ private class InAppSafariManager: NSObject, SFSafariViewControllerDelegate, Obse
         window = setupWindow(in: windowScene)
         
         let configuration = SFSafariViewController.Configuration()
-        configuration.entersReaderIfAvailable = UserPreferences.shared.inAppBrowserReaderView
+//        configuration.entersReaderIfAvailable = UserPreferences.shared.inAppBrowserReaderView
         
         let safariVC = SFSafariViewController(url: url, configuration: configuration)
-        safariVC.preferredBarTintColor = UIColor(Theme.shared.primaryBackgroundColor)
-        safariVC.preferredControlTintColor = UIColor(Theme.shared.tintColor)
+//        safariVC.preferredBarTintColor = UIColor(Theme.shared.primaryBackgroundColor)
+//        safariVC.preferredControlTintColor = UIColor(Theme.shared.tintColor)
         safariVC.delegate = self
         
         // Present on a lightweight container view controller.
@@ -94,14 +94,7 @@ private class InAppSafariManager: NSObject, SFSafariViewControllerDelegate, Obse
         window.rootViewController = hostingVC
         window.windowLevel = .alert + 1
         window.makeKeyAndVisible()
-        
-        // Apply light/dark appearance if needed:
-        switch Theme.shared.selectedScheme {
-        case .dark:
-            window.overrideUserInterfaceStyle = .dark
-        case .light:
-            window.overrideUserInterfaceStyle = .light
-        }
+        window.overrideUserInterfaceStyle = .dark
         
         self.window = window
         return window

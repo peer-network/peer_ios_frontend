@@ -11,12 +11,13 @@ query GetProfile($userid: ID!) {
             slug
             img
             biography
-            amountposts
-            amounttrending
             isfollowed
             isfollowing
+            amountposts
+            amounttrending
             amountfollowed
             amountfollower
+            amountfriends
         }
     }
 }
