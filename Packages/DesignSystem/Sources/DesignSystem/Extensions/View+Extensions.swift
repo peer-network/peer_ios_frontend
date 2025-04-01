@@ -8,13 +8,6 @@
 import SwiftUI
 
 public extension View {
-    func textStyled(_ style: TextStyle) -> some View {
-        self
-            .font(.system(size: style.fontSize, weight: style.fontWeight))
-    }
-}
-
-public extension View {
     /// Conditionally applies a transformation to a view if the condition is true.
     ///
     /// - Parameters:

@@ -8,12 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		7E043B5B2D43EAD300CD365B /* Auth in Frameworks */ = {isa = PBXBuildFile; productRef = 7E043B5A2D43EAD300CD365B /* Auth */; };
-		7E37A0FB2D2BF13200936C78 /* ButtonKit in Frameworks */ = {isa = PBXBuildFile; productRef = 7E37A0FA2D2BF13200936C78 /* ButtonKit */; };
 		7E3C09872D130AEF001D8227 /* Networking in Frameworks */ = {isa = PBXBuildFile; productRef = 7E3C09862D130AEF001D8227 /* Networking */; };
 		7E3C09892D130B1E001D8227 /* GQLOperationsGuest in Frameworks */ = {isa = PBXBuildFile; productRef = 7E3C09882D130B1E001D8227 /* GQLOperationsGuest */; };
 		7E3C098B2D130EBF001D8227 /* GQLOperationsUser in Frameworks */ = {isa = PBXBuildFile; productRef = 7E3C098A2D130EBF001D8227 /* GQLOperationsUser */; };
 		7E3C09912D13160F001D8227 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 7E3C09902D13160F001D8227 /* KeychainSwift */; };
-		7EB688752D5A491F0060E573 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 7EB688742D5A491F0060E573 /* SFSafeSymbols */; };
 		7ECFE78A2D1577AB002D98DD /* Environment in Frameworks */ = {isa = PBXBuildFile; productRef = 7ECFE7892D1577AB002D98DD /* Environment */; };
 		7ED0F7A72D0DD8410027A49B /* PayloadModification.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7ED0F7A02D0DD8410027A49B /* PayloadModification.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		7ED27FE62D4BCF3100A6EFE0 /* TokenKeychainManager in Frameworks */ = {isa = PBXBuildFile; productRef = 7ED27FE52D4BCF3100A6EFE0 /* TokenKeychainManager */; };
@@ -162,7 +160,6 @@
 				7E043B5B2D43EAD300CD365B /* Auth in Frameworks */,
 				AC6614E52D71F02000069AB5 /* Wallet in Frameworks */,
 				ACF9156F2D9A85DD00338BC4 /* PostCreation in Frameworks */,
-				7EB688752D5A491F0060E573 /* SFSafeSymbols in Frameworks */,
 				ACCAB48D2D81E500001C1041 /* RemoteConfig in Frameworks */,
 				7ED27FE62D4BCF3100A6EFE0 /* TokenKeychainManager in Frameworks */,
 				AC8295F32D876DD700C554D1 /* Explore in Frameworks */,
@@ -175,7 +172,6 @@
 				ACCAB47B2D819FE9001C1041 /* FirebaseCrashlytics in Frameworks */,
 				7E3C09872D130AEF001D8227 /* Networking in Frameworks */,
 				ACCB74B32D8AD1CF006E630C /* FirebaseMessaging in Frameworks */,
-				7E37A0FB2D2BF13200936C78 /* ButtonKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -280,12 +276,10 @@
 				7E3C09902D13160F001D8227 /* KeychainSwift */,
 				7EE1447A2D1435DD0054FBB2 /* DesignSystem */,
 				7EE144D22D1454AB0054FBB2 /* Environment */,
-				7E37A0FA2D2BF13200936C78 /* ButtonKit */,
 				7E8DFE652D31304700C1725E /* MediaUI */,
 				7E043B5A2D43EAD300CD365B /* Auth */,
 				7ED27FE52D4BCF3100A6EFE0 /* TokenKeychainManager */,
 				7EEBA9C12D4CF2BF001B6E76 /* FeedNew */,
-				7EB688742D5A491F0060E573 /* SFSafeSymbols */,
 				AC6614E42D71F02000069AB5 /* Wallet */,
 				ACCAB4762D8196A4001C1041 /* FirebaseAnalytics */,
 				ACCAB47A2D819FE9001C1041 /* FirebaseCrashlytics */,
@@ -407,9 +401,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				7E3C098F2D13160F001D8227 /* XCRemoteSwiftPackageReference "keychain-swift" */,
-				7ECFE7992D15B670002D98DD /* XCRemoteSwiftPackageReference "SFSafeSymbols" */,
 				7E2EEA6F2D1991A10022B381 /* XCLocalSwiftPackageReference "Packages/Networking" */,
-				7E37A0F92D2BF13200936C78 /* XCRemoteSwiftPackageReference "ButtonKit" */,
 				ACCAB4752D8196A4001C1041 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -940,28 +932,12 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		7E37A0F92D2BF13200936C78 /* XCRemoteSwiftPackageReference "ButtonKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Dean151/ButtonKit.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.5.2;
-			};
-		};
 		7E3C098F2D13160F001D8227 /* XCRemoteSwiftPackageReference "keychain-swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/evgenyneu/keychain-swift.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 24.0.0;
-			};
-		};
-		7ECFE7992D15B670002D98DD /* XCRemoteSwiftPackageReference "SFSafeSymbols" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SFSafeSymbols/SFSafeSymbols";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.3.0;
 			};
 		};
 		ACCAB4752D8196A4001C1041 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
@@ -978,11 +954,6 @@
 		7E043B5A2D43EAD300CD365B /* Auth */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Auth;
-		};
-		7E37A0FA2D2BF13200936C78 /* ButtonKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 7E37A0F92D2BF13200936C78 /* XCRemoteSwiftPackageReference "ButtonKit" */;
-			productName = ButtonKit;
 		};
 		7E3C09862D130AEF001D8227 /* Networking */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -1004,11 +975,6 @@
 		7E8DFE652D31304700C1725E /* MediaUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = MediaUI;
-		};
-		7EB688742D5A491F0060E573 /* SFSafeSymbols */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 7ECFE7992D15B670002D98DD /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
-			productName = SFSafeSymbols;
 		};
 		7ECFE7892D1577AB002D98DD /* Environment */ = {
 			isa = XCSwiftPackageProductDependency;

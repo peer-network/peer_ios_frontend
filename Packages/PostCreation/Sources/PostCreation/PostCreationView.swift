@@ -886,7 +886,6 @@ extension PostCreationView {
 #Preview {
     PostCreationView()
         .environmentObject(AccountManager.shared)
-        .environmentObject(Theme.shared)
 }
 
 
