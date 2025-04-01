@@ -11,7 +11,6 @@
 		7E3C09872D130AEF001D8227 /* Networking in Frameworks */ = {isa = PBXBuildFile; productRef = 7E3C09862D130AEF001D8227 /* Networking */; };
 		7E3C09892D130B1E001D8227 /* GQLOperationsGuest in Frameworks */ = {isa = PBXBuildFile; productRef = 7E3C09882D130B1E001D8227 /* GQLOperationsGuest */; };
 		7E3C098B2D130EBF001D8227 /* GQLOperationsUser in Frameworks */ = {isa = PBXBuildFile; productRef = 7E3C098A2D130EBF001D8227 /* GQLOperationsUser */; };
-		7E3C09912D13160F001D8227 /* KeychainSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 7E3C09902D13160F001D8227 /* KeychainSwift */; };
 		7ECFE78A2D1577AB002D98DD /* Environment in Frameworks */ = {isa = PBXBuildFile; productRef = 7ECFE7892D1577AB002D98DD /* Environment */; };
 		7ED0F7A72D0DD8410027A49B /* PayloadModification.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 7ED0F7A02D0DD8410027A49B /* PayloadModification.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		7ED27FE62D4BCF3100A6EFE0 /* TokenKeychainManager in Frameworks */ = {isa = PBXBuildFile; productRef = 7ED27FE52D4BCF3100A6EFE0 /* TokenKeychainManager */; };
@@ -167,7 +166,6 @@
 				7EEBA9C22D4CF2BF001B6E76 /* FeedNew in Frameworks */,
 				ACCAB4772D8196A4001C1041 /* FirebaseAnalytics in Frameworks */,
 				ACDA53F22D886382000D6E0F /* FirebasePerformance in Frameworks */,
-				7E3C09912D13160F001D8227 /* KeychainSwift in Frameworks */,
 				7EE144D32D1454AB0054FBB2 /* Environment in Frameworks */,
 				ACCAB47B2D819FE9001C1041 /* FirebaseCrashlytics in Frameworks */,
 				7E3C09872D130AEF001D8227 /* Networking in Frameworks */,
@@ -273,7 +271,6 @@
 				7E3C09862D130AEF001D8227 /* Networking */,
 				7E3C09882D130B1E001D8227 /* GQLOperationsGuest */,
 				7E3C098A2D130EBF001D8227 /* GQLOperationsUser */,
-				7E3C09902D13160F001D8227 /* KeychainSwift */,
 				7EE1447A2D1435DD0054FBB2 /* DesignSystem */,
 				7EE144D22D1454AB0054FBB2 /* Environment */,
 				7E8DFE652D31304700C1725E /* MediaUI */,
@@ -400,7 +397,6 @@
 			mainGroup = 7ECF06CE2D0C6DA200CA7852;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				7E3C098F2D13160F001D8227 /* XCRemoteSwiftPackageReference "keychain-swift" */,
 				7E2EEA6F2D1991A10022B381 /* XCLocalSwiftPackageReference "Packages/Networking" */,
 				ACCAB4752D8196A4001C1041 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
@@ -932,14 +928,6 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		7E3C098F2D13160F001D8227 /* XCRemoteSwiftPackageReference "keychain-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/evgenyneu/keychain-swift.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 24.0.0;
-			};
-		};
 		ACCAB4752D8196A4001C1041 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -966,11 +954,6 @@
 		7E3C098A2D130EBF001D8227 /* GQLOperationsUser */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = GQLOperationsUser;
-		};
-		7E3C09902D13160F001D8227 /* KeychainSwift */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 7E3C098F2D13160F001D8227 /* XCRemoteSwiftPackageReference "keychain-swift" */;
-			productName = KeychainSwift;
 		};
 		7E8DFE652D31304700C1725E /* MediaUI */ = {
 			isa = XCSwiftPackageProductDependency;
