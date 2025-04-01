@@ -47,14 +47,18 @@ public struct PostsListView<Fetcher>: View where Fetcher: PostsFetcher {
                     }
                 }
             case .error(let error):
-                ErrorView(
-                    title: "An error occurred",
-                    message: "An error occurred while loading posts, please try again.",
-                    //                    message: "\(error.localizedDescription)",
-                    buttonTitle: "Retry"
-                ) {
-                    await fetcher.fetchPosts(reset: true)
+                VStack(spacing: 20) {
+                    Text("An error occurred while loading posts, please try again.")
+                        .font(.customFont(weight: .bold, style: .headline))
+
+                    Button("Retry") {
+                        Task {
+                            await fetcher.fetchPosts(reset: true)
+                        }
+                    }
+                    .buttonStyle(.bordered)
                 }
+                .padding(20)
         }
     }
 }
