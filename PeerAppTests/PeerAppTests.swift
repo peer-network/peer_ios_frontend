@@ -9,7 +9,6 @@ import Testing
 @testable import PeerApp
 @testable import Networking
 @testable import GQLOperationsUser
-@testable import KeychainSwift
 
 struct PeerAppTests {
 
