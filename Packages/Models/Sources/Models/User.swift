@@ -59,8 +59,10 @@ public struct User: Identifiable, Hashable {
         self.amountFriends = amountFriends
     }
 
+    //TODO: Replace Apollo struct with raw params
     public init?(gqlUser: GetProfileQuery.Data.Profile.AffectedRows) {
         guard
+            //TODO: exclude checks for parameters that could be considered as optionals
             let id = gqlUser.id,
             let username = gqlUser.username,
             let status = gqlUser.status,

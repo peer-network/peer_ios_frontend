@@ -22,8 +22,12 @@ public final class AccountManager: ObservableObject {
 
     public private(set) var userId: String?
     public private(set) var user: User?
+    
+    private let service: APIService
 
-    private init() {}
+    private init() {
+        service = APIServiceGraphQL()
+    }
 
     public func login(email: String, password: String) async throws -> (String, String) {
         let result = try await GQLClient.shared.mutate(mutation: LoginMutation(email: email, password: password))
@@ -41,6 +45,7 @@ public final class AccountManager: ObservableObject {
     /// Hello query to confirm the user’s ID with the valid access token
     public func getCurrentUserId() async throws -> String {
         let result = try await GQLClient.shared.fetch(query: HelloUserQuery(), cachePolicy: .fetchIgnoringCacheCompletely)
+        let result1 = await service.fetchAuthorizedUserID()
         guard let userId = result.hello.currentuserid, !userId.isEmpty else {
             throw GQLError.missingData
         }
