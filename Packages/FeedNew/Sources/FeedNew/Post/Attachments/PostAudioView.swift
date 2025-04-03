@@ -17,6 +17,8 @@ struct PostAudioView: View {
     @State private var duration: TimeInterval = 0
     @State private var isActive: Bool = false
 
+    @State private var playClicked: Bool = false
+
     private var isCurrentPlayingPost: Bool {
         audioManager.currentPlayerObject?.url == postVM.post.mediaURLs.first
     }
@@ -30,7 +32,7 @@ struct PostAudioView: View {
                 HStack(spacing: 6) {
                     let config: WaveformScrubber.Config = .init()
 
-                    WaveformScrubber(config: config, url: audioURL, progress: $progress) { info in
+                    WaveformScrubber(config: config, url: audioURL, progress: $progress, playClicked: $playClicked) { info in
                         duration = info.duration
                     } onGestureActive: { status in
                         isActive = status
@@ -43,6 +45,7 @@ struct PostAudioView: View {
                                 audioManager.play()
                             }
                         } else {
+                            playClicked = true
                             let audioItem = AudioSessionManager.PlayerObject(
                                 title: postVM.post.owner.username,
                                 subtitle: postVM.post.title,
@@ -61,6 +64,7 @@ struct PostAudioView: View {
                     .scaleEffect(y: isActive ? 0.9 : 0.7, anchor: .center)
                     .animation(.bouncy, value: isActive)
                     .frame(width: getRect().width - 20 - 60 - 6)
+                    .id(audioURL.absoluteString)
 
                     playButtonView()
                 }
@@ -147,6 +151,8 @@ struct PostAudioView: View {
             if isCurrentPlayingPost {
                 audioManager.togglePlayPause()
             } else {
+                playClicked = true
+
                 let audioItem = AudioSessionManager.PlayerObject(title: postVM.post.owner.username, subtitle: postVM.post.title, pictureURL: postVM.post.owner.imageURL, url: postVM.post.mediaURLs.first!)
 
                 audioManager.start(item: audioItem)

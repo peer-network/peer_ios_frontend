@@ -108,51 +108,51 @@ public struct SettingsView: View {
                                 .foregroundStyle(Color.darkInactive)
                         }
 
-                        HStack(alignment: .top, spacing: 20) {
-                            Text("E-mail")
-                                .opacity(0.5)
-                                .frame(width: textFieldTitleWidth, alignment: .leading)
+//                        HStack(alignment: .top, spacing: 20) {
+//                            Text("E-mail")
+//                                .opacity(0.5)
+//                                .frame(width: textFieldTitleWidth, alignment: .leading)
+//
+//                            VStack(spacing: 10) {
+//                                TextField(text: $viewModel.email) {
+//                                    Text("me@me")
+//                                        .opacity(0.5)
+//                                }
+//                                .focused($focusedField, equals: .email)
+//                                .submitLabel(.done)
+//                                .lineLimit(1)
+//                                .multilineTextAlignment(.leading)
+//                                .frame(maxWidth: .infinity, alignment: .leading)
+//                            }
+//                        }
+//                        .padding(20)
+//                        .background {
+//                            RoundedRectangle(cornerRadius: 20)
+//                                .foregroundStyle(Color.darkInactive)
+//                        }
 
-                            VStack(spacing: 10) {
-                                TextField(text: $viewModel.email) {
-                                    Text("me@me")
-                                        .opacity(0.5)
-                                }
-                                .focused($focusedField, equals: .email)
-                                .submitLabel(.done)
-                                .lineLimit(1)
-                                .multilineTextAlignment(.leading)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            }
-                        }
-                        .padding(20)
-                        .background {
-                            RoundedRectangle(cornerRadius: 20)
-                                .foregroundStyle(Color.darkInactive)
-                        }
-
-                        HStack(alignment: .top, spacing: 20) {
-                            Text("Username")
-                                .opacity(0.5)
-                                .frame(width: textFieldTitleWidth, alignment: .leading)
-
-                            VStack(spacing: 10) {
-                                TextField(text: $viewModel.username, axis: .vertical) {
-                                    Text("me")
-                                        .opacity(0.5)
-                                }
-                                .focused($focusedField, equals: .username)
-                                .submitLabel(.done)
-                                .lineLimit(1)
-                                .multilineTextAlignment(.leading)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            }
-                        }
-                        .padding(20)
-                        .background {
-                            RoundedRectangle(cornerRadius: 20)
-                                .foregroundStyle(Color.darkInactive)
-                        }
+//                        HStack(alignment: .top, spacing: 20) {
+//                            Text("Username")
+//                                .opacity(0.5)
+//                                .frame(width: textFieldTitleWidth, alignment: .leading)
+//
+//                            VStack(spacing: 10) {
+//                                TextField(text: $viewModel.username, axis: .vertical) {
+//                                    Text("me")
+//                                        .opacity(0.5)
+//                                }
+//                                .focused($focusedField, equals: .username)
+//                                .submitLabel(.done)
+//                                .lineLimit(1)
+//                                .multilineTextAlignment(.leading)
+//                                .frame(maxWidth: .infinity, alignment: .leading)
+//                            }
+//                        }
+//                        .padding(20)
+//                        .background {
+//                            RoundedRectangle(cornerRadius: 20)
+//                                .foregroundStyle(Color.darkInactive)
+//                        }
 
                         HStack(spacing: 10) {
                             logoutButton

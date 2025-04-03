@@ -78,6 +78,7 @@ public struct FloatingAudioPanelView: View {
             .padding(.horizontal, 10)
             .background(.ultraThinMaterial)
             .clipShape(RoundedRectangle(cornerRadius: 14))
+            .contentShape(Rectangle())
             .transition(.opacity.combined(with: .scale))
             .animation(.spring(), value: audioManager.currentPlayerObject)
     }
