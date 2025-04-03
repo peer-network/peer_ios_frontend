@@ -156,29 +156,6 @@ extension Post {
         )
     }
     
-    public static func settingsPlaceholder() -> Post {
-        return Post(
-            id: UUID().uuidString,
-            contentType: .text,
-            title: "Peer Network",
-            media: [],
-            cover: [],
-            mediaDescription: "Lorem ipsum dolor sit amet sed lorem dolore takimata et elitr vel nulla est sanctus lorem.\n#peer #btc",
-            createdAt: Date.now.description,
-            amountLikes: 34,
-            amountViews: 150,
-            amountComments: 8,
-            amountDislikes: 2,
-            isLiked: false,
-            isViewed: false,
-            isReported: false,
-            isDisliked: false,
-            isSaved: false,
-            tags: ["peer", "btc"],
-            owner: ObjectOwner.placeholder()
-        )
-    }
-    
     public static func placeholders(count: Int = 10) -> [Post] {
         return Array(repeating: .placeholderText(), count: count)
     }

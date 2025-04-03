@@ -36,7 +36,7 @@ extension TextView.Representable {
             
             textView.delegate = self
             
-            textView.font = Font.scaledBodyUIFont
+            textView.font = .systemFont(ofSize: 14)
             textView.adjustsFontForContentSizeCategory = true
             textView.autocapitalizationType = .sentences
             textView.autocorrectionType = .yes

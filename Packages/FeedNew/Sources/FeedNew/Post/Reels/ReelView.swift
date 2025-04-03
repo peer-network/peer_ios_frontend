@@ -19,12 +19,13 @@ private struct CustomVideoPlayer: UIViewControllerRepresentable {
         controller.player = player
         controller.videoGravity = .resizeAspectFill
         controller.showsPlaybackControls = false
-        
+        controller.allowsVideoFrameAnalysis = false
+        controller.allowsPictureInPicturePlayback = false
+
         return controller
     }
     
     func updateUIViewController(_ uiViewController: AVPlayerViewController, context: Context) {
-        // Updating Player
         uiViewController.player = player
     }
 }
@@ -158,6 +159,9 @@ struct ReelView: View {
                     }
                 }
         }
+        .task {
+            try? await postVM.toggleView()
+        }
         .alert(
             isPresented: $showReportAlert,
             content: {
@@ -193,11 +197,14 @@ struct ReelView: View {
         guard let videoURL = postVM.post.mediaURLs.first else { return }
 
         let playerItem = AVPlayerItem(url: videoURL)
+        playerItem.canUseNetworkResourcesForLiveStreamingWhilePaused = false
+        playerItem.preferredForwardBufferDuration = TimeInterval(1)
+
         let queue = AVQueuePlayer(playerItem: playerItem)
         looper = AVPlayerLooper(player: queue, templateItem: playerItem)
         
         player = queue
-        
+
         try? AVAudioSession.sharedInstance().setCategory(.playback)
         try? AVAudioSession.sharedInstance().setActive(true)
 
@@ -206,7 +213,7 @@ struct ReelView: View {
         // Periodic observer for progress update
         observer = player?.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.01, preferredTimescale: 600), queue: .main) { [weak player] time in
             guard let player = player else { return }
-            
+
             if !isSeeking {
                 let totalDuration = playerItem.duration.seconds
                 let currentDuration = player.currentTime().seconds
@@ -224,7 +231,7 @@ struct ReelView: View {
             }
         }
 
-        player?.play()
+        player?.playImmediately(atRate: 1.0)
     }
     
     private func cleanupPlayer() {
@@ -331,9 +338,8 @@ struct ReelView: View {
                             // Seeking Video To Dragged Time
                             if let currentPlayerItem = player?.currentItem {
                                 let totalDuration = currentPlayerItem.duration.seconds
-                                print(totalDuration)
-                                print(totalDuration * progress)
-                                player?.seek(to: .init(seconds: totalDuration * progress, preferredTimescale: 600))
+                                let seekTime = CMTime(seconds: totalDuration * progress, preferredTimescale: 600)
+                                player?.seek(to: seekTime)
                             }
                             
                             isSeeking = false
@@ -397,17 +403,17 @@ struct ReelView: View {
             let generator = AVAssetImageGenerator(asset: asset)
             generator.appliesPreferredTrackTransform = true
             generator.maximumSize = CGSize(width: 150, height: 150)
-            //            generator.requestedTimeToleranceBefore = CMTimeMake(value: 1, timescale: 600)
-            //            generator.requestedTimeToleranceAfter = CMTimeMake(value: 1, timescale: 600)
+            generator.requestedTimeToleranceBefore = CMTimeMake(value: 1, timescale: 600)
+            generator.requestedTimeToleranceAfter = CMTimeMake(value: 1, timescale: 600)
             
             do {
                 let totalDuration = try await asset.load(.duration).seconds
-                let framesPerSecond: Double = 5
+                let framesPerSecond: Double = 1
                 let step = 1.0 / framesPerSecond
                 var times = [NSValue]()
                 
                 for currentTime in stride(from: 0.0, through: totalDuration, by: step) {
-                    if Task.isCancelled { return }
+                    try Task.checkCancellation()
                     let cmTime = CMTime(seconds: currentTime, preferredTimescale: 600)
                     times.append(NSValue(time: cmTime))
                 }
@@ -434,9 +440,10 @@ struct ReelView: View {
                     }
                 }
                 
-                if !Task.isCancelled {
+                if !Task.isCancelled && !frames.isEmpty {
                     await MainActor.run {
                         self.thumbnailFrames = frames
+                        print("Generated \(frames.count) thumbnails")
                     }
                 }
             } catch {

@@ -10,8 +10,6 @@ import Environment
 import DesignSystem
 
 struct ContentView: View {
-    @EnvironmentObject private var userPreferences: UserPreferences
-    @EnvironmentObject private var theme: Theme
     @EnvironmentObject private var audioManager: AudioSessionManager
 
     @Binding var selectedTab: AppTab

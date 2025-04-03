@@ -43,7 +43,7 @@ final class PhotoLibraryViewModel: ObservableObject {
 
     func fetchLongVideos() async {
         let options = PHFetchOptions()
-        options.predicate = NSPredicate(format: "duration >= %d AND duration <= %d", 5, 30)
+        options.predicate = NSPredicate(format: "duration >= %d", 5)
         options.sortDescriptors = [NSSortDescriptor(key: "creationDate", ascending: false)]
         options.fetchLimit = .max
         let result = PHAsset.fetchAssets(with: .video, options: options)

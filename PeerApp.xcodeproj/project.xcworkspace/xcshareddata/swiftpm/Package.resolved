@@ -28,15 +28,6 @@
       }
     },
     {
-      "identity" : "buttonkit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Dean151/ButtonKit.git",
-      "state" : {
-        "revision" : "28f885f04ef9631302146e8da178b5b069c2f91b",
-        "version" : "0.5.2"
-      }
-    },
-    {
       "identity" : "firebase-ios-sdk",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/firebase-ios-sdk",

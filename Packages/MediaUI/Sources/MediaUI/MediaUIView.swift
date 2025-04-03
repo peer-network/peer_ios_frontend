@@ -134,8 +134,6 @@ private struct DisplayView: View {
             case .image:
                 MediaUIAttachmentImageView(data: data)
             case .video:
-                MediaUIAttachmentVideoView(viewModel: .init(url: data.url, forceAutoPlay: true))
-                    .ignoresSafeArea()
                 EmptyView()
             case .text, .audio:
                 EmptyView()
