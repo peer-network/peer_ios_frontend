@@ -18,6 +18,7 @@
 		7EE144D32D1454AB0054FBB2 /* Environment in Frameworks */ = {isa = PBXBuildFile; productRef = 7EE144D22D1454AB0054FBB2 /* Environment */; };
 		7EE9D1772D369DAA00D03B20 /* MediaUI in Frameworks */ = {isa = PBXBuildFile; productRef = 7E8DFE652D31304700C1725E /* MediaUI */; settings = {ATTRIBUTES = (Required, ); }; };
 		7EEBA9C22D4CF2BF001B6E76 /* FeedNew in Frameworks */ = {isa = PBXBuildFile; productRef = 7EEBA9C12D4CF2BF001B6E76 /* FeedNew */; };
+		AC10E9882D9C2D0800A72988 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = AC10E9872D9C2D0800A72988 /* SFSafeSymbols */; };
 		AC6614E52D71F02000069AB5 /* Wallet in Frameworks */ = {isa = PBXBuildFile; productRef = AC6614E42D71F02000069AB5 /* Wallet */; };
 		AC8295F32D876DD700C554D1 /* Explore in Frameworks */ = {isa = PBXBuildFile; productRef = AC8295F22D876DD700C554D1 /* Explore */; };
 		ACCAB4772D8196A4001C1041 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = ACCAB4762D8196A4001C1041 /* FirebaseAnalytics */; };
@@ -161,6 +162,7 @@
 				ACF9156F2D9A85DD00338BC4 /* PostCreation in Frameworks */,
 				ACCAB48D2D81E500001C1041 /* RemoteConfig in Frameworks */,
 				7ED27FE62D4BCF3100A6EFE0 /* TokenKeychainManager in Frameworks */,
+				AC10E9882D9C2D0800A72988 /* SFSafeSymbols in Frameworks */,
 				AC8295F32D876DD700C554D1 /* Explore in Frameworks */,
 				ACCAB47D2D81B710001C1041 /* FirebaseRemoteConfig in Frameworks */,
 				7EEBA9C22D4CF2BF001B6E76 /* FeedNew in Frameworks */,
@@ -287,6 +289,7 @@
 				ACCB74B22D8AD1CF006E630C /* FirebaseMessaging */,
 				ACF9156C2D9A85D800338BC4 /* ProfileNew */,
 				ACF9156E2D9A85DD00338BC4 /* PostCreation */,
+				AC10E9872D9C2D0800A72988 /* SFSafeSymbols */,
 			);
 			productName = PeerApp;
 			productReference = 7ECF06D72D0C6DA200CA7852 /* PeerApp.app */;
@@ -399,6 +402,7 @@
 			packageReferences = (
 				7E2EEA6F2D1991A10022B381 /* XCLocalSwiftPackageReference "Packages/Networking" */,
 				ACCAB4752D8196A4001C1041 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				AC10E9862D9C2D0800A72988 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7ECF06D82D0C6DA200CA7852 /* Products */;
@@ -473,12 +477,12 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"$(SRCROOT)/${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}",
-				"$(SRCROOT)/${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}",
-				"$(SRCROOT)/${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist",
-				"$(SRCROOT)/$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info.plist",
-				"$(SRCROOT)/$(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)",
-				"$(SRCROOT)/${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}.debug.dylib",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Info.plist",
+				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/GoogleService-Info.plist",
+				"$(TARGET_BUILD_DIR)/$(EXECUTABLE_PATH)",
+				"${DWARF_DSYM_FOLDER_PATH}/${DWARF_DSYM_FILE_NAME}/Contents/Resources/DWARF/${PRODUCT_NAME}.debug.dylib",
 			);
 			name = "Firebase Crashlytics Run Script";
 			outputFileListPaths = (
@@ -669,7 +673,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = PeerApp/PeerApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 15;
 				DEVELOPMENT_ASSET_PATHS = "\"PeerApp/Preview Content\"";
 				DEVELOPMENT_TEAM = 87KY57MADB;
 				ENABLE_PREVIEWS = YES;
@@ -710,7 +714,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = PeerApp/PeerApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 15;
 				DEVELOPMENT_ASSET_PATHS = "\"PeerApp/Preview Content\"";
 				DEVELOPMENT_TEAM = 87KY57MADB;
 				ENABLE_PREVIEWS = YES;
@@ -928,6 +932,14 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		AC10E9862D9C2D0800A72988 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SFSafeSymbols/SFSafeSymbols.git";
+			requirement = {
+				kind = exactVersion;
+				version = 5.3.0;
+			};
+		};
 		ACCAB4752D8196A4001C1041 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -978,6 +990,11 @@
 		7EEBA9C12D4CF2BF001B6E76 /* FeedNew */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FeedNew;
+		};
+		AC10E9872D9C2D0800A72988 /* SFSafeSymbols */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AC10E9862D9C2D0800A72988 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
+			productName = SFSafeSymbols;
 		};
 		AC6614E42D71F02000069AB5 /* Wallet */ = {
 			isa = XCSwiftPackageProductDependency;

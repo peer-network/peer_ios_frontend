@@ -9,7 +9,7 @@ import Foundation
 
 public struct MediaItem: Codable, Hashable {
     public let path: String
-    public let options: MediaOptions
+    public let options: MediaOptions?
 
     public var size: String? {
         switch options {
@@ -17,6 +17,7 @@ public struct MediaItem: Codable, Hashable {
             case .text(let textOptions): return textOptions.size
             case .audio(let audioOptions): return audioOptions.size
             case .video(let videoOptions): return videoOptions.size
+            default: return nil
         }
     }
 

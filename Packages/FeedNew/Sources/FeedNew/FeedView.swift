@@ -73,6 +73,7 @@ public struct FeedView: View {
             }
             .ignoresSafeArea()
         }
+
     }
 
     private struct NormalFeedView: View {
@@ -121,21 +122,32 @@ public struct FeedView: View {
     }
 
     private struct AudioFeedView: View {
+        @Environment(\.selectedTabScrollToTop) private var selectedTabScrollToTop
+        @EnvironmentObject private var router: Router
         @StateObject private var feedContentSortingAndFiltering = FeedContentSortingAndFiltering.shared
 
         @StateObject private var audioFeedVM = AudioFeedViewModel()
 
         var body: some View {
-            ScrollView {
-                LazyVStack(alignment: .center, spacing: 20) {
-                    PostsListView(fetcher: audioFeedVM)
+            ScrollViewReader { proxy in
+                ScrollView {
+                    LazyVStack(alignment: .center, spacing: 20) {
+                        PostsListView(fetcher: audioFeedVM)
+                    }
+                    .padding(.bottom, 10)
+                    .geometryGroup()
                 }
-                .padding(.bottom, 10)
-                .geometryGroup()
-            }
-            .refreshable {
-                HapticManager.shared.fireHaptic(.dataRefresh(intensity: 0.3))
-                await audioFeedVM.fetchPosts(reset: true)
+                .refreshable {
+                    HapticManager.shared.fireHaptic(.dataRefresh(intensity: 0.3))
+                    await audioFeedVM.fetchPosts(reset: true)
+                }
+                .onChange(of: selectedTabScrollToTop) {
+                    if selectedTabScrollToTop == 0, router.path.isEmpty {
+                        withAnimation {
+                            proxy.scrollTo(ScrollToView.Constants.scrollToTop, anchor: .top)
+                        }
+                    }
+                }
             }
             .onChange(of: feedContentSortingAndFiltering.filterByRelationship) {
                 Task {
@@ -177,8 +189,15 @@ public struct FeedView: View {
                 } action: { newValue in
                     filtersPosition = newValue
                 }
+//                .overlay(
+//                    GeometryReader { proxy in
+//                        Color.clear.preference(key: OffsetKeyRect.self, value: proxy.frame(in: .global))
+//                    }
+//                )
+//                .onPreferenceChange(OffsetKeyRect.self) { value in
+//                    filtersPosition = value
+//                }
             }
         }
     }
 }
-

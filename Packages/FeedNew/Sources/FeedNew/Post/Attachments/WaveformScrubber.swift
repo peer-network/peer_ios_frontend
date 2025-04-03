@@ -14,6 +14,7 @@ struct WaveformScrubber: View {
 
     /// Scrubber Progress
     @Binding var progress: CGFloat
+    @Binding var playClicked: Bool
     var info: (AudioInfo) -> () = { _ in }
     var onGestureActive: (Bool) -> () = { _ in }
     var onGestureEnded: () -> Void = {  }
@@ -43,27 +44,26 @@ struct WaveformScrubber: View {
     }
 
     var body: some View {
-        ZStack {
-            WaveformShape(samples: isLoading || error != nil ? placeholderSamples : dowsizedSamples)
-                .fill(config.inActiveTint)
-//                .opacity(isLoading || error != nil ? 0.5 : 1)
+        HStack(spacing: 6) {
+            ZStack {
+                WaveformShape(samples: audioFileURL == nil || isLoading || error != nil ? placeholderSamples : dowsizedSamples)
+                    .fill(config.inActiveTint)
+                    .opacity(isLoading || error != nil ? 0.5 : 1)
 
-            WaveformShape(samples: isLoading || error != nil ? placeholderSamples : dowsizedSamples)
-                .fill(config.activeTint)
-                .mask {
-                    Rectangle()
-                        .scale(x: progress, anchor: .leading)
+                WaveformShape(samples: audioFileURL == nil || isLoading || error != nil ? placeholderSamples : dowsizedSamples)
+                    .fill(config.activeTint)
+                    .mask {
+                        Rectangle()
+                            .scale(x: progress, anchor: .leading)
+                    }
+                    .opacity(isLoading || error != nil ? 0.5 : 1)
+
+                if isLoading || error != nil {
+                    ProgressView()
+                        .controlSize(.large)
+                        .scaleEffect(y: 1.3, anchor: .center)
                 }
-//                .opacity(isLoading || error != nil ? 0.5 : 1)
-//
-//            if isLoading {
-//                ProgressView()
-//                    .frame(maxWidth: .infinity)
-//            } else if error != nil {
-//                Image(systemName: "exclamationmark.triangle")
-//                    .foregroundColor(.red)
-//                    .frame(maxWidth: .infinity)
-//            }
+            }
         }
         .frame(maxWidth: .infinity)
         .contentShape(.rect)
@@ -88,6 +88,11 @@ struct WaveformScrubber: View {
         .onChange(of: isActive) {
             onGestureActive(isActive)
         }
+        .onChange(of: playClicked) {
+            if playClicked == true, audioFileURL == nil {
+                downloadAudioFile()
+            }
+        }
         .onGeometryChange(for: CGSize.self) {
             $0.size
         } action: { newValue in
@@ -97,18 +102,6 @@ struct WaveformScrubber: View {
             }
 
             viewSize = newValue
-            initializeAudioFile(newValue)
-        }
-        .onAppear {
-            if audioFileURL == nil {
-                downloadAudioFile()
-                print("asd")
-            }
-        }
-        .onDisappear {
-            if let audioFileURL = audioFileURL {
-                try? FileManager.default.removeItem(at: audioFileURL)
-            }
         }
     }
 

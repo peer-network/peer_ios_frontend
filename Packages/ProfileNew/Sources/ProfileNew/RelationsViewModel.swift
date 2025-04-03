@@ -49,6 +49,33 @@ final class RelationsViewModel: ObservableObject {
 
         fetchTask = Task {
             do {
+                let resultFollowers = try await GQLClient.shared.fetch(query: GetFollowersQuery(userid: GraphQLNullable(stringLiteral: userId), offset: GraphQLNullable<Int>(integerLiteral: currentOffset), limit: 20), cachePolicy: .fetchIgnoringCacheCompletely)
+
+                let resultFollowings = try await GQLClient.shared.fetch(query: GetFollowingsQuery(userid: GraphQLNullable(stringLiteral: userId), offset: GraphQLNullable<Int>(integerLiteral: currentOffset), limit: 20), cachePolicy: .fetchIgnoringCacheCompletely)
+
+                guard
+                    let followers = resultFollowers.follows.affectedRows?.followers,
+                    let followings = resultFollowings.follows.affectedRows?.following
+                else {
+                    throw GQLError.missingData
+                }
+
+                try Task.checkCancellation()
+
+                let fetchedFollowers = followers.compactMap { value in
+                    RowUser(gqlUser: value)
+                }
+
+                let fetchedFollowings = followings.compactMap { value in
+                    RowUser(gqlUser: value)
+                }
+
+                self.followers = fetchedFollowers
+                self.following = fetchedFollowings
+
+                hasMoreUsers = false
+                state = .display(hasMore: .none)
+
 //                let result = try await GQLClient.shared.fetch(query: GetFollowRelationsQuery(userid: GraphQLNullable(stringLiteral: userId), offset: GraphQLNullable<Int>(integerLiteral: currentOffset), limit: 20), cachePolicy: .fetchIgnoringCacheCompletely)
 //
 //                guard

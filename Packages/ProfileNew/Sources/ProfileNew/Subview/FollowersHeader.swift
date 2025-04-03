@@ -56,7 +56,8 @@ struct FollowersHeader: View {
                 case .followings:
                     router.presentedSheet = .following(users: relationsViewModel.following)
                 case .friends:
-                    router.presentedSheet = .friends(users: relationsViewModel.friends)
+//                    router.presentedSheet = .friends(users: relationsViewModel.friends)
+                    break
             }
         } label: {
             VStack(spacing: 0) {
