@@ -19,6 +19,7 @@ struct ReelsView: View {
     @StateObject private var feedContentSortingAndFiltering = FeedContentSortingAndFiltering.shared
 
     @StateObject private var viewModel = VideoFeedViewModel()
+    @EnvironmentObject private var apiManager: APIServiceManager
 
     var body: some View {
         ScrollView(.vertical) {
@@ -34,7 +35,7 @@ struct ReelsView: View {
                             )
                             .frame(maxWidth: .infinity)
                             .containerRelativeFrame(.vertical)
-                            .environmentObject(PostViewModel(post: post))
+                            .environmentObject(PostViewModel(post: post, apiManager: apiManager))
                         }
                     }
                 case .error(let error):
@@ -64,24 +65,22 @@ struct ReelsView: View {
                 }
             }
         }
+        .onAppear {
+            viewModel.apiManager = self.apiManager
+            viewModel.fetchPosts(reset: true)
+        }
         .refreshable {
             HapticManager.shared.fireHaptic(.dataRefresh(intensity: 0.3))
-            await viewModel.fetchPosts(reset: true)
+            viewModel.fetchPosts(reset: true)
         }
         .onChange(of: feedContentSortingAndFiltering.filterByRelationship) {
-            Task {
-                await viewModel.fetchPosts(reset: true)
-            }
+            viewModel.fetchPosts(reset: true)
         }
         .onChange(of: feedContentSortingAndFiltering.sortByPopularity) {
-            Task {
-                await viewModel.fetchPosts(reset: true)
-            }
+            viewModel.fetchPosts(reset: true)
         }
         .onChange(of: feedContentSortingAndFiltering.sortByTime) {
-            Task {
-                await viewModel.fetchPosts(reset: true)
-            }
+            viewModel.fetchPosts(reset: true)
         }
         .environment(\.colorScheme, .dark)
     }
@@ -89,5 +88,5 @@ struct ReelsView: View {
 
 #Preview {
     ReelsMainView()
-        .environmentObject(PostViewModel(post: .placeholderText()))
+        .environmentObject(PostViewModel(post: .placeholderText(), apiManager: APIManagerStub()))
 }

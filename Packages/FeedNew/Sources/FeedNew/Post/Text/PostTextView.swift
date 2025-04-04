@@ -7,6 +7,7 @@
 
 import SwiftUI
 import DesignSystem
+import Environment
 
 struct PostTextView: View {
     @Environment(\.isBackgroundWhite) private var isBackgroundWhite
@@ -64,5 +65,5 @@ struct PostTextView: View {
 
 #Preview {
     PostTextView()
-        .environmentObject(PostViewModel(post: .placeholderText()))
+        .environmentObject(PostViewModel(post: .placeholderText(), apiManager: APIManagerStub()))
 }

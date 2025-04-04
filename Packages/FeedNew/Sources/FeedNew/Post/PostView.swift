@@ -180,11 +180,11 @@ struct PostView: View {
             .ignoresSafeArea()
         
         VStack {
-            PostView(postVM: .init(post: .placeholderText()))
+            PostView(postVM: .init(post: .placeholderText(), apiManager: APIManagerStub()))
                 .padding(20)
                 .redacted(reason: .placeholder)
             
-            PostView(postVM: .init(post: .placeholderText()))
+            PostView(postVM: .init(post: .placeholderText(), apiManager: APIManagerStub()))
                 .padding(20)
         }
         .environmentObject(Router())

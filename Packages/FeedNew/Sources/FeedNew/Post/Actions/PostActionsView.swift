@@ -193,5 +193,5 @@ struct PostActionsView: View {
     PostActionsView(showAppleTranslation: .constant(false), showReportAlert: .constant(false), showBlockAlert: .constant(false))
         .padding(20)
         .environment(\.isBackgroundWhite, false)
-        .environmentObject(PostViewModel(post: .placeholderText()))
+        .environmentObject(PostViewModel(post: .placeholderText(), apiManager: APIManagerStub()))
 }

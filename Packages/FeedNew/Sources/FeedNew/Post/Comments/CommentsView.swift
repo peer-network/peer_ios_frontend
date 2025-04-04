@@ -12,7 +12,7 @@ import Environment
 
 public struct CommentsView: View {
     @Environment(\.isBackgroundWhite) private var isBackgroundWhite
-
+    @EnvironmentObject private var apiManager: APIServiceManager
     @StateObject private var viewModel: CommentsViewModel
 
     @State private var commentText = ""
@@ -36,7 +36,7 @@ public struct CommentsView: View {
 
             ScrollView {
                 PostDescriptionComment(isInFeed: false)
-                    .environmentObject(PostViewModel(post: viewModel.post))
+                    .environmentObject(PostViewModel(post: viewModel.post, apiManager: apiManager))
 
                 switch viewModel.state {
                     case .display(let comments, let hasMore):

@@ -11,6 +11,7 @@ import Models
 import Environment
 
 struct ProfileInfoHeaderView: View {
+    @EnvironmentObject private var apiManager: APIServiceManager
     @EnvironmentObject private var accountManager: AccountManager
     @EnvironmentObject private var quickLook: QuickLook
     @EnvironmentObject private var router: Router
@@ -79,11 +80,13 @@ struct ProfileInfoHeaderView: View {
                 .padding(.trailing, 15)
                 .frame(maxHeight: .infinity, alignment: .center)
             } else {
-                FollowButton(
+                let vm = FollowButtonViewModel(
                     id: user.id,
-                    isFollowing: user.isFollowed,
-                    isFollowed: user.isFollowing
+                    isFollowing: user.isFollowing,
+                    isFollowed: user.isFollowed,
+                    apiWrapper: apiManager
                 )
+                FollowButton(viewModel: vm)
                 .environment(\.isBackgroundWhite, false)
             }
         }

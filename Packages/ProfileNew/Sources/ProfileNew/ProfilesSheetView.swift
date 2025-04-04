@@ -60,6 +60,7 @@ public struct ProfilesSheetView: View {
 
 struct RowProfileView: View {
     @EnvironmentObject private var router: Router
+    @EnvironmentObject private var apiManager: APIServiceManager
 
     let user: RowUser
 
@@ -88,11 +89,13 @@ struct RowProfileView: View {
             Spacer()
 
             if !AccountManager.shared.isCurrentUser(id: user.id) {
-                FollowButton(
+                let vm = FollowButtonViewModel(
                     id: user.id,
                     isFollowing: user.isFollowing,
-                    isFollowed: user.isFollowed
+                    isFollowed: user.isFollowed,
+                    apiWrapper: apiManager
                 )
+                FollowButton(viewModel: vm)
                 .environment(\.isBackgroundWhite, false)
             }
         }

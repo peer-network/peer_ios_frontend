@@ -142,11 +142,15 @@ public final class APIServiceGraphQL: APIService {
         }
     }
     
-    public func followUser(with id: String) async -> Result<Bool, APIError> {
+    public func followUser(with id: String) async -> Result<Void, APIError> {
         do {
             let result = try await qlClient.mutate(mutation: FollowUserMutation(userid: id))
             
-            return .success(result.isSuccessStatus)
+            guard result.isSuccessStatus else {
+                return .failure(.missingData)
+            }
+            
+            return .success(())
         } catch {
             return .failure(.serverError(error: error))
         }

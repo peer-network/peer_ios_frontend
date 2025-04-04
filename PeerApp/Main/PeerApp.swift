@@ -27,6 +27,7 @@ struct PeerApp: App {
     @Environment(\.scenePhase) private var scenePhase
 
     private let apiService: APIService = APIServiceGraphQL()
+    @StateObject private var apiManager = APIServiceManager()
     @StateObject private var authManager = AuthManager()
     @StateObject private var accountManager = AccountManager.shared
     @StateObject private var quickLook = QuickLook.shared
@@ -57,6 +58,7 @@ struct PeerApp: App {
 
                     case .authenticated(_):
                         ContentView(selectedTab: $selectedTab, appRouter: appRouter)
+                            .environmentObject(apiManager)
                             .environmentObject(accountManager)
                             .environmentObject(quickLook)
                             .environmentObject(authManager)

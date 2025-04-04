@@ -23,7 +23,7 @@ public protocol APIService {
     func fetchUser(with userId: String) async -> Result<User, APIError>
     func fetchUsers(by query: String, after offset: Int) async -> Result<[RowUser], APIError>
     func fetchDailyFreeLimits() async -> Result<DailyFreeQuota, APIError>
-    func followUser(with id: String) async -> Result<Bool, APIError>
+    func followUser(with id: String) async -> Result<Void, APIError>
     func updateBio(new bio: String) async -> Result<Void, APIError>
     func uploadProfileImage(new image: String) async -> Result<Void, APIError>
     

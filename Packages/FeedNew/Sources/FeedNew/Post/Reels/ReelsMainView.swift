@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Environment
 
 struct ReelsMainView: View {
 //    @SwiftUI.Environment(AudioManager.self) private var audioManager
@@ -25,5 +26,5 @@ struct ReelsMainView: View {
 
 #Preview {
     ReelsMainView()
-        .environmentObject(PostViewModel(post: .placeholderText()))
+        .environmentObject(PostViewModel(post: .placeholderText(), apiManager: APIManagerStub()))
 }

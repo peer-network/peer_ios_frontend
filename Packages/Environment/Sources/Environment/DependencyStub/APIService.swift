@@ -8,6 +8,12 @@
 import Models
 import GQLOperationsUser
 
+public final class APIManagerStub: APIServiceWrapper {
+    public let apiService: APIService = APIServiceStub()
+    
+    public init() {}
+}
+
 public final class APIServiceStub: APIService {
     public init(){}
     
@@ -41,8 +47,8 @@ public final class APIServiceStub: APIService {
         .success(DailyFreeQuota(likes: 2, posts: 1, comments: 3))
     }
     
-    public func followUser(with id: String) async -> Result<Bool, APIError> {
-        .success(true)
+    public func followUser(with id: String) async -> Result<Void, APIError> {
+        .success(())
     }
     
     public func updateBio(new bio: String) async -> Result<Void, APIError> {

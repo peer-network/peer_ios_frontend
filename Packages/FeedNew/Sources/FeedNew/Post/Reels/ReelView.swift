@@ -455,5 +455,5 @@ struct ReelView: View {
 
 #Preview {
     ReelsMainView()
-        .environmentObject(PostViewModel(post: .placeholderText()))
+        .environmentObject(PostViewModel(post: .placeholderText(), apiManager: APIManagerStub()))
 }

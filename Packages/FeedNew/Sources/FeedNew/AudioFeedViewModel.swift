@@ -7,11 +7,12 @@
 
 import SwiftUI
 import Models
-import Networking
-import GQLOperationsUser
+import Environment
 
 @MainActor
 public final class AudioFeedViewModel: ObservableObject, PostsFetcher {
+    public weak var apiManager: (any APIServiceWrapper)!
+    
     @Published public private(set) var state = PostsState.loading
 
     private var userId: String?
@@ -24,12 +25,9 @@ public final class AudioFeedViewModel: ObservableObject, PostsFetcher {
     
     public init(userId: String? = nil) {
         self.userId = userId
-        Task {
-            await fetchPosts(reset: true)
-        }
     }
 
-    public func fetchPosts(reset: Bool) async {
+    public func fetchPosts(reset: Bool) {
         if let existingTask = fetchTask, !existingTask.isCancelled {
             if reset {
                 // Cancel and start a fresh fetch for reset scenarios
@@ -51,60 +49,37 @@ public final class AudioFeedViewModel: ObservableObject, PostsFetcher {
         
         fetchTask = Task {
             do {
-                let sortBy = FeedContentSortingAndFiltering.shared.sortByPopularity.apiValue
-
-                var filterBy: GraphQLNullable<[GraphQLEnum<FilterType>]>
-                let filterByAddition = FeedContentSortingAndFiltering.shared.filterByRelationship.apiValue
-                if let filterByAddition {
-                    filterBy = [.case(.audio), filterByAddition]
-                } else {
-                    filterBy = [.case(.audio)]
-                }
-
-                let timeSorting = FeedContentSortingAndFiltering.shared.sortByTime
-                let timeFrom = timeSorting.apiValue.0
-                let timeTo = timeSorting.apiValue.1
-
-                let operation = GetAllPostsQuery(
-                    filterBy: filterBy,
-                    ignorList: .some(.case(.yes)),
-                    sortBy: sortBy,
-                    title: nil,
-                    tag: nil,
-                    from: timeFrom != nil ? GraphQLNullable(stringLiteral: timeFrom!) : nil,
-                    to: timeTo != nil ? GraphQLNullable(stringLiteral: timeTo!) : nil,
-                    postOffset: GraphQLNullable<Int>(integerLiteral: currentOffset),
-                    postLimit: GraphQLNullable<Int>(integerLiteral: Constants.postsFetchLimit),
-                    commentOffset: 0,
-                    commentLimit: 0,
-                    postid: nil,
-                    userid: userId == nil ? nil : GraphQLNullable(stringLiteral: userId!)
+                let sort = FeedContentSortingAndFiltering.shared.sortByPopularity
+                let filter = FeedContentSortingAndFiltering.shared.filterByRelationship
+                let inTimeframe = FeedContentSortingAndFiltering.shared.sortByTime
+                let result = await apiManager.apiService.fetchPosts(
+                    with: .audio,
+                    sort: sort,
+                    filter: filter,
+                    in: inTimeframe,
+                    after: currentOffset,
+                    for: userId
                 )
-
-                let result = try await GQLClient.shared.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
-                
-                guard let values = result.getallposts.affectedRows else {
-                    throw GQLError.missingData
-                }
                 
                 try Task.checkCancellation()
                 
-                let fetchedPosts = values.compactMap { value in
-                    Post(gqlPost: value)
-                }
+                switch result {
+                case .success(let fetchedPosts):
+                    if reset {
+                        posts.removeAll()
+                    }
 
-                if reset {
-                    posts.removeAll()
-                }
-
-                posts.append(contentsOf: fetchedPosts)
-                
-                if fetchedPosts.count != Constants.postsFetchLimit {
-                    hasMorePosts = false
-                    state = .display(posts: posts, hasMore: .none)
-                } else {
-                    currentOffset += Constants.postsFetchLimit
-                    state = .display(posts: posts, hasMore: .hasMore)
+                    posts.append(contentsOf: fetchedPosts)
+                    
+                    if fetchedPosts.count != Constants.postsFetchLimit {
+                        hasMorePosts = false
+                        state = .display(posts: posts, hasMore: .none)
+                    } else {
+                        currentOffset += Constants.postsFetchLimit
+                        state = .display(posts: posts, hasMore: .hasMore)
+                    }
+                case .failure(let apiError):
+                    throw apiError
                 }
             } catch is CancellationError {
 //                state = .display(posts: posts, hasMore: .hasMore)

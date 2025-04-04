@@ -46,6 +46,7 @@ public final class AuthViewModel: ObservableObject {
 
     @Published private(set) var passwordStrength: PasswordStrength = .empty
 
+    //why weak var?
     weak var authManager: AuthManager?
     private let apiService: APIService
 
