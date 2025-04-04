@@ -12,9 +12,7 @@ import DesignSystem
 public struct MainAuthView: View {
     @EnvironmentObject private var router: Router
     @Environment(\.openURL) private var openURL
-
-    @EnvironmentObject private var authManager: AuthManager
-
+    
     private enum FocusedField {
         case loginEmail
         case loginPassword
@@ -24,15 +22,15 @@ public struct MainAuthView: View {
         case registerPassword
     }
     
-    @StateObject private var viewModel: AuthViewModel
+    @StateObject var viewModel: AuthViewModel
     
     @State private var showLoginPassword = false
     @State private var showRegisterPassword = false
     
     @FocusState private var focusedField: FocusedField?
     
-    public init() {
-        _viewModel = StateObject(wrappedValue: AuthViewModel(authManager: AuthManager()))
+    public init(viewModel: AuthViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
     }
     
     public var body: some View {
@@ -162,10 +160,6 @@ public struct MainAuthView: View {
             
         }
         .ignoresSafeArea(.keyboard)
-        .onAppear {
-            // Let the VM see the real authStore
-            viewModel.authManager = authManager
-        }
         .environment(
           \.openURL,
           OpenURLAction { url in
@@ -477,7 +471,13 @@ public struct MainAuthView: View {
     }
 }
 
+public extension MainAuthView {
+    
+}
+
 #Preview {
-    MainAuthView()
-        .environmentObject(AuthManager())
+    let authManager = AuthManager()
+    let apiService = APIServiceStub()
+    
+    MainAuthView(viewModel: AuthViewModel(authManager: authManager, apiService: apiService))
 }

@@ -16,6 +16,7 @@ public enum AuthState {
 }
 
 @MainActor
+//TODO: Get rid of ObservableObject inheritance, bad practice to use @Published in service
 public final class AuthManager: ObservableObject {
     @Published public private(set) var state: AuthState = .loading
     

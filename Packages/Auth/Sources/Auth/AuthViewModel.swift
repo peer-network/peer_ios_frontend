@@ -7,13 +7,12 @@
 
 import SwiftUI
 import Environment
-import Networking
-import GQLOperationsGuest
+import Models
 
 // TODO: if there is error in validation of any field, then login/register button is disabled
 
 @MainActor
-final class AuthViewModel: ObservableObject {
+public final class AuthViewModel: ObservableObject {
     enum FormType {
         case login
         case register
@@ -48,9 +47,11 @@ final class AuthViewModel: ObservableObject {
     @Published private(set) var passwordStrength: PasswordStrength = .empty
 
     weak var authManager: AuthManager?
+    private let apiService: APIService
 
-    init(authManager: AuthManager) {
+    public init(authManager: AuthManager, apiService: APIService) {
         self.authManager = authManager
+        self.apiService = apiService
     }
 
     func login() async {
@@ -83,13 +84,18 @@ final class AuthViewModel: ObservableObject {
         }
 
         do {
-            let result = try await GQLClient.shared.mutate(mutation: RegisterMutation(email: regEmail, password: regPassword, username: regUsername))
-
-            guard result.register.status == "success" else {
-                throw GQLError.missingData
+            let regResult = await apiService.registerUser(email: regEmail, password: regPassword, username: regUsername)
+            
+            switch regResult {
+            case .success(let registeredId):
+                let verifyResult = await apiService.verifyRegistration(userID: registeredId)
+                
+                if case .failure(let apiError) = verifyResult {
+                    throw apiError
+                }
+            case .failure(let apiError):
+                throw apiError
             }
-
-            let result2 = try await GQLClient.shared.mutate(mutation: VerificationMutation(userid: result.register.userid ?? ""))
 
             regEmail = ""
             regUsername = ""
