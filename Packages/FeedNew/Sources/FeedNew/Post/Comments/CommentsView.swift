@@ -54,7 +54,7 @@ public struct CommentsView: View {
                             switch hasMore {
                                 case .hasMore:
                                     NextPageView {
-                                        await viewModel.fetchComments()
+                                        viewModel.fetchComments()
                                     }
                                     .padding(.horizontal, 20)
                                 case .none:
@@ -63,9 +63,13 @@ public struct CommentsView: View {
                         }
                     case .loading:
                         EmptyView()
-                    case .error(let error):
+                    case .error(_):
                         EmptyView()
                 }
+            }
+            .onAppear {
+                viewModel.apiService = apiManager.apiService
+                viewModel.fetchComments()
             }
             .scrollDismissesKeyboard(.never)
             .scrollIndicators(.hidden)

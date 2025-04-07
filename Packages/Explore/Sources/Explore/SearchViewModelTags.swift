@@ -7,8 +7,6 @@
 
 import SwiftUI
 import Models
-import Networking
-import GQLOperationsUser
 
 @MainActor
 final class SearchViewModelTags: ObservableObject {
