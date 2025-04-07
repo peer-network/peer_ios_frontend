@@ -6,9 +6,9 @@
 //
 
 public struct DailyFreeQuota {
-    private(set) var likes: Int
-    private(set) var posts: Int
-    private(set) var comments: Int
+    public private(set) var likes: Int
+    public private(set) var posts: Int
+    public private(set) var comments: Int
     
     public init(likes: Int, posts: Int, comments: Int) {
         self.likes = likes

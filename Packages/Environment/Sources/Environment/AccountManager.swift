@@ -6,10 +6,7 @@
 //
 
 import SwiftUI
-import Networking
 import Models
-import GQLOperationsUser
-import GQLOperationsGuest
 import TokenKeychainManager
 
 @MainActor
@@ -23,84 +20,61 @@ public final class AccountManager: ObservableObject {
     public private(set) var userId: String?
     public private(set) var user: User?
     
-    private let service: APIService
+    private let apiService: APIService
 
     private init() {
-        service = APIServiceGraphQL()
+        apiService = APIServiceManager().apiService
     }
 
-    public func login(email: String, password: String) async throws -> (String, String) {
-        let result = try await GQLClient.shared.mutate(mutation: LoginMutation(email: email, password: password))
-
-        guard
-            let accessToken = result.login.accessToken,
-            let refreshToken = result.login.refreshToken
-        else {
-            throw GQLError.missingData
+    public func login(email: String, password: String) async throws -> AuthToken {
+        let result = await apiService.loginWithCredentials(email: email, password: password)
+        
+        switch result {
+        case .success(let token):
+            return token
+        case .failure(let apiError):
+            throw apiError
         }
-
-        return (accessToken, refreshToken)
     }
 
     /// Hello query to confirm the user’s ID with the valid access token
     public func getCurrentUserId() async throws -> String {
-        let result = try await GQLClient.shared.fetch(query: HelloUserQuery(), cachePolicy: .fetchIgnoringCacheCompletely)
-        let result1 = await service.fetchAuthorizedUserID()
-        guard let userId = result.hello.currentuserid, !userId.isEmpty else {
-            throw GQLError.missingData
+        let result = await apiService.fetchAuthorizedUserID()
+        
+        switch result {
+        case .success(let userID):
+            self.userId = userID
+            try? await fetchUser(userId: userID)
+            
+            return userID
+        case .failure(let apiError):
+            throw apiError
         }
-        self.userId = userId
-        try? await fetchUser(userId: userId)
-        return userId
     }
 
     private func fetchUser(userId: String) async throws {
-        let result = try await GQLClient.shared.fetch(query: GetProfileQuery(userid: userId), cachePolicy: .fetchIgnoringCacheCompletely)
-
-        guard
-            let data = result.profile.affectedRows,
-            let fetchedUser = User(gqlUser: data)
-        else {
-            throw GQLError.missingData
+        let result = await apiService.fetchUser(with: userId)
+        
+        switch result {
+        case .success(let user):
+            self.user = user
+        case .failure(let apiError):
+            throw apiError
         }
-
-        user = fetchedUser
     }
 
     public func fetchDailyFreeLimits() async throws {
-        let result = try await GQLClient.shared.fetch(query: GetDailyFreeQuery())
-
-        if
-            let likesRow = result.dailyfreestatus.affectedRows?.first(where: { row in
-                row?.name == "Likes"
-            }),
-            let likes = likesRow?.available
-        {
-            dailyFreeLikes = likes
-        } else {
+        let result = await apiService.fetchDailyFreeLimits()
+        
+        switch result {
+        case .success(let quotas):
+            dailyFreeLikes = quotas.likes
+            dailyFreePosts = quotas.posts
+            dailyFreeComments = quotas.comments
+        case .failure(_):
             dailyFreeLikes = 0
-        }
-
-        if
-            let commentsRow = result.dailyfreestatus.affectedRows?.first(where: { row in
-                row?.name == "Comments"
-            }),
-            let comments = commentsRow?.available
-        {
-            dailyFreeComments = comments
-        } else {
-            dailyFreeComments = 0
-        }
-
-        if
-            let postsRow = result.dailyfreestatus.affectedRows?.first(where: { row in
-                row?.name == "Posts"
-            }),
-            let posts = postsRow?.available
-        {
-            dailyFreePosts = posts
-        } else {
             dailyFreePosts = 0
+            dailyFreeComments = 0
         }
     }
 
