@@ -57,11 +57,11 @@ public struct FeedTabControllerView: View {
                             .matchedGeometryEffect(id: "Tab", in: tabsNamespace)
                     }
                 }
-                .foregroundStyle(Color.white)
+                .foregroundStyle(Colors.whitePrimary)
                 .animation(.default, value: feedPage)
             }
         }
-        .background(Color.backgroundDark)
+        .background(Colors.textActive)
     }
 }
 

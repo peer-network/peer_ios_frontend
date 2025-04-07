@@ -69,7 +69,7 @@ struct FollowersHeader: View {
             }
             .contentShape(Rectangle())
         }
-        .foregroundStyle(Color.white)
+        .foregroundStyle(Colors.whitePrimary)
     }
 
     private func typeCount(_ type: FollowersHeader.ButtonType) -> Int {
@@ -88,7 +88,7 @@ struct FollowersHeader: View {
 
 #Preview {
     ZStack {
-        Color.backgroundDark
+        Colors.textActive
             .ignoresSafeArea()
 
         FollowersHeader(relationsViewModel: RelationsViewModel(userId: ""), userId: "", postsCount: 423, followersCount: 244, followingsCount: 1233, friends: 13)

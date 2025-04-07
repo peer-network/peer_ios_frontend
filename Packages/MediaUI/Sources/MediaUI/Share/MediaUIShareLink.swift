@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Models
+import DesignSystem
 
 struct MediaUIShareLink: View {
     let data: MediaData
@@ -26,6 +27,6 @@ struct MediaUIShareLink: View {
                 ShareLink(item: data.url)
             }
         }
-        .foregroundStyle(Color.white)
+        .foregroundStyle(Colors.whitePrimary)
     }
 }

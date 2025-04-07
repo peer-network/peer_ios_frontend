@@ -169,7 +169,7 @@ public struct PostCreationView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 24))
                         .padding(.horizontal, 20)
                         .padding(.bottom, 39)
-                        .background(Color.white.opacity(0.01).ignoresSafeArea(edges: .all))
+                        .background(Colors.whitePrimary.opacity(0.01).ignoresSafeArea(edges: .all))
                     }
                 }
                 .overlay {
@@ -191,7 +191,7 @@ public struct PostCreationView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 24))
                         .padding(.horizontal, 20)
                         .padding(.bottom, 39)
-                        .background(Color.white.opacity(0.01).ignoresSafeArea(edges: .all))
+                        .background(Colors.whitePrimary.opacity(0.01).ignoresSafeArea(edges: .all))
                     }
                 }
                 .overlay {
@@ -213,7 +213,7 @@ public struct PostCreationView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 24))
                         .padding(.horizontal, 20)
                         .padding(.bottom, 39)
-                        .background(Color.white.opacity(0.01).ignoresSafeArea(edges: .all))
+                        .background(Colors.whitePrimary.opacity(0.01).ignoresSafeArea(edges: .all))
                     }
                 }
             }
@@ -228,7 +228,7 @@ public struct PostCreationView: View {
                         Text("Post")
                         Spacer()
                         Icons.arrowDownNormal
-                            .foregroundColor(Color.white)
+                            .foregroundColor(Colors.whitePrimary)
                             .rotationEffect(.degrees(270))
                     }
                 }, action: {
@@ -249,7 +249,7 @@ public struct PostCreationView: View {
                         Text("Continue")
                         Spacer()
                         Icons.arrowDownNormal
-                            .foregroundColor(Color.white)
+                            .foregroundColor(Colors.whitePrimary)
                             .rotationEffect(.degrees(270))
                     }
                 }, action: {
@@ -285,7 +285,7 @@ public struct PostCreationView: View {
                         Text("Post")
                         Spacer()
                         Icons.arrowDownNormal
-                            .foregroundColor(Color.white)
+                            .foregroundColor(Colors.whitePrimary)
                             .rotationEffect(.degrees(270))
                     }
                 }, action: {
@@ -361,7 +361,7 @@ public struct PostCreationView: View {
         }
         .ifCondition(viewModel.isCreatingPost) {
             $0.overlay {
-                Color.white.opacity(0.1).ignoresSafeArea(edges: .all)
+                Colors.whitePrimary.opacity(0.1).ignoresSafeArea(edges: .all)
                 ProgressView()
                     .controlSize(.extraLarge)
             }
@@ -413,16 +413,7 @@ extension PostCreationView {
             }
         }
         .frame(width: getRect().width, height: getRect().height / 2.2)
-        .background(
-            LinearGradient(
-                stops: [
-                    Gradient.Stop(color: .black.opacity(0), location: 0.34),
-                    Gradient.Stop(color: .black, location: 1.00),
-                ],
-                startPoint: UnitPoint(x: 0.5, y: 0),
-                endPoint: UnitPoint(x: 0.5, y: 1)
-            )
-        )
+        .background(Gradients.blackHover)
     }
 
     @ViewBuilder
@@ -468,7 +459,7 @@ extension PostCreationView {
         VStack(spacing: 0) {
             Icons.block
                 .iconSize(height: 47)
-                .foregroundStyle(Color.redAccent)
+                .foregroundStyle(Colors.redAccent)
                 .padding(.bottom, 28)
 
             Text("Access to photos & videos denied.")
@@ -493,7 +484,7 @@ extension PostCreationView {
             }
         }
         .font(.customFont(weight: .regular, style: .body))
-        .foregroundStyle(Color.white)
+        .foregroundStyle(Colors.whitePrimary)
         .padding(.top, 28)
     }
 
@@ -507,7 +498,7 @@ extension PostCreationView {
                     .font(.customFont(weight: .regular, size: .footnote))
             }
         }
-        .foregroundStyle(Color.white)
+        .foregroundStyle(Colors.whitePrimary)
     }
 
     private func togglePhotoSelection(for asset: PHAsset) {
@@ -543,16 +534,7 @@ extension PostCreationView {
             }
         }
         .frame(width: getRect().width, height: getRect().height / 2.2)
-        .background(
-            LinearGradient(
-                stops: [
-                    Gradient.Stop(color: .black.opacity(0), location: 0.34),
-                    Gradient.Stop(color: .black, location: 1.00),
-                ],
-                startPoint: UnitPoint(x: 0.5, y: 0),
-                endPoint: UnitPoint(x: 0.5, y: 1)
-            )
-        )
+        .background(Gradients.blackHover)
     }
 
     @ViewBuilder
@@ -587,19 +569,19 @@ extension PostCreationView {
                     Text("Short")
                     Spacer()
                     RoundedRectangle(cornerRadius: 2)
-                        .strokeBorder(Color.white, lineWidth: 2)
+                        .strokeBorder(Colors.whitePrimary, lineWidth: 2)
                         .frame(width: 11, height: 21)
                     Icons.arrowDownNormal
                         .iconSize(height: 15)
-                        .foregroundStyle(Color.white)
+                        .foregroundStyle(Colors.whitePrimary)
                         .rotationEffect(.degrees(270))
                 }
-                .foregroundStyle(Color.white)
+                .foregroundStyle(Colors.whitePrimary)
                 .font(.customFont(weight: .regular, style: .footnote))
                 .padding(.vertical, 16)
                 .padding(.horizontal, 20)
                 .frame(maxWidth: .infinity)
-                .background(Color.shortVideo)
+                .background(Colors.shortVideo)
             }
             .clipShape(RoundedRectangle(cornerRadius: 73))
 
@@ -627,7 +609,7 @@ extension PostCreationView {
 //                .padding(.vertical, 16)
 //                .padding(.horizontal, 20)
 //                .frame(maxWidth: .infinity)
-//                .background(Color.lightBlue)
+//                .background(Colors.blueLight)
 //            }
 //            .clipShape(RoundedRectangle(cornerRadius: 73))
         }
@@ -639,12 +621,12 @@ extension PostCreationView {
             Text("Choose Short video")
             Spacer()
         }
-        .foregroundStyle(Color.white)
+        .foregroundStyle(Colors.whitePrimary)
         .font(.customFont(weight: .regular, style: .footnote))
         .padding(.vertical, 16)
         .padding(.horizontal, 20)
         .frame(maxWidth: .infinity)
-        .background(Color.lightBlue)
+        .background(Colors.blueLight)
         .clipShape(RoundedRectangle(cornerRadius: 73))
     }
 
@@ -653,12 +635,12 @@ extension PostCreationView {
             Text("Choose Full video")
             Spacer()
         }
-        .foregroundStyle(Color.white)
+        .foregroundStyle(Colors.whitePrimary)
         .font(.customFont(weight: .regular, style: .footnote))
         .padding(.vertical, 16)
         .padding(.horizontal, 20)
         .frame(maxWidth: .infinity)
-        .background(Color.lightBlue)
+        .background(Colors.blueLight)
         .clipShape(RoundedRectangle(cornerRadius: 73))
     }
 
@@ -684,7 +666,7 @@ extension PostCreationView {
                         $0.overlay(alignment: .bottomLeading) {
                             Text("\(asset.duration.stringFromTimeInterval())")
                                 .font(.footnote)
-                                .foregroundStyle(Color.white)
+                                .foregroundStyle(Colors.whitePrimary)
 //                                .font(.customFont(weight: .regular, style: .caption))
                                 .offset(x: 5, y: -5)
                                 .allowsHitTesting(false)
@@ -743,7 +725,7 @@ extension PostCreationView {
                         $0.overlay(alignment: .bottomLeading) {
                             Text("\(asset.duration.stringFromTimeInterval())")
                                 .font(.footnote)
-                                .foregroundStyle(Color.white)
+                                .foregroundStyle(Colors.whitePrimary)
 //                                .font(.customFont(weight: .regular, style: .caption))
                                 .offset(x: 5, y: -5)
                                 .allowsHitTesting(false)
@@ -797,15 +779,15 @@ extension PostCreationView {
                         Spacer()
                         Icons.arrowDownNormal
                             .iconSize(height: 15)
-                            .foregroundStyle(Color.white)
+                            .foregroundStyle(Colors.whitePrimary)
                             .rotationEffect(.degrees(270))
                     }
-                    .foregroundStyle(Color.white)
+                    .foregroundStyle(Colors.whitePrimary)
                     .font(.customFont(weight: .regular, style: .footnote))
                     .padding(.vertical, 16)
                     .padding(.horizontal, 20)
                     .frame(maxWidth: .infinity)
-                    .background(Color.shortVideo)
+                    .background(Colors.shortVideo)
                     .clipShape(RoundedRectangle(cornerRadius: 73))
                 }
                 .fileImporter(
@@ -834,7 +816,7 @@ extension PostCreationView {
 
                 if selectedAudioURL != nil {
                     Image(systemName: "checkmark")
-                        .foregroundStyle(Color.passwordBarsGreen)
+                        .foregroundStyle(Colors.passwordBarsGreen)
                         .font(.title3.bold())
                 }
             }
@@ -850,15 +832,15 @@ extension PostCreationView {
                         Spacer()
                         Icons.arrowDownNormal
                             .iconSize(height: 15)
-                            .foregroundStyle(Color.white)
+                            .foregroundStyle(Colors.whitePrimary)
                             .rotationEffect(.degrees(270))
                     }
-                    .foregroundStyle(Color.white)
+                    .foregroundStyle(Colors.whitePrimary)
                     .font(.customFont(weight: .regular, style: .footnote))
                     .padding(.vertical, 16)
                     .padding(.horizontal, 20)
                     .frame(maxWidth: .infinity)
-                    .background(Color.lightBlue)
+                    .background(Colors.blueLight)
                     .clipShape(RoundedRectangle(cornerRadius: 73))
                 }
                 .onChange(of: selectedPhoto) {
@@ -872,7 +854,7 @@ extension PostCreationView {
 
                 if selectedPhoto != nil {
                     Image(systemName: "checkmark")
-                        .foregroundStyle(Color.passwordBarsGreen)
+                        .foregroundStyle(Colors.passwordBarsGreen)
                         .font(.title3.bold())
                 }
             }

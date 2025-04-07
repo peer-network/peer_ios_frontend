@@ -55,16 +55,16 @@ public struct FloatingAudioPanelView: View {
                         .iconSize(height: 14)
                 }
             }
-            .foregroundStyle(Color.white)
+            .foregroundStyle(Colors.whitePrimary)
             .padding(.vertical, 6)
             .overlay(alignment: .bottom) {
                 ZStack {
                     Capsule()
                         .frame(height: 2)
-                        .foregroundStyle(Color.white)
+                        .foregroundStyle(Colors.whitePrimary)
 
                     Capsule()
-                        .fill(Color.hashtag)
+                        .fill(Colors.hashtag)
                         .frame(height: 2)
                         .mask {
                             Rectangle()

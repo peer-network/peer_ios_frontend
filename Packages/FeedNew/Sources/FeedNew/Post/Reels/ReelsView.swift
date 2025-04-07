@@ -43,14 +43,14 @@ struct ReelsView: View {
         }
         .scrollIndicators(.hidden)
         .scrollTargetBehavior(.paging)
-        .background(Color.backgroundDark)
+        .background(Colors.textActive)
         /// Like Animation View
         .overlay(alignment: .topLeading) {
             ZStack {
                 ForEach(likedCounter) { like in
                     Icons.heartFill
                         .iconSize(height: 80)
-                        .foregroundStyle(Color.redAccent)
+                        .foregroundStyle(Colors.redAccent)
                         .frame(width: 100, height: 100)
                     /// Adding Some Implicit Rotation & Scaling Animation
                         .animation(.smooth, body: { view in

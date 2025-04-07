@@ -48,7 +48,7 @@ public struct FeedView: View {
             }
         }
         .background {
-            Color.textActive
+            Colors.textActive
                 .ignoresSafeArea(.all)
         }
         .overlay(alignment: .topLeading) {

@@ -45,7 +45,7 @@ struct SortingPopupView: View {
                 .ifCondition(feedContentSortingAndFiltering.filterByRelationship == type) {
                     $0.bold()
                 }
-                .foregroundStyle(Color.white)
+                .foregroundStyle(Colors.whitePrimary)
         }
     }
 
@@ -73,11 +73,11 @@ struct SortingPopupView: View {
                     .iconSize(height: 12)
                     .fixedSize()
             }
-            .foregroundStyle(Color.white)
+            .foregroundStyle(Colors.whitePrimary)
             .padding(10)
             .background {
                 RoundedRectangle(cornerRadius: 24, style: .continuous)
-                    .strokeBorder(Color.white, lineWidth: 1)
+                    .strokeBorder(Colors.whitePrimary, lineWidth: 1)
             }
         }
     }
@@ -106,11 +106,11 @@ struct SortingPopupView: View {
                     .iconSize(height: 12)
                     .fixedSize()
             }
-            .foregroundStyle(Color.white)
+            .foregroundStyle(Colors.whitePrimary)
             .padding(10)
             .background {
                 RoundedRectangle(cornerRadius: 24, style: .continuous)
-                    .strokeBorder(Color.white, lineWidth: 1)
+                    .strokeBorder(Colors.whitePrimary, lineWidth: 1)
             }
         }
     }

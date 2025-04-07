@@ -70,14 +70,14 @@ struct ContentView: View {
                                 .iconSize(height: 22)
                         }
                     }
-                    .foregroundStyle(Color.white)
+                    .foregroundStyle(Colors.whitePrimary)
                     .frame(maxWidth: .infinity)
                     .frame(height: 50)
                     .contentShape(Rectangle())
                 }
             }
         }
-        .background(Color.backgroundDark)
+        .background(Colors.textActive)
     }
 
     private func updateTab(with newTab: AppTab) {

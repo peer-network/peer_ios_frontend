@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Environment
+import DesignSystem
 
 struct PostTagsView: View {
     @EnvironmentObject private var router: Router
@@ -20,7 +21,7 @@ struct PostTagsView: View {
         if !postVM.post.tags.isEmpty {
             Text(tags.joined(separator: " "))
                 .font(.customFont(weight: .regular, size: .footnote))
-                .foregroundStyle(Color.hashtag)
+                .foregroundStyle(Colors.hashtag)
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
     }

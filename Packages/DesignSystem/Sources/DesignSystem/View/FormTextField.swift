@@ -32,7 +32,7 @@ public struct FormTextField: View {
     public var body: some View {
         ZStack(alignment: .center) {
             RoundedRectangle(cornerRadius: 24)
-                .foregroundStyle(Color.white)
+                .foregroundStyle(Colors.whitePrimary)
                 .frame(height: 50)
                 .frame(maxWidth: .infinity)
             
@@ -56,7 +56,7 @@ public struct FormTextField: View {
                     } label: {
                         icon
                             .frame(height: 26)
-                            .foregroundStyle(Color.icons)
+                            .foregroundStyle(Colors.greyIcons)
                             .clipShape(Rectangle())
                     }
                     .disabled(onIconClick == nil)

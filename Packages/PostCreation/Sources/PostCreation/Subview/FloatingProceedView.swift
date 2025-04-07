@@ -42,20 +42,11 @@ struct FloatingProceedView<Description: View, Proceed: View>: View {
                         .padding(.vertical, 15)
                         .frame(width: 141)
                         .ifCondition(!disabled) {
-                            $0.background(
-                                LinearGradient(
-                                    stops: [
-                                        Gradient.Stop(color: Color(red: 0.47, green: 0.69, blue: 1), location: 0.00),
-                                        Gradient.Stop(color: Color(red: 0, green: 0.41, blue: 1), location: 1.00),
-                                    ],
-                                    startPoint: UnitPoint(x: 0, y: 0.5),
-                                    endPoint: UnitPoint(x: 1, y: 0.5)
-                                )
-                            )
+                            $0.background(Gradients.activeButtonBlue)
                         }
                         .ifCondition(disabled) {
                             $0.background(
-                                Color.lightBlue
+                                Colors.blueLight
                             )
                         }
                         .cornerRadius(24)
@@ -63,7 +54,7 @@ struct FloatingProceedView<Description: View, Proceed: View>: View {
                 .disabled(disabled)
             }
             .font(.customFont(weight: .regular, style: .footnote))
-            .foregroundStyle(Color.white)
+            .foregroundStyle(Colors.whitePrimary)
             .lineLimit(1)
             .cornerRadius(24)
             .shadow(color: .black.opacity(0.5), radius: 25, x: 0, y: 4)
@@ -79,7 +70,7 @@ struct FloatingProceedView<Description: View, Proceed: View>: View {
                 Text("Next")
                 Spacer()
                 Icons.arrowDownNormal
-                    .foregroundColor(Color.white)
+                    .foregroundColor(Colors.whitePrimary)
                     .rotationEffect(.degrees(270))
             }
         }, action: {

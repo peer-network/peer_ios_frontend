@@ -45,23 +45,23 @@ enum PostAction {
     func getDefaultColor(isBackgroundWhite: Bool) -> Color {
         switch self {
             case .like, .dislike, .comment, .menu:
-                return isBackgroundWhite ? Color.backgroundDark : Color.white
+                return isBackgroundWhite ? Colors.textActive : Colors.whitePrimary
             case .views:
-                return isBackgroundWhite ? Color.textSuggestions : Color.white.opacity(0.5)
+                return isBackgroundWhite ? Colors.textSuggestions : Colors.whiteSecondary
         }
     }
-    
+
     var tintColor: Color? {
         switch self {
             case .like:
-                    .redAccent
+                Colors.redAccent
             case .dislike:
-                    .redAccent
+                Colors.redAccent
             case .comment, .views, .menu:
                 nil
         }
     }
-    
+
     func isOn(viewModel: PostViewModel) -> Bool {
         switch self {
             case .like:

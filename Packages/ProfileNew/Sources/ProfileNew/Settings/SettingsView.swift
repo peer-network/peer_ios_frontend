@@ -49,7 +49,7 @@ public struct SettingsView: View {
                             } label: {
                                 Text("Change photo")
                                     .padding(20)
-                                    .background(Color.darkInactive)
+                                    .background(Colors.inactiveDark)
                                     .cornerRadius(24)
                             }
                             Spacer()
@@ -105,7 +105,7 @@ public struct SettingsView: View {
                         .padding(20)
                         .background {
                             RoundedRectangle(cornerRadius: 20)
-                                .foregroundStyle(Color.darkInactive)
+                                .foregroundStyle(Colors.inactiveDark)
                         }
 
 //                        HStack(alignment: .top, spacing: 20) {
@@ -128,7 +128,7 @@ public struct SettingsView: View {
 //                        .padding(20)
 //                        .background {
 //                            RoundedRectangle(cornerRadius: 20)
-//                                .foregroundStyle(Color.darkInactive)
+//                                .foregroundStyle(Colors.inactiveDark)
 //                        }
 
 //                        HStack(alignment: .top, spacing: 20) {
@@ -151,7 +151,7 @@ public struct SettingsView: View {
 //                        .padding(20)
 //                        .background {
 //                            RoundedRectangle(cornerRadius: 20)
-//                                .foregroundStyle(Color.darkInactive)
+//                                .foregroundStyle(Colors.inactiveDark)
 //                        }
 
                         HStack(spacing: 10) {
@@ -164,10 +164,10 @@ public struct SettingsView: View {
             .scrollIndicators(.hidden)
             .scrollDismissesKeyboard(.interactively)
             .font(.customFont(weight: .regular, style: .footnote))
-            .foregroundStyle(Color.white)
+            .foregroundStyle(Colors.whitePrimary)
         }
         .background {
-            Color.backgroundDark
+            Colors.textActive
                 .ignoresSafeArea(.all)
         }
         .photosPicker(isPresented: $isImagePickerPresented, selection: $selectedPhotoItem, matching: .images)
@@ -234,12 +234,12 @@ public struct SettingsView: View {
         } label: {
             Text("Logout")
                 .padding(20)
-                .foregroundStyle(Color.redAccent)
+                .foregroundStyle(Colors.redAccent)
                 .font(.customFont(weight: .regular, style: .footnote))
                 .frame(maxWidth: .infinity)
                 .overlay {
                     RoundedRectangle(cornerRadius: 24)
-                        .strokeBorder(Color.redAccent, lineWidth: 1)
+                        .strokeBorder(Colors.redAccent, lineWidth: 1)
                 }
         }
     }
