@@ -12,6 +12,8 @@ import GQLOperationsUser
 
 @MainActor
 final class SearchViewModelUsers: ObservableObject {
+    public unowned var apiService: (any APIService)!
+    
     private var fetchTask: Task<Void, Never>?
 
     @Published var users: [RowUser] = []
@@ -32,32 +34,27 @@ final class SearchViewModelUsers: ObservableObject {
 
         fetchTask = Task {
             do {
-                let operation = SearchUserQuery(userid: nil, username: GraphQLNullable(stringLiteral: username.lowercased()), offset: GraphQLNullable<Int>(integerLiteral: currentOffset), limit: 20)
-
-                let result = try await GQLClient.shared.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
-
-                guard let values = result.searchuser.affectedRows else {
-                    throw GQLError.missingData
-                }
-
+                let result = await apiService.fetchUsers(by: username.lowercased(), after: currentOffset)
+                
                 try Task.checkCancellation()
-
-                let fetchedUsers = values.compactMap { value in
-                    RowUser(gqlUser: value)
-                }
-
-                users.append(contentsOf: fetchedUsers)
-
-                if fetchedUsers.count != 20 {
-                    hasMoreUsers = false
-                } else {
-                    currentOffset += 20
-                    hasMoreUsers = true
+                
+                switch result {
+                case .success(let fetchedUsers):
+                    users.append(contentsOf: fetchedUsers)
+                    
+                    if fetchedUsers.count != 20 {
+                        hasMoreUsers = false
+                    } else {
+                        currentOffset += 20
+                        hasMoreUsers = true
+                    }
+                case .failure(let apiError):
+                    throw apiError
                 }
             } catch {
                 
             }
-
+            
             fetchTask = nil
         }
     }

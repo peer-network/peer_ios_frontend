@@ -12,6 +12,8 @@ import GQLOperationsUser
 
 @MainActor
 final class SearchViewModelTags: ObservableObject {
+    public unowned var apiService: (any APIService)!
+    
     private var fetchTagsTask: Task<Void, Never>?
     private var fetchPostsTask: Task<Void, Never>?
 
@@ -32,24 +34,21 @@ final class SearchViewModelTags: ObservableObject {
 
         fetchTagsTask = Task {
             do {
-                let operation = SearchTagsQuery(tagname: tag, offset: 0, limit: 20)
-
-                let result = try await GQLClient.shared.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
-
-                guard let values = result.tagsearch.affectedRows else {
-                    throw GQLError.missingData
-                }
-
+                let result = await apiService.fetchTags(with: tag)
+                
                 try Task.checkCancellation()
-
-                let fetchedTags = values.compactMap { value in
-                    value?.name
+                
+                switch result {
+                case .success(let fetchedTags):
+                    tags.append(contentsOf: fetchedTags)
+                case .failure(let apiError):
+                    throw apiError
                 }
-
-                tags.append(contentsOf: fetchedTags)
             } catch {
 
             }
+            
+            fetchTagsTask = nil
         }
     }
 
@@ -66,31 +65,27 @@ final class SearchViewModelTags: ObservableObject {
 
         fetchPostsTask = Task {
             do {
-                let operation = GetAllPostsQuery(filterBy: [.case(.image), .case(.text), .case(.video), .case(.audio)], ignorList: .some(.case(.no)), sortBy: .some(.case(.newest)), title: nil, tag: GraphQLNullable(stringLiteral: tag.lowercased()), from: nil, to: nil, postOffset: GraphQLNullable<Int>(integerLiteral: currentOffsetPosts), postLimit: 20, commentOffset: nil, commentLimit: nil, postid: nil, userid: nil)
-
-                let result = try await GQLClient.shared.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
-
-                guard let values = result.getallposts.affectedRows else {
-                    throw GQLError.missingData
-                }
-
+                let result = await apiService.fetchPostsByTag(tag.lowercased(), after: currentOffsetPosts)
+                
                 try Task.checkCancellation()
+                
+                switch result {
+                case .success(let fetchedPosts):
+                    posts.append(contentsOf: fetchedPosts)
 
-                let fetchedPosts = values.compactMap { value in
-                    Post(gqlPost: value)
-                }
-
-                posts.append(contentsOf: fetchedPosts)
-
-                if fetchedPosts.count != 20 {
-                    hasMorePosts = false
-                } else {
-                    currentOffsetPosts += 20
-                    hasMorePosts = true
+                    if fetchedPosts.count != 20 {
+                        hasMorePosts = false
+                    } else {
+                        currentOffsetPosts += 20
+                        hasMorePosts = true
+                    }
+                case .failure(let apiError):
+                    throw apiError
                 }
             } catch {
 
             }
+            fetchPostsTask = nil
         }
     }
 }

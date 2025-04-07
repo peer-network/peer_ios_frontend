@@ -11,7 +11,7 @@ import Environment
 
 @MainActor
 public final class AudioFeedViewModel: ObservableObject, PostsFetcher {
-    public weak var apiManager: (any APIServiceWrapper)!
+    public unowned var apiManager: (any APIServiceWrapper)!
     
     @Published public private(set) var state = PostsState.loading
 

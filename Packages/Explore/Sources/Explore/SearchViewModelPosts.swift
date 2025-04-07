@@ -12,6 +12,7 @@ import GQLOperationsUser
 
 @MainActor
 final class SearchViewModelPosts: ObservableObject {
+    public unowned var apiService: (any APIService)!
     private var fetchPostsTask: Task<Void, Never>?
 
     @Published var posts: [Post] = []
@@ -32,31 +33,28 @@ final class SearchViewModelPosts: ObservableObject {
 
         fetchPostsTask = Task {
             do {
-                let operation = GetAllPostsQuery(filterBy: [.case(.image), .case(.text), .case(.video), .case(.audio)], ignorList: .some(.case(.no)), sortBy: .some(.case(.newest)), title: GraphQLNullable(stringLiteral: title.lowercased()), tag: nil, from: nil, to: nil, postOffset: GraphQLNullable<Int>(integerLiteral: currentOffsetPosts), postLimit: 20, commentOffset: nil, commentLimit: nil, postid: nil, userid: nil)
-
-                let result = try await GQLClient.shared.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
-
-                guard let values = result.getallposts.affectedRows else {
-                    throw GQLError.missingData
-                }
-
+                let result = await apiService.fetchPostsByTitle(title.lowercased(), after: currentOffsetPosts)
+                
                 try Task.checkCancellation()
+                
+                switch result {
+                case .success(let fetchedPosts):
+                    posts.append(contentsOf: fetchedPosts)
 
-                let fetchedPosts = values.compactMap { value in
-                    Post(gqlPost: value)
-                }
-
-                posts.append(contentsOf: fetchedPosts)
-
-                if fetchedPosts.count != 20 {
-                    hasMorePosts = false
-                } else {
-                    currentOffsetPosts += 20
-                    hasMorePosts = true
+                    if fetchedPosts.count != 20 {
+                        hasMorePosts = false
+                    } else {
+                        currentOffsetPosts += 20
+                        hasMorePosts = true
+                    }
+                case .failure(let apiError):
+                    throw apiError
                 }
             } catch {
 
             }
+            
+            fetchPostsTask = nil
         }
     }
 }

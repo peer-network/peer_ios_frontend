@@ -37,6 +37,7 @@ public struct SearchView: View {
 
     @EnvironmentObject private var accountManager: AccountManager
     @EnvironmentObject private var router: Router
+    @EnvironmentObject private var apiManager: APIServiceManager
 
     @StateObject private var viewModelUsers = SearchViewModelUsers()
     @StateObject private var viewModelTags = SearchViewModelTags()
@@ -120,6 +121,11 @@ public struct SearchView: View {
             }
         }
         .background(Color.backgroundDark)
+        .onAppear {
+            viewModelUsers.apiService = apiManager.apiService
+            viewModelTags.apiService = apiManager.apiService
+            viewModelTitle.apiService = apiManager.apiService
+        }
         .onChange(of: searchText) {
             switch searchType {
                 case .none:
@@ -357,4 +363,5 @@ struct RowProfileSearchView: View {
 #Preview {
     SearchView()
         .environmentObject(AccountManager.shared)
+        .environmentObject(APIManagerStub())
 }

@@ -7,8 +7,10 @@
 
 import Models
 import GQLOperationsUser
+import Foundation
 
-public final class APIManagerStub: APIServiceWrapper {
+@MainActor
+public final class APIManagerStub: APIServiceWrapper, ObservableObject {
     public let apiService: APIService = APIServiceStub()
     
     public init() {}
@@ -60,11 +62,11 @@ public final class APIServiceStub: APIService {
     }
     
     //MARK: Posts
-    public func fetchPosts(by query: String, after offset: Int) async -> Result<[Post], APIError> {
+    public func fetchPostsByTitle(_ query: String, after offset: Int) async -> Result<[Post], APIError> {
         .failure(.missingData)
     }
     
-    public func fetchPosts(with tag: String, after offset: Int) async -> Result<[Post], APIError> {
+    public func fetchPostsByTag(_ tag: String, after offset: Int) async -> Result<[Post], APIError> {
         .failure(.missingData)
     }
     

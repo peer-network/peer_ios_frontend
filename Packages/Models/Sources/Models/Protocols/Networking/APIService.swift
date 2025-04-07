@@ -12,7 +12,7 @@ public enum APIError: Error {
     case missingData
 }
 
-public protocol APIService {
+public protocol APIService: AnyObject {
     //MARK: Auth/Reg
     func fetchAuthorizedUserID() async -> Result<String, APIError>
     func loginWithCredentials(email: String, password: String) async -> Result<AuthToken, APIError>
@@ -28,8 +28,8 @@ public protocol APIService {
     func uploadProfileImage(new image: String) async -> Result<Void, APIError>
     
     //MARK: Posts
-    func fetchPosts(by query: String, after offset: Int) async -> Result<[Post], APIError>
-    func fetchPosts(with tag: String, after offset: Int) async -> Result<[Post], APIError>
+    func fetchPostsByTitle(_ query: String, after offset: Int) async -> Result<[Post], APIError>
+    func fetchPostsByTag(_ tag: String, after offset: Int) async -> Result<[Post], APIError>
     func makePost(
         of type: ContenType,
         with title: String,

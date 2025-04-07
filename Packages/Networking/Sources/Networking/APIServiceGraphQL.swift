@@ -186,7 +186,7 @@ public final class APIServiceGraphQL: APIService {
     
     
     //MARK: Posts
-    public func fetchPosts(by query: String, after offset: Int) async -> Result<[Post], APIError> {
+    public func fetchPostsByTitle(_ query: String, after offset: Int) async -> Result<[Post], APIError> {
         do {
             let operation = GetAllPostsQuery(
                 filterBy: [.case(.image), .case(.text), .case(.video), .case(.audio)],
@@ -219,7 +219,7 @@ public final class APIServiceGraphQL: APIService {
         }
     }
     
-    public func fetchPosts(with tag: String, after offset: Int) async -> Result<[Post], APIError> {
+    public func fetchPostsByTag(_ tag: String, after offset: Int) async -> Result<[Post], APIError> {
         do {
             let operation = GetAllPostsQuery(
                 filterBy: [.case(.image), .case(.text), .case(.video), .case(.audio)],

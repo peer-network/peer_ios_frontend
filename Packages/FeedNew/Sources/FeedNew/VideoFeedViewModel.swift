@@ -10,7 +10,7 @@ import Models
 
 @MainActor
 final class VideoFeedViewModel: ObservableObject, PostsFetcher {
-    public weak var apiManager: (any APIServiceWrapper)!
+    public unowned var apiManager: (any APIServiceWrapper)!
     @Published private(set) var state = PostsState.loading
 
     private var userId: String?
