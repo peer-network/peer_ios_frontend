@@ -69,7 +69,7 @@ extension View {
                             $0.presentationBackground(.ultraThinMaterial)
                         }
                         .ifCondition(isBackgroundWhite) {
-                            $0.presentationBackground(Color.white)
+                            $0.presentationBackground(Colors.whitePrimary)
                         }
                         .presentationDetents([.fraction(0.75), .large])
                         .presentationContentInteraction(.resizes)

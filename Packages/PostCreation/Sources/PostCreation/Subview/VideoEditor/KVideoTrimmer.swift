@@ -104,14 +104,14 @@ struct KVideoTrimmer: View {
                     .iconSize(height: 11)
             }
             .font(.customFont(weight: .bold, style: .footnote))
-            .foregroundStyle(Color.white)
+            .foregroundStyle(Colors.whitePrimary)
             .padding(.vertical, 15)
             .padding(.horizontal, 20)
             .background(.ultraThinMaterial)
             .cornerRadius(24)
             .overlay {
                 RoundedRectangle(cornerRadius: 24)
-                    .strokeBorder(Color.white, lineWidth: 1)
+                    .strokeBorder(Colors.whitePrimary, lineWidth: 1)
             }
             .frame(maxWidth: .infinity)
         }
@@ -130,20 +130,11 @@ struct KVideoTrimmer: View {
                     .rotationEffect(.degrees(270))
             }
             .font(.customFont(weight: .bold, style: .footnote))
-            .foregroundStyle(Color.white)
+            .foregroundStyle(Colors.whitePrimary)
             .padding(.vertical, 15)
             .padding(.horizontal, 20)
             .background(.black.opacity(0.2))
-            .background(
-                LinearGradient(
-                    stops: [
-                        Gradient.Stop(color: Color(red: 0.47, green: 0.69, blue: 1), location: 0.00),
-                        Gradient.Stop(color: Color(red: 0, green: 0.41, blue: 1), location: 1.00),
-                    ],
-                    startPoint: UnitPoint(x: 0, y: 0.5),
-                    endPoint: UnitPoint(x: 1, y: 0.5)
-                )
-            )
+            .background(Gradients.activeButtonBlue)
             .cornerRadius(24)
             .frame(maxWidth: .infinity)
         }
@@ -468,7 +459,7 @@ struct KVideoTrimmer: View {
                     .fill(.gray)
 
                 Rectangle()
-                    .fill(Color.hashtag)
+                    .fill(Colors.hashtag)
                     .frame(width: width * exportProgres)
             }
         }

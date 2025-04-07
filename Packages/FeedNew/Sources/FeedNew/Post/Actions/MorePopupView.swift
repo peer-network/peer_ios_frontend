@@ -30,13 +30,13 @@ enum MoreActions: String, CaseIterable {
     var color: Color {
         switch self {
             case .save:
-                Color.white
+                Colors.whitePrimary
             case .share:
-                Color.white
+                Colors.whitePrimary
             case .translate:
-                Color.white
+                Colors.whitePrimary
             case .report:
-                Color.redAccent
+                Colors.redAccent
         }
     }
 }

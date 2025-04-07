@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import DesignSystem
 import Photos
 import AVKit
 
@@ -47,7 +48,7 @@ struct VideoConfirmationView: View {
 
             VStack(spacing: 10) {
                 Text("\(asset.duration.stringFromTimeInterval())")
-                    .foregroundStyle(Color.white)
+                    .foregroundStyle(Colors.whitePrimary)
                     .frame(maxWidth: .infinity, alignment: .trailing)
 
                 HStack(spacing: 10) {
@@ -135,13 +136,13 @@ struct VideoConfirmationView: View {
             .padding(.vertical, 15)
             .padding(.horizontal, 20)
             .background(
-                Color.white.opacity(0.01)
+                Colors.whitePrimary.opacity(0.01)
                     .blur(radius: 22.6)
             )
             .cornerRadius(24)
             .overlay {
                 RoundedRectangle(cornerRadius: 24)
-                    .strokeBorder(Color.white, lineWidth: 1)
+                    .strokeBorder(Colors.whitePrimary, lineWidth: 1)
             }
             .frame(maxWidth: .infinity)
         }
@@ -160,16 +161,7 @@ struct VideoConfirmationView: View {
             .padding(.vertical, 15)
             .padding(.horizontal, 20)
             .background(.black.opacity(0.2))
-            .background(
-                LinearGradient(
-                    stops: [
-                        Gradient.Stop(color: Color(red: 0.47, green: 0.69, blue: 1), location: 0.00),
-                        Gradient.Stop(color: Color(red: 0, green: 0.41, blue: 1), location: 1.00),
-                    ],
-                    startPoint: UnitPoint(x: 0, y: 0.5),
-                    endPoint: UnitPoint(x: 1, y: 0.5)
-                )
-            )
+            .background(Gradients.activeButtonBlue)
             .cornerRadius(24)
             .frame(maxWidth: .infinity)
         }

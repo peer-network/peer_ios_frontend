@@ -42,10 +42,18 @@ public enum FontWeight: String {
 }
 
 public enum FontSize: CGFloat {
-    case headline = 17
+    case title = 17
     case body = 14
     case footnote = 12
     case footnoteSmall = 10
+}
+
+public enum FontSizeNew: CGFloat {
+    case title = 17
+    case headline = 14
+    case subheadline = 13
+    case body = 11
+    case callout = 10
 }
 
 @available(iOS 14, *)

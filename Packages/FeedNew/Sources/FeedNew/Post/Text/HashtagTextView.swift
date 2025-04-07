@@ -47,7 +47,7 @@ struct HashtagTextView: UIViewRepresentable {
         for match in matches {
             let range = match.range
             let hashtag = (inputString as NSString).substring(with: range)
-            attributedString.addAttribute(.foregroundColor, value: UIColor(Color.hashtag), range: range)
+            attributedString.addAttribute(.foregroundColor, value: UIColor(Colors.hashtag), range: range)
             attributedString.addAttribute(.link, value: "hashtag://\(hashtag)", range: range)
         }
         

@@ -23,9 +23,9 @@ struct PostTypeHeaderView: View {
             buttonView(type: .audio)
         }
         .font(.customFont(weight: .regular, size: .body))
-        .foregroundStyle(Color.white)
+        .foregroundStyle(Colors.whitePrimary)
         .padding(10)
-        .background(Color.backgroundDark)
+        .background(Colors.textActive)
         .animation(nil, value: selectedType)
     }
 
@@ -81,7 +81,7 @@ struct PostTypeHeaderView: View {
 
 #Preview {
     ZStack {
-        Color.backgroundDark
+        Colors.textActive
             .ignoresSafeArea()
 
         PostTypeHeaderView(selectedType: .constant(.image))

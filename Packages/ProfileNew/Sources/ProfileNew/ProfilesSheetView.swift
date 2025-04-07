@@ -30,12 +30,12 @@ public struct ProfilesSheetView: View {
         VStack(alignment: .center, spacing: 0) {
             Capsule()
                 .frame(width: 44.5, height: 1)
-                .foregroundStyle(Color.white)
+                .foregroundStyle(Colors.whitePrimary)
                 .padding(.bottom, 10)
 
             Text(type.rawValue)
                 .font(.customFont(weight: .regular, size: .body))
-                .foregroundStyle(Color.white)
+                .foregroundStyle(Colors.whitePrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.bottom, 5)
 
@@ -83,7 +83,7 @@ struct RowProfileView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
             .font(.customFont(weight: .regular, style: .footnote))
-            .foregroundStyle(Color.white)
+            .foregroundStyle(Colors.whitePrimary)
 
             Spacer()
 

@@ -27,10 +27,10 @@ struct ProfileInfoHeaderView: View {
                     .overlay(alignment: .bottomTrailing) {
                         Circle()
                             .frame(width: 16, height: 16)
-                            .foregroundStyle(Color.hashtag)
+                            .foregroundStyle(Colors.hashtag)
                             .overlay {
                                 Circle()
-                                    .strokeBorder(Color.backgroundDark, lineWidth: 1)
+                                    .strokeBorder(Colors.textActive, lineWidth: 1)
                             }
                             .overlay {
                                 Icons.pen
@@ -64,7 +64,7 @@ struct ProfileInfoHeaderView: View {
                     .frame(height: 10)
 
                 Text(bio)
-                    .foregroundStyle(Color.white.opacity(0.5))
+                    .foregroundStyle(Colors.whiteSecondary)
             }
 
             Spacer()
@@ -88,13 +88,13 @@ struct ProfileInfoHeaderView: View {
             }
         }
         .font(.customFont(weight: .regular, style: .footnote))
-        .foregroundStyle(Color.white)
+        .foregroundStyle(Colors.whitePrimary)
     }
 }
 
 #Preview {
     ZStack {
-        Color.backgroundDark
+        Colors.textActive
             .ignoresSafeArea()
 
         ProfileInfoHeaderView(user: .placeholder(), bio: "Hello, world!", showAvatarPicker: .constant(false))

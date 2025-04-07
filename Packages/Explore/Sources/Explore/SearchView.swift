@@ -80,7 +80,7 @@ public struct SearchView: View {
                             } label: {
                                 Icons.magnifyingglassFill
                                     .iconSize(height: 18)
-                                    .foregroundStyle(Color.white)
+                                    .foregroundStyle(Colors.whitePrimary)
                                     .padding(.horizontal, 10)
                             }
                         }
@@ -92,7 +92,7 @@ public struct SearchView: View {
                 .padding(.horizontal, 10)
                 .background {
                     RoundedRectangle(cornerRadius: 24)
-                        .strokeBorder(Color.white, lineWidth: 1)
+                        .strokeBorder(Colors.whitePrimary, lineWidth: 1)
                 }
                 .padding(10)
 
@@ -119,7 +119,7 @@ public struct SearchView: View {
                 .scrollDismissesKeyboard(.interactively)
             }
         }
-        .background(Color.backgroundDark)
+        .background(Colors.textActive)
         .onChange(of: searchText) {
             switch searchType {
                 case .none:
@@ -183,10 +183,10 @@ public struct SearchView: View {
         TagsView(tags: viewModelTags.tags) { tag in
             Text("#\(tag)")
                 .font(.customFont(weight: .regular, style: .footnote))
-                .foregroundStyle(Color.hashtag)
+                .foregroundStyle(Colors.hashtag)
                 .padding(.horizontal, 20)
                 .padding(.vertical, 10)
-                .background(RoundedRectangle(cornerRadius: 20).foregroundStyle(Color.white))
+                .background(RoundedRectangle(cornerRadius: 20).foregroundStyle(Colors.whitePrimary))
         } didChangeSelection: { tag in
             searchText = tag ?? ""
             Task {
@@ -242,7 +242,7 @@ public struct SearchView: View {
                 .ifCondition(type == .tag) {
                     $0
                         .font(.customFont(weight: .regular, style: .footnote))
-                        .foregroundColor(Color.hashtag)
+                        .foregroundColor(Colors.hashtag)
                 }
                 .ifCondition(type == .title) {
                     $0
@@ -253,7 +253,7 @@ public struct SearchView: View {
                 .padding(.horizontal, 20)
                 .background {
                     RoundedRectangle(cornerRadius: 20)
-                        .foregroundStyle(Color.white)
+                        .foregroundStyle(Colors.whitePrimary)
                 }
         }
 
@@ -270,7 +270,7 @@ public struct SearchView: View {
                 .ifCondition(type == .tag) {
                     $0
                         .font(.customFont(weight: .regular, style: .footnote))
-                        .foregroundColor(Color.hashtag)
+                        .foregroundColor(Colors.hashtag)
                 }
 
             TextField(text: $searchText) {
@@ -297,7 +297,7 @@ public struct SearchView: View {
             }
             .ifCondition(type == .tag) {
                 $0
-                    .foregroundColor(Color.hashtag)
+                    .foregroundColor(Colors.hashtag)
             }
 
             Spacer()
@@ -316,11 +316,11 @@ public struct SearchView: View {
             } label: {
                 Icons.arrowsBackRounded
                     .iconSize(height: 21)
-                    .foregroundStyle(Color.white)
+                    .foregroundStyle(Colors.whitePrimary)
             }
         }
         .font(.customFont(weight: .regular, style: .footnote))
-        .background(Color.backgroundDark)
+        .background(Colors.textActive)
     }
 }
 
@@ -349,7 +349,7 @@ struct RowProfileSearchView: View {
                 .contentShape(Rectangle())
             }
             .font(.customFont(weight: .regular, style: .footnote))
-            .foregroundStyle(Color.white)
+            .foregroundStyle(Colors.whitePrimary)
         }
     }
 }

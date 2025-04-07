@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Environment
+import DesignSystem
 
 struct TextEditorView: View {
     @EnvironmentObject private var viewModel: PostCreationViewModel
@@ -18,13 +19,13 @@ struct TextEditorView: View {
                 Text(user.username)
                     .bold()
                     .italic()
-                    .foregroundStyle(Color.white)
+                    .foregroundStyle(Colors.whitePrimary)
                     .frame(width: (getRect().width - 20) * 0.2, alignment: .topLeading)
 
                 VStack(alignment: .leading, spacing: 20) {
                     TextField(text: $viewModel.postTitle, axis: .vertical) {
                         Text("Write a title to your publication...")
-                            .foregroundStyle(Color.white.opacity(0.5))
+                            .foregroundStyle(Colors.whiteSecondary)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .keyboardType(.default)

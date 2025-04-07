@@ -16,8 +16,8 @@ struct PostTextView: View {
     var body: some View {
         Text(postVM.post.title)
 //            .font(.customFont(weight: .bold, size: .footnote))
-            .font(.customFont(weight: .bold, style: .headline))
-            .foregroundStyle(isBackgroundWhite ? Color.textActive : Color.white)
+            .font(.customFont(weight: .bold, size: .title))
+            .foregroundStyle(isBackgroundWhite ? Colors.textActive : Colors.whitePrimary)
             .frame(maxWidth: .infinity, alignment: .leading)
 
         if !postVM.post.mediaDescription.isEmpty {
@@ -25,7 +25,7 @@ struct PostTextView: View {
                 //            HashtagTextView(
                 //                inputString: postVM.post.mediaDescription,
                 //                font: UIFont(name: FontType.poppins.name + FontWeight.regular.name, size: 14)!,
-                //                textColor: UIColor(Color.textActive),
+                //                textColor: UIColor(Colors.textActive),
                 //                lineLimit: postVM.lineLimit,
                 //                alignment: .left,
                 //                onHashtagTap: { hashtag in
@@ -37,7 +37,7 @@ struct PostTextView: View {
                 Text(postVM.attributedString)
                 //                .font(.customFont(weight: .regular, size: .footnote))
                     .font(.customFont(style: .body))
-                    .foregroundStyle(isBackgroundWhite ? Color.textActive : Color.white)
+                    .foregroundStyle(isBackgroundWhite ? Colors.textActive : Colors.whitePrimary)
                     .lineLimit(postVM.lineLimit)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -54,7 +54,7 @@ struct PostTextView: View {
             } label: {
                 Text("See more...")
                     .font(.customFont(weight: .regular, size: .footnote))
-                    .foregroundStyle(Color.white.opacity(0.5))
+                    .foregroundStyle(Colors.whiteSecondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .contentShape(Rectangle())
             }

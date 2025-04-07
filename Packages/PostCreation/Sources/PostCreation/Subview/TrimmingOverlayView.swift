@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import DesignSystem
 
 struct TrimmingOverlayView: View {
     @Binding var trimStartTime: Double
@@ -44,7 +45,7 @@ struct TrimmingOverlayView: View {
 
     private func dragHandle(isStart: Bool) -> some View {
         Rectangle()
-            .fill(Color.white)
+            .fill(Colors.whitePrimary)
             .frame(width: 8, height: 40)
             .gesture(
                 DragGesture()

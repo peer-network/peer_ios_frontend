@@ -34,15 +34,15 @@ public final class AuthManager: ObservableObject {
     /// Checks if we have valid tokens and tries to fetch the current user ID.
     public func restoreSessionIfPossible() async {
         // If we have no tokens or they’re expired, user is unauthenticated
-        guard let _ = tokenManager.getAccessToken(),
-              !tokenManager.isAccessTokenExpired
-        else {
-            withAnimation {
-                self.state = .unauthenticated
-            }
-            return
-        }
-        
+//        guard let _ = tokenManager.getAccessToken(),
+//              !tokenManager.isAccessTokenExpired
+//        else {
+//            withAnimation {
+//                self.state = .unauthenticated
+//            }
+//            return
+//        }
+//        
         do {
             // If the token is valid, confirm it by calling "Hello" query
             let userId = try await accountManager.getCurrentUserId()

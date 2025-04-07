@@ -58,10 +58,10 @@ public struct FollowButton: View {
             Group {
                 if viewModel.isFollowing && viewModel.isFollowed {
                     Text("Peer")
-                        .foregroundStyle(Color.white)
+                        .foregroundStyle(Colors.whitePrimary)
                 } else if viewModel.isFollowed {
                     Text("Following")
-                        .foregroundStyle(Color.white)
+                        .foregroundStyle(Colors.whitePrimary)
                 } else {
                     HStack(alignment: .center, spacing: 10) {
                         Text("Follow")
@@ -69,7 +69,7 @@ public struct FollowButton: View {
                         Icons.plus
                             .iconSize(height: 12)
                     }
-                    .foregroundStyle(isBackgroundWhite ? Color.backgroundDark : Color.white)
+                    .foregroundStyle(isBackgroundWhite ? Colors.textActive : Colors.whitePrimary)
                 }
             }
             .font(.customFont(weight: .regular, size: .footnoteSmall))
@@ -78,24 +78,15 @@ public struct FollowButton: View {
             .background {
                 if viewModel.isFollowing && viewModel.isFollowed {
                     RoundedRectangle(cornerRadius: 20)
-                        .foregroundStyle(
-                            LinearGradient(
-                                stops: [
-                                    Gradient.Stop(color: Color(red: 0.47, green: 0.69, blue: 1), location: 0.00),
-                                    Gradient.Stop(color: Color(red: 0, green: 0.41, blue: 1), location: 1.00),
-                                ],
-                                startPoint: UnitPoint(x: 0, y: 0.5),
-                                endPoint: UnitPoint(x: 1, y: 0.5)
-                            )
-                        )
+                        .foregroundStyle(Gradients.activeButtonBlue)
                         .shadow(color: .black.opacity(0.5), radius: 25, x: 0, y: 4)
                 } else if viewModel.isFollowed {
                     RoundedRectangle(cornerRadius: 20)
-                        .foregroundStyle(Color.hashtag)
+                        .foregroundStyle(Colors.hashtag)
                 } else {
                     RoundedRectangle(cornerRadius: 20)
                         .strokeBorder(lineWidth: 1)
-                        .foregroundStyle(isBackgroundWhite ? Color.backgroundDark : Color.white)
+                        .foregroundStyle(isBackgroundWhite ? Colors.textActive : Colors.whitePrimary)
                 }
             }
         }

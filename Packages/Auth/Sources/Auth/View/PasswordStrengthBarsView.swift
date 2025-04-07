@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import DesignSystem
 
 struct PasswordStrengthBarsView: View {
     let strength: AuthViewModel.PasswordStrength
@@ -15,7 +16,7 @@ struct PasswordStrengthBarsView: View {
             ForEach(0..<4, id: \.self) { bar in
                 RoundedRectangle(cornerRadius: 29)
                     .frame(width: 36, height: 2)
-                    .foregroundStyle(bar < barsAmount ? barsColor : Color.passwordBarsEmpty)
+                    .foregroundStyle(bar < barsAmount ? barsColor : Colors.passwordBarsEmpty)
                     .padding(.trailing, 3)
             }
             .layoutPriority(1)
@@ -26,7 +27,7 @@ struct PasswordStrengthBarsView: View {
             Text(strength.rawValue)
                 .font(.customFont(weight: .regular, size: .footnote))
                 .multilineTextAlignment(.center)
-                .foregroundStyle(Color.white.opacity(0.6))
+                .foregroundStyle(Colors.whitePrimary.opacity(0.6))
                 .layoutPriority(1)
         }
     }
@@ -49,15 +50,15 @@ struct PasswordStrengthBarsView: View {
     private var barsColor: Color {
         switch strength {
             case .empty:
-                Color.passwordBarsEmpty
+                Colors.passwordBarsEmpty
             case .tooWeak:
-                Color.passwordBarsRed
+                Colors.passwordBarsRed
             case .notStrongEnough:
-                Color.passwordBarsRed
+                Colors.passwordBarsRed
             case .good:
-                Color.passwordBarsYellow
+                Colors.passwordBarsYellow
             case .excellent:
-                Color.passwordBarsGreen
+                Colors.passwordBarsGreen
         }
     }
 }

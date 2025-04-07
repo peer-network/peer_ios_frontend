@@ -13,7 +13,7 @@ import Environment
 
 private struct CustomVideoPlayer: UIViewControllerRepresentable {
     @Binding var player: AVPlayer?
-    
+
     func makeUIViewController(context: Context) -> AVPlayerViewController {
         let controller = AVPlayerViewController()
         controller.player = player
@@ -118,7 +118,7 @@ struct ReelView: View {
                             showPopup(
                                 text: "You used 1 like! Free likes left for today: \(AccountManager.shared.dailyFreeLikes)",
                                 icon: Icons.heartFill
-                                //.foregroundStyle(Color.redAccent)
+                                //.foregroundStyle(Colors.redAccent)
                             )
                         } catch let error as PostActionError {
                             showPopup(
@@ -325,8 +325,11 @@ struct ReelView: View {
                             
                             progress = max(min(calculatedProgress, 1), 0)
                             isSeeking = true
-                            
-                            let dragIndex = Int(progress / 0.01)
+
+                            if thumbnailFrames.isEmpty { return }
+
+                            let dragIndex = Int(round(progress * CGFloat(thumbnailFrames.count - 1)))
+
                             // Checking if FrameThubmnails Contains the Frame
                             if thumbnailFrames.indices.contains(dragIndex) {
                                 draggingImage = thumbnailFrames[dragIndex]
@@ -411,7 +414,7 @@ struct ReelView: View {
                 let framesPerSecond: Double = 1
                 let step = 1.0 / framesPerSecond
                 var times = [NSValue]()
-                
+
                 for currentTime in stride(from: 0.0, through: totalDuration, by: step) {
                     try Task.checkCancellation()
                     let cmTime = CMTime(seconds: currentTime, preferredTimescale: 600)
