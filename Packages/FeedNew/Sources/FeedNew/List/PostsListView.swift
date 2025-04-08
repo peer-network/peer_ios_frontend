@@ -23,7 +23,7 @@ public struct PostsListView<Fetcher>: View where Fetcher: PostsFetcher {
         switch fetcher.state {
             case .loading:
                     ForEach(0..<10, id: \.self) { _ in
-                        PostView(postVM: PostViewModel(post: Post.placeholderText(), apiManager: apiManager)) // also pass router
+                        PostView(postVM: PostViewModel(post: Post.placeholderText())) // also pass router
                             .redacted(reason: .placeholder)
                             .allowsHitTesting(false)
                     }
@@ -33,7 +33,7 @@ public struct PostsListView<Fetcher>: View where Fetcher: PostsFetcher {
                         .padding(20)
                 } else {
                     ForEach(posts) { post in
-                        PostView(postVM: PostViewModel(post: post, apiManager: apiManager))
+                        PostView(postVM: PostViewModel(post: post))
                     }
 
                     switch hasMore {

@@ -95,6 +95,7 @@ public struct ProfileView: View {
     }
 
     private struct NormalFeedView: View {
+        @EnvironmentObject private var apiManager: APIServiceManager
         @StateObject private var normalFeedVM: NormalFeedViewModel
 
         init(userId: String) {
@@ -104,12 +105,17 @@ public struct ProfileView: View {
         var body: some View {
             LazyVStack(alignment: .center, spacing: 20) {
                 PostsListView(fetcher: normalFeedVM)
+                    .onAppear {
+                        normalFeedVM.apiService = apiManager.apiService
+                        normalFeedVM.fetchPosts(reset: true)
+                    }
             }
             .padding(.bottom, 10)
         }
     }
 
     private struct AudioFeedView: View {
+        @EnvironmentObject private var apiManager: APIServiceManager
         @StateObject private var audioFeedVM: AudioFeedViewModel
 
         init(userId: String) {
@@ -119,6 +125,10 @@ public struct ProfileView: View {
         var body: some View {
             LazyVStack(alignment: .center, spacing: 20) {
                 PostsListView(fetcher: audioFeedVM)
+                    .onAppear {
+                        audioFeedVM.apiService = apiManager.apiService
+                        audioFeedVM.fetchPosts(reset: true)
+                    }
             }
             .padding(.vertical, 10)
         }

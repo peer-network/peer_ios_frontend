@@ -33,6 +33,7 @@ private struct CustomVideoPlayer: UIViewControllerRepresentable {
 struct ReelView: View {
     @SwiftUI.Environment(\.scenePhase) private var scenePhase
 
+    @EnvironmentObject private var apiManager: APIServiceManager
     @EnvironmentObject private var accountManager: AccountManager
     @EnvironmentObject private var postVM: PostViewModel
     
@@ -138,6 +139,8 @@ struct ReelView: View {
                 }
             // Creating Player
                 .onAppear {
+                    postVM.apiService = apiManager.apiService
+                    
                     setupPlayer()
                     
                     if scenePhase == .active && !pausedByUser {
@@ -455,5 +458,6 @@ struct ReelView: View {
 
 #Preview {
     ReelsMainView()
-        .environmentObject(PostViewModel(post: .placeholderText(), apiManager: APIManagerStub()))
+        .environmentObject(PostViewModel(post: .placeholderText()))
+        .environmentObject(APIServiceManager(.mock))
 }

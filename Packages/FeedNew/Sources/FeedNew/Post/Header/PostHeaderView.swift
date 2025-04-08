@@ -61,8 +61,7 @@ public struct PostHeaderView: View {
                 let vm = FollowButtonViewModel(
                     id: postVM.post.owner.id,
                     isFollowing: postVM.post.owner.isFollowing,
-                    isFollowed: postVM.post.owner.isFollowed,
-                    apiWrapper: postVM.apiManager
+                    isFollowed: postVM.post.owner.isFollowed
                 )
                 FollowButton(viewModel: vm)
             }
@@ -74,5 +73,5 @@ public struct PostHeaderView: View {
     PostHeaderView()
         .padding(20)
         .environment(\.isBackgroundWhite, false)
-        .environmentObject(PostViewModel(post: .placeholderText(), apiManager: APIManagerStub()))
+        .environmentObject(PostViewModel(post: .placeholderText()))
 }

@@ -104,7 +104,7 @@ public struct FeedView: View {
                 }
             }
             .onAppear {
-                normalFeedVM.apiManager = self.apiManager
+                normalFeedVM.apiService = apiManager.apiService
                 normalFeedVM.fetchPosts(reset: true)
             }
             .onChange(of: feedContentSortingAndFiltering.filterByRelationship) {
@@ -149,7 +149,7 @@ public struct FeedView: View {
                 }
             }
             .onAppear {
-                audioFeedVM.apiManager = self.apiManager
+                audioFeedVM.apiService = apiManager.apiService
                 audioFeedVM.fetchPosts(reset: true)
             }
             .onChange(of: feedContentSortingAndFiltering.filterByRelationship) {

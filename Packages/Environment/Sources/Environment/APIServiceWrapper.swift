@@ -9,9 +9,21 @@ import Models
 import Combine
 import Networking
 
+public enum EnvironmentType {
+    case normal
+    case mock
+}
+
 @MainActor
 public final class APIServiceManager: ObservableObject, APIServiceWrapper {
-    public let apiService: APIService = APIServiceGraphQL()
+    public let apiService: APIService
     
-    public init(){}
+    public init(_ env: EnvironmentType = .normal) {
+        switch env {
+        case .normal:
+            apiService = APIServiceGraphQL()
+        case .mock:
+            apiService = APIServiceStub()
+        }
+    }
 }

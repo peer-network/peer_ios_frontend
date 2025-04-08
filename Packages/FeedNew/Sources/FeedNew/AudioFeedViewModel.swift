@@ -11,7 +11,7 @@ import Environment
 
 @MainActor
 public final class AudioFeedViewModel: ObservableObject, PostsFetcher {
-    public unowned var apiManager: (any APIServiceWrapper)!
+    public unowned var apiService: APIService!
     
     @Published public private(set) var state = PostsState.loading
 
@@ -52,7 +52,7 @@ public final class AudioFeedViewModel: ObservableObject, PostsFetcher {
                 let sort = FeedContentSortingAndFiltering.shared.sortByPopularity
                 let filter = FeedContentSortingAndFiltering.shared.filterByRelationship
                 let inTimeframe = FeedContentSortingAndFiltering.shared.sortByTime
-                let result = await apiManager.apiService.fetchPosts(
+                let result = await apiService.fetchPosts(
                     with: .audio,
                     sort: sort,
                     filter: filter,

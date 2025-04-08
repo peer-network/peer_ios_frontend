@@ -11,17 +11,17 @@ import Models
 
 @MainActor
 public final class FollowButtonViewModel: ObservableObject {
+    public unowned var apiService: APIService!
+
     private let id: String
     let isFollowing: Bool
     @Published public private(set) var isFollowed: Bool
     
-    private let apiWrapper: any APIServiceWrapper
 
-    public init(id: String, isFollowing: Bool, isFollowed: Bool, apiWrapper: any APIServiceWrapper) {
+    public init(id: String, isFollowing: Bool, isFollowed: Bool) {
         self.id = id
         self.isFollowing = isFollowing
         self.isFollowed = isFollowed
-        self.apiWrapper = apiWrapper
     }
 
     public func toggleFollow() async {
@@ -30,7 +30,7 @@ public final class FollowButtonViewModel: ObservableObject {
         }
 
         do {
-            let result = await apiWrapper.apiService.followUser(with: id)
+            let result = await apiService.followUser(with: id)
             if case .failure(let error) = result {
                 throw error
             }
@@ -42,6 +42,7 @@ public final class FollowButtonViewModel: ObservableObject {
 
 public struct FollowButton: View {
     @Environment(\.isBackgroundWhite) private var isBackgroundWhite
+    @EnvironmentObject private var apiManager: APIServiceManager
 
     @StateObject private var viewModel: FollowButtonViewModel
     
@@ -99,13 +100,17 @@ public struct FollowButton: View {
                 }
             }
         }
+        .onAppear {
+            viewModel.apiService = apiManager.apiService
+        }
     }
 }
 
 #Preview {
     VStack {
-        let vm = FollowButtonViewModel(id: "", isFollowing: false, isFollowed: false, apiWrapper: APIManagerStub())
+        let vm = FollowButtonViewModel(id: "", isFollowing: false, isFollowed: false)
         FollowButton(viewModel: vm)
+            .environmentObject(APIServiceManager(.mock))
             .environment(\.isBackgroundWhite, false)
     }
     .background {

@@ -13,6 +13,7 @@ import Environment
 struct PostDescriptionComment: View {
     @Environment(\.isBackgroundWhite) private var isBackgroundWhite
 
+    @EnvironmentObject private var apiManager: APIServiceManager
     @EnvironmentObject private var router: Router
     @EnvironmentObject private var postVM: PostViewModel
 
@@ -63,6 +64,7 @@ struct PostDescriptionComment: View {
             Spacer()
                 .frame(width: 35)
         }
+        .onAppear { postVM.apiService = apiManager.apiService }
         .font(.customFont(weight: .regular, size: .body))
         .multilineTextAlignment(.leading)
         .foregroundStyle(isBackgroundWhite ? Color.backgroundDark : Color.white)
@@ -140,6 +142,7 @@ struct SingleCommentView: View {
             }
             .padding()
             .environment(\.isBackgroundWhite, false)
+            .environmentObject(APIServiceManager(.mock))
 
             VStack {
                 PostDescriptionComment(isInFeed: false)
@@ -148,6 +151,7 @@ struct SingleCommentView: View {
             .padding()
             .background(Color.black)
             .environment(\.isBackgroundWhite, true)
+            .environmentObject(APIServiceManager(.mock))
         }
     }
 }

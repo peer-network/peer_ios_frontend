@@ -363,5 +363,5 @@ struct RowProfileSearchView: View {
 #Preview {
     SearchView()
         .environmentObject(AccountManager.shared)
-        .environmentObject(APIManagerStub())
+        .environmentObject(APIServiceManager(.mock))
 }

@@ -48,11 +48,10 @@ public final class AuthViewModel: ObservableObject {
 
     //why weak var?
     weak var authManager: AuthManager?
-    private let apiService: APIService
+    public unowned var apiService: APIService!
 
-    public init(authManager: AuthManager, apiService: APIService) {
+    public init(authManager: AuthManager) {
         self.authManager = authManager
-        self.apiService = apiService
     }
 
     func login() async {

@@ -14,7 +14,7 @@ import Environment
 @MainActor
 public final class PostViewModel: ObservableObject {
     let post: Post
-    let apiManager: any APIServiceWrapper
+    public unowned var apiService: APIService!
 
     @Published public var lineLimit: Int?
     public var isCollapsed: Bool = true {
@@ -34,9 +34,8 @@ public final class PostViewModel: ObservableObject {
     @Published public private(set) var amountViews: Int
     @Published public private(set) var amountComments: Int
 
-    public init(post: Post, apiManager: any APIServiceWrapper) {
+    public init(post: Post) {
         self.post = post
-        self.apiManager = apiManager
 
         isLiked = post.isLiked
         isViewed = post.isViewed

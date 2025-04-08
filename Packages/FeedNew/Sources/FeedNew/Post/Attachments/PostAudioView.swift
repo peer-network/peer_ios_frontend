@@ -177,5 +177,5 @@ struct PostAudioView: View {
 
 #Preview {
     PostAudioView()
-        .environmentObject(PostViewModel(post: .placeholderText(), apiManager: APIManagerStub()))
+        .environmentObject(PostViewModel(post: .placeholderText()))
 }

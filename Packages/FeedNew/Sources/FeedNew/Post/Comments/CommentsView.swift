@@ -36,7 +36,7 @@ public struct CommentsView: View {
 
             ScrollView {
                 PostDescriptionComment(isInFeed: false)
-                    .environmentObject(PostViewModel(post: viewModel.post, apiManager: apiManager))
+                    .environmentObject(PostViewModel(post: viewModel.post))
 
                 switch viewModel.state {
                     case .display(let comments, let hasMore):

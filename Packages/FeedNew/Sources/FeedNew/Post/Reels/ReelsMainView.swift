@@ -26,5 +26,5 @@ struct ReelsMainView: View {
 
 #Preview {
     ReelsMainView()
-        .environmentObject(PostViewModel(post: .placeholderText(), apiManager: APIManagerStub()))
+        .environmentObject(PostViewModel(post: .placeholderText()))
 }

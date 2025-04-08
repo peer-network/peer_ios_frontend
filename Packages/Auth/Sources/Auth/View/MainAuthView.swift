@@ -11,6 +11,7 @@ import DesignSystem
 
 public struct MainAuthView: View {
     @EnvironmentObject private var router: Router
+    @EnvironmentObject private var apiManager: APIServiceManager
     @Environment(\.openURL) private var openURL
     
     private enum FocusedField {
@@ -165,6 +166,7 @@ public struct MainAuthView: View {
           OpenURLAction { url in
             router.handle(url: url)
           })
+        .onAppear { viewModel.apiService = apiManager.apiService }
     }
     
     // MARK: - Login Form View
@@ -479,5 +481,6 @@ public extension MainAuthView {
     let authManager = AuthManager()
     let apiService = APIServiceStub()
     
-    MainAuthView(viewModel: AuthViewModel(authManager: authManager, apiService: apiService))
+    MainAuthView(viewModel: AuthViewModel(authManager: authManager))
+        .environmentObject(APIServiceManager(.mock))
 }

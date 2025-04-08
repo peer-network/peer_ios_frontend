@@ -35,7 +35,7 @@ struct ReelsView: View {
                             )
                             .frame(maxWidth: .infinity)
                             .containerRelativeFrame(.vertical)
-                            .environmentObject(PostViewModel(post: post, apiManager: apiManager))
+                            .environmentObject(PostViewModel(post: post))
                         }
                     }
                 case .error(let error):
@@ -66,7 +66,7 @@ struct ReelsView: View {
             }
         }
         .onAppear {
-            viewModel.apiManager = self.apiManager
+            viewModel.apiService = apiManager.apiService
             viewModel.fetchPosts(reset: true)
         }
         .refreshable {
@@ -88,5 +88,5 @@ struct ReelsView: View {
 
 #Preview {
     ReelsMainView()
-        .environmentObject(PostViewModel(post: .placeholderText(), apiManager: APIManagerStub()))
+        .environmentObject(PostViewModel(post: .placeholderText()))
 }

@@ -65,5 +65,5 @@ struct PostTextView: View {
 
 #Preview {
     PostTextView()
-        .environmentObject(PostViewModel(post: .placeholderText(), apiManager: APIManagerStub()))
+        .environmentObject(PostViewModel(post: .placeholderText()))
 }

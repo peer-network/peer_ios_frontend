@@ -9,13 +9,6 @@ import Models
 import GQLOperationsUser
 import Foundation
 
-@MainActor
-public final class APIManagerStub: APIServiceWrapper, ObservableObject {
-    public let apiService: APIService = APIServiceStub()
-    
-    public init() {}
-}
-
 public final class APIServiceStub: APIService {
     public init(){}
     

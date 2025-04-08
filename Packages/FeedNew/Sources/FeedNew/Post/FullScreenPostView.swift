@@ -25,7 +25,7 @@ public struct FullScreenPostView: View {
         HeaderContainer(actionsToDisplay: .commentsAndLikes) {
             Text("Post")
         } content: {
-            PostView(postVM: PostViewModel(post: post, apiManager: apiManager))
+            PostView(postVM: PostViewModel(post: post))
         }
         .background(Color.backgroundDark)
     }
