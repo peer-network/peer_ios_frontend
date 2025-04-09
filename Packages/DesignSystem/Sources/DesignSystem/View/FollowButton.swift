@@ -16,7 +16,6 @@ public final class FollowButtonViewModel: ObservableObject {
     private let id: String
     let isFollowing: Bool
     @Published public private(set) var isFollowed: Bool
-    
 
     public init(id: String, isFollowing: Bool, isFollowed: Bool) {
         self.id = id

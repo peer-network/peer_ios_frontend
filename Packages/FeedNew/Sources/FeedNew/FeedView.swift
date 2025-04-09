@@ -132,6 +132,7 @@ public struct FeedView: View {
         @Environment(\.selectedTabScrollToTop) private var selectedTabScrollToTop
         @EnvironmentObject private var router: Router
         @EnvironmentObject private var apiManager: APIServiceManager
+      
         @StateObject private var feedContentSortingAndFiltering = FeedContentSortingAndFiltering.shared
 
         @StateObject private var audioFeedVM = AudioFeedViewModel()
