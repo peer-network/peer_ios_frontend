@@ -225,7 +225,7 @@ public struct PostCreationView: View {
                         .animation(nil)
                 }, proceed: {
                     HStack {
-                        Text("Post")
+                        Text("Continue")
                         Spacer()
                         Icons.arrowDownNormal
                             .foregroundColor(Colors.whitePrimary)

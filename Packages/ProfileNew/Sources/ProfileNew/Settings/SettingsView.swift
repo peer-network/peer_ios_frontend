@@ -20,6 +20,7 @@ public struct SettingsView: View {
 
     @EnvironmentObject private var accountManager: AccountManager
     @EnvironmentObject private var authManager: AuthManager
+    @EnvironmentObject private var audioManager: AudioSessionManager
     @EnvironmentObject private var router: Router
 
     @StateObject private var viewModel = SettingsViewModel()
@@ -230,6 +231,7 @@ public struct SettingsView: View {
 
     private var logoutButton: some View {
         Button {
+            audioManager.stop()
             authManager.logout()
         } label: {
             Text("Logout")

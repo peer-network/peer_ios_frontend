@@ -39,7 +39,7 @@ struct PostDescriptionComment: View {
                         .bold()
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .layoutPriority(-1)
-                    
+
                     Text(postVM.post.formattedCreatedAtShort)
                         .font(.customFont(weight: .regular, size: .footnoteSmall))
                         .foregroundStyle(isBackgroundWhite ? Colors.inactiveDark : Colors.whiteSecondary)

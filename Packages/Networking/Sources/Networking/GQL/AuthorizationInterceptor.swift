@@ -71,7 +71,7 @@ class AuthorizationInterceptor: ApolloInterceptor {
                     let newAccessToken = result.refreshToken.accessToken,
                     let newRefreshToken = result.refreshToken.refreshToken
                 else {
-                    // Refresh mutation succeeded but tokens are missing — fallback
+                    // Refresh mutation succeeded but tokens are missing — error
                     throw GQLError.missingData
                 }
 

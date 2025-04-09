@@ -13,6 +13,7 @@ public enum RouterDestination: Hashable {
     case postDetailsWithPost(post: Post)
     case settings
     case hashTag(tag: String)
+    case versionHistory
 }
 
 public enum SheetDestination: Identifiable, Hashable {
