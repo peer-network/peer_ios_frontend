@@ -42,7 +42,7 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                         Icons.arrowDown
                             .iconSize(height: 7)
                             .rotationEffect(.degrees(90))
-                            .padding(.horizontal, 10)
+                            .padding(.trailing, 10)
                     }
                 }
 
@@ -82,11 +82,11 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                 .background(Colors.inactiveDark)
                 .cornerRadius(5)
 
-                if
-                    let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
-                {
+                if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
                     Button {
-                        //
+                        if router.path.last != .versionHistory {
+                            router.navigate(to: .versionHistory)
+                        }
                     } label: {
                         Text("v. \(Text(version).font(.customFont(weight: .semiBold, size: .body)))")
                             .font(.customFont(weight: .regular, size: .body))
@@ -94,8 +94,6 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                             .padding(.vertical, 5)
                             .background(Colors.inactiveDark)
                             .cornerRadius(5)
-    //                    Icons.bubble
-    //                        .iconSize(height: 17)
                     }
                     .padding(.leading, 10)
                 }

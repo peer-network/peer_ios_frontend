@@ -30,7 +30,7 @@ struct PostImagesView: View {
                                 )
                                 .clipShape(Rectangle())
                         } else if state.isLoading {
-                            RoundedRectangle(cornerRadius: 10)
+                            Rectangle()
                                 .fill(Color.gray)
                         }
                     }

@@ -30,6 +30,9 @@ extension View {
                 case .settings:
                     SettingsView()
                         .toolbar(.hidden, for: .navigationBar)
+                case .versionHistory:
+                    VersionHistoryPageView()
+                        .toolbar(.hidden, for: .navigationBar)
             }
         }
     }
