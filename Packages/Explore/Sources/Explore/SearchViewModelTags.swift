@@ -63,7 +63,7 @@ final class SearchViewModelTags: ObservableObject {
 
         fetchPostsTask = Task {
             do {
-                let result = await apiService.fetchPostsByTag(tag.lowercased(), after: currentOffsetPosts)
+                let result = await apiService.fetchPostsByTag(tag, after: currentOffsetPosts)
                 
                 try Task.checkCancellation()
                 

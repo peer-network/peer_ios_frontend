@@ -74,12 +74,21 @@ struct ReelsView: View {
             viewModel.fetchPosts(reset: true)
         }
         .onChange(of: feedContentSortingAndFiltering.filterByRelationship) {
+            guard viewModel.apiService != nil else {
+                return
+            }
             viewModel.fetchPosts(reset: true)
         }
         .onChange(of: feedContentSortingAndFiltering.sortByPopularity) {
+            guard viewModel.apiService != nil else {
+                return
+            }
             viewModel.fetchPosts(reset: true)
         }
         .onChange(of: feedContentSortingAndFiltering.sortByTime) {
+            guard viewModel.apiService != nil else {
+                return
+            }
             viewModel.fetchPosts(reset: true)
         }
         .environment(\.colorScheme, .dark)

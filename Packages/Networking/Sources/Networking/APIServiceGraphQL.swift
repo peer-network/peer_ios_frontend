@@ -274,7 +274,7 @@ public final class APIServiceGraphQL: APIService {
                 ignorList: .some(.case(.no)),
                 sortBy: .some(.case(.newest)),
                 title: nil,
-                tag: GraphQLNullable(stringLiteral: tag.lowercased()),
+                tag: GraphQLNullable(stringLiteral: tag),
                 from: nil,
                 to: nil,
                 postOffset: GraphQLNullable<Int>(integerLiteral: offset),
