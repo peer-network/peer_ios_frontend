@@ -1,5 +1,5 @@
 //
-//  APIServiceWrapper.swift
+//  APIServiceManager.swift
 //  Environment
 //
 //  Created by Alexander Savchenko on 04.04.25.
