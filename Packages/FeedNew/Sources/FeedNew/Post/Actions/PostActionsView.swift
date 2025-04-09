@@ -167,7 +167,7 @@ struct PostActionsView: View {
                         showPopup(
                             text: "You used 1 like! Free likes left for today: \(AccountManager.shared.dailyFreeLikes)",
                             icon: Icons.heartFill
-                            //.foregroundStyle(Color.redAccent)
+                            //.foregroundStyle(Colors.redAccent)
                         )
                     case .dislike:
                         try await postVM.toggleDislike()

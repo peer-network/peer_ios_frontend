@@ -25,7 +25,7 @@ struct GemsMainView: View {
                     .font(.customFont(weight: .semiBold, style: .largeTitle))
             }
         }
-        .foregroundStyle(Color.white)
+        .foregroundStyle(Colors.whitePrimary)
         .padding(20)
         .clipShape(RoundedRectangle(cornerRadius: 24))
     }

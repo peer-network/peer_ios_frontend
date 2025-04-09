@@ -40,10 +40,10 @@ struct PostDescriptionComment: View {
                         .bold()
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .layoutPriority(-1)
-                    
+
                     Text(postVM.post.formattedCreatedAtShort)
                         .font(.customFont(weight: .regular, size: .footnoteSmall))
-                        .foregroundStyle(isBackgroundWhite ? Color.darkInactive : Color.white.opacity(0.5))
+                        .foregroundStyle(isBackgroundWhite ? Colors.inactiveDark : Colors.whiteSecondary)
                 }
 
                 if !postVM.post.mediaDescription.isEmpty {
@@ -52,12 +52,12 @@ struct PostDescriptionComment: View {
 
 //                if !postVM.post.tags.isEmpty {
 //                    Text(tags.joined(separator: " "))
-//                        .foregroundStyle(Color.hashtag)
+//                        .foregroundStyle(Colors.hashtag)
 //                }
 
                 if isInFeed, postVM.post.amountComments > 0 {
                     Text("^[\(postVM.post.amountComments) comment](inflect: true) more...")
-                        .foregroundStyle(Color.white.opacity(0.5))
+                        .foregroundStyle(Colors.whiteSecondary)
                 }
             }
             
@@ -67,7 +67,7 @@ struct PostDescriptionComment: View {
         .onAppear { postVM.apiService = apiManager.apiService }
         .font(.customFont(weight: .regular, size: .body))
         .multilineTextAlignment(.leading)
-        .foregroundStyle(isBackgroundWhite ? Color.backgroundDark : Color.white)
+        .foregroundStyle(isBackgroundWhite ? Colors.textActive : Colors.whitePrimary)
     }
 }
 
@@ -97,7 +97,7 @@ struct SingleCommentView: View {
 
                 Text(comment.formattedCreatedAt)
                     .font(.customFont(weight: .regular, style: .caption1))
-                    .foregroundStyle(isBackgroundWhite ? Color.darkInactive : Color.white.opacity(0.5))
+                    .foregroundStyle(isBackgroundWhite ? Colors.inactiveDark : Colors.whiteSecondary)
             }
 
             VStack(spacing: 5) {
@@ -114,7 +114,7 @@ struct SingleCommentView: View {
                         if comment.isLiked {
                             Icons.heartFill
                                 .iconSize(height: 15)
-                                .foregroundStyle(Color.redAccent)
+                                .foregroundStyle(Colors.redAccent)
                         } else {
                             Icons.heart
                                 .iconSize(height: 15)
@@ -128,7 +128,7 @@ struct SingleCommentView: View {
         }
         .font(.customFont(weight: .regular, style: .footnote))
         .multilineTextAlignment(.leading)
-        .foregroundStyle(isBackgroundWhite ? Color.backgroundDark : Color.white)
+        .foregroundStyle(isBackgroundWhite ? Colors.textActive : Colors.whitePrimary)
     }
 }
 

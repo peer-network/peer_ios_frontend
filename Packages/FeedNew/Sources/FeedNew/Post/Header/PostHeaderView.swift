@@ -36,15 +36,15 @@ public struct PostHeaderView: View {
                             .font(.customFont(weight: .boldItalic, style: .callout))
 
                         Text("#\(String(postVM.post.owner.slug))")
-                            .foregroundStyle(isBackgroundWhite ? Color.textSuggestions : Color.white.opacity(0.5))
+                            .foregroundStyle(isBackgroundWhite ? Colors.textSuggestions : Colors.whiteSecondary)
                     }
 
                     Text(postVM.post.formattedCreatedAtLong)
                 }
                 //            .font(.customFont(weight: .regular, size: .footnoteSmall))
                 .font(.customFont(weight: .regular, style: .footnote))
-                .foregroundStyle(isBackgroundWhite ? Color.textActive : Color.white)
-                .contentShape(Rectangle())
+                .foregroundStyle(isBackgroundWhite ? Colors.textActive : Colors.whitePrimary)
+                .contentShape(.rect)
                 .ifCondition(!isBackgroundWhite) {
                     $0.shadow(color: .black, radius: 40, x: 0, y: 0)
                 }

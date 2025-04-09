@@ -25,12 +25,12 @@ public struct CommentsView: View {
         VStack(alignment: .center, spacing: 0) {
             Capsule()
                 .frame(width: 44.5, height: 1)
-                .foregroundStyle(isBackgroundWhite ? Color.backgroundDark : Color.white)
+                .foregroundStyle(isBackgroundWhite ? Colors.textActive : Colors.whitePrimary)
                 .padding(.bottom, 10)
 
             Text("Comments")
                 .font(.customFont(weight: .regular, size: .body))
-                .foregroundStyle(isBackgroundWhite ? Color.backgroundDark : Color.white)
+                .foregroundStyle(isBackgroundWhite ? Colors.textActive : Colors.whitePrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.bottom, 5)
 
@@ -92,7 +92,7 @@ public struct CommentsView: View {
         HStack(alignment: .center, spacing: 10) {
             TextField(text: $commentText, axis: .vertical) {
                 Text("Write a comment...")
-                    .foregroundStyle(Color.textSuggestions)
+                    .foregroundStyle(Colors.textSuggestions)
             }
             .lineLimit(5)
             .foregroundStyle(Color.black)
@@ -106,7 +106,7 @@ public struct CommentsView: View {
         .padding(.vertical, 4)
         .background {
             RoundedRectangle(cornerRadius: 20)
-                .foregroundStyle(isBackgroundWhite ? Color.lightBlue : Color.white)
+                .foregroundStyle(isBackgroundWhite ? Colors.blueLight : Colors.whitePrimary)
         }
         .contentShape(Rectangle())
     }
@@ -126,21 +126,13 @@ public struct CommentsView: View {
             }
         } label: {
             Circle()
-                .foregroundStyle(
-                    LinearGradient(
-                        stops: [
-                            Gradient.Stop(color: Color(red: 0.47, green: 0.69, blue: 1), location: 0.00),
-                            Gradient.Stop(color: Color(red: 0, green: 0.41, blue: 1), location: 1.00),
-                        ],
-                        startPoint: UnitPoint(x: 0, y: 0.5),
-                        endPoint: UnitPoint(x: 1, y: 0.5))
-                )
+                .foregroundStyle(Gradients.activeButtonBlue)
                 .frame(width: 33, height: 33)
                 .overlay {
                     Icons.arrowDownNormal
                         .iconSize(height: 22)
                         .rotationEffect(.degrees(270))
-                        .foregroundStyle(Color.white)
+                        .foregroundStyle(Colors.whitePrimary)
                 }
         }
         .disabled(commentText.isEmpty)

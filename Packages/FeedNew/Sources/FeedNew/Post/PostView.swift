@@ -8,6 +8,7 @@
 import SwiftUI
 import Environment
 import NukeUI
+import DesignSystem
 
 struct PostView: View {
     @Environment(\.redactionReasons) private var reasons
@@ -153,21 +154,14 @@ struct PostView: View {
                             .scaledToFill()
                             .clipShape(RoundedRectangle(cornerRadius: 24))
                             .overlay {
-                                LinearGradient(
-                                    stops: [
-                                        Gradient.Stop(color: .black.opacity(0), location: 0.00),
-                                        Gradient.Stop(color: Color.textActive, location: 0.50),
-                                    ],
-                                    startPoint: UnitPoint(x: 0.5, y: 0),
-                                    endPoint: UnitPoint(x: 0.5, y: 1)
-                                )
+                                Gradients.blackHover
                             }
                     } else {
-                        Color.textActive
+                        Colors.textActive
                     }
                 }
             } else {
-                Color.textActive
+                Colors.textActive
             }
         }
         .cornerRadius(24)

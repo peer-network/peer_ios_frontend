@@ -27,6 +27,6 @@ public struct FullScreenPostView: View {
         } content: {
             PostView(postVM: PostViewModel(post: post))
         }
-        .background(Color.backgroundDark)
+        .background(Colors.textActive)
     }
 }

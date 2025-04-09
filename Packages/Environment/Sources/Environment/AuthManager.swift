@@ -18,7 +18,7 @@ public enum AuthState {
 @MainActor
 //TODO: Get rid of ObservableObject inheritance, bad practice to use @Published in service
 public final class AuthManager: ObservableObject {
-    @Published public private(set) var state: AuthState = .loading
+    @Published public var state: AuthState = .loading
     
     private let accountManager: AccountManager
     private let tokenManager: TokenKeychainManager
@@ -29,38 +29,21 @@ public final class AuthManager: ObservableObject {
     ) {
         self.accountManager = accountManager
         self.tokenManager = tokenManager
-//        logout()
     }
     
     /// Checks if we have valid tokens and tries to fetch the current user ID.
-    public func restoreSessionIfPossible() async {
-        // If we have no tokens or they’re expired, user is unauthenticated
-        guard let _ = tokenManager.getAccessToken(),
-              !tokenManager.isAccessTokenExpired
-        else {
-            withAnimation {
-                self.state = .unauthenticated
-            }
-            return
-        }
-        
+    public func restoreSessionIfPossible() async -> AuthState {
         do {
             // If the token is valid, confirm it by calling "Hello" query
             let userId = try await accountManager.getCurrentUserId()
-            
-            // We’re authenticated
-            withAnimation {
-                self.state = .authenticated(userId: userId)
-            }
 
             // Optionally, fetch daily freebies or any user data
             try? await accountManager.fetchDailyFreeLimits()
-            
+
+            return .authenticated(userId: userId)
         } catch {
             // If the token call fails, user is unauthenticated
-            withAnimation {
-                self.state = .unauthenticated
-            }
+            return .unauthenticated
         }
     }
     

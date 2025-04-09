@@ -49,7 +49,7 @@ public struct MainAuthView: View {
                         .font(.customFont(weight: .light, size: .body))
                         .italic()
                         .multilineTextAlignment(.center)
-                        .foregroundStyle(Color.white)
+                        .foregroundStyle(Colors.whitePrimary)
                         .padding(.horizontal, 40)
                     
                     Spacer()
@@ -86,8 +86,8 @@ public struct MainAuthView: View {
                         }
                     }
                     .font(.customFont(weight: .regular, size: .body))
-                    .foregroundStyle(Color.white)
-                    
+                    .foregroundStyle(Colors.whitePrimary)
+
                     Spacer()
                         .frame(height: 25.5)
                     
@@ -110,7 +110,7 @@ public struct MainAuthView: View {
                         Text("Privacy Policy")
                             .font(.customFont(weight: .regular, size: .footnote))
                             .underline(true, pattern: .solid)
-                            .foregroundStyle(Color.white.opacity(0.6))
+                            .foregroundStyle(Colors.whitePrimary.opacity(0.6))
                     }
                     .padding(.bottom, 32)
                 }
@@ -119,8 +119,8 @@ public struct MainAuthView: View {
             .scrollDismissesKeyboard(.interactively)
             .background {
                 ZStack {
-                    Color.backgroundDark
-                    
+                    Colors.textActive
+
                     GeometryReader { proxy in
                         let w = proxy.size.width
                         let h = proxy.size.height
@@ -131,7 +131,7 @@ public struct MainAuthView: View {
                         
                         Ellipse()
                             .frame(width: glow1Width, height: glow1Height)
-                            .foregroundStyle(Color.glowBlue.opacity(0.19))
+                            .foregroundStyle(Colors.glowBlue.opacity(0.19))
                             .blur(radius: 50)
                             .offset(
                                 x: w * (141 / 393),
@@ -144,7 +144,7 @@ public struct MainAuthView: View {
                         
                         Ellipse()
                             .frame(width: glow2Width, height: glow2Height)
-                            .foregroundStyle(Color.glowBlue.opacity(0.56))
+                            .foregroundStyle(Colors.glowBlue.opacity(0.56))
                             .blur(radius: 100)
                             .offset(
                                 x: -(glow2Width * (50 / 530)),
@@ -189,7 +189,7 @@ public struct MainAuthView: View {
                 Text("Something went wrong. Please, try again")
                     .font(.customFont(weight: .regular, size: .footnote))
                     .multilineTextAlignment(.center)
-                    .foregroundStyle(Color.warning)
+                    .foregroundStyle(Colors.warning)
                     .padding(.horizontal, 20)
                 
                 Spacer()
@@ -208,7 +208,7 @@ public struct MainAuthView: View {
                 Text("Forgot password")
                     .font(.customFont(weight: .regular, size: .footnote))
                     .underline(true, pattern: .solid)
-                    .foregroundStyle(Color.white.opacity(0.6))
+                    .foregroundStyle(Colors.whitePrimary.opacity(0.6))
                     .contentShape(Rectangle())
             }
         }
@@ -296,7 +296,7 @@ public struct MainAuthView: View {
                 Text("Something went wrong. Please, try again")
                     .font(.customFont(weight: .regular, size: .footnote))
                     .multilineTextAlignment(.center)
-                    .foregroundStyle(Color.warning)
+                    .foregroundStyle(Colors.warning)
                     .padding(.horizontal, 20)
             }
             
@@ -466,7 +466,7 @@ public struct MainAuthView: View {
                 if let helperText {
                     Text(helperText)
                         .font(.customFont(weight: .regular, size: .footnote))
-                        .foregroundStyle(isError ? Color.warning : Color.white.opacity(0.6))
+                        .foregroundStyle(isError ? Colors.warning : Colors.whitePrimary.opacity(0.6))
                 }
             }
         }

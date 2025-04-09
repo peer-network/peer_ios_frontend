@@ -9,6 +9,7 @@ import SwiftUI
 import SFSafeSymbols
 import Nuke
 import Models
+import DesignSystem
 
 public struct MediaUIView: View {
     private let data: [MediaData]
@@ -56,7 +57,7 @@ private struct DismissToolbarItem: ToolbarContent {
                 dismiss()
             } label: {
                 Image(systemSymbol: .xmarkCircle)
-                    .foregroundStyle(Color.white)
+                    .foregroundStyle(Colors.whitePrimary)
             }
         }
     }
@@ -88,7 +89,7 @@ private struct SavePhotoToolbarItem: ToolbarContent {
                         case .saved: Image(systemSymbol: .checkmarkCircleFill)
                     }
                 }
-                .foregroundStyle(Color.white)
+                .foregroundStyle(Colors.whitePrimary)
             } else {
                 EmptyView()
             }

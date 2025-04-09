@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-//import FeedNew
+import DesignSystem
 
 struct TextPostCreatorView: View {
     @Binding var title: String
@@ -25,7 +25,7 @@ struct TextPostCreatorView: View {
             PostTextField(placeholder: "Write a post...", text: $text, symbolsLimit: 250, reserveLinesSpace: true)
         }
         .padding(20)
-        .background(Color.white)
+        .background(Colors.whitePrimary)
         .cornerRadius(24)
     }
 }
@@ -47,21 +47,21 @@ private struct PostTextField: View {
         VStack(spacing: 10) {
             TextField(text: text, axis: .vertical) {
                 Text(placeholder)
-                    .foregroundStyle(Color.textSuggestions)
+                    .foregroundStyle(Colors.textSuggestions)
             }
             .lineLimit(5, reservesSpace: reserveLinesSpace)
 
             if let symbolsLimit {
                 Text("\(text.wrappedValue.count)/\(symbolsLimit)")
-                    .foregroundStyle(Color.textSuggestions)
+                    .foregroundStyle(Colors.textSuggestions)
                     .frame(maxWidth: .infinity, alignment: .bottomTrailing)
             }
         }
         .frame(maxWidth: .infinity)
         .padding(20)
         .font(.customFont(weight: .regular, size: .footnote))
-        .foregroundStyle(Color.backgroundDark)
-        .background(Color.lightBlue)
+        .foregroundStyle(Colors.textActive)
+        .background(Colors.blueLight)
         .cornerRadius(24)
         .contentShape(Rectangle())
     }
@@ -71,5 +71,5 @@ private struct PostTextField: View {
 #Preview {
     TextPostCreatorView(title: .constant("Title here"), text: .constant("Text here"))
         .padding()
-        .background(Color.backgroundDark)
+        .background(Colors.textActive)
 }

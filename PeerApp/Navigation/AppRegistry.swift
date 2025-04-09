@@ -30,6 +30,9 @@ extension View {
                 case .settings:
                     SettingsView()
                         .toolbar(.hidden, for: .navigationBar)
+                case .versionHistory:
+                    VersionHistoryPageView()
+                        .toolbar(.hidden, for: .navigationBar)
             }
         }
     }
@@ -72,7 +75,7 @@ extension View {
                             $0.presentationBackground(.ultraThinMaterial)
                         }
                         .ifCondition(isBackgroundWhite) {
-                            $0.presentationBackground(Color.white)
+                            $0.presentationBackground(Colors.whitePrimary)
                         }
                         .presentationDetents([.fraction(0.75), .large])
                         .presentationContentInteraction(.resizes)

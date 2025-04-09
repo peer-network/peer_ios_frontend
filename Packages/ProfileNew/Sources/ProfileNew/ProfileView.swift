@@ -62,7 +62,7 @@ public struct ProfileView: View {
             }
         }
         .background {
-            Color.backgroundDark
+            Colors.textActive
                 .ignoresSafeArea(.all)
         }
         .confirmationDialog("Edit profile picture", isPresented: $showAvatarPicker) {

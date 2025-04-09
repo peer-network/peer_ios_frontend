@@ -89,7 +89,7 @@ final class PostCreationViewModel: NSObject, ObservableObject {
         guard markedTextRange == nil else { return }
         postText.addAttributes(
             [
-                .foregroundColor: UIColor(Color.white),
+                .foregroundColor: UIColor(Colors.whitePrimary),
                 .font: UIFont(name: FontType.poppins.name + FontWeight.regular.name, size: 14)!,
                 .backgroundColor: UIColor.clear,
                 .underlineColor: UIColor.clear,
@@ -119,7 +119,7 @@ final class PostCreationViewModel: NSObject, ObservableObject {
 
             for nsRange in ranges {
                 postText.addAttributes(
-                    [.foregroundColor: UIColor(Color.hashtag)],
+                    [.foregroundColor: UIColor(Colors.hashtag)],
                     range: nsRange)
             }
 
@@ -127,9 +127,9 @@ final class PostCreationViewModel: NSObject, ObservableObject {
 
                 postText.addAttributes(
                     [
-                        .foregroundColor: UIColor(Color.hashtag),
+                        .foregroundColor: UIColor(Colors.hashtag),
                         .underlineStyle: NSUnderlineStyle.single.rawValue,
-                        .underlineColor: UIColor(Color.hashtag),
+                        .underlineColor: UIColor(Colors.hashtag),
                     ],
                     range: NSRange(location: range.location, length: range.length))
             }

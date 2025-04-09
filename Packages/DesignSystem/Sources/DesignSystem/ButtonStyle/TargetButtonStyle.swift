@@ -14,12 +14,12 @@ public struct TargetButtonStyle: ButtonStyle {
     
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.customFont(weight: .regular, size: .headline))
+            .font(.customFont(weight: .regular, size: .title))
             .bold()
-            .foregroundStyle(Color.white)
+            .foregroundStyle(Colors.whitePrimary)
             .padding(.vertical, 18)
             .frame(maxWidth: .infinity)
-            .background(Gradients.blueGradient)
+            .background(Gradients.activeButtonBlue)
             .ifCondition(configuration.isPressed || !isEnabled) {
                 $0.overlay(Color.black.opacity(0.3))
             }

@@ -170,7 +170,7 @@ struct PostAudioView: View {
                             .iconSize(height: 20)
                     }
                 }
-                .foregroundStyle(isCurrentPlayingPost ? Color.hashtag : Color.white)
+                .foregroundStyle(isCurrentPlayingPost ? Colors.hashtag : Colors.whitePrimary)
         }
     }
 }

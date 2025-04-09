@@ -49,8 +49,8 @@ public struct PostsListView<Fetcher>: View where Fetcher: PostsFetcher {
             case .error(let error):
                 VStack(spacing: 20) {
                     Text("An error occurred while loading posts, please try again.")
-                        .font(.customFont(weight: .bold, style: .headline))
-
+                        .font(.customFont(weight: .bold, size: .title))
+                    
                     Button("Retry") {
                         Task {
                             await fetcher.fetchPosts(reset: true)

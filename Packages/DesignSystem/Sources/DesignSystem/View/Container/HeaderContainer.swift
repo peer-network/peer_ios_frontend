@@ -42,12 +42,12 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                         Icons.arrowDown
                             .iconSize(height: 7)
                             .rotationEffect(.degrees(90))
-                            .padding(.horizontal, 10)
+                            .padding(.trailing, 10)
                     }
                 }
 
                 header()
-                    .font(.customFont(weight: .regular, size: .headline))
+                    .font(.customFont(weight: .regular, size: .title))
 
                 Spacer()
 
@@ -79,26 +79,32 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                 .font(.customFont(weight: .regular, size: .body))
                 .padding(.horizontal, 10)
                 .padding(.vertical, 5)
-                .background(Color.darkInactive)
+                .background(Colors.inactiveDark)
                 .cornerRadius(5)
 
-                Spacer()
-                    .frame(width: 20)
-
-                Button {
-                    //
-                } label: {
-                    Icons.bubble
-                        .iconSize(height: 17)
+                if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+                    Button {
+                        if router.path.last != .versionHistory {
+                            router.navigate(to: .versionHistory)
+                        }
+                    } label: {
+                        Text("v. \(Text(version).font(.customFont(weight: .semiBold, size: .body)))")
+                            .font(.customFont(weight: .regular, size: .body))
+                            .padding(.horizontal, 10)
+                            .padding(.vertical, 5)
+                            .background(Colors.inactiveDark)
+                            .cornerRadius(5)
+                    }
+                    .padding(.leading, 10)
                 }
             }
-            .foregroundStyle(Color.white)
+            .foregroundStyle(Colors.whitePrimary)
             .padding(.vertical, 10)
             .padding(.horizontal, 20)
 
             content()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(Color.backgroundDark)
+        .background(Colors.textActive)
     }
 }

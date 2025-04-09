@@ -30,30 +30,28 @@ public struct PopupView: View {
             if let frontIcon {
                 frontIcon
                     .iconSize(height: 17)
-                    .foregroundStyle(Color.white)
+                    .foregroundStyle(Colors.whitePrimary)
                     .padding(.trailing, 5)
             }
             
             Text(text)
                 .font(.customFont(weight: .regular, size: .footnoteSmall))
                 .multilineTextAlignment(.leading)
-                .foregroundStyle(Color.white)
+                .foregroundStyle(Colors.whitePrimary)
 
             if let backIcon {
                 backIcon
                     .iconSize(height: 17)
-                    .foregroundStyle(Color.white)
+                    .foregroundStyle(Colors.whitePrimary)
             }
         }
         .padding(.horizontal, 20)
         .padding(.vertical, 10)
-        .background {
-            BlurView(style: .systemThinMaterialDark)
-        }
+        .background(.ultraThinMaterial)
         .clipShape(RoundedRectangle(cornerRadius: 24))
         .overlay(
             RoundedRectangle(cornerRadius: 24)
-                .strokeBorder(Color.white, lineWidth: 1)
+                .strokeBorder(Colors.whitePrimary, lineWidth: 1)
         )
         // Moving to the top
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
@@ -75,21 +73,9 @@ public struct PopupView: View {
     }
 }
 
-private struct BlurView: UIViewRepresentable {
-    let style: UIBlurEffect.Style
-    
-    func makeUIView(context: Context) -> UIVisualEffectView {
-        let view = UIVisualEffectView(effect: UIBlurEffect(style: style))
-        view.backgroundColor = UIColor(red: 0.15, green: 0.15, blue: 0.15, alpha: 0.5)
-        return view
-    }
-    
-    func updateUIView(_ uiView: UIVisualEffectView, context: Context) {}
-}
-
 #Preview {
     ZStack {
-        Color.white
+        Colors.whitePrimary
             .ignoresSafeArea()
         
         PopupView(

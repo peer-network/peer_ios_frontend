@@ -37,17 +37,26 @@ struct PeerApp: App {
 
     @StateObject private var authRouter = Router()
 
+    @State private var restoreSessionResult = AuthState.loading
+
     var body: some Scene {
         WindowGroup {
             Group {
                 switch authManager.state {
                     case .loading:
-                        ProgressView()
-                            .controlSize(.extraLarge)
-                            .task {
-                                await authManager.restoreSessionIfPossible()
-                            }
+                        ZStack(alignment: .center) {
+                            Colors.textActive
+                                .ignoresSafeArea()
 
+                            LottieView(animation: .splashScreenLogo) {
+                                authManager.state = restoreSessionResult
+                            }
+                            .frame(width: UIScreen.main.bounds.width * 0.6)
+                        }
+                        .task {
+                            restoreSessionResult = await authManager.restoreSessionIfPossible()
+                        }
+                        
                     case .unauthenticated:
                     MainAuthView(viewModel: AuthViewModel(authManager: self.authManager))
                             .withSafariRouter()

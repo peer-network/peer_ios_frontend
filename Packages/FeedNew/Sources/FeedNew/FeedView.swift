@@ -47,7 +47,7 @@ public struct FeedView: View {
             }
         }
         .background {
-            Color.textActive
+            Colors.textActive
                 .ignoresSafeArea(.all)
         }
         .overlay(alignment: .topLeading) {
@@ -108,12 +108,21 @@ public struct FeedView: View {
                 normalFeedVM.fetchPosts(reset: true)
             }
             .onChange(of: feedContentSortingAndFiltering.filterByRelationship) {
+                guard normalFeedVM.apiService != nil else {
+                    return
+                }
                 normalFeedVM.fetchPosts(reset: true)
             }
             .onChange(of: feedContentSortingAndFiltering.sortByPopularity) {
+                guard normalFeedVM.apiService != nil else {
+                    return
+                }
                 normalFeedVM.fetchPosts(reset: true)
             }
             .onChange(of: feedContentSortingAndFiltering.sortByTime) {
+                guard normalFeedVM.apiService != nil else {
+                    return
+                }
                 normalFeedVM.fetchPosts(reset: true)
             }
         }
@@ -153,12 +162,21 @@ public struct FeedView: View {
                 audioFeedVM.fetchPosts(reset: true)
             }
             .onChange(of: feedContentSortingAndFiltering.filterByRelationship) {
+                guard audioFeedVM.apiService != nil else {
+                    return
+                }
                 audioFeedVM.fetchPosts(reset: true)
             }
             .onChange(of: feedContentSortingAndFiltering.sortByPopularity) {
+                guard audioFeedVM.apiService != nil else {
+                    return
+                }
                 audioFeedVM.fetchPosts(reset: true)
             }
             .onChange(of: feedContentSortingAndFiltering.sortByTime) {
+                guard audioFeedVM.apiService != nil else {
+                    return
+                }
                 audioFeedVM.fetchPosts(reset: true)
             }
         }

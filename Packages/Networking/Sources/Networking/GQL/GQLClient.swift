@@ -18,8 +18,8 @@ public enum GQLError: Error {
 public class GQLClient {
     static public let shared = GQLClient()
     
-    private let apolloClient: ApolloClient
-    
+    public let apolloClient: ApolloClient
+
     private init() {
         let store = ApolloStore(cache: InMemoryNormalizedCache())
         let provider = NetworkInterceptorProvider(store: store)
