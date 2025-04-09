@@ -15,6 +15,7 @@ import PhotosUI
 public struct ProfileView: View {
     @EnvironmentObject private var router: Router
     @EnvironmentObject private var accountManager: AccountManager
+    @EnvironmentObject private var apiManager: APIServiceManager
 
     @StateObject private var viewModel: ProfileViewModel
 
@@ -39,7 +40,7 @@ public struct ProfileView: View {
                         VStack(spacing: 9) {
                             ProfileInfoHeaderView(user: user, bio: viewModel.fetchedBio, showAvatarPicker: $showAvatarPicker)
                                 .padding(.horizontal, 20)
-                            FollowersHeader(relationsViewModel: RelationsViewModel(userId: user.id), userId: user.id, postsCount: user.postsAmount, followersCount: user.amountFollowers, followingsCount: user.amountFollowing, friends: user.amountFriends)
+                            FollowersHeader(userId: user.id, postsCount: user.postsAmount, followersCount: user.amountFollowers, followingsCount: user.amountFollowing, friends: user.amountFriends)
                                 .padding(.horizontal, 20)
                             FeedTabControllerView(feedPage: $feedPage)
                         }
@@ -72,6 +73,13 @@ public struct ProfileView: View {
         .photosPicker(isPresented: $isImagePickerPresented, selection: $selectedPhotoItem, matching: .images)
         .onChange(of: selectedPhotoItem) {
             loadImage()
+        }
+        .onAppear {
+            viewModel.apiService = apiManager.apiService
+            Task {
+                await viewModel.fetchUser()
+                await viewModel.fetchBio()
+            }
         }
     }
     

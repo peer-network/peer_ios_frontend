@@ -34,6 +34,14 @@ public final class APIServiceStub: APIService {
         .failure(.missingData)
     }
     
+    public func fetchUserFollowers(for userID: String, after offset: Int) async -> Result<[Models.RowUser], Models.APIError> {
+        .failure(.missingData)
+    }
+    
+    public func fetchUserFollowings(for userID: String, after offset: Int) async -> Result<[Models.RowUser], Models.APIError> {
+        .failure(.missingData)
+    }
+    
     public func fetchUsers(by query: String, after offset: Int) async -> Result<[RowUser], APIError> {
         .failure(.missingData)
     }

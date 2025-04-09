@@ -18,9 +18,8 @@ struct FollowersHeader: View {
         case friends    = "peers"
     }
 
+    @EnvironmentObject private var apiManager: APIServiceManager
     @EnvironmentObject private var router: Router
-
-    @StateObject var relationsViewModel: RelationsViewModel
 
     let userId: String
     let postsCount: Int
@@ -52,9 +51,9 @@ struct FollowersHeader: View {
                 case .posts:
                     break
                 case .followers:
-                    router.presentedSheet = .followers(users: relationsViewModel.followers)
+                    router.presentedSheet = .followers(userId: userId)
                 case .followings:
-                    router.presentedSheet = .following(users: relationsViewModel.following)
+                    router.presentedSheet = .following(userId: userId)
                 case .friends:
 //                    router.presentedSheet = .friends(users: relationsViewModel.friends)
                     break
@@ -91,7 +90,7 @@ struct FollowersHeader: View {
         Color.backgroundDark
             .ignoresSafeArea()
 
-        FollowersHeader(relationsViewModel: RelationsViewModel(userId: ""), userId: "", postsCount: 423, followersCount: 244, followingsCount: 1233, friends: 13)
+        FollowersHeader(userId: "", postsCount: 423, followersCount: 244, followingsCount: 1233, friends: 13)
             .padding()
     }
 }

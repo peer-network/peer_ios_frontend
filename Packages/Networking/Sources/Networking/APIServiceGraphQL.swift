@@ -90,6 +90,54 @@ public final class APIServiceGraphQL: APIService {
         }
     }
     
+    public func fetchUserFollowers(for userID: String, after offset: Int) async -> Result<[RowUser], APIError> {
+        do {
+            let operation = GetFollowersQuery(
+                userid: GraphQLNullable(stringLiteral: userID),
+                offset: GraphQLNullable<Int>(integerLiteral: offset),
+                limit: 20
+            )
+            
+            let result = try await GQLClient.shared.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
+            
+            guard let data = result.follows.affectedRows?.followers else {
+                throw GQLError.missingData
+            }
+            
+            let fetchedUsers = data.compactMap { value in
+                RowUser(gqlUser: value)
+            }
+            
+            return .success(fetchedUsers)
+        } catch {
+            return .failure(.serverError(error: error))
+        }
+    }
+    
+    public func fetchUserFollowings(for userID: String, after offset: Int) async -> Result<[RowUser], APIError> {
+        do {
+            let operation = GetFollowingsQuery(
+                userid: GraphQLNullable(stringLiteral: userID),
+                offset: GraphQLNullable<Int>(integerLiteral: offset),
+                limit: 20
+            )
+            
+            let result = try await GQLClient.shared.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
+            
+            guard let data = result.follows.affectedRows?.following else {
+                throw GQLError.missingData
+            }
+            
+            let fetchedUsers = data.compactMap { value in
+                RowUser(gqlUser: value)
+            }
+            
+            return .success(fetchedUsers)
+        } catch {
+            return .failure(.serverError(error: error))
+        }
+    }
+    
     public func fetchUsers(by query: String, after offset: Int) async -> Result<[RowUser], APIError> {
         do {
             let operation = SearchUserQuery(

@@ -7,11 +7,12 @@
 
 import SwiftUI
 import Environment
-import Networking
-import GQLOperationsUser
+import Models
 
 @MainActor
 final class SettingsViewModel: ObservableObject {
+    public unowned var apiService: APIService!
+    
     enum BioUpdatingState {
         case loading
         case success
@@ -23,13 +24,12 @@ final class SettingsViewModel: ObservableObject {
     @Published var email: String = ""
     @Published var username: String = ""
     @Published var password: String = ""
+    @Published var bioUrl: URL?
 
     init() {
         if let user = AccountManager.shared.user {
             username = user.username
-            Task {
-                await fetchBio(url: user.bioURL)
-            }
+            bioUrl = user.bioURL
         }
     }
 
@@ -37,14 +37,16 @@ final class SettingsViewModel: ObservableObject {
         bioState = .loading
         let base64String = Data(bio.utf8).base64EncodedString()
         let base64TextString = "data:text/plain;base64,\(base64String.replacingOccurrences(of: "\n", with: "").replacingOccurrences(of: "\"", with: "\\\""))"
-        let result = try await GQLClient.shared.mutate(mutation: UpdateBioMutation(biography: base64TextString))
-
-        guard result.updateBiography.status == "success" else {
+        
+        let result = await apiService.updateBio(new: base64TextString)
+        
+        switch result {
+        case .success:
+            bioState = .success
+        case .failure(let apiError):
             bioState = .failure
-            throw GQLError.missingData
+            throw apiError
         }
-
-        bioState = .success
     }
 
     func uploadProfileImage(_ image: UIImage) async throws {
@@ -52,15 +54,18 @@ final class SettingsViewModel: ObservableObject {
 
         let base64String = compressedImageData.base64EncodedString()
         let base64ImageString = "data:image/jpeg;base64,\(base64String)"
+        
+        let result = await apiService.uploadProfileImage(new: base64ImageString)
 
-        let result = try await GQLClient.shared.mutate(mutation: UpdateAvatarMutation(img: base64ImageString))
-
-        guard result.updateProfilePicture.status == "success" else {
-            throw GQLError.missingData
+        switch result {
+        case .success:
+            break
+        case .failure(let apiError):
+            throw apiError
         }
     }
 
-    private func fetchBio(url: URL?) async {
+    func fetchBio(url: URL?) async {
         guard let url else { return }
 
         do {

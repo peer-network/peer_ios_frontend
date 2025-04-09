@@ -36,25 +36,28 @@ extension View {
 
     func withSheetDestinations(sheetDestinations: Binding<SheetDestination?>) -> some View {
         sheet(item: sheetDestinations) { destination in
+            //TODO: should be injected, not created here
+            let apiManager = APIServiceManager()
+            
             switch destination {
-                case .following(let users):
-                    ProfilesSheetView(type: .following, users: users)
+                case .following(let userId):
+                    ProfilesSheetView(type: .following, fetcher: RelationsViewModel(userId: userId, apiService: apiManager.apiService))
                         .presentationDragIndicator(.hidden)
                         .presentationCornerRadius(24)
                         .presentationBackground(.ultraThinMaterial)
                         .presentationDetents([.fraction(0.75), .large])
                         .presentationContentInteraction(.resizes)
                         .withEnvironments()
-                case .followers(let users):
-                    ProfilesSheetView(type: .followers, users: users)
+                case .followers(let userId):
+                    ProfilesSheetView(type: .followers, fetcher: RelationsViewModel(userId: userId, apiService: apiManager.apiService))
                         .presentationDragIndicator(.hidden)
                         .presentationCornerRadius(24)
                         .presentationBackground(.ultraThinMaterial)
                         .presentationDetents([.fraction(0.75), .large])
                         .presentationContentInteraction(.resizes)
                         .withEnvironments()
-                case .friends(let users):
-                    ProfilesSheetView(type: .friends, users: users)
+                case .friends(let userId):
+                    ProfilesSheetView(type: .friends, fetcher: RelationsViewModel(userId: userId, apiService: apiManager.apiService))
                         .presentationDragIndicator(.hidden)
                         .presentationCornerRadius(24)
                         .presentationBackground(.ultraThinMaterial)
