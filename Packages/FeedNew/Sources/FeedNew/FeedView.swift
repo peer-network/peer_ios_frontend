@@ -156,7 +156,6 @@ public struct FeedView: View {
                         }
                     }
                 }
-            }
             .onAppear {
                 audioFeedVM.apiService = apiManager.apiService
                 audioFeedVM.fetchPosts(reset: true)
