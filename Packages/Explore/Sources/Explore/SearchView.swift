@@ -120,7 +120,7 @@ public struct SearchView: View {
                 .scrollDismissesKeyboard(.interactively)
             }
         }
-        .background(Color.textActive)
+        .background(Colors.textActive)
         .onAppear {
             viewModelUsers.apiService = apiManager.apiService
             viewModelTags.apiService = apiManager.apiService

@@ -30,10 +30,10 @@ struct PeerApp: App {
     @StateObject private var quickLook = QuickLook.shared
     @StateObject private var audioManager = AudioSessionManager.shared
 
+    @StateObject private var remoteConfigViewModel = RemoteConfigViewModel()
+
     @State private var selectedTab: AppTab = .feed
     @StateObject private var appRouter = Router()
-
-    @State private var showUpdateAlert: Bool = false
 
     @StateObject private var authRouter = Router()
 
@@ -42,55 +42,77 @@ struct PeerApp: App {
     var body: some Scene {
         WindowGroup {
             Group {
-                switch authManager.state {
-                    case .loading:
-                        ZStack(alignment: .center) {
-                            Colors.textActive
-                                .ignoresSafeArea()
-
-                            LottieView(animation: .splashScreenLogo) {
-                                authManager.state = restoreSessionResult
-                            }
-                            .frame(width: UIScreen.main.bounds.width * 0.6)
+                switch remoteConfigViewModel.state {
+                    case .updateRequired(let force, let message):
+                        if force {
+                            ForcedUpdateView(
+                                message: message,
+                                storeURL: remoteConfigViewModel.storeURL
+                            )
+                        } else {
+                            contentView
+                                .alert("Update Available",
+                                       isPresented: $remoteConfigViewModel.showUpdateAlert) {
+                                    Button("Update") {
+                                        if let url = remoteConfigViewModel.storeURL {
+                                            UIApplication.shared.open(url)
+                                        }
+                                    }
+                                } message: {
+                                    Text(message)
+                                }
                         }
-                        .task {
-                            restoreSessionResult = await authManager.restoreSessionIfPossible()
-                        }
-                        
-                    case .unauthenticated:
-                    MainAuthView(viewModel: AuthViewModel(authManager: self.authManager))
-                            .withSafariRouter()
-                            .environmentObject(authRouter)
-                            .environmentObject(apiManager)
-
-                    case .authenticated(_):
-                        ContentView(selectedTab: $selectedTab, appRouter: appRouter)
-                            .environmentObject(apiManager)
-                            .environmentObject(accountManager)
-                            .environmentObject(quickLook)
-                            .environmentObject(authManager)
-                            .environmentObject(audioManager)
-                            .sheet(item: $quickLook.selectedMediaAttachment) { selectedMediaAttachment in
-                                MediaUIView(data: quickLook.mediaAttachments, initialItem: selectedMediaAttachment)
-                                    .presentationBackground(.ultraThinMaterial)
-                                    .presentationCornerRadius(16)
-                                    .withEnvironments()
-                                    .preferredColorScheme(.dark)
-                            }
+                    case .idle, .loading, .loaded, .error:
+                        contentView
                 }
             }
-            .onAppear {
-                showUpdateAlert = RemoteConfigService.shared.checkIfUpdateRequired()
-            }
-            .alert("New version available", isPresented: $showUpdateAlert) {
-                updateAlertButton
-            } message: {
-                Text("There are new features available, please update your app.")
+            .task {
+                await remoteConfigViewModel.fetchConfig()
             }
             .preferredColorScheme(.dark)
         }
         .onChange(of: scenePhase) {
             handleScenePhase(scenePhase)
+        }
+    }
+
+    @ViewBuilder
+    private var contentView: some View {
+        switch authManager.state {
+            case .loading:
+                ZStack(alignment: .center) {
+                    Colors.textActive
+                        .ignoresSafeArea()
+
+                    LottieView(animation: .splashScreenLogo) {
+                        authManager.state = restoreSessionResult
+                    }
+                    .frame(width: UIScreen.main.bounds.width * 0.6)
+                }
+                .task {
+                    restoreSessionResult = await authManager.restoreSessionIfPossible()
+                }
+
+            case .unauthenticated:
+                MainAuthView(viewModel: AuthViewModel(authManager: self.authManager))
+                    .withSafariRouter()
+                    .environmentObject(authRouter)
+                    .environmentObject(apiManager)
+
+            case .authenticated(_):
+                ContentView(selectedTab: $selectedTab, appRouter: appRouter)
+                    .environmentObject(apiManager)
+                    .environmentObject(accountManager)
+                    .environmentObject(quickLook)
+                    .environmentObject(authManager)
+                    .environmentObject(audioManager)
+                    .sheet(item: $quickLook.selectedMediaAttachment) { selectedMediaAttachment in
+                        MediaUIView(data: quickLook.mediaAttachments, initialItem: selectedMediaAttachment)
+                            .presentationBackground(.ultraThinMaterial)
+                            .presentationCornerRadius(16)
+                            .withEnvironments()
+                            .preferredColorScheme(.dark)
+                    }
         }
     }
 
@@ -111,18 +133,6 @@ struct PeerApp: App {
         UserDefaults.extensions.badge = 0
         UNUserNotificationCenter.current().setBadgeCount(0)
     }
-
-    private var updateAlertButton: some View {
-        Button("Update", role: .none) {
-            if let url = RemoteConfigService.shared.storeUrl {
-                UIApplication.shared.open(url)
-            }
-            Task { @MainActor in
-                try? await Task.sleep(for: .seconds(1))
-                showUpdateAlert = true
-            }
-        }
-    }
 }
 
 // MARK: - UIApplicationDelegate class
@@ -136,12 +146,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     ) -> Bool {
         FirebaseApp.configure()
 
-        RemoteConfigService.shared.fetchAndActivate()
-
         PushNotifications.register(in: application, using: notificationCenter)
 
         Messaging.messaging().delegate = notificationCenter
-
+        
         let audioSession = AVAudioSession.sharedInstance()
         try? audioSession.setCategory(.ambient, mode: .default, options: [])
         try? audioSession.setActive(true)

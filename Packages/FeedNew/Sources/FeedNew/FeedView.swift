@@ -81,7 +81,7 @@ public struct FeedView: View {
         @EnvironmentObject private var apiManager: APIServiceManager
         @StateObject private var normalFeedVM = NormalFeedViewModel()
         @StateObject private var feedContentSortingAndFiltering = FeedContentSortingAndFiltering.shared
-        
+
         var body: some View {
             ScrollViewReader { proxy in
                 ScrollView {
@@ -132,7 +132,7 @@ public struct FeedView: View {
         @Environment(\.selectedTabScrollToTop) private var selectedTabScrollToTop
         @EnvironmentObject private var router: Router
         @EnvironmentObject private var apiManager: APIServiceManager
-      
+
         @StateObject private var feedContentSortingAndFiltering = FeedContentSortingAndFiltering.shared
 
         @StateObject private var audioFeedVM = AudioFeedViewModel()
@@ -157,27 +157,28 @@ public struct FeedView: View {
                         }
                     }
                 }
-            .onAppear {
-                audioFeedVM.apiService = apiManager.apiService
-                audioFeedVM.fetchPosts(reset: true)
-            }
-            .onChange(of: feedContentSortingAndFiltering.filterByRelationship) {
-                guard audioFeedVM.apiService != nil else {
-                    return
+                .onAppear {
+                    audioFeedVM.apiService = apiManager.apiService
+                    audioFeedVM.fetchPosts(reset: true)
                 }
-                audioFeedVM.fetchPosts(reset: true)
-            }
-            .onChange(of: feedContentSortingAndFiltering.sortByPopularity) {
-                guard audioFeedVM.apiService != nil else {
-                    return
+                .onChange(of: feedContentSortingAndFiltering.filterByRelationship) {
+                    guard audioFeedVM.apiService != nil else {
+                        return
+                    }
+                    audioFeedVM.fetchPosts(reset: true)
                 }
-                audioFeedVM.fetchPosts(reset: true)
-            }
-            .onChange(of: feedContentSortingAndFiltering.sortByTime) {
-                guard audioFeedVM.apiService != nil else {
-                    return
+                .onChange(of: feedContentSortingAndFiltering.sortByPopularity) {
+                    guard audioFeedVM.apiService != nil else {
+                        return
+                    }
+                    audioFeedVM.fetchPosts(reset: true)
                 }
-                audioFeedVM.fetchPosts(reset: true)
+                .onChange(of: feedContentSortingAndFiltering.sortByTime) {
+                    guard audioFeedVM.apiService != nil else {
+                        return
+                    }
+                    audioFeedVM.fetchPosts(reset: true)
+                }
             }
         }
     }
@@ -204,14 +205,6 @@ public struct FeedView: View {
                 } action: { newValue in
                     filtersPosition = newValue
                 }
-//                .overlay(
-//                    GeometryReader { proxy in
-//                        Color.clear.preference(key: OffsetKeyRect.self, value: proxy.frame(in: .global))
-//                    }
-//                )
-//                .onPreferenceChange(OffsetKeyRect.self) { value in
-//                    filtersPosition = value
-//                }
             }
         }
     }
