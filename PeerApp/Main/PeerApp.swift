@@ -84,7 +84,7 @@ struct PeerApp: App {
                     Colors.textActive
                         .ignoresSafeArea()
 
-                    LottieView(animation: .splashScreenLogo) {
+                    LottieView(animation: .splashScreenLogo, speed: 1.2) {
                         authManager.state = restoreSessionResult
                     }
                     .frame(width: UIScreen.main.bounds.width * 0.6)

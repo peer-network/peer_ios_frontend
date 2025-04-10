@@ -7,9 +7,9 @@
 
 import Foundation
 
-//let mockService = MockRemoteConfigService()
-//mockService.setMockValue(true, for: .isForceUpdateRequired)
-//let viewModel = RemoteConfigViewModel(configService: mockService)
+// let mockService = MockRemoteConfigService()
+// mockService.setMockValue(true, for: .isForceUpdateRequired)
+// let viewModel = RemoteConfigViewModel(configService: mockService)
 
 public final class MockRemoteConfigService: RemoteConfigProtocol {
     private var mockValues: [RemoteConfigValueKey: Any] = [:]
@@ -39,7 +39,7 @@ public final class MockRemoteConfigService: RemoteConfigProtocol {
             throw RemoteConfigError.fetchError(NSError(domain: "MockError", code: -1))
         }
         // Simulate network delay
-        try await Task.sleep(nanoseconds: 500_000_000)
+        try await Task.sleep(for: .seconds(5))
     }
 
     public func activateConfig() async throws -> Bool {
