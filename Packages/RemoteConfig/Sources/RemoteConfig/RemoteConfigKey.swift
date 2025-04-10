@@ -5,6 +5,7 @@
 //  Created by Artem Vasin on 10.04.25.
 //
 
+@frozen
 public enum RemoteConfigValueKey: CaseIterable {
     case forceUpdateCurrentVersion
     case forceUpdateStoreURL

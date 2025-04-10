@@ -7,7 +7,7 @@
 
 import FirebaseRemoteConfig
 
-final public class FirebaseRemoteConfigService: RemoteConfigProtocol {
+public final class FirebaseRemoteConfigService: RemoteConfigProtocol {
     private let remoteConfig: RemoteConfig
     private var configUpdateListener: ConfigUpdateListenerRegistration?
 
