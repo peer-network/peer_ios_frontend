@@ -7,6 +7,7 @@
 
 import SwiftUI
 import DesignSystem
+import Environment
 
 struct PostTextView: View {
     @Environment(\.isBackgroundWhite) private var isBackgroundWhite

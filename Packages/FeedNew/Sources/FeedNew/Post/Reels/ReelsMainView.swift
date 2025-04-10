@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Environment
 
 struct ReelsMainView: View {
 //    @SwiftUI.Environment(AudioManager.self) private var audioManager

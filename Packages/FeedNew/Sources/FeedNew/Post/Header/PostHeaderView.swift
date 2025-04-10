@@ -57,11 +57,13 @@ public struct PostHeaderView: View {
             if !redactionReasons.contains(.placeholder),
                !accountManager.isCurrentUser(id: postVM.post.owner.id)
             {
-                FollowButton(
+                //TODO: exclude logic from Button(just pass correct colors)
+                let vm = FollowButtonViewModel(
                     id: postVM.post.owner.id,
                     isFollowing: postVM.post.owner.isFollowing,
                     isFollowed: postVM.post.owner.isFollowed
                 )
+                FollowButton(viewModel: vm)
             }
         }
     }

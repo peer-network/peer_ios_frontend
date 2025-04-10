@@ -9,13 +9,14 @@ import SwiftUI
 import Photos
 import Models
 import DesignSystem
-import Networking
-import GQLOperationsUser
 import Photos
 import Environment
+import GQLOperationsUser
 
 @MainActor
 final class PostCreationViewModel: NSObject, ObservableObject {
+    public unowned var apiService: APIService!
+    
     @Published var isCreatingPost: Bool = false
     @Published var messageToShow = ""
 
@@ -157,17 +158,30 @@ final class PostCreationViewModel: NSObject, ObservableObject {
         parseTags()
         isCreatingPost = true
         do {
-            let base64String = Data(postText.string.utf8).base64EncodedString()
-            let base64TextString = "data:text/plain;base64,\(base64String)"
-            let media = GraphQLNullable<[String]>.some([base64TextString])
+            let escapedTitle = preprocessRawTitle(postTitle)
 
-            let result = try await GQLClient.shared.mutate(mutation: CreatePostMutation(contenttype: .case(.text), title: postTitle.replacingOccurrences(of: "\n", with: "").replacingOccurrences(of: "\"", with: "\\\""), media: media, mediadescription: GraphQLNullable(stringLiteral: postText.string), tags: GraphQLNullable<[String]>.some(tags), cover: nil))
+            var encodedText = Data(postText.string.utf8).base64EncodedString()
+            addBase64Prefix(to: &encodedText, ofType: .text)
+            let base64TextString = encodedText
+                        
+            let result = await apiService.makePost(
+                of: .text,
+                with: escapedTitle,
+                content: [base64TextString],
+                contentDescitpion: postText.string,
+                tags: tags,
+                cover: nil
+            )
+            
             isCreatingPost = false
-
-            guard result.createPost.status == "success" else {
-                return false
+            
+            switch result {
+            case .success:
+                break
+            case .failure(let apiError):
+                throw apiError
             }
-
+            
             return true
         } catch {
             print(error)
@@ -181,15 +195,26 @@ final class PostCreationViewModel: NSObject, ObservableObject {
         parseTags()
         isCreatingPost = true
         do {
+            let escapedTitle = preprocessRawTitle(postTitle)
+            
             let base64Images = await convertAndCompressImagesToBase64(assets: photos)
-            let media = GraphQLNullable<[String]>.some(base64Images)
-
-            let result = try await GQLClient.shared.mutate(mutation: CreatePostMutation(contenttype: .case(.image), title: postTitle.replacingOccurrences(of: "\n", with: "").replacingOccurrences(of: "\"", with: "\\\""), media: media, mediadescription: GraphQLNullable(stringLiteral: postText.string), tags: GraphQLNullable<[String]>.some(tags), cover: nil))
+            
+            let result = await apiService.makePost(
+                of: .image,
+                with: escapedTitle,
+                content: base64Images,
+                contentDescitpion: postText.string,
+                tags: tags,
+                cover: nil
+            )
 
             isCreatingPost = false
 
-            guard result.createPost.status == "success" else {
-                return false
+            switch result {
+            case .success:
+                break
+            case .failure(let apiError):
+                throw apiError
             }
 
             return true
@@ -205,21 +230,32 @@ final class PostCreationViewModel: NSObject, ObservableObject {
     func makePost(shortVideoURL: URL?, longVideoURL: URL?) async -> Bool {
         parseTags()
         isCreatingPost = true
+        let escapedTitle = preprocessRawTitle(postTitle)
         do {
             if selectedVideoType == .short {
+                
                 let shortVideoData = try Data(contentsOf: shortVideoURL!)
-
-                let base64StringshortVideoData = shortVideoData.base64EncodedString()
-                let base64VideoStringshortVideoData = "data:video/mp4;base64,\(base64StringshortVideoData)"
-                let media = GraphQLNullable<[String]>.some([base64VideoStringshortVideoData])
-
-                let result = try await GQLClient.shared.mutate(mutation: CreatePostMutation(contenttype: .case(.video), title: postTitle.replacingOccurrences(of: "\n", with: "").replacingOccurrences(of: "\"", with: "\\\""), media: media, mediadescription: GraphQLNullable(stringLiteral: postText.string), tags: GraphQLNullable<[String]>.some(tags), cover: nil))
+                var base64StringshortVideoData = shortVideoData.base64EncodedString()
+                addBase64Prefix(to: &base64StringshortVideoData, ofType: .video)
+                let base64VideoStringshortVideoData = base64StringshortVideoData
+                
+                let result = await apiService.makePost(
+                    of: .video,
+                    with: escapedTitle,
+                    content: [base64VideoStringshortVideoData],
+                    contentDescitpion: postText.string,
+                    tags: tags,
+                    cover: nil
+                )
 
                 isCreatingPost = false
                 selectedType = .image
 
-                guard result.createPost.status == "success" else {
-                    return false
+                switch result {
+                case .success:
+                    break
+                case .failure(let apiError):
+                    throw apiError
                 }
 
                 return true
@@ -227,22 +263,32 @@ final class PostCreationViewModel: NSObject, ObservableObject {
                 let longVideoData = try Data(contentsOf: longVideoURL!)
                 let shortVideoData = try Data(contentsOf: shortVideoURL!)
 
-                let base64StringlongVideoData = longVideoData.base64EncodedString()
-                let base64VideoStringlongVideoData = "data:video/mp4;base64,\(base64StringlongVideoData)"
+                var base64StringlongVideoData = longVideoData.base64EncodedString()
+                addBase64Prefix(to: &base64StringlongVideoData, ofType: .video)
+                let base64VideoStringlongVideoData = base64StringlongVideoData
 
-                let base64StringshortVideoData = shortVideoData.base64EncodedString()
-                let base64VideoStringshortVideoData = "data:video/mp4;base64,\(base64StringshortVideoData)"
-
-                let media = GraphQLNullable<[String]>.some([base64VideoStringshortVideoData, base64VideoStringlongVideoData])
-
-                let result = try await GQLClient.shared.mutate(mutation: CreatePostMutation(contenttype: .case(.video), title: postTitle.replacingOccurrences(of: "\n", with: "").replacingOccurrences(of: "\"", with: "\\\""), media: media, mediadescription: GraphQLNullable(stringLiteral: postText.string), tags: GraphQLNullable<[String]>.some(tags), cover: nil))
+                var base64StringshortVideoData = shortVideoData.base64EncodedString()
+                addBase64Prefix(to: &base64StringshortVideoData, ofType: .video)
+                let base64VideoStringshortVideoData = base64StringshortVideoData
+                
+                let result = await apiService.makePost(
+                    of: .video,
+                    with: escapedTitle,
+                    content: [base64VideoStringshortVideoData, base64VideoStringlongVideoData],
+                    contentDescitpion: postText.string,
+                    tags: tags,
+                    cover: nil
+                )
 
                 dump(result)
                 isCreatingPost = false
                 selectedType = .image
 
-                guard result.createPost.status == "success" else {
-                    return false
+                switch result {
+                case .success:
+                    break
+                case .failure(let apiError):
+                    throw apiError
                 }
 
                 return true
@@ -259,28 +305,41 @@ final class PostCreationViewModel: NSObject, ObservableObject {
         parseTags()
         isCreatingPost = true
 
+        let escapedTitle = preprocessRawTitle(postTitle)
+        
         var coverString = ""
 
         if
             let cover,
             let compressedImageData = try? await Compressor.shared.compressImageForUpload(cover)
         {
-            coverString = "data:image/jpeg;base64,\(compressedImageData.base64EncodedString())"
+            var encodedCover = compressedImageData.base64EncodedString()
+            addBase64Prefix(to: &encodedCover, ofType: .image)
+            coverString = encodedCover
         }
 
         do {
             let mp3Data = try Data(contentsOf: audio)
-            let mp3Base64 = "data:audio/mpeg;base64,\(mp3Data.base64EncodedString())"
+            var encodedAudio = mp3Data.base64EncodedString()
+            addBase64Prefix(to: &encodedAudio, ofType: .audio)
+            let mp3Base64 = encodedAudio
 
-            let media = GraphQLNullable<[String]>.some([mp3Base64])
-            let cover = coverString.isEmpty ? nil : GraphQLNullable<[String]>.some([coverString])
-
-            let result = try await GQLClient.shared.mutate(mutation: CreatePostMutation(contenttype: .case(.audio), title: postTitle.replacingOccurrences(of: "\n", with: "").replacingOccurrences(of: "\"", with: "\\\""), media: media, mediadescription: GraphQLNullable(stringLiteral: postText.string), tags: GraphQLNullable<[String]>.some(tags), cover: cover))
+            let result = await apiService.makePost(
+                of: .audio,
+                with: escapedTitle,
+                content: [mp3Base64],
+                contentDescitpion: postText.string,
+                tags: tags,
+                cover: coverString
+            )
 
             isCreatingPost = false
 
-            guard result.createPost.status == "success" else {
-                return false
+            switch result {
+            case .success:
+                break
+            case .failure(let apiError):
+                throw apiError
             }
 
             return true
@@ -309,8 +368,9 @@ final class PostCreationViewModel: NSObject, ObservableObject {
             }
 
             for await base64String in group {
-                if let base64String {
-                    base64Strings.append("data:image/jpeg;base64,\(base64String)")
+                if var base64StringUnwrapped = base64String {
+                    addBase64Prefix(to: &base64StringUnwrapped, ofType: .image)
+                    base64Strings.append(base64StringUnwrapped)
                 }
             }
 
@@ -336,6 +396,26 @@ final class PostCreationViewModel: NSObject, ObservableObject {
                 continuation.resume(returning: image)
             }
         }
+    }
+    
+    private func preprocessRawTitle(_ title: String) -> String {
+        title.replacingOccurrences(of: "\n", with: "").replacingOccurrences(of: "\"", with: "\\\"")
+    }
+    
+    private func addBase64Prefix(to content: inout String, ofType: ContenType) {
+        let prefix: String
+        switch ofType {
+        case .image:
+            prefix = "data:image/jpeg;base64,"
+        case .audio:
+            prefix = "data:audio/mpeg;base64,"
+        case .video:
+            prefix = "data:video/mp4;base64,"
+        case .text:
+            prefix = "data:text/plain;base64,"
+        }
+        
+        content.insert(contentsOf: prefix, at: content.startIndex)
     }
 }
 

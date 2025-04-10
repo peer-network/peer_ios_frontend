@@ -7,13 +7,12 @@
 
 import SwiftUI
 import Models
-import Networking
-import GQLOperationsUser
 import Environment
 
 @MainActor
 public final class PostViewModel: ObservableObject {
     let post: Post
+    public unowned var apiService: APIService!
 
     @Published public var lineLimit: Int?
     public var isCollapsed: Bool = true {
@@ -94,10 +93,13 @@ public final class PostViewModel: ObservableObject {
         }
 
         do {
-            let result = try await GQLClient.shared.mutate(mutation: PostActionMutation(postid: post.id, action: .case(.like)))
-
-            guard result.resolveActionPost.status == "success" else {
-                throw GQLError.missingData
+            let result = await apiService.likePost(with: post.id)
+            
+            switch result {
+            case .success:
+                break
+            case .failure(let apiError):
+                throw apiError
             }
         } catch {
             isLiked = false
@@ -124,10 +126,13 @@ public final class PostViewModel: ObservableObject {
         }
 
         do {
-            let result = try await GQLClient.shared.mutate(mutation: PostActionMutation(postid: post.id, action: .case(.dislike)))
-
-            guard result.resolveActionPost.status == "success" else {
-                throw GQLError.missingData
+            let result = await apiService.dislikePost(with: post.id)
+            
+            switch result {
+            case .success:
+                break
+            case .failure(let apiError):
+                throw apiError
             }
         } catch {
             isDisliked = false
@@ -151,10 +156,13 @@ public final class PostViewModel: ObservableObject {
         }
 
         do {
-            let result = try await GQLClient.shared.mutate(mutation: PostActionMutation(postid: post.id, action: .case(.view)))
-
-            guard result.resolveActionPost.status == "success" else {
-                throw GQLError.missingData
+            let result = await apiService.markPostViewed(with: post.id)
+            
+            switch result {
+            case .success:
+                break
+            case .failure(let apiError):
+                throw apiError
             }
         } catch {
             isViewed = false
@@ -173,10 +181,13 @@ public final class PostViewModel: ObservableObject {
         }
 
         do {
-            let result = try await GQLClient.shared.mutate(mutation: PostActionMutation(postid: post.id, action: .case(.report)))
-
-            guard result.resolveActionPost.status == "success" else {
-                throw GQLError.missingData
+            let result = await apiService.reportPost(with: post.id)
+            
+            switch result {
+            case .success:
+                break
+            case .failure(let apiError):
+                throw apiError
             }
         } catch {
             throw PostActionError.serverError

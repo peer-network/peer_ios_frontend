@@ -18,6 +18,7 @@ public struct SettingsView: View {
         case username
     }
 
+    @EnvironmentObject private var apiManager: APIServiceManager
     @EnvironmentObject private var accountManager: AccountManager
     @EnvironmentObject private var authManager: AuthManager
     @EnvironmentObject private var audioManager: AudioSessionManager
@@ -172,6 +173,12 @@ public struct SettingsView: View {
                 .ignoresSafeArea(.all)
         }
         .photosPicker(isPresented: $isImagePickerPresented, selection: $selectedPhotoItem, matching: .images)
+        .onAppear {
+            viewModel.apiService = apiManager.apiService
+            Task {
+                await viewModel.fetchBio(url: viewModel.bioUrl)
+            }
+        }
         .onChange(of: selectedPhotoItem) {
             loadImage()
         }

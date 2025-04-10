@@ -7,15 +7,13 @@
 
 import SwiftUI
 import Models
-import Networking
-import GQLOperationsUser
 import Environment
 
 enum CommentError: Error {
     case alreadyLiked
     case ownLike
     case freeCommentsLimitReached
-    case serverError
+    case serverError(APIError)
 
     var displayMessage: String {
         switch self {
@@ -55,6 +53,8 @@ public enum CommentsState {
 
 @MainActor
 final class CommentsViewModel: ObservableObject {
+    public unowned var apiService: (any APIService)!
+    
     @Published private(set) var state = CommentsState.loading
 
     @Published private(set) var comments: [Comment] = []
@@ -68,44 +68,33 @@ final class CommentsViewModel: ObservableObject {
 
     init(post: Post) {
         self.post = post
-        Task {
-            await fetchComments()
-        }
     }
 
-    func fetchComments() async {
+    func fetchComments() {
         if let existingTask = fetchTask, !existingTask.isCancelled {
             return
         }
 
         fetchTask = Task {
             do {
-                let result = try await GQLClient.shared.fetch(query: GetPostCommentsQuery(
-                    postid: post.id,
-                    commentLimit: GraphQLNullable<Int>(integerLiteral: Constants.postCommentsLimit),
-                    commentOffset: GraphQLNullable<Int>(integerLiteral: currentOffset)
-                ), cachePolicy: .fetchIgnoringCacheCompletely)
-
-                guard let values = result.getallposts.affectedRows?.first?.comments else {
-                    throw GQLError.missingData
-                }
-
+                let result = await apiService.fetchComments(for: post.id, after: currentOffset)
+                
                 try Task.checkCancellation()
+                
+                switch result {
+                case .success(let fetchedComments):
+                    comments.append(contentsOf: fetchedComments)
 
-                let fetchedComments = values.compactMap { value in
-                    Comment(gqlComment: value)
+                    if fetchedComments.count != Constants.postCommentsLimit {
+                        hasMoreComments = false
+                        state = .display(comments: comments, hasMore: .none)
+                    } else {
+                        currentOffset += Constants.postCommentsLimit
+                        state = .display(comments: comments, hasMore: .hasMore)
+                    }
+                case .failure(let apiError):
+                    throw apiError
                 }
-
-                comments.append(contentsOf: fetchedComments)
-
-                if fetchedComments.count != Constants.postCommentsLimit {
-                    hasMoreComments = false
-                    state = .display(comments: comments, hasMore: .none)
-                } else {
-                    currentOffset += Constants.postCommentsLimit
-                    state = .display(comments: comments, hasMore: .hasMore)
-                }
-
             } catch is CancellationError {
                 //                state = .display(posts: posts, hasMore: .hasMore)
             } catch {
@@ -131,19 +120,15 @@ final class CommentsViewModel: ObservableObject {
         }
 
         AccountManager.shared.freeCommentUsed()
-
-        let result = try await GQLClient.shared.mutate(mutation: CreateCommentMutation(postid: post.id, parentid: nil, content: fixedText))
-
-        guard result.createComment.status == "success" else {
-            throw CommentError.serverError
-        }
-
-        if
-            let createdCommentData = result.createComment.affectedRows?.first!,
-            let createdComment = Comment(gqlComment: createdCommentData)
-        {
+        
+        let result = await apiService.sendComment(for: post.id, with: fixedText)
+        
+        switch result {
+        case .success(let createdComment):
             comments.append(createdComment)
             state = .display(comments: comments, hasMore: .none)
+        case .failure(let apiError):
+            throw CommentError.serverError(apiError)
         }
     }
 
@@ -156,10 +141,13 @@ final class CommentsViewModel: ObservableObject {
             throw CommentError.ownLike
         }
 
-        let result = try await GQLClient.shared.mutate(mutation: LikeCommentMutation(commentid: comment.id))
-
-        guard result.likeComment.status == "success" else {
-            throw CommentError.serverError
+        let result = await apiService.likeComment(with: comment.id)
+        
+        switch result {
+        case .success:
+            break
+        case .failure(let apiError):
+            throw CommentError.serverError(apiError)
         }
     }
 }

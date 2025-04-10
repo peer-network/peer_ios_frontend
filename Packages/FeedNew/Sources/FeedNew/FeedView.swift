@@ -10,7 +10,6 @@ import Environment
 import DesignSystem
 
 public struct FeedView: View {
-    @EnvironmentObject private var accountManager: AccountManager
     @EnvironmentObject private var audioManager: AudioSessionManager
 
     @State private var feedPage: FeedPage = .normalFeed
@@ -79,9 +78,10 @@ public struct FeedView: View {
     private struct NormalFeedView: View {
         @Environment(\.selectedTabScrollToTop) private var selectedTabScrollToTop
         @EnvironmentObject private var router: Router
+        @EnvironmentObject private var apiManager: APIServiceManager
         @StateObject private var normalFeedVM = NormalFeedViewModel()
         @StateObject private var feedContentSortingAndFiltering = FeedContentSortingAndFiltering.shared
-
+        
         var body: some View {
             ScrollViewReader { proxy in
                 ScrollView {
@@ -93,7 +93,7 @@ public struct FeedView: View {
                 }
                 .refreshable {
                     HapticManager.shared.fireHaptic(.dataRefresh(intensity: 0.3))
-                    await normalFeedVM.fetchPosts(reset: true)
+                    normalFeedVM.fetchPosts(reset: true)
                 }
                 .onChange(of: selectedTabScrollToTop) {
                     if selectedTabScrollToTop == 0, router.path.isEmpty {
@@ -103,20 +103,27 @@ public struct FeedView: View {
                     }
                 }
             }
+            .onAppear {
+                normalFeedVM.apiService = apiManager.apiService
+                normalFeedVM.fetchPosts(reset: true)
+            }
             .onChange(of: feedContentSortingAndFiltering.filterByRelationship) {
-                Task {
-                    await normalFeedVM.fetchPosts(reset: true)
+                guard normalFeedVM.apiService != nil else {
+                    return
                 }
+                normalFeedVM.fetchPosts(reset: true)
             }
             .onChange(of: feedContentSortingAndFiltering.sortByPopularity) {
-                Task {
-                    await normalFeedVM.fetchPosts(reset: true)
+                guard normalFeedVM.apiService != nil else {
+                    return
                 }
+                normalFeedVM.fetchPosts(reset: true)
             }
             .onChange(of: feedContentSortingAndFiltering.sortByTime) {
-                Task {
-                    await normalFeedVM.fetchPosts(reset: true)
+                guard normalFeedVM.apiService != nil else {
+                    return
                 }
+                normalFeedVM.fetchPosts(reset: true)
             }
         }
     }
@@ -124,6 +131,8 @@ public struct FeedView: View {
     private struct AudioFeedView: View {
         @Environment(\.selectedTabScrollToTop) private var selectedTabScrollToTop
         @EnvironmentObject private var router: Router
+        @EnvironmentObject private var apiManager: APIServiceManager
+      
         @StateObject private var feedContentSortingAndFiltering = FeedContentSortingAndFiltering.shared
 
         @StateObject private var audioFeedVM = AudioFeedViewModel()
@@ -139,7 +148,7 @@ public struct FeedView: View {
                 }
                 .refreshable {
                     HapticManager.shared.fireHaptic(.dataRefresh(intensity: 0.3))
-                    await audioFeedVM.fetchPosts(reset: true)
+                    audioFeedVM.fetchPosts(reset: true)
                 }
                 .onChange(of: selectedTabScrollToTop) {
                     if selectedTabScrollToTop == 0, router.path.isEmpty {
@@ -148,21 +157,27 @@ public struct FeedView: View {
                         }
                     }
                 }
+            .onAppear {
+                audioFeedVM.apiService = apiManager.apiService
+                audioFeedVM.fetchPosts(reset: true)
             }
             .onChange(of: feedContentSortingAndFiltering.filterByRelationship) {
-                Task {
-                    await audioFeedVM.fetchPosts(reset: true)
+                guard audioFeedVM.apiService != nil else {
+                    return
                 }
+                audioFeedVM.fetchPosts(reset: true)
             }
             .onChange(of: feedContentSortingAndFiltering.sortByPopularity) {
-                Task {
-                    await audioFeedVM.fetchPosts(reset: true)
+                guard audioFeedVM.apiService != nil else {
+                    return
                 }
+                audioFeedVM.fetchPosts(reset: true)
             }
             .onChange(of: feedContentSortingAndFiltering.sortByTime) {
-                Task {
-                    await audioFeedVM.fetchPosts(reset: true)
+                guard audioFeedVM.apiService != nil else {
+                    return
                 }
+                audioFeedVM.fetchPosts(reset: true)
             }
         }
     }

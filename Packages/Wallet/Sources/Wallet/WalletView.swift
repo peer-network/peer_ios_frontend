@@ -11,6 +11,7 @@ import Environment
 
 public struct WalletView: View {
     @EnvironmentObject private var accountManager: AccountManager
+    @EnvironmentObject private var apiManager: APIServiceManager
 
     @StateObject private var viewModel = WalletViewModel()
     
@@ -31,9 +32,16 @@ public struct WalletView: View {
         }
         .background(Colors.textActive)
         .environmentObject(viewModel)
+        .onAppear {
+            viewModel.apiService = apiManager.apiService
+            Task {
+                await viewModel.fetchCurrentLiquidity()
+            }
+        }
     }
 }
 
 #Preview {
     WalletView()
+        .environmentObject(APIServiceManager(.mock))
 }

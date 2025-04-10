@@ -7,11 +7,12 @@
 
 import SwiftUI
 import Environment
-import Networking
-import GQLOperationsUser
+import Models
 
 @MainActor
 public final class FollowButtonViewModel: ObservableObject {
+    public unowned var apiService: APIService!
+
     private let id: String
     let isFollowing: Bool
     @Published public private(set) var isFollowed: Bool
@@ -28,11 +29,9 @@ public final class FollowButtonViewModel: ObservableObject {
         }
 
         do {
-            let result = try await GQLClient.shared.mutate(mutation: FollowUserMutation(userid: id))
-
-
-            guard result.userFollow.status == "success" else {
-                throw GQLError.missingData
+            let result = await apiService.followUser(with: id)
+            if case .failure(let error) = result {
+                throw error
             }
         } catch {
             isFollowed.toggle()
@@ -42,11 +41,12 @@ public final class FollowButtonViewModel: ObservableObject {
 
 public struct FollowButton: View {
     @Environment(\.isBackgroundWhite) private var isBackgroundWhite
+    @EnvironmentObject private var apiManager: APIServiceManager
 
     @StateObject private var viewModel: FollowButtonViewModel
     
-    public init(id: String, isFollowing: Bool, isFollowed: Bool) {
-        _viewModel = .init(wrappedValue: .init(id: id, isFollowing: isFollowing, isFollowed: isFollowed))
+    public init(viewModel: FollowButtonViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
     }
 
     public var body: some View {
@@ -90,18 +90,17 @@ public struct FollowButton: View {
                 }
             }
         }
+        .onAppear {
+            viewModel.apiService = apiManager.apiService
+        }
     }
 }
 
 #Preview {
     VStack {
-        FollowButton(id: "", isFollowing: false, isFollowed: false)
-            .environment(\.isBackgroundWhite, false)
-        FollowButton(id: "", isFollowing: false, isFollowed: false)
-            .environment(\.isBackgroundWhite, true)
-        FollowButton(id: "", isFollowing: false, isFollowed: true)
-            .environment(\.isBackgroundWhite, false)
-        FollowButton(id: "", isFollowing: true, isFollowed: true)
+        let vm = FollowButtonViewModel(id: "", isFollowing: false, isFollowed: false)
+        FollowButton(viewModel: vm)
+            .environmentObject(APIServiceManager(.mock))
             .environment(\.isBackgroundWhite, false)
     }
     .background {

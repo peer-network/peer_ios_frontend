@@ -6,11 +6,11 @@
 //
 
 import SwiftUI
-import GQLOperationsUser
-import Networking
+import Models
 
 @MainActor
 final class WalletViewModel: ObservableObject {
+    public unowned var apiService: APIService!
     
     @Published var countdown: String = "00:00:00"
     @Published var currentLiquidity: Double = 0
@@ -19,17 +19,17 @@ final class WalletViewModel: ObservableObject {
 
     init() {
         startTimer()
-        Task {
-            await fetchCurrentLiquidity()
-        }
     }
     
     func fetchCurrentLiquidity() async {
         do {
-            let result = try await GQLClient.shared.fetch(query: GetLiquidityQuery(), cachePolicy: .fetchIgnoringCacheCompletely)
-
-            if let value = result.currentliquidity.currentliquidity {
-                currentLiquidity = Double(value) ?? 0
+            let result = await apiService.fetchLiquidityState()
+            
+            switch result {
+            case .success(let amount):
+                currentLiquidity = amount
+            case .failure(let apiError):
+                throw apiError
             }
         } catch {
 

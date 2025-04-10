@@ -15,6 +15,7 @@ import PhotosUI
 public struct ProfileView: View {
     @EnvironmentObject private var router: Router
     @EnvironmentObject private var accountManager: AccountManager
+    @EnvironmentObject private var apiManager: APIServiceManager
 
     @StateObject private var viewModel: ProfileViewModel
 
@@ -39,7 +40,7 @@ public struct ProfileView: View {
                         VStack(spacing: 9) {
                             ProfileInfoHeaderView(user: user, bio: viewModel.fetchedBio, showAvatarPicker: $showAvatarPicker)
                                 .padding(.horizontal, 20)
-                            FollowersHeader(relationsViewModel: RelationsViewModel(userId: user.id), userId: user.id, postsCount: user.postsAmount, followersCount: user.amountFollowers, followingsCount: user.amountFollowing, friends: user.amountFriends)
+                            FollowersHeader(userId: user.id, postsCount: user.postsAmount, followersCount: user.amountFollowers, followingsCount: user.amountFollowing, friends: user.amountFriends)
                                 .padding(.horizontal, 20)
                             FeedTabControllerView(feedPage: $feedPage)
                         }
@@ -73,6 +74,13 @@ public struct ProfileView: View {
         .onChange(of: selectedPhotoItem) {
             loadImage()
         }
+        .onAppear {
+            viewModel.apiService = apiManager.apiService
+            Task {
+                await viewModel.fetchUser()
+                await viewModel.fetchBio()
+            }
+        }
     }
     
     private func loadImage() {
@@ -95,6 +103,7 @@ public struct ProfileView: View {
     }
 
     private struct NormalFeedView: View {
+        @EnvironmentObject private var apiManager: APIServiceManager
         @StateObject private var normalFeedVM: NormalFeedViewModel
 
         init(userId: String) {
@@ -104,12 +113,17 @@ public struct ProfileView: View {
         var body: some View {
             LazyVStack(alignment: .center, spacing: 20) {
                 PostsListView(fetcher: normalFeedVM)
+                    .onAppear {
+                        normalFeedVM.apiService = apiManager.apiService
+                        normalFeedVM.fetchPosts(reset: true)
+                    }
             }
             .padding(.bottom, 10)
         }
     }
 
     private struct AudioFeedView: View {
+        @EnvironmentObject private var apiManager: APIServiceManager
         @StateObject private var audioFeedVM: AudioFeedViewModel
 
         init(userId: String) {
@@ -119,6 +133,10 @@ public struct ProfileView: View {
         var body: some View {
             LazyVStack(alignment: .center, spacing: 20) {
                 PostsListView(fetcher: audioFeedVM)
+                    .onAppear {
+                        audioFeedVM.apiService = apiManager.apiService
+                        audioFeedVM.fetchPosts(reset: true)
+                    }
             }
             .padding(.vertical, 10)
         }

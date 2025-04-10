@@ -7,8 +7,6 @@
 
 import SwiftUI
 import Models
-import Networking
-import GQLOperationsUser
 import Environment
 
 @MainActor
@@ -19,6 +17,8 @@ final class ProfileViewModel: ObservableObject {
         case error(error: Error)
     }
 
+    public unowned var apiService: APIService!
+    
     private let userId: String
 
     @Published private(set) var profileState: ProfileState = .loading
@@ -27,32 +27,21 @@ final class ProfileViewModel: ObservableObject {
 
     init(userId: String) {
         self.userId = userId
-        Task {
-            await fetchUser()
-            await fetchBio()
-        }
     }
 
     func fetchUser() async {
         do {
-            let result = try await GQLClient.shared.fetch(query: GetProfileQuery(userid: userId), cachePolicy: .fetchIgnoringCacheCompletely)
-
-            guard
-                let data = result.profile.affectedRows,
-                let fetchedUser = User(gqlUser: data)
-            else {
-                throw GQLError.missingData
-            }
-
-            user = fetchedUser
+            let result = await apiService.fetchUser(with: userId)
             
-            profileState = .data(user: fetchedUser)
-        } catch {
-            if let user {
-                profileState = .data(user: user)
-            } else {
-                profileState = .error(error: error)
+            switch result {
+            case .success(let fetchedUser):
+                user = fetchedUser
+                profileState = .data(user: fetchedUser)
+            case .failure(let apiError):
+                throw apiError
             }
+        } catch {
+            profileState = .error(error: error)
         }
     }
 
@@ -79,11 +68,14 @@ final class ProfileViewModel: ObservableObject {
 
         let base64String = compressedImageData.base64EncodedString()
         let base64ImageString = "data:image/jpeg;base64,\(base64String)"
-
-        let result = try await GQLClient.shared.mutate(mutation: UpdateAvatarMutation(img: base64ImageString))
-
-        guard result.updateProfilePicture.status == "success" else {
-            throw GQLError.missingData
+        
+        let result = await apiService.uploadProfileImage(new: base64ImageString)
+        
+        switch result {
+        case .success:
+            break
+        case .failure(let apiError):
+            throw apiError
         }
     }
 }

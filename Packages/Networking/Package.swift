@@ -6,7 +6,7 @@ import PackageDescription
 let package = Package(
     name: "Networking",
     platforms: [
-        .iOS(.v13)
+        .iOS(.v17)
     ],
     products: [
         .library(
@@ -18,7 +18,8 @@ let package = Package(
             url: "https://github.com/apollographql/apollo-ios.git",
             .upToNextMajor(from: "1.15.3")
         ),
-        .package(name: "TokenKeychainManager", path: "../TokenKeychainManager")
+        .package(name: "TokenKeychainManager", path: "../TokenKeychainManager"),
+        .package(name: "Models", path: "../Models")
     ],
     targets: [
         .target(
@@ -26,7 +27,8 @@ let package = Package(
             dependencies: [
                 .product(name: "Apollo", package: "apollo-ios"),
                 .product(name: "ApolloWebSocket", package: "apollo-ios"),
-                .product(name: "TokenKeychainManager", package: "TokenKeychainManager")
+                .product(name: "TokenKeychainManager", package: "TokenKeychainManager"),
+                .product(name: "Models", package: "Models")
             ]
         ),
     ],

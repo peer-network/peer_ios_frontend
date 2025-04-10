@@ -6,8 +6,7 @@
 //
 
 import SwiftUI
-import Networking
-import GQLOperationsUser
+import Models
 import Environment
 import AVFAudio
 import DesignSystem
@@ -25,6 +24,7 @@ struct PeerApp: App {
 
     @Environment(\.scenePhase) private var scenePhase
 
+    @StateObject private var apiManager = APIServiceManager()
     @StateObject private var authManager = AuthManager()
     @StateObject private var accountManager = AccountManager.shared
     @StateObject private var quickLook = QuickLook.shared
@@ -58,13 +58,14 @@ struct PeerApp: App {
                         }
                         
                     case .unauthenticated:
-                        MainAuthView()
-                            .environmentObject(authManager)
+                    MainAuthView(viewModel: AuthViewModel(authManager: self.authManager))
                             .withSafariRouter()
                             .environmentObject(authRouter)
+                            .environmentObject(apiManager)
 
                     case .authenticated(_):
                         ContentView(selectedTab: $selectedTab, appRouter: appRouter)
+                            .environmentObject(apiManager)
                             .environmentObject(accountManager)
                             .environmentObject(quickLook)
                             .environmentObject(authManager)

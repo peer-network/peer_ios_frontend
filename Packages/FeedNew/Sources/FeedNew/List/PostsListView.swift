@@ -12,7 +12,7 @@ import Models
 
 public struct PostsListView<Fetcher>: View where Fetcher: PostsFetcher {
     @EnvironmentObject private var router: Router
-
+    @EnvironmentObject private var apiManager: APIServiceManager
     @StateObject private var fetcher: Fetcher
 
     public init(fetcher: Fetcher) {
@@ -50,7 +50,7 @@ public struct PostsListView<Fetcher>: View where Fetcher: PostsFetcher {
                 VStack(spacing: 20) {
                     Text("An error occurred while loading posts, please try again.")
                         .font(.customFont(weight: .bold, size: .title))
-
+                  
                     Button("Retry") {
                         Task {
                             await fetcher.fetchPosts(reset: true)

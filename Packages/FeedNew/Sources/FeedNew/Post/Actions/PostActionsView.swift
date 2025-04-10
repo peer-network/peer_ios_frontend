@@ -194,4 +194,5 @@ struct PostActionsView: View {
         .padding(20)
         .environment(\.isBackgroundWhite, false)
         .environmentObject(PostViewModel(post: .placeholderText()))
+        .environmentObject(APIServiceManager(.mock))
 }

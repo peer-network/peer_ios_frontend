@@ -13,6 +13,7 @@ import Models
 public struct FullScreenPostView: View {
     @EnvironmentObject private var router: Router
     @EnvironmentObject private var accountManager: AccountManager
+    @EnvironmentObject private var apiManager: APIServiceManager
 
     private let post: Post
 

@@ -15,6 +15,7 @@ import PhotosUI
 public struct PostCreationView: View {
     @Environment(\.openURL) var openURL
 
+    @EnvironmentObject private var apiManager: APIServiceManager
     @EnvironmentObject private var router: Router
     @EnvironmentObject private var accountManager: AccountManager
     @EnvironmentObject private var audioManager: AudioSessionManager
@@ -368,6 +369,8 @@ public struct PostCreationView: View {
         }
         .environmentObject(viewModel)
         .onAppear {
+            viewModel.apiService = apiManager.apiService
+            
             audioManager.isInRestrictedView = true
         }
         .onDisappear {
@@ -868,6 +871,7 @@ extension PostCreationView {
 #Preview {
     PostCreationView()
         .environmentObject(AccountManager.shared)
+        .environmentObject(APIServiceManager(.mock))
 }
 
 

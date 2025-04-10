@@ -7,113 +7,85 @@
 
 import SwiftUI
 import Models
-import Networking
-import GQLOperationsUser
 
-enum RelationsSheetState {
+@MainActor
+public protocol RelationsFetcher: ObservableObject {
+    var state: RelationsSheetState { get }
+    func fetchFollowers(reset: Bool)
+    func fetchFollowings(reset: Bool)
+}
+
+public enum RelationsSheetState {
     public enum PagingState {
         case hasMore, none
     }
 
     case loading
-    case display(hasMore: RelationsSheetState.PagingState)
+    case display(users: [RowUser], hasMore: RelationsSheetState.PagingState)
     case error(error: Error)
 }
 
 @MainActor
-final class RelationsViewModel: ObservableObject {
-    @Published private(set) var state = RelationsSheetState.loading
+public final class RelationsViewModel: ObservableObject, RelationsFetcher {
+    
+    @Published private(set) public var state = RelationsSheetState.loading
 
     @Published private(set) var followers: [RowUser] = []
     @Published private(set) var following: [RowUser] = []
     @Published private(set) var friends: [RowUser] = []
 
     let userId: String
+    private let apiService: APIService
 
-    private var fetchTask: Task<Void, Never>?
+    private var fetchFollowersTask: Task<Void, Never>?
+    private var fetchFollowingsTask: Task<Void, Never>?
 
-    private var currentOffset: Int = 0
-    private var hasMoreUsers: Bool = true
+    private var currentOffsetFollowers: Int = 0
+    private var currentOffsetFollowings: Int = 0
+    private var hasMoreFollowers: Bool = true
+    private var hasMoreFollowings: Bool = true
 
-    init(userId: String) {
+    public init(userId: String, apiService: APIService) {
         self.userId = userId
-        Task {
-            await fetchUsers()
-        }
+        self.apiService = apiService
     }
-
-    func fetchUsers(reset: Bool = false) async {
-        if let existingTask = fetchTask, !existingTask.isCancelled {
+    
+    public func fetchFollowers(reset: Bool) {
+        if let existingTask = fetchFollowersTask, !existingTask.isCancelled {
             return
         }
-
-        fetchTask = Task {
+        
+        if reset {
+            if followers.isEmpty {
+                state = .loading
+            }
+            
+            currentOffsetFollowers = 0
+            hasMoreFollowers = true
+        }
+        
+        fetchFollowersTask = Task {
             do {
-                let resultFollowers = try await GQLClient.shared.fetch(query: GetFollowersQuery(userid: GraphQLNullable(stringLiteral: userId), offset: GraphQLNullable<Int>(integerLiteral: currentOffset), limit: 20), cachePolicy: .fetchIgnoringCacheCompletely)
-
-                let resultFollowings = try await GQLClient.shared.fetch(query: GetFollowingsQuery(userid: GraphQLNullable(stringLiteral: userId), offset: GraphQLNullable<Int>(integerLiteral: currentOffset), limit: 20), cachePolicy: .fetchIgnoringCacheCompletely)
-
-                guard
-                    let followers = resultFollowers.follows.affectedRows?.followers,
-                    let followings = resultFollowings.follows.affectedRows?.following
-                else {
-                    throw GQLError.missingData
-                }
-
+                let result = await apiService.fetchUserFollowers(for: userId, after: currentOffsetFollowers)
+                
                 try Task.checkCancellation()
-
-                let fetchedFollowers = followers.compactMap { value in
-                    RowUser(gqlUser: value)
+                
+                switch result {
+                case .success(let fetchedFollowers):
+                    self.followers = fetchedFollowers
+                    
+                    if fetchedFollowers.count != 20 {
+                        hasMoreFollowers = false
+                        state = .display(users: followers, hasMore: .none)
+                    } else {
+                        currentOffsetFollowers += 20
+                        state = .display(users: followers, hasMore: .hasMore)
+                    }
+                case .failure(let apiError):
+                    throw apiError
                 }
-
-                let fetchedFollowings = followings.compactMap { value in
-                    RowUser(gqlUser: value)
-                }
-
-                self.followers = fetchedFollowers
-                self.following = fetchedFollowings
-
-                hasMoreUsers = false
-                state = .display(hasMore: .none)
-
-//                let result = try await GQLClient.shared.fetch(query: GetFollowRelationsQuery(userid: GraphQLNullable(stringLiteral: userId), offset: GraphQLNullable<Int>(integerLiteral: currentOffset), limit: 20), cachePolicy: .fetchIgnoringCacheCompletely)
-//
-//                guard
-//                    let followers = result.followrelations.affectedRows?.followers,
-//                    let following = result.followrelations.affectedRows?.following,
-//                    let friends = result.followrelations.affectedRows?.friends
-//                else {
-//                    throw GQLError.missingData
-//                }
-//
-//                try Task.checkCancellation()
-//
-//                let fetchedFollowers = followers.compactMap { value in
-//                    RowUser(gqlUser: value)
-//                }
-//                let fetchedFollowing = following.compactMap { value in
-//                    RowUser(gqlUser: value)
-//                }
-//                let fetchedFriends = friends.compactMap { value in
-//                    RowUser(gqlUser: value)
-//                }
-//
-//                self.followers = fetchedFollowers
-//                self.following = fetchedFollowing
-//                self.friends = fetchedFriends
-
-//                self.followers.append(contentsOf: fetchedFollowers)
-//                self.following.append(contentsOf: fetchedFollowing)
-//                self.friends.append(contentsOf: fetchedFriends)
-
-//                if fetchedUsers.count != 20 {
-                    hasMoreUsers = false
-                    state = .display(hasMore: .none)
-//                } else {
-//                    currentOffset += 20
-//                    state = .display(users: users, hasMore: .hasMore)
-//                }
-
+                
+                fetchFollowersTask = nil
             } catch is CancellationError {
                 //                state = .display(posts: posts, hasMore: .hasMore)
             } catch {
@@ -121,9 +93,52 @@ final class RelationsViewModel: ObservableObject {
                 print(error.localizedDescription)
                 state = .error(error: error)
             }
-
-            // Reset fetchTask to nil when done
-            fetchTask = nil
+        }
+    }
+    
+    public func fetchFollowings(reset: Bool) {
+        if let existingTask = fetchFollowingsTask, !existingTask.isCancelled {
+            return
+        }
+        
+        if reset {
+            if following.isEmpty {
+                state = .loading
+            }
+            
+            currentOffsetFollowings = 0
+            hasMoreFollowings = true
+        }
+        
+        fetchFollowingsTask = Task {
+            do {
+                let result = await apiService.fetchUserFollowings(for: userId, after: currentOffsetFollowings)
+                
+                try Task.checkCancellation()
+                
+                switch result {
+                case .success(let fetchedFollowings):
+                    self.following = fetchedFollowings
+                    
+                    if fetchedFollowings.count != 20 {
+                        hasMoreFollowings = false
+                        state = .display(users: following, hasMore: .none)
+                    } else {
+                        currentOffsetFollowings += 20
+                        state = .display(users: following, hasMore: .hasMore)
+                    }
+                case .failure(let apiError):
+                    throw apiError
+                }
+                
+                fetchFollowingsTask = nil
+            } catch is CancellationError {
+                //                state = .display(posts: posts, hasMore: .hasMore)
+            } catch {
+                print(error)
+                print(error.localizedDescription)
+                state = .error(error: error)
+            }
         }
     }
 }

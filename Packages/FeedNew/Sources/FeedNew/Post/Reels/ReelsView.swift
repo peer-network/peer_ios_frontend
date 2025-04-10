@@ -19,6 +19,7 @@ struct ReelsView: View {
     @StateObject private var feedContentSortingAndFiltering = FeedContentSortingAndFiltering.shared
 
     @StateObject private var viewModel = VideoFeedViewModel()
+    @EnvironmentObject private var apiManager: APIServiceManager
 
     var body: some View {
         ScrollView(.vertical) {
@@ -64,24 +65,31 @@ struct ReelsView: View {
                 }
             }
         }
+        .onAppear {
+            viewModel.apiService = apiManager.apiService
+            viewModel.fetchPosts(reset: true)
+        }
         .refreshable {
             HapticManager.shared.fireHaptic(.dataRefresh(intensity: 0.3))
-            await viewModel.fetchPosts(reset: true)
+            viewModel.fetchPosts(reset: true)
         }
         .onChange(of: feedContentSortingAndFiltering.filterByRelationship) {
-            Task {
-                await viewModel.fetchPosts(reset: true)
+            guard viewModel.apiService != nil else {
+                return
             }
+            viewModel.fetchPosts(reset: true)
         }
         .onChange(of: feedContentSortingAndFiltering.sortByPopularity) {
-            Task {
-                await viewModel.fetchPosts(reset: true)
+            guard viewModel.apiService != nil else {
+                return
             }
+            viewModel.fetchPosts(reset: true)
         }
         .onChange(of: feedContentSortingAndFiltering.sortByTime) {
-            Task {
-                await viewModel.fetchPosts(reset: true)
+            guard viewModel.apiService != nil else {
+                return
             }
+            viewModel.fetchPosts(reset: true)
         }
         .environment(\.colorScheme, .dark)
     }

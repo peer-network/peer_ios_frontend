@@ -16,6 +16,7 @@ public enum AuthState {
 }
 
 @MainActor
+//TODO: Get rid of ObservableObject inheritance, bad practice to use @Published in service
 public final class AuthManager: ObservableObject {
     @Published public var state: AuthState = .loading
     
@@ -49,10 +50,10 @@ public final class AuthManager: ObservableObject {
     /// Logs the user in, stores tokens, fetches current user ID.
     public func login(email: String, password: String) async throws {
         // Login and get tokens
-        let (accessToken, refreshToken) = try await accountManager.login(email: email, password: password)
+        let token = try await accountManager.login(email: email, password: password)
         
         // Store tokens in Keychain
-        tokenManager.setCredentials(accessToken: accessToken, refreshToken: refreshToken)
+        tokenManager.setCredentials(accessToken: token.accessToken, refreshToken: token.refreshToken)
         
         // Query user ID (or decode from token if it includes userId claim)
         let userId = try await accountManager.getCurrentUserId()

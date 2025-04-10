@@ -17,9 +17,9 @@ public enum RouterDestination: Hashable {
 }
 
 public enum SheetDestination: Identifiable, Hashable {
-    case followers(users: [RowUser])
-    case following(users: [RowUser])
-    case friends(users: [RowUser])
+    case followers(userId: String)
+    case following(userId: String)
+    case friends(userId: String)
     case comments(post: Post, isBackgroundWhite: Bool)
     case shareImage(image: UIImage, post: Post)
     

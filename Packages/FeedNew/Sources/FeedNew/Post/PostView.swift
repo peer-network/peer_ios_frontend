@@ -14,6 +14,7 @@ struct PostView: View {
     @Environment(\.redactionReasons) private var reasons
 
     @EnvironmentObject private var router: Router
+    @EnvironmentObject private var apiManager: APIServiceManager
 
     @StateObject var postVM: PostViewModel
     
@@ -36,6 +37,9 @@ struct PostView: View {
                     audioPost
                         .environment(\.isBackgroundWhite, false)
             }
+        }
+        .onAppear {
+            postVM.apiService = apiManager.apiService
         }
         .modifier(ViewVisibilityModifier(viewed: postVM.isViewed, viewAction: {
             Task {
@@ -175,10 +179,12 @@ struct PostView: View {
         
         VStack {
             PostView(postVM: .init(post: .placeholderText()))
+                .environmentObject(APIServiceManager(.mock))
                 .padding(20)
                 .redacted(reason: .placeholder)
             
             PostView(postVM: .init(post: .placeholderText()))
+                .environmentObject(APIServiceManager(.mock))
                 .padding(20)
         }
         .environmentObject(Router())
