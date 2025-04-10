@@ -7,6 +7,7 @@
 
 public protocol RemoteConfigProtocol {
     func fetchConfig() async throws
+    @discardableResult
     func activateConfig() async throws -> Bool
     func addConfigUpdateListener(handler: @escaping (Result<Bool, Error>) -> Void)
 

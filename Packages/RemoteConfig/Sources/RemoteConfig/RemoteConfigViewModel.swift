@@ -50,7 +50,7 @@ public final class RemoteConfigViewModel: ObservableObject {
         state = .loading
         do {
             try await configService.fetchConfig()
-            let changed = try await configService.activateConfig()
+            try await configService.activateConfig()
             state = .loaded
             checkForUpdate()
         } catch {
