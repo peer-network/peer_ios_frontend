@@ -47,11 +47,16 @@ public final class AuthViewModel: ObservableObject {
     @Published private(set) var passwordStrength: PasswordStrength = .empty
 
     //why weak var?
-    weak var authManager: AuthManager?
+    private let authManager: AuthManagerProtocol
     public unowned var apiService: APIService!
 
     public init(authManager: AuthManager) {
         self.authManager = authManager
+    }
+    
+    public init(authManager: AuthManagerProtocol, apiService: APIService) {
+        self.authManager = authManager
+        self.apiService = apiService
     }
 
     func login() async {
@@ -65,7 +70,7 @@ public final class AuthViewModel: ObservableObject {
         }
 
         do {
-            try await authManager?.login(email: loginEmail, password: loginPassword)
+            try await authManager.login(email: loginEmail, password: loginPassword)
         } catch {
             withAnimation {
                 loginError = "Something went wrong. Please, try again"

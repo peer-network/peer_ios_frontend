@@ -18,7 +18,7 @@ import Messages
 import RemoteConfig
 import FirebaseMessaging
 
-@main
+//@main
 struct PeerApp: App {
     @UIApplicationDelegateAdaptor private var appDelegate: AppDelegate
 

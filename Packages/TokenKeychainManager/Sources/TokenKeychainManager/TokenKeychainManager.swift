@@ -8,12 +8,22 @@
 import KeychainSwift
 import Foundation
 
-public final class TokenKeychainManager {
+public protocol TokenKeychainManagerProtocol {
+    func setCredentials(accessToken: String, refreshToken: String)
+    func removeCredentials()
+}
+
+public final class TokenKeychainManager: TokenKeychainManagerProtocol {
     public static let shared = TokenKeychainManager()
     
-    lazy private var keychain = KeychainSwift()
+    private let keychain: KeychainSwift
     
     private init() {
+        keychain = KeychainSwift()
+    }
+    
+    public init(keychain: KeychainSwift = KeychainSwift()) {
+        self.keychain = keychain
     }
     
     // MARK: - Public Access

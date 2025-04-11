@@ -29,6 +29,7 @@
 		ACDA53F22D886382000D6E0F /* FirebasePerformance in Frameworks */ = {isa = PBXBuildFile; productRef = ACDA53F12D886382000D6E0F /* FirebasePerformance */; };
 		ACF9156D2D9A85D800338BC4 /* ProfileNew in Frameworks */ = {isa = PBXBuildFile; productRef = ACF9156C2D9A85D800338BC4 /* ProfileNew */; };
 		ACF9156F2D9A85DD00338BC4 /* PostCreation in Frameworks */ = {isa = PBXBuildFile; productRef = ACF9156E2D9A85DD00338BC4 /* PostCreation */; };
+		C038C9152DA90AB200D27024 /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = C038C9142DA90AB200D27024 /* Swinject */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -154,6 +155,7 @@
 			files = (
 				7EE9D1772D369DAA00D03B20 /* MediaUI in Frameworks */,
 				7EE1447B2D1435DD0054FBB2 /* DesignSystem in Frameworks */,
+				C038C9152DA90AB200D27024 /* Swinject in Frameworks */,
 				7E3C09892D130B1E001D8227 /* GQLOperationsGuest in Frameworks */,
 				7E3C098B2D130EBF001D8227 /* GQLOperationsUser in Frameworks */,
 				ACF9156D2D9A85D800338BC4 /* ProfileNew in Frameworks */,
@@ -290,6 +292,7 @@
 				ACF9156C2D9A85D800338BC4 /* ProfileNew */,
 				ACF9156E2D9A85DD00338BC4 /* PostCreation */,
 				AC10E9872D9C2D0800A72988 /* SFSafeSymbols */,
+				C038C9142DA90AB200D27024 /* Swinject */,
 			);
 			productName = PeerApp;
 			productReference = 7ECF06D72D0C6DA200CA7852 /* PeerApp.app */;
@@ -403,6 +406,7 @@
 				7E2EEA6F2D1991A10022B381 /* XCLocalSwiftPackageReference "Packages/Networking" */,
 				ACCAB4752D8196A4001C1041 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				AC10E9862D9C2D0800A72988 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */,
+				C038C9132DA90AB200D27024 /* XCRemoteSwiftPackageReference "Swinject" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7ECF06D82D0C6DA200CA7852 /* Products */;
@@ -946,6 +950,14 @@
 				minimumVersion = 11.9.0;
 			};
 		};
+		C038C9132DA90AB200D27024 /* XCRemoteSwiftPackageReference "Swinject" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Swinject/Swinject";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.9.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1038,6 +1050,11 @@
 		ACF9156E2D9A85DD00338BC4 /* PostCreation */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PostCreation;
+		};
+		C038C9142DA90AB200D27024 /* Swinject */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C038C9132DA90AB200D27024 /* XCRemoteSwiftPackageReference "Swinject" */;
+			productName = Swinject;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

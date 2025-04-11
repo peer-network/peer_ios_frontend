@@ -9,8 +9,14 @@ import SwiftUI
 import Models
 import TokenKeychainManager
 
+public protocol AccountManagerProtocol {
+    func getCurrentUserId() async throws -> String
+    func fetchDailyFreeLimits() async throws
+    func login(email: String, password: String) async throws -> AuthToken
+}
+
 @MainActor
-public final class AccountManager: ObservableObject {
+public final class AccountManager: ObservableObject, AccountManagerProtocol {
     public static let shared = AccountManager()
 
     @Published public private(set) var dailyFreeLikes: Int = 0
@@ -24,6 +30,10 @@ public final class AccountManager: ObservableObject {
 
     private init() {
         apiService = APIServiceManager().apiService
+    }
+    
+    public nonisolated init(apiService: APIService) {
+        self.apiService = apiService
     }
 
     public func login(email: String, password: String) async throws -> AuthToken {

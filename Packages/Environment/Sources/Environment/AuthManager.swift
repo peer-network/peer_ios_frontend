@@ -15,17 +15,22 @@ public enum AuthState {
     case authenticated(userId: String)
 }
 
+public protocol AuthManagerProtocol {
+    func restoreSessionIfPossible() async -> AuthState
+    func login(email: String, password: String) async throws
+}
+
 @MainActor
 //TODO: Get rid of ObservableObject inheritance, bad practice to use @Published in service
-public final class AuthManager: ObservableObject {
+public final class AuthManager: ObservableObject, AuthManagerProtocol {
     @Published public var state: AuthState = .loading
     
-    private let accountManager: AccountManager
-    private let tokenManager: TokenKeychainManager
+    private let accountManager: AccountManagerProtocol
+    private let tokenManager: TokenKeychainManagerProtocol
     
-    public init(
-        accountManager: AccountManager = .shared,
-        tokenManager: TokenKeychainManager = .shared
+    public nonisolated init(
+        accountManager: AccountManagerProtocol = AccountManager.shared,
+        tokenManager: TokenKeychainManagerProtocol = TokenKeychainManager.shared
     ) {
         self.accountManager = accountManager
         self.tokenManager = tokenManager
