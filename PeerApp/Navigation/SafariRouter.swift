@@ -56,35 +56,30 @@ private class InAppSafariManager: NSObject, SFSafariViewControllerDelegate, Obse
     
     func open(_ url: URL) -> OpenURLAction.Result {
         guard let windowScene = UIApplication.shared.connectedScenes
-            .compactMap({ $0 as? UIWindowScene })
-            .first(where: { $0.activationState == .foregroundActive })
+            .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
+              let rootVC = windowScene.windows
+            .first(where: { $0.isKeyWindow })?
+            .rootViewController
         else {
             return .systemAction
         }
-        
-        window = setupWindow(in: windowScene)
-        
+
         let configuration = SFSafariViewController.Configuration()
-//        configuration.entersReaderIfAvailable = UserPreferences.shared.inAppBrowserReaderView
-        
         let safariVC = SFSafariViewController(url: url, configuration: configuration)
-//        safariVC.preferredBarTintColor = UIColor(Theme.shared.primaryBackgroundColor)
-//        safariVC.preferredControlTintColor = UIColor(Theme.shared.tintColor)
+        safariVC.preferredBarTintColor = .launchScreenBackground
         safariVC.delegate = self
-        
-        // Present on a lightweight container view controller.
-        DispatchQueue.main.async { [weak self] in
-            self?.window?.rootViewController?.present(safariVC, animated: true)
-        }
-        
+
+        rootVC.present(safariVC, animated: true)
+
         return .handled
     }
-    
+
     func dismiss() {
-        window?.rootViewController?.presentedViewController?.dismiss(animated: true)
-        window?.resignKey()
-        window?.isHidden = true
-        window = nil
+        window?.rootViewController?.presentedViewController?.dismiss(animated: true) { [weak self] in
+            self?.window?.resignKey()
+            self?.window?.isHidden = true
+            self?.window = nil
+        }
     }
     
     /// Creates or reuses a temporary UIWindow for presentation.
