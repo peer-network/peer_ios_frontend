@@ -27,6 +27,7 @@
 		ACCAB48D2D81E500001C1041 /* RemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = ACCAB48C2D81E500001C1041 /* RemoteConfig */; };
 		ACCB74B32D8AD1CF006E630C /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = ACCB74B22D8AD1CF006E630C /* FirebaseMessaging */; };
 		ACDA53F22D886382000D6E0F /* FirebasePerformance in Frameworks */ = {isa = PBXBuildFile; productRef = ACDA53F12D886382000D6E0F /* FirebasePerformance */; };
+		ACE05B192DA90C7900DD6E79 /* VersionHistory in Frameworks */ = {isa = PBXBuildFile; productRef = ACE05B182DA90C7900DD6E79 /* VersionHistory */; };
 		ACF9156D2D9A85D800338BC4 /* ProfileNew in Frameworks */ = {isa = PBXBuildFile; productRef = ACF9156C2D9A85D800338BC4 /* ProfileNew */; };
 		ACF9156F2D9A85DD00338BC4 /* PostCreation in Frameworks */ = {isa = PBXBuildFile; productRef = ACF9156E2D9A85DD00338BC4 /* PostCreation */; };
 /* End PBXBuildFile section */
@@ -90,6 +91,7 @@
 		ACCAB48B2D81E07E001C1041 /* RemoteConfig */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = RemoteConfig; path = Packages/RemoteConfig; sourceTree = "<group>"; };
 		ACDF9D152D9A84B700832C1E /* PostCreation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = PostCreation; path = Packages/PostCreation; sourceTree = "<group>"; };
 		ACDF9D162D9A84B700832C1E /* ProfileNew */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ProfileNew; path = Packages/ProfileNew; sourceTree = "<group>"; };
+		ACE05B1C2DA92B0300DD6E79 /* VersionHistory */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = VersionHistory; path = Packages/VersionHistory; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -153,6 +155,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7EE9D1772D369DAA00D03B20 /* MediaUI in Frameworks */,
+				ACE05B192DA90C7900DD6E79 /* VersionHistory in Frameworks */,
 				7EE1447B2D1435DD0054FBB2 /* DesignSystem in Frameworks */,
 				7E3C09892D130B1E001D8227 /* GQLOperationsGuest in Frameworks */,
 				7E3C098B2D130EBF001D8227 /* GQLOperationsUser in Frameworks */,
@@ -222,6 +225,7 @@
 				ACDF9D162D9A84B700832C1E /* ProfileNew */,
 				ACCAB48B2D81E07E001C1041 /* RemoteConfig */,
 				7ED27FE42D4BC6A000A6EFE0 /* TokenKeychainManager */,
+				ACE05B1C2DA92B0300DD6E79 /* VersionHistory */,
 				7E0ECFB32D412C4300A99A5A /* Wallet */,
 				7ECF07062D0C76F500CA7852 /* Frameworks */,
 				7ECF06D82D0C6DA200CA7852 /* Products */,
@@ -290,6 +294,7 @@
 				ACF9156C2D9A85D800338BC4 /* ProfileNew */,
 				ACF9156E2D9A85DD00338BC4 /* PostCreation */,
 				AC10E9872D9C2D0800A72988 /* SFSafeSymbols */,
+				ACE05B182DA90C7900DD6E79 /* VersionHistory */,
 			);
 			productName = PeerApp;
 			productReference = 7ECF06D72D0C6DA200CA7852 /* PeerApp.app */;
@@ -1030,6 +1035,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = ACCAB4752D8196A4001C1041 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebasePerformance;
+		};
+		ACE05B182DA90C7900DD6E79 /* VersionHistory */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = VersionHistory;
 		};
 		ACF9156C2D9A85D800338BC4 /* ProfileNew */ = {
 			isa = XCSwiftPackageProductDependency;

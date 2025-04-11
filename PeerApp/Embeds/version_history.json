@@ -1,0 +1,20 @@
+[
+    {
+        "version": "5.0.0",
+        "releaseNotes": [
+            "Views are being counted",
+            "Audio feed is released",
+            "Short videos are fixed",
+            "Sent comments are displayed immediately",
+            "Amount of friends is displayed"
+        ]
+    },
+    {
+        "version": "4.9.0",
+        "releaseNotes": [
+            "Dark mode support added",
+            "Performance improvements",
+            "Bug fixes"
+        ]
+    }
+]

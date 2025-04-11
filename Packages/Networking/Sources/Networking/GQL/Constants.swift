@@ -8,8 +8,8 @@
 import Foundation
 
 public enum Constants {
-//    static let apiURL = URL(string: "https://peernetwork.eu/graphql")!
-    static let apiURL = URL(string: "https://getpeer.eu/graphql")!
+    static let apiURL = URL(string: "https://peernetwork.eu/graphql")!
+//    static let apiURL = URL(string: "https://getpeer.eu/graphql")!
 
     public static let accessTokenKey = "access_token"
     public static let refreshTokenKey = "refresh_token"
