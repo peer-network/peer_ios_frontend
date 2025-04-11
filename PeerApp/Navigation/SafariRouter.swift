@@ -18,87 +18,91 @@ extension View {
 
 private struct SafariRouter: ViewModifier {
     @EnvironmentObject private var router: Router
-    
+
     @StateObject private var safariManager = InAppSafariManager()
-    
+
     func body(content: Content) -> some View {
         content
-            .environment(
-                \.openURL,
-                 OpenURLAction { url in
-                     // Open internal URL.
-                     return router.handle(url: url)
-                 }
-            )
-        // TODO: Add deeplinks here too when they are ready
+            .environment(\.openURL, OpenURLAction { url in
+                router.handle(url: url)
+            })
             .onAppear {
-                router.urlHandler = { url in
-//                    guard userPreferences.preferredBrowser == .inAppSafari else {
-//                        return .systemAction
-//                    }
-                    // SFSafariViewController only supports http:// or https://.
-                    guard let scheme = url.scheme,
-                          ["http", "https"].contains(scheme.lowercased())
-                    else {
-                        return .systemAction
-                    }
-
-                    return safariManager.open(url)
+                router.urlHandler = { [weak safariManager] url in
+                    safariManager?.handleURL(url) ?? .systemAction
                 }
+            }
+            .onDisappear {
+                router.urlHandler = nil
             }
     }
 }
 
 @MainActor
-private class InAppSafariManager: NSObject, SFSafariViewControllerDelegate, ObservableObject {
-    /// We keep a reference to the temporary UIWindow used to present Safari
-    private var window: UIWindow?
-    
-    func open(_ url: URL) -> OpenURLAction.Result {
-        guard let windowScene = UIApplication.shared.connectedScenes
-            .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
-              let rootVC = windowScene.windows
-            .first(where: { $0.isKeyWindow })?
-            .rootViewController
-        else {
+private class InAppSafariManager: NSObject, ObservableObject {
+    private weak var presentationController: UIViewController?
+
+    func handleURL(_ url: URL) -> OpenURLAction.Result {
+        guard url.isWebURL else {
             return .systemAction
         }
 
-        let configuration = SFSafariViewController.Configuration()
-        let safariVC = SFSafariViewController(url: url, configuration: configuration)
-        safariVC.preferredBarTintColor = .launchScreenBackground
-        safariVC.delegate = self
+        guard let rootViewController = topViewController() else {
+            return .systemAction
+        }
 
-        rootVC.present(safariVC, animated: true)
+        return presentSafariViewController(with: url, from: rootViewController)
+    }
+
+    private func presentSafariViewController(with url: URL, from presenter: UIViewController) -> OpenURLAction.Result {
+        let configuration = SFSafariViewController.Configuration()
+        configuration.barCollapsingEnabled = true
+
+        let safariViewController = SFSafariViewController(url: url, configuration: configuration)
+        safariViewController.preferredBarTintColor = .launchScreenBackground
+        safariViewController.preferredControlTintColor = .white
+        safariViewController.delegate = self
+
+        presenter.present(safariViewController, animated: true)
+        presentationController = presenter
 
         return .handled
     }
 
-    func dismiss() {
-        window?.rootViewController?.presentedViewController?.dismiss(animated: true) { [weak self] in
-            self?.window?.resignKey()
-            self?.window?.isHidden = true
-            self?.window = nil
+    private func topViewController() -> UIViewController? {
+        guard let windowScene = UIApplication.shared.connectedScenes
+            .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene
+        else {
+            return nil
         }
+
+        return windowScene.windows
+            .first(where: \.isKeyWindow)?
+            .rootViewController?
+            .topmostPresentedViewController
     }
-    
-    /// Creates or reuses a temporary UIWindow for presentation.
-    private func setupWindow(in windowScene: UIWindowScene) -> UIWindow {
-        let window = self.window ?? UIWindow(windowScene: windowScene)
-        let hostingVC = UIViewController()
-        window.rootViewController = hostingVC
-        window.windowLevel = .alert + 1
-        window.makeKeyAndVisible()
-        window.overrideUserInterfaceStyle = .dark
-        
-        self.window = window
-        return window
-    }
-    
-    // MARK: - SFSafariViewControllerDelegate
+}
+
+// MARK: - SFSafariViewControllerDelegate
+extension InAppSafariManager: SFSafariViewControllerDelegate {
     nonisolated func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-        Task { @MainActor in
-            dismiss()
+        Task { @MainActor [weak self] in
+            self?.presentationController?.dismiss(animated: true)
+            self?.presentationController = nil
         }
+    }
+}
+
+// MARK: - URL Extension
+private extension URL {
+    var isWebURL: Bool {
+        guard let scheme = scheme?.lowercased() else { return false }
+        return ["http", "https"].contains(scheme)
+    }
+}
+
+// MARK: - UIViewController Extension
+private extension UIViewController {
+    var topmostPresentedViewController: UIViewController {
+        presentedViewController?.topmostPresentedViewController ?? self
     }
 }
