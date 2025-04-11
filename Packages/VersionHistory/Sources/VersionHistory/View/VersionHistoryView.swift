@@ -10,7 +10,12 @@ import DesignSystem
 import Environment
 
 public struct VersionHistoryView: View {
+    @Environment(\.openURL) private var openURL
+
     @StateObject private var viewModel: VersionHistoryViewModel
+
+    private let appWikiURL = URL(string: "https://github.com/peer-network/peer_ios_frontend/wiki")!
+    private let backendWikiURL = URL(string: "https://github.com/peer-network/peer_backend/wiki")!
 
     public init(service: VersionHistoryServiceProtocol = LocalVersionHistoryService()) {
         _viewModel = StateObject(wrappedValue: VersionHistoryViewModel(service: service))
@@ -24,13 +29,19 @@ public struct VersionHistoryView: View {
                 switch viewModel.state {
                     case .idle, .loading:
                         ProgressView()
+                            .controlSize(.large)
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
                     case .loaded(let items):
-                        versionHistoryList(items)
+                        VStack(spacing: 20) {
+                            wikiButtons
+
+                            versionHistoryList(items)
+                        }
+                        .padding(.top, 10)
 
                     case .error(let error):
-                        ErrorView(title: "We are not able to load version history.", description: error.localizedDescription) {
+                        ErrorView(title: "We were not able to load version history.", description: error.localizedDescription) {
                             Task {
                                 await viewModel.loadVersionHistory()
                             }
@@ -42,6 +53,37 @@ public struct VersionHistoryView: View {
                 await viewModel.loadVersionHistory()
             }
         }
+    }
+
+    private var wikiButtons: some View {
+        HStack(spacing: 16) {
+            Button {
+                openURL(appWikiURL)
+            } label: {
+                Text("App Wiki")
+                    .padding(10)
+                    .frame(maxWidth: .infinity)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 20)
+                            .strokeBorder(Colors.whitePrimary, lineWidth: 1)
+                    }
+            }
+
+            Button {
+                openURL(backendWikiURL)
+            } label: {
+                Text("Backend Wiki")
+                    .padding(10)
+                    .frame(maxWidth: .infinity)
+                    .overlay {
+                        RoundedRectangle(cornerRadius: 20)
+                            .strokeBorder(Colors.whitePrimary, lineWidth: 1)
+                    }
+            }
+        }
+        .foregroundStyle(Colors.whitePrimary)
+        .font(.customFont(weight: .regular, size: .body))
+        .padding(.horizontal, 20)
     }
 
     private func versionHistoryList(_ items: [VersionHistoryItem]) -> some View {
@@ -66,8 +108,8 @@ public struct VersionHistoryView: View {
                     }
                 }
             }
+            .padding(.horizontal, 20)
         }
-        .padding(20)
         .foregroundStyle(Colors.whitePrimary)
         .font(.customFont(weight: .regular, size: .body))
         .frame(maxWidth: .infinity, alignment: .leading)
