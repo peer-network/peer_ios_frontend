@@ -62,7 +62,7 @@ struct PeerApp: App {
                                     Text(message)
                                 }
                         }
-                    case .idle, .loading, .loaded, .error:
+                    default:
                         contentView
                 }
             }
