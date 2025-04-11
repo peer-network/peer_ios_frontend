@@ -15,13 +15,15 @@ public struct LottieView: View {
     }
 
     private let name: String
+    private let speed: Float
     private let onLoopComplete: () -> Void
 
     @State private var animation: DotLottieAnimation?
     @State private var dotLottieView: DotLottieView?
 
-    public init(animation: LottieAnimation, onLoopComplete: @escaping () -> Void) {
+    public init(animation: LottieAnimation, speed: Float = 1.0, onLoopComplete: @escaping () -> Void) {
         self.name = animation.rawValue
+        self.speed = speed
         self.onLoopComplete = onLoopComplete
     }
 
@@ -39,7 +41,7 @@ public struct LottieView: View {
     }
 
     private func setupAnimation() {
-        let config = AnimationConfig(autoplay: true, loop: true)
+        let config = AnimationConfig(autoplay: true, loop: true, speed: speed)
 
         let dotLottieAnimation = DotLottieAnimation(fileName: name, config: config)
         let view: DotLottieView = dotLottieAnimation.view()

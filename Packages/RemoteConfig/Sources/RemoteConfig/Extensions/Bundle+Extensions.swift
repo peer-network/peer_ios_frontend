@@ -13,7 +13,7 @@ extension Bundle {
             let info = Bundle.main.infoDictionary,
             let version = info["CFBundleShortVersionString"] as? String
         else {
-            return ""
+            return "1.0.0"
         }
 
         return version
@@ -24,7 +24,7 @@ extension Bundle {
             let info = Bundle.main.infoDictionary,
             let version = info["CFBundleVersion"] as? String
         else {
-            return ""
+            return "1"
         }
 
         return version
