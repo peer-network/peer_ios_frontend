@@ -91,8 +91,16 @@ public struct VersionHistoryView: View {
             VStack(alignment: .leading, spacing: 20) {
                 ForEach(items) { item in
                     VStack(alignment: .leading, spacing: 10) {
-                        Text(item.version)
-                            .font(.customFont(weight: .bold, size: .title))
+                        HStack(spacing: 0) {
+                            Text(item.version)
+                                .font(.customFont(weight: .bold, size: .title))
+
+                            Spacer()
+                                .frame(minWidth: 16)
+
+                            Text(item.date)
+                                .opacity(0.5)
+                        }
 
                         VStack(alignment: .leading, spacing: 4) {
                             ForEach(item.releaseNotes, id: \.self) { note in

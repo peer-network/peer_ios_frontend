@@ -15,6 +15,7 @@ public class MockVersionHistoryService: VersionHistoryServiceProtocol {
         return [
             VersionHistoryItem(
                 version: "5.0.0",
+                date: "5 Feb 2024",
                 releaseNotes: [
                     "Views are being counted",
                     "Audio feed is released",
@@ -25,6 +26,7 @@ public class MockVersionHistoryService: VersionHistoryServiceProtocol {
             ),
             VersionHistoryItem(
                 version: "4.9.0",
+                date: "5 Feb 2024",
                 releaseNotes: [
                     "Dark mode support added",
                     "Performance improvements",
