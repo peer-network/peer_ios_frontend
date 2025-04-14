@@ -41,6 +41,11 @@ final class AppCoordinator: ObservableObject {
         appInitialized = true
     }
     
+    ///After logout coordinator updates it's @Published property and reevaluate @ViewBuilder view()
+    func logout() {
+        appInitialized = false
+    }
+    
     private func startSplashScreen() -> some View {
         SplashModule()
     }
@@ -50,6 +55,6 @@ final class AppCoordinator: ObservableObject {
     }
     
     private func startMainModule() -> some View {
-        return Color.yellow
+        MainModule()
     }
 }

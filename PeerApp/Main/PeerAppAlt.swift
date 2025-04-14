@@ -6,8 +6,9 @@
 //
 
 import SwiftUI
+import Environment
 
-@main
+//@main
 struct PeerAppAlt: App {
     @StateObject private var appCoordinator = AppCoordinator(path: NavigationPath())
     
