@@ -18,92 +18,91 @@ extension View {
 
 private struct SafariRouter: ViewModifier {
     @EnvironmentObject private var router: Router
-    
+
     @StateObject private var safariManager = InAppSafariManager()
-    
+
     func body(content: Content) -> some View {
         content
-            .environment(
-                \.openURL,
-                 OpenURLAction { url in
-                     // Open internal URL.
-                     return router.handle(url: url)
-                 }
-            )
-        // TODO: Add deeplinks here too when they are ready
+            .environment(\.openURL, OpenURLAction { url in
+                router.handle(url: url)
+            })
             .onAppear {
-                router.urlHandler = { url in
-//                    guard userPreferences.preferredBrowser == .inAppSafari else {
-//                        return .systemAction
-//                    }
-                    // SFSafariViewController only supports http:// or https://.
-                    guard let scheme = url.scheme,
-                          ["http", "https"].contains(scheme.lowercased())
-                    else {
-                        return .systemAction
-                    }
-
-                    return safariManager.open(url)
+                router.urlHandler = { [weak safariManager] url in
+                    safariManager?.handleURL(url) ?? .systemAction
                 }
+            }
+            .onDisappear {
+                router.urlHandler = nil
             }
     }
 }
 
 @MainActor
-private class InAppSafariManager: NSObject, SFSafariViewControllerDelegate, ObservableObject {
-    /// We keep a reference to the temporary UIWindow used to present Safari
-    private var window: UIWindow?
-    
-    func open(_ url: URL) -> OpenURLAction.Result {
-        guard let windowScene = UIApplication.shared.connectedScenes
-            .compactMap({ $0 as? UIWindowScene })
-            .first(where: { $0.activationState == .foregroundActive })
-        else {
+private class InAppSafariManager: NSObject, ObservableObject {
+    private weak var presentationController: UIViewController?
+
+    func handleURL(_ url: URL) -> OpenURLAction.Result {
+        guard url.isWebURL else {
             return .systemAction
         }
-        
-        window = setupWindow(in: windowScene)
-        
-        let configuration = SFSafariViewController.Configuration()
-//        configuration.entersReaderIfAvailable = UserPreferences.shared.inAppBrowserReaderView
-        
-        let safariVC = SFSafariViewController(url: url, configuration: configuration)
-//        safariVC.preferredBarTintColor = UIColor(Theme.shared.primaryBackgroundColor)
-//        safariVC.preferredControlTintColor = UIColor(Theme.shared.tintColor)
-        safariVC.delegate = self
-        
-        // Present on a lightweight container view controller.
-        DispatchQueue.main.async { [weak self] in
-            self?.window?.rootViewController?.present(safariVC, animated: true)
+
+        guard let rootViewController = topViewController() else {
+            return .systemAction
         }
-        
+
+        return presentSafariViewController(with: url, from: rootViewController)
+    }
+
+    private func presentSafariViewController(with url: URL, from presenter: UIViewController) -> OpenURLAction.Result {
+        let configuration = SFSafariViewController.Configuration()
+        configuration.barCollapsingEnabled = true
+
+        let safariViewController = SFSafariViewController(url: url, configuration: configuration)
+        safariViewController.preferredBarTintColor = .launchScreenBackground
+        safariViewController.preferredControlTintColor = .white
+        safariViewController.delegate = self
+
+        presenter.present(safariViewController, animated: true)
+        presentationController = presenter
+
         return .handled
     }
-    
-    func dismiss() {
-        window?.rootViewController?.presentedViewController?.dismiss(animated: true)
-        window?.resignKey()
-        window?.isHidden = true
-        window = nil
-    }
-    
-    /// Creates or reuses a temporary UIWindow for presentation.
-    private func setupWindow(in windowScene: UIWindowScene) -> UIWindow {
-        let window = self.window ?? UIWindow(windowScene: windowScene)
-        let hostingVC = UIViewController()
-        window.rootViewController = hostingVC
-        window.windowLevel = .alert + 1
-        window.makeKeyAndVisible()
-        window.overrideUserInterfaceStyle = .dark
-        
-        self.window = window
-        return window
-    }
-    
-    // MARK: - SFSafariViewControllerDelegate
-    nonisolated func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
-        Task { @MainActor in
-            dismiss()
+
+    private func topViewController() -> UIViewController? {
+        guard let windowScene = UIApplication.shared.connectedScenes
+            .first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene
+        else {
+            return nil
         }
+
+        return windowScene.windows
+            .first(where: \.isKeyWindow)?
+            .rootViewController?
+            .topmostPresentedViewController
+    }
+}
+
+// MARK: - SFSafariViewControllerDelegate
+extension InAppSafariManager: SFSafariViewControllerDelegate {
+    nonisolated func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
+        Task { @MainActor [weak self] in
+            self?.presentationController?.dismiss(animated: true)
+            self?.presentationController = nil
+        }
+    }
+}
+
+// MARK: - URL Extension
+private extension URL {
+    var isWebURL: Bool {
+        guard let scheme = scheme?.lowercased() else { return false }
+        return ["http", "https"].contains(scheme)
+    }
+}
+
+// MARK: - UIViewController Extension
+private extension UIViewController {
+    var topmostPresentedViewController: UIViewController {
+        presentedViewController?.topmostPresentedViewController ?? self
     }
 }

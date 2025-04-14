@@ -13,6 +13,7 @@ import FeedNew
 import Models
 import LinkPresentation
 import Explore
+import VersionHistory
 
 extension View {
     func withAppRouter() -> some View {
@@ -31,7 +32,7 @@ extension View {
                     SettingsView()
                         .toolbar(.hidden, for: .navigationBar)
                 case .versionHistory:
-                    VersionHistoryPageView()
+                    VersionHistoryView()
                         .toolbar(.hidden, for: .navigationBar)
             }
         }
