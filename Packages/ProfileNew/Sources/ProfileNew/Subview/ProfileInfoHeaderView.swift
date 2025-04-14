@@ -82,8 +82,8 @@ struct ProfileInfoHeaderView: View {
             } else {
                 let vm = FollowButtonViewModel(
                     id: user.id,
-                    isFollowing: user.isFollowing,
-                    isFollowed: user.isFollowed
+                    isFollowing: user.isFollowed,
+                    isFollowed: user.isFollowing
                 )
                 FollowButton(viewModel: vm)
                 .environment(\.isBackgroundWhite, false)
