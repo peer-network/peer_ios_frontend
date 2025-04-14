@@ -74,7 +74,7 @@ public struct ProfileView: View {
         .onChange(of: selectedPhotoItem) {
             loadImage()
         }
-        .onAppear {
+        .onFirstAppear {
             viewModel.apiService = apiManager.apiService
             Task {
                 await viewModel.fetchUser()
@@ -113,7 +113,7 @@ public struct ProfileView: View {
         var body: some View {
             LazyVStack(alignment: .center, spacing: 20) {
                 PostsListView(fetcher: normalFeedVM)
-                    .onAppear {
+                    .onFirstAppear {
                         normalFeedVM.apiService = apiManager.apiService
                         normalFeedVM.fetchPosts(reset: true)
                     }
@@ -133,7 +133,7 @@ public struct ProfileView: View {
         var body: some View {
             LazyVStack(alignment: .center, spacing: 20) {
                 PostsListView(fetcher: audioFeedVM)
-                    .onAppear {
+                    .onFirstAppear {
                         audioFeedVM.apiService = apiManager.apiService
                         audioFeedVM.fetchPosts(reset: true)
                     }

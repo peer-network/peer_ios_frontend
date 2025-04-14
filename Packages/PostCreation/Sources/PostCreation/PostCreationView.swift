@@ -368,9 +368,10 @@ public struct PostCreationView: View {
             }
         }
         .environmentObject(viewModel)
-        .onAppear {
+        .onFirstAppear {
             viewModel.apiService = apiManager.apiService
-            
+        }
+        .onAppear {
             audioManager.isInRestrictedView = true
         }
         .onDisappear {

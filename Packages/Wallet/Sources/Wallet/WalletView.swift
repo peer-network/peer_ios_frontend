@@ -32,7 +32,7 @@ public struct WalletView: View {
         }
         .background(Colors.textActive)
         .environmentObject(viewModel)
-        .onAppear {
+        .onFirstAppear {
             viewModel.apiService = apiManager.apiService
             Task {
                 await viewModel.fetchCurrentLiquidity()
