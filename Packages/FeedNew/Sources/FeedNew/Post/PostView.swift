@@ -116,6 +116,9 @@ struct PostView: View {
             if !reasons.contains(.placeholder) {
                 PostActionsView(showAppleTranslation: $showAppleTranslation, showReportAlert: $showReportAlert, showBlockAlert: $showBlockAlert)
                     .padding(.horizontal, 20)
+            } else {
+                Spacer()
+                    .frame(height: 8)
             }
 
             Button {
