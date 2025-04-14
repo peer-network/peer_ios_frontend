@@ -41,11 +41,13 @@ struct PostView: View {
         .onAppear {
             postVM.apiService = apiManager.apiService
         }
-        .modifier(ViewVisibilityModifier(viewed: postVM.isViewed, viewAction: {
-            Task {
-                try? await postVM.toggleView()
-            }
-        }))
+        .ifCondition(reasons != .placeholder) {
+            $0.modifier(ViewVisibilityModifier(viewed: postVM.isViewed, viewAction: {
+                Task {
+                    try? await postVM.toggleView()
+                }
+            }))
+        }
         .environmentObject(postVM)
         .alert(
             isPresented: $showReportAlert,
