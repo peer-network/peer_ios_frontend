@@ -9,12 +9,11 @@ import SwiftUI
 
 public extension View {
     func skeleton(isRedacted: Bool) -> some View {
-        self
-            .modifier(SkeletonModifier(isRedacted: isRedacted))
+        modifier(SkeletonModifier(isRedacted: isRedacted))
     }
 }
 
-struct SkeletonModifier: ViewModifier {
+private struct SkeletonModifier: ViewModifier {
     var isRedacted: Bool
 
     var rotation: Double {
