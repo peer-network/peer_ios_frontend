@@ -13,6 +13,16 @@ import Models
 
 @MainActor
 public final class AuthViewModel: ObservableObject {
+    public struct Transitions {
+        let authorized: () -> Void
+        let forgotPassword: () -> Void
+        
+        public init(authorized: @escaping () -> Void, forgotPassword: @escaping () -> Void) {
+            self.authorized = authorized
+            self.forgotPassword = forgotPassword
+        }
+    }
+    
     enum FormType {
         case login
         case register
@@ -49,14 +59,17 @@ public final class AuthViewModel: ObservableObject {
     //why weak var?
     private let authManager: AuthManagerProtocol
     public unowned var apiService: APIService!
+    private let transitions: Transitions?
 
     public init(authManager: AuthManager) {
         self.authManager = authManager
+        transitions = nil
     }
     
-    public init(authManager: AuthManagerProtocol, apiService: APIService) {
+    public init(authManager: AuthManagerProtocol, apiService: APIService, transitions: Transitions? = nil) {
         self.authManager = authManager
         self.apiService = apiService
+        self.transitions = transitions
     }
 
     func login() async {
@@ -71,6 +84,7 @@ public final class AuthViewModel: ObservableObject {
 
         do {
             try await authManager.login(email: loginEmail, password: loginPassword)
+            self.transitions?.authorized()
         } catch {
             withAnimation {
                 loginError = "Something went wrong. Please, try again"
@@ -113,6 +127,10 @@ public final class AuthViewModel: ObservableObject {
             }
             return false
         }
+    }
+    
+    func forgotPassword() {
+        self.transitions?.forgotPassword()
     }
 
     private func resetErrors() {

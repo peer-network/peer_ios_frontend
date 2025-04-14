@@ -12,12 +12,17 @@ struct AuthModule: View {
 
     var body: some View {
         Group {
-            AuthCoordinator(
-                navigationPath: $appCoordinator.path,
-                transitions: .init(authorized: {
-                    appCoordinator.authCompleted()
-                })
-            ).view()
+            NavigationStack(path: $appCoordinator.path) {
+                AuthCoordinator(
+                    navigationPath: $appCoordinator.path,
+                    transitions: .init(authorized: {
+                        appCoordinator.authCompleted()
+                    })
+                ).view()
+                    .navigationDestination(for: AuthCoordinator.self) { coordinator in
+                        coordinator.view()
+                    }
+            }
         }
     }
 }

@@ -166,7 +166,11 @@ public struct MainAuthView: View {
           OpenURLAction { url in
             router.handle(url: url)
           })
-        .onAppear { viewModel.apiService = apiManager.apiService }
+        .onAppear {
+            if viewModel.apiService == nil { //TODO: temporary, remove later
+                viewModel.apiService = apiManager.apiService
+            }
+        }
     }
     
     // MARK: - Login Form View
@@ -204,6 +208,7 @@ public struct MainAuthView: View {
             
             Button {
                 // TODO: Not implemented in the API
+                self.viewModel.forgotPassword()
             } label: {
                 Text("Forgot password")
                     .font(.customFont(weight: .regular, size: .footnote))

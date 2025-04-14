@@ -8,15 +8,15 @@
 import SwiftUI
 
 final class AppCoordinator: ObservableObject {
-    let id = UUID()
-    private var appInitialized: Bool?
+    let id: UUID
     @Published var path: NavigationPath
+    @Published private var appInitialized: Bool?
 
-    init(path: NavigationPath, appInitialized: Bool? = nil) {
+    init(path: NavigationPath) {
+        self.id = UUID()
         self.path = path
-        self.appInitialized = appInitialized
     }
-
+    
     @ViewBuilder
     func view() -> some View {
         switch appInitialized {
@@ -31,12 +31,14 @@ final class AppCoordinator: ObservableObject {
         }
     }
     
+    ///After attempt to restore session coordinator updates it's @Published property and reevaluate @ViewBuilder view()
     func initCompleted(sessionRestored: Bool) {
-        self.push(AppCoordinator(path: NavigationPath(), appInitialized: sessionRestored))
+        appInitialized = sessionRestored
     }
     
+    ///After successful login coordinator updates it's @Published property and reevaluate @ViewBuilder view()
     func authCompleted() {
-        self.push(AppCoordinator(path: NavigationPath(), appInitialized: true))
+        appInitialized = true
     }
     
     private func startSplashScreen() -> some View {
@@ -48,26 +50,6 @@ final class AppCoordinator: ObservableObject {
     }
     
     private func startMainModule() -> some View {
-        print(path)
         return Color.yellow
-        
-    }
-    
-    private func startEmptyView() -> some View {
-        EmptyView()
-    }
-    
-    private func push<V>(_ value: V) where V : Hashable {
-        path.append(value)
-    }
-}
-
-extension AppCoordinator: Hashable {
-    func hash(into hasher: inout Hasher) {
-        hasher.combine(id)
-    }
-    
-    static func == (lhs: AppCoordinator, rhs: AppCoordinator) -> Bool {
-        lhs.id == rhs.id
     }
 }

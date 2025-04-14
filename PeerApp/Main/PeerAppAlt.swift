@@ -13,13 +13,8 @@ struct PeerAppAlt: App {
     
     var body: some Scene {
         WindowGroup {
-            NavigationStack(path: $appCoordinator.path) {
-                appCoordinator.view()
-                    .navigationDestination(for: AppCoordinator.self) { coordinator in
-                        coordinator.view()
-                    }
-            }
-            .environmentObject(appCoordinator)
+            appCoordinator.view()
+                .environmentObject(appCoordinator)
         }
     }
 }
