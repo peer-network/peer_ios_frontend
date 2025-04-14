@@ -28,4 +28,6 @@ public enum Colors {
     public static let warning = Color(red: 1, green: 0.4, blue: 0.4)
     public static let greyIcons = Color(red: 0.48, green: 0.48, blue: 0.48)
     public static let glowBlue = Color(red: 0.47, green: 0.69, blue: 1)
+
+    public static let imageLoadingPlaceholder = Color(red: 0.2, green: 0.2, blue: 0.2)
 }
