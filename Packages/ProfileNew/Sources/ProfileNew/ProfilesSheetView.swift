@@ -104,16 +104,14 @@ public struct ProfilesSheetView<Fetcher>: View where Fetcher: RelationsFetcher {
         }
         .padding(10)
         .ignoresSafeArea(.all, edges: .bottom)
-        .onAppear {
-            
-            
+        .onFirstAppear {
             switch type {
-            case .followers:
-                fetcher.fetchFollowers(reset: true)
-            case .following:
-                fetcher.fetchFollowings(reset: true)
-            case .friends:
-                break
+                case .followers:
+                    fetcher.fetchFollowers(reset: true)
+                case .following:
+                    fetcher.fetchFollowings(reset: true)
+                case .friends:
+                    break
             }
         }
     }

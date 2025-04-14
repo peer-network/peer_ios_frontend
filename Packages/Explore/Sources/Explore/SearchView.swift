@@ -121,7 +121,7 @@ public struct SearchView: View {
             }
         }
         .background(Colors.textActive)
-        .onAppear {
+        .onFirstAppear {
             viewModelUsers.apiService = apiManager.apiService
             viewModelTags.apiService = apiManager.apiService
             viewModelTitle.apiService = apiManager.apiService

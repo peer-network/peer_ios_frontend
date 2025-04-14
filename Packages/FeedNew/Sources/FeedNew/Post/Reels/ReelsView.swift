@@ -65,7 +65,7 @@ struct ReelsView: View {
                 }
             }
         }
-        .onAppear {
+        .onFirstAppear {
             viewModel.apiService = apiManager.apiService
             viewModel.fetchPosts(reset: true)
         }

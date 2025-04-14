@@ -166,7 +166,7 @@ public struct MainAuthView: View {
           OpenURLAction { url in
             router.handle(url: url)
           })
-        .onAppear { viewModel.apiService = apiManager.apiService }
+        .onFirstAppear { viewModel.apiService = apiManager.apiService }
     }
     
     // MARK: - Login Form View

@@ -103,7 +103,7 @@ public struct FeedView: View {
                     }
                 }
             }
-            .onAppear {
+            .onFirstAppear {
                 normalFeedVM.apiService = apiManager.apiService
                 normalFeedVM.fetchPosts(reset: true)
             }
@@ -157,7 +157,7 @@ public struct FeedView: View {
                         }
                     }
                 }
-                .onAppear {
+                .onFirstAppear {
                     audioFeedVM.apiService = apiManager.apiService
                     audioFeedVM.fetchPosts(reset: true)
                 }
