@@ -22,9 +22,9 @@ public struct PostsListView<Fetcher>: View where Fetcher: PostsFetcher {
     public var body: some View {
         switch fetcher.state {
             case .loading:
-                    ForEach(0..<10, id: \.self) { _ in
-                        PostView(postVM: PostViewModel(post: Post.placeholderText())) // also pass router
-                            .redacted(reason: .placeholder)
+                    ForEach(0..<5, id: \.self) { _ in
+                        PostView(postVM: PostViewModel(post: Post.placeholderImage())) // also pass router
+                            .skeleton(isRedacted: true)
                             .allowsHitTesting(false)
                     }
             case .display(let posts, let hasMore):

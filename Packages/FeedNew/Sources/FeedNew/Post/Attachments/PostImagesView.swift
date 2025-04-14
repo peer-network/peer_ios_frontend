@@ -31,7 +31,11 @@ struct PostImagesView: View {
                                 .clipShape(Rectangle())
                         } else if state.isLoading {
                             Rectangle()
-                                .fill(Color.gray)
+                                .fill(Colors.textSuggestions)
+                                .overlay {
+                                    ProgressView()
+                                        .controlSize(.large)
+                                }
                         }
                     }
                     .onTapGesture {

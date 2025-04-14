@@ -27,7 +27,7 @@ public enum RelationsSheetState {
 
 @MainActor
 public final class RelationsViewModel: ObservableObject, RelationsFetcher {
-    
+
     @Published private(set) public var state = RelationsSheetState.loading
 
     @Published private(set) var followers: [RowUser] = []
@@ -49,42 +49,46 @@ public final class RelationsViewModel: ObservableObject, RelationsFetcher {
         self.userId = userId
         self.apiService = apiService
     }
-    
+
     public func fetchFollowers(reset: Bool) {
         if let existingTask = fetchFollowersTask, !existingTask.isCancelled {
             return
         }
-        
+
         if reset {
             if followers.isEmpty {
                 state = .loading
             }
-            
+
             currentOffsetFollowers = 0
             hasMoreFollowers = true
         }
-        
+
         fetchFollowersTask = Task {
             do {
                 let result = await apiService.fetchUserFollowers(for: userId, after: currentOffsetFollowers)
-                
+
                 try Task.checkCancellation()
-                
+
                 switch result {
-                case .success(let fetchedFollowers):
-                    self.followers = fetchedFollowers
-                    
-                    if fetchedFollowers.count != 20 {
-                        hasMoreFollowers = false
-                        state = .display(users: followers, hasMore: .none)
-                    } else {
-                        currentOffsetFollowers += 20
-                        state = .display(users: followers, hasMore: .hasMore)
-                    }
-                case .failure(let apiError):
-                    throw apiError
+                    case .success(let fetchedFollowers):
+                        if reset {
+                            followers.removeAll()
+                        }
+
+                        followers.append(contentsOf: fetchedFollowers)
+
+                        if fetchedFollowers.count != 20 {
+                            hasMoreFollowers = false
+                            state = .display(users: followers, hasMore: .none)
+                        } else {
+                            currentOffsetFollowers += 20
+                            state = .display(users: followers, hasMore: .hasMore)
+                        }
+                    case .failure(let apiError):
+                        throw apiError
                 }
-                
+
                 fetchFollowersTask = nil
             } catch is CancellationError {
                 //                state = .display(posts: posts, hasMore: .hasMore)
@@ -95,42 +99,46 @@ public final class RelationsViewModel: ObservableObject, RelationsFetcher {
             }
         }
     }
-    
+
     public func fetchFollowings(reset: Bool) {
         if let existingTask = fetchFollowingsTask, !existingTask.isCancelled {
             return
         }
-        
+
         if reset {
             if following.isEmpty {
                 state = .loading
             }
-            
+
             currentOffsetFollowings = 0
             hasMoreFollowings = true
         }
-        
+
         fetchFollowingsTask = Task {
             do {
                 let result = await apiService.fetchUserFollowings(for: userId, after: currentOffsetFollowings)
-                
+
                 try Task.checkCancellation()
-                
+
                 switch result {
-                case .success(let fetchedFollowings):
-                    self.following = fetchedFollowings
-                    
-                    if fetchedFollowings.count != 20 {
-                        hasMoreFollowings = false
-                        state = .display(users: following, hasMore: .none)
-                    } else {
-                        currentOffsetFollowings += 20
-                        state = .display(users: following, hasMore: .hasMore)
-                    }
-                case .failure(let apiError):
-                    throw apiError
+                    case .success(let fetchedFollowings):
+                        if reset {
+                            following.removeAll()
+                        }
+
+                        following.append(contentsOf: fetchedFollowings)
+
+                        if fetchedFollowings.count != 20 {
+                            hasMoreFollowings = false
+                            state = .display(users: following, hasMore: .none)
+                        } else {
+                            currentOffsetFollowings += 20
+                            state = .display(users: following, hasMore: .hasMore)
+                        }
+                    case .failure(let apiError):
+                        throw apiError
                 }
-                
+
                 fetchFollowingsTask = nil
             } catch is CancellationError {
                 //                state = .display(posts: posts, hasMore: .hasMore)

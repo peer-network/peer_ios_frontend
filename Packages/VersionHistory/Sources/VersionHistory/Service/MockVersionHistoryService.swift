@@ -10,7 +10,7 @@ public class MockVersionHistoryService: VersionHistoryServiceProtocol {
 
     public func fetchVersionHistory() async throws -> [VersionHistoryItem] {
         // Simulate network delay
-        try await Task.sleep(for: .seconds(5))
+        try await Task.sleep(for: .seconds(2))
 
         return [
             VersionHistoryItem(
