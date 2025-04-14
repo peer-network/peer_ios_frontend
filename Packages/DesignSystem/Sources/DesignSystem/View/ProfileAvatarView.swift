@@ -58,25 +58,14 @@ public struct ProfileAvatarView: View {
             if reasons == .placeholder {
                 AvatarPlaceHolder(name: name, config: config)
             } else {
-//                AsyncImage(url: url) { phase in
-//                    if let image = phase.image {
-//                        image
-//                            .resizable()
-//                            .scaledToFill()
-//                    } else if phase.error != nil {
-//                        AvatarPlaceHolder(name: name, config: config)
-//                    } else {
-//                        AvatarPlaceHolder(name: name, config: config)
-//                    }
-//                }
-//                .frame(width: config.width, height: config.height)
-//                .clipShape(RoundedRectangle(cornerRadius: config.cornerRadius))
-                LazyImage(
-                    request: ImageRequest(
+                let imageRequest = ImageRequest(
+                    urlRequest: URLRequest(
                         url: url,
-                        processors: [.resize(size: config.size)],
-                        options: [.reloadIgnoringCachedData, .disableMemoryCache, .disableDiskCache])
-                ) { state in
+                        cachePolicy: .useProtocolCachePolicy),
+                    processors: [.resize(size: config.size)],
+                    options: [.reloadIgnoringCachedData])
+
+                LazyImage(request: imageRequest) { state in
                     if let image = state.image {
                         image
                             .resizable()
