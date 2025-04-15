@@ -460,7 +460,12 @@ struct ReelView: View {
 }
 
 #Preview {
-    ReelsMainView()
+    ReelsMainView(
+        viewModel: VideoFeedViewModel(
+            apiService: APIServiceStub(),
+            filters: .shared,
+            transitions: .init(openProfile: {_ in}, showComments: {_ in})
+        ))
         .environmentObject(PostViewModel(post: .placeholderText()))
         .environmentObject(APIServiceManager(.mock))
 }

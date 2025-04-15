@@ -11,7 +11,9 @@ import DesignSystem
 
 public struct FeedView: View {
     @EnvironmentObject private var audioManager: AudioSessionManager
-
+    @EnvironmentObject private var apiManager: APIServiceManager
+    @EnvironmentObject private var router: Router
+    
     @State private var feedPage: FeedPage = .normalFeed
 
     // Filters properties
@@ -24,14 +26,39 @@ public struct FeedView: View {
         HeaderContainer(actionsToDisplay: .commentsAndLikes) {
             headerView
         } content: {
+            let openProfile = { userID in
+                router .navigate(to: .accountDetail(id: userID))
+            }
+            
+            let showComments = { post in
+                router.presentedSheet = .comments(
+                    post: post,
+                    isBackgroundWhite: post.contentType == .text ? true : false,
+                    transitions: .init(openProfile: { userID in
+                        router .navigate(to: .accountDetail(id: userID))
+                    })
+                )
+            }
+            
             VStack(alignment: .center, spacing: 0) {
                 FeedTabControllerView(feedPage: $feedPage)
 
                 TabView(selection: $feedPage) {
-                    NormalFeedView()
+                    let regularVM = NormalFeedViewModel(
+                        feedType: .regular,
+                        apiService: apiManager.apiService,
+                        filters: .shared,
+                        transitions: .init(openProfile: openProfile, showComments: showComments)
+                    )
+                    NormalFeedView(viewModel: regularVM)
                         .tag(FeedPage.normalFeed)
 
-                    ReelsMainView()
+                    let videoVM = VideoFeedViewModel(
+                        apiService: apiManager.apiService,
+                        filters: .shared,
+                        transitions: .init(openProfile: openProfile, showComments: showComments)
+                    )
+                    ReelsMainView(viewModel: videoVM)
                         .tag(FeedPage.videoFeed)
                         .onAppear {
                             audioManager.isInRestrictedView = true
@@ -40,7 +67,13 @@ public struct FeedView: View {
                             audioManager.isInRestrictedView = false
                         }
 
-                    AudioFeedView()
+                    let audioVM = NormalFeedViewModel(
+                        feedType: .audio,
+                        apiService: apiManager.apiService,
+                        filters: .shared,
+                        transitions: .init(openProfile: openProfile, showComments: showComments)
+                    )
+                    NormalFeedView(viewModel: audioVM)
                         .tag(FeedPage.audioFeed)
                 }
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
@@ -79,21 +112,24 @@ public struct FeedView: View {
         @Environment(\.selectedTabScrollToTop) private var selectedTabScrollToTop
         @EnvironmentObject private var router: Router
         @EnvironmentObject private var apiManager: APIServiceManager
-        @StateObject private var normalFeedVM = NormalFeedViewModel()
-        @StateObject private var feedContentSortingAndFiltering = FeedContentSortingAndFiltering.shared
+        @StateObject private var viewModel: NormalFeedViewModel
 
+        init(viewModel: NormalFeedViewModel) {
+            self._viewModel = StateObject(wrappedValue: viewModel)
+        }
+        
         var body: some View {
             ScrollViewReader { proxy in
                 ScrollView {
                     ScrollToView()
                     LazyVStack(spacing: 20) {
-                        PostsListView(fetcher: normalFeedVM)
+                        PostsListView(fetcher: viewModel, navigator: viewModel.transitions)
                     }
                     .padding(.bottom, 10)
                 }
                 .refreshable {
                     HapticManager.shared.fireHaptic(.dataRefresh(intensity: 0.3))
-                    normalFeedVM.fetchPosts(reset: true)
+                    viewModel.fetchPosts(reset: true)
                 }
                 .onChange(of: selectedTabScrollToTop) {
                     if selectedTabScrollToTop == 0, router.path.isEmpty {
@@ -104,81 +140,8 @@ public struct FeedView: View {
                 }
             }
             .onAppear {
-                normalFeedVM.apiService = apiManager.apiService
-                normalFeedVM.fetchPosts(reset: true)
-            }
-            .onChange(of: feedContentSortingAndFiltering.filterByRelationship) {
-                guard normalFeedVM.apiService != nil else {
-                    return
-                }
-                normalFeedVM.fetchPosts(reset: true)
-            }
-            .onChange(of: feedContentSortingAndFiltering.sortByPopularity) {
-                guard normalFeedVM.apiService != nil else {
-                    return
-                }
-                normalFeedVM.fetchPosts(reset: true)
-            }
-            .onChange(of: feedContentSortingAndFiltering.sortByTime) {
-                guard normalFeedVM.apiService != nil else {
-                    return
-                }
-                normalFeedVM.fetchPosts(reset: true)
-            }
-        }
-    }
-
-    private struct AudioFeedView: View {
-        @Environment(\.selectedTabScrollToTop) private var selectedTabScrollToTop
-        @EnvironmentObject private var router: Router
-        @EnvironmentObject private var apiManager: APIServiceManager
-
-        @StateObject private var feedContentSortingAndFiltering = FeedContentSortingAndFiltering.shared
-
-        @StateObject private var audioFeedVM = AudioFeedViewModel()
-
-        var body: some View {
-            ScrollViewReader { proxy in
-                ScrollView {
-                    LazyVStack(alignment: .center, spacing: 20) {
-                        PostsListView(fetcher: audioFeedVM)
-                    }
-                    .padding(.bottom, 10)
-                    .geometryGroup()
-                }
-                .refreshable {
-                    HapticManager.shared.fireHaptic(.dataRefresh(intensity: 0.3))
-                    audioFeedVM.fetchPosts(reset: true)
-                }
-                .onChange(of: selectedTabScrollToTop) {
-                    if selectedTabScrollToTop == 0, router.path.isEmpty {
-                        withAnimation {
-                            proxy.scrollTo(ScrollToView.Constants.scrollToTop, anchor: .top)
-                        }
-                    }
-                }
-                .onAppear {
-                    audioFeedVM.apiService = apiManager.apiService
-                    audioFeedVM.fetchPosts(reset: true)
-                }
-                .onChange(of: feedContentSortingAndFiltering.filterByRelationship) {
-                    guard audioFeedVM.apiService != nil else {
-                        return
-                    }
-                    audioFeedVM.fetchPosts(reset: true)
-                }
-                .onChange(of: feedContentSortingAndFiltering.sortByPopularity) {
-                    guard audioFeedVM.apiService != nil else {
-                        return
-                    }
-                    audioFeedVM.fetchPosts(reset: true)
-                }
-                .onChange(of: feedContentSortingAndFiltering.sortByTime) {
-                    guard audioFeedVM.apiService != nil else {
-                        return
-                    }
-                    audioFeedVM.fetchPosts(reset: true)
-                }
+                viewModel.onAppear()
+                viewModel.fetchPosts(reset: true)
             }
         }
     }

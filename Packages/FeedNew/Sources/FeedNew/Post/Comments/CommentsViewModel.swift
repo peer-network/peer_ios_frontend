@@ -52,7 +52,7 @@ public enum CommentsState {
 }
 
 @MainActor
-final class CommentsViewModel: ObservableObject {
+public final class CommentsViewModel: ObservableObject {
     public unowned var apiService: (any APIService)!
     
     @Published private(set) var state = CommentsState.loading
@@ -60,14 +60,16 @@ final class CommentsViewModel: ObservableObject {
     @Published private(set) var comments: [Comment] = []
 
     let post: Post
+    let transitions: SheetDestination.SheetTransitions?
 
     private var fetchTask: Task<Void, Never>?
 
     private var currentOffset: Int = 0
     private var hasMoreComments: Bool = true
 
-    init(post: Post) {
+    public init(post: Post, transitions: SheetDestination.SheetTransitions?) {
         self.post = post
+        self.transitions = transitions
     }
 
     func fetchComments() {
@@ -131,8 +133,18 @@ final class CommentsViewModel: ObservableObject {
             throw CommentError.serverError(apiError)
         }
     }
+    
+    func likeButtonTapped(on comment: Comment) throws {
+        Task {
+            try await likeComment(comment: comment)
+        }
+    }
+    
+    func profileTapped(on comment: Comment) {
+        self.transitions?.openProfile(comment.user.id)
+    }
 
-    func likeComment(comment: Comment) async throws {
+    private func likeComment(comment: Comment) async throws {
         guard !comment.isLiked else {
             throw CommentError.alreadyLiked
         }

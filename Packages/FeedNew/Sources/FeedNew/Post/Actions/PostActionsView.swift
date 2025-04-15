@@ -173,9 +173,15 @@ struct PostActionsView: View {
                         try await postVM.toggleDislike()
 
                     case .comment:
+                    var commentsTransitions: SheetDestination.SheetTransitions?
+                    if let transitions = postVM.transitions {
+                        commentsTransitions = .init(openProfile: transitions.openProfile)
+                    }
+                    
                         router.presentedSheet = .comments(
                             post: postVM.post,
-                            isBackgroundWhite: postVM.post.contentType == .text ? true : false)
+                            isBackgroundWhite: postVM.post.contentType == .text ? true : false,
+                            transitions: commentsTransitions)
                     case .views, .menu:
                         break
                 }

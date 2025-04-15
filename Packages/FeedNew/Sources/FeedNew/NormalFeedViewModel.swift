@@ -8,12 +8,34 @@
 import SwiftUI
 import Models
 import Environment
+import Combine
 
 @MainActor
 public final class NormalFeedViewModel: ObservableObject, PostsFetcher {
-    public unowned var apiService: APIService!
+    public struct Transitions: PostNavigator {
+        public let openProfile: (String) -> Void
+        public let showComments: (Models.Post) -> Void
+        
+        public init(openProfile: @escaping (String) -> Void, showComments: @escaping (Models.Post) -> Void) {
+            self.openProfile = openProfile
+            self.showComments = showComments
+        }
+    }
     
+    public var openProfile: (String) -> Void {
+        self.transitions.openProfile
+    }
+    
+    public var showComments: (Models.Post) -> Void {
+        self.transitions.showComments
+    }
+    
+    public unowned var apiService: APIService!
+    @ObservedObject var filters: FeedContentSortingAndFiltering
+    public let transitions: Transitions
     @Published public private(set) var state = PostsState.loading
+
+    private let feedContentType: FeedContentType
 
     private var userId: String?
 
@@ -23,8 +45,28 @@ public final class NormalFeedViewModel: ObservableObject, PostsFetcher {
     private var hasMorePosts: Bool = true
     private var posts: [Post] = []
     
-    public init(userId: String? = nil) {
+    private var filterSubscription: AnyCancellable?
+    
+    public init(
+        userId: String? = nil,
+        feedType: FeedContentType,
+        apiService: APIService,
+        filters: FeedContentSortingAndFiltering,
+        transitions: Transitions
+    ) {
         self.userId = userId
+        self.feedContentType = feedType
+        self.apiService = apiService
+        self.filters = filters
+        self.transitions = transitions
+    }
+    
+    func onAppear() {
+        guard filterSubscription == nil else { return }
+        filterSubscription = self.filters.objectWillChange
+            .sink { [weak self] _ in
+                self?.fetchPosts(reset: true)
+            }
     }
     
     public func fetchPosts(reset: Bool) {
@@ -49,11 +91,11 @@ public final class NormalFeedViewModel: ObservableObject, PostsFetcher {
         
         fetchTask = Task {
             do {
-                let sort = FeedContentSortingAndFiltering.shared.sortByPopularity
-                let filter = FeedContentSortingAndFiltering.shared.filterByRelationship
-                let inTimeframe = FeedContentSortingAndFiltering.shared.sortByTime
+                let sort = filters.sortByPopularity
+                let filter = filters.filterByRelationship
+                let inTimeframe = filters.sortByTime
                 let result = await apiService.fetchPosts(
-                    with: .regular,
+                    with: feedContentType,
                     sort: sort,
                     filter: filter,
                     in: inTimeframe,

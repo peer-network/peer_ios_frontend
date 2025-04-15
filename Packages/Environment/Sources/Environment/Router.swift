@@ -17,10 +17,18 @@ public enum RouterDestination: Hashable {
 }
 
 public enum SheetDestination: Identifiable, Hashable {
+    public struct SheetTransitions {
+        public let openProfile: (_ userID: String) -> Void
+        
+        public init(openProfile: @escaping (_: String) -> Void) {
+            self.openProfile = openProfile
+        }
+    }
+    
     case followers(userId: String)
     case following(userId: String)
     case friends(userId: String)
-    case comments(post: Post, isBackgroundWhite: Bool)
+    case comments(post: Post, isBackgroundWhite: Bool, transitions: SheetTransitions?)
     case shareImage(image: UIImage, post: Post)
     
     public var id: String {

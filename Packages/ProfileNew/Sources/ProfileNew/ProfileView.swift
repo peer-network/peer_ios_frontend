@@ -44,14 +44,30 @@ public struct ProfileView: View {
                                 .padding(.horizontal, 20)
                             FeedTabControllerView(feedPage: $feedPage)
                         }
-
+                        
+                        let transiotions = NormalFeedViewModel.Transitions(
+                            openProfile: { userID in
+                                router.navigate(to: .accountDetail(id: userID))
+                            },
+                            showComments: { post in
+                                router.presentedSheet = .comments(
+                                    post: post,
+                                    isBackgroundWhite: post.contentType == .text ? true : false,
+                                    transitions: .init(openProfile: { userID in
+                                        router.navigate(to: .accountDetail(id: userID))
+                                    })
+                                )
+                            })
+                        
                         switch feedPage {
-                            case .normalFeed:
-                                NormalFeedView(userId: user.id)
-                            case .videoFeed:
-                                EmptyView()
-                            case .audioFeed:
-                                AudioFeedView(userId: user.id)
+                        case .normalFeed:
+                            let regualarVM = NormalFeedViewModel(userId: user.id, feedType: .regular, apiService: apiManager.apiService, filters: .shared, transitions: transiotions)
+                            NormalFeedView(viewModel: regualarVM)
+                        case .videoFeed:
+                            EmptyView()
+                        case .audioFeed:
+                            let audioVM = NormalFeedViewModel(userId: user.id, feedType: .audio, apiService: apiManager.apiService, filters: .shared, transitions: transiotions)
+                            AudioFeedView(viewModel: audioVM)
                         }
                     }
                 }
@@ -103,19 +119,17 @@ public struct ProfileView: View {
     }
 
     private struct NormalFeedView: View {
-        @EnvironmentObject private var apiManager: APIServiceManager
-        @StateObject private var normalFeedVM: NormalFeedViewModel
+        @StateObject private var viewModel: NormalFeedViewModel
 
-        init(userId: String) {
-            _normalFeedVM = .init(wrappedValue: .init(userId: userId))
+        init(viewModel: NormalFeedViewModel) {
+            _viewModel = .init(wrappedValue: viewModel)
         }
 
         var body: some View {
             LazyVStack(alignment: .center, spacing: 20) {
-                PostsListView(fetcher: normalFeedVM)
+                PostsListView(fetcher: viewModel, navigator: viewModel.transitions)
                     .onAppear {
-                        normalFeedVM.apiService = apiManager.apiService
-                        normalFeedVM.fetchPosts(reset: true)
+                        viewModel.fetchPosts(reset: true)
                     }
             }
             .padding(.bottom, 10)
@@ -123,19 +137,17 @@ public struct ProfileView: View {
     }
 
     private struct AudioFeedView: View {
-        @EnvironmentObject private var apiManager: APIServiceManager
-        @StateObject private var audioFeedVM: AudioFeedViewModel
+        @StateObject private var viewModel: NormalFeedViewModel
 
-        init(userId: String) {
-            _audioFeedVM = .init(wrappedValue: .init(userId: userId))
+        init(viewModel: NormalFeedViewModel) {
+            _viewModel = .init(wrappedValue: viewModel)
         }
 
         var body: some View {
             LazyVStack(alignment: .center, spacing: 20) {
-                PostsListView(fetcher: audioFeedVM)
+                PostsListView(fetcher: viewModel, navigator: viewModel.transitions)
                     .onAppear {
-                        audioFeedVM.apiService = apiManager.apiService
-                        audioFeedVM.fetchPosts(reset: true)
+                        viewModel.fetchPosts(reset: true)
                     }
             }
             .padding(.vertical, 10)

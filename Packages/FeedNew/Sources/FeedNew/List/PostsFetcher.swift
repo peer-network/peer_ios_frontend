@@ -23,3 +23,9 @@ public protocol PostsFetcher: ObservableObject {
     var state: PostsState { get }
     func fetchPosts(reset: Bool) async
 }
+
+@MainActor
+public protocol PostNavigator {
+    var openProfile: (_ id: String) -> Void {get}
+    var showComments: (_ post: Post) -> Void {get}
+}

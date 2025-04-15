@@ -17,8 +17,8 @@ public struct CommentsView: View {
 
     @State private var commentText = ""
 
-    public init(post: Post) {
-        _viewModel = .init(wrappedValue: .init(post: post))
+    public init(viewModel: CommentsViewModel) {
+        _viewModel = .init(wrappedValue: viewModel)
     }
 
     public var body: some View {
@@ -36,7 +36,12 @@ public struct CommentsView: View {
 
             ScrollView {
                 PostDescriptionComment(isInFeed: false)
-                    .environmentObject(PostViewModel(post: viewModel.post))
+                    .environmentObject(
+                        PostViewModel(
+                            post: viewModel.post,
+                            transitions: .init(openProfile: viewModel.transitions?.openProfile ?? {_ in},
+                                               showComments: {_ in})
+                        ))
 
                 switch viewModel.state {
                     case .display(let comments, let hasMore):
@@ -154,7 +159,7 @@ public struct CommentsView: View {
     ZStack {
         Color.green
         
-        CommentsView(post: .placeholderText())
+        CommentsView(viewModel: CommentsViewModel(post: .placeholderText(), transitions: nil))
             .environment(\.isBackgroundWhite, true)
     }
 }

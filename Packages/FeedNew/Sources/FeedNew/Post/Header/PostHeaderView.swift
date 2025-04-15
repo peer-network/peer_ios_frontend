@@ -13,16 +13,13 @@ public struct PostHeaderView: View {
     @Environment(\.redactionReasons) private var redactionReasons
     @Environment(\.isBackgroundWhite) private var isBackgroundWhite
 
-    @EnvironmentObject private var router: Router
     @EnvironmentObject private var accountManager: AccountManager
     @EnvironmentObject private var postVM: PostViewModel
-
-    public init() {}
 
     public var body: some View {
         HStack(alignment: .center, spacing: 10) {
             Button {
-                router.navigate(to: .accountDetail(id: postVM.post.owner.id))
+                postVM.profileIconTapped()
             } label: {
                 ProfileAvatarView(
                     url: postVM.post.owner.imageURL,

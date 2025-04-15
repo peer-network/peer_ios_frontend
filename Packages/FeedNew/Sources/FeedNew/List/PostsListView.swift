@@ -10,13 +10,14 @@ import DesignSystem
 import Environment
 import Models
 
-public struct PostsListView<Fetcher>: View where Fetcher: PostsFetcher {
-    @EnvironmentObject private var router: Router
+public struct PostsListView<Fetcher, Navigator>: View where Fetcher: PostsFetcher, Navigator: PostNavigator {
     @EnvironmentObject private var apiManager: APIServiceManager
     @StateObject private var fetcher: Fetcher
+    private let navigator: Navigator
 
-    public init(fetcher: Fetcher) {
+    public init(fetcher: Fetcher, navigator: Navigator) {
         _fetcher = .init(wrappedValue: fetcher)
+        self.navigator = navigator
     }
 
     public var body: some View {
@@ -33,7 +34,22 @@ public struct PostsListView<Fetcher>: View where Fetcher: PostsFetcher {
                         .padding(20)
                 } else {
                     ForEach(posts) { post in
-                        PostView(postVM: PostViewModel(post: post))
+                        PostView(
+                            postVM: PostViewModel(
+                                post: post,
+                                transitions: .init(
+                                    openProfile: { userID in
+                                        navigator.openProfile(
+                                            userID
+                                        )
+                                    },
+                                    showComments: { post in
+                                        navigator.showComments(
+                                            post
+                                        )
+                                    })
+                            )
+                        )
                     }
 
                     switch hasMore {

@@ -12,8 +12,6 @@ import DesignSystem
 
 struct PostView: View {
     @Environment(\.redactionReasons) private var reasons
-
-    @EnvironmentObject private var router: Router
     @EnvironmentObject private var apiManager: APIServiceManager
 
     @StateObject var postVM: PostViewModel
@@ -119,9 +117,10 @@ struct PostView: View {
             }
 
             Button {
-                router.presentedSheet = .comments(
-                    post: postVM.post,
-                    isBackgroundWhite: postVM.post.contentType == .text ? true : false)
+                postVM.commentsButtonTapped()
+//                router.presentedSheet = .comments(
+//                    post: postVM.post,
+//                    isBackgroundWhite: postVM.post.contentType == .text ? true : false)
             } label: {
                 PostDescriptionComment(isInFeed: true)
                     .contentShape(Rectangle())

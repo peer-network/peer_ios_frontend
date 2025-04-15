@@ -67,8 +67,9 @@ extension View {
                         .presentationDetents([.fraction(0.75), .large])
                         .presentationContentInteraction(.resizes)
                         .withEnvironments()
-                case .comments(let post, let isBackgroundWhite):
-                    CommentsView(post: post)
+                case .comments(let post, let isBackgroundWhite, let transitions):
+                    let vm = CommentsViewModel(post: post, transitions: transitions)
+                    CommentsView(viewModel: vm)
                         .presentationDragIndicator(.hidden)
                         .presentationCornerRadius(24)
                         .ifCondition(!isBackgroundWhite) {

@@ -7,10 +7,23 @@
 
 import SwiftUI
 import Models
+import Combine
 
 @MainActor
 final class VideoFeedViewModel: ObservableObject, PostsFetcher {
+    public struct Transitions: PostNavigator {
+        public let openProfile: (String) -> Void
+        public let showComments: (Models.Post) -> Void
+        
+        public init(openProfile: @escaping (String) -> Void, showComments: @escaping (Models.Post) -> Void) {
+            self.openProfile = openProfile
+            self.showComments = showComments
+        }
+    }
+    
     public unowned var apiService: APIService!
+    @ObservedObject var filters: FeedContentSortingAndFiltering
+    public let transitions: Transitions
     @Published private(set) var state = PostsState.loading
 
     private var userId: String?
@@ -20,9 +33,26 @@ final class VideoFeedViewModel: ObservableObject, PostsFetcher {
     private var currentOffset: Int = 0
     private var hasMorePosts: Bool = true
     private var posts: [Post] = []
+    private var filterSubscription: AnyCancellable?
     
-    public init(userId: String? = nil) {
+    public init(
+        userId: String? = nil,
+        apiService: APIService,
+        filters: FeedContentSortingAndFiltering,
+        transitions: Transitions
+    ) {
         self.userId = userId
+        self.apiService = apiService
+        self.filters = filters
+        self.transitions = transitions
+    }
+    
+    func onAppear() {
+        guard filterSubscription == nil else { return }
+        filterSubscription = self.filters.objectWillChange
+            .sink { [weak self] _ in
+                self?.fetchPosts(reset: true)
+            }
     }
     
     public func fetchPosts(reset: Bool) {
@@ -47,9 +77,9 @@ final class VideoFeedViewModel: ObservableObject, PostsFetcher {
         
         fetchTask = Task {
             do {
-                let sort = FeedContentSortingAndFiltering.shared.sortByPopularity
-                let filter = FeedContentSortingAndFiltering.shared.filterByRelationship
-                let inTimeframe = FeedContentSortingAndFiltering.shared.sortByTime
+                let sort = filters.sortByPopularity
+                let filter = filters.filterByRelationship
+                let inTimeframe = filters.sortByTime
                 let result = await apiService.fetchPosts(
                     with: .video,
                     sort: sort,

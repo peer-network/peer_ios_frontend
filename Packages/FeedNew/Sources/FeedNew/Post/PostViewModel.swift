@@ -11,7 +11,13 @@ import Environment
 
 @MainActor
 public final class PostViewModel: ObservableObject {
+    public struct Transitions {
+        let openProfile: (_ userID: String) -> Void
+        let showComments: (_ post: Post) -> Void
+    }
+    
     let post: Post
+    let transitions: Transitions?
     public unowned var apiService: APIService!
 
     @Published public var lineLimit: Int?
@@ -32,8 +38,9 @@ public final class PostViewModel: ObservableObject {
     @Published public private(set) var amountViews: Int
     @Published public private(set) var amountComments: Int
 
-    public init(post: Post) {
+    public init(post: Post, transitions: Transitions? = nil) {
         self.post = post
+        self.transitions = transitions
 
         isLiked = post.isLiked
         isViewed = post.isViewed
@@ -194,6 +201,14 @@ public final class PostViewModel: ObservableObject {
         }
 
         isReported = true
+    }
+    
+    func profileIconTapped() {
+        self.transitions?.openProfile(post.owner.id)
+    }
+    
+    func commentsButtonTapped() {
+        self.transitions?.showComments(post)
     }
 
     private func recalcCollapse() {

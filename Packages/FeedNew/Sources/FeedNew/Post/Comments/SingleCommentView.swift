@@ -12,9 +12,6 @@ import Environment
 
 struct PostDescriptionComment: View {
     @Environment(\.isBackgroundWhite) private var isBackgroundWhite
-
-    @EnvironmentObject private var apiManager: APIServiceManager
-    @EnvironmentObject private var router: Router
     @EnvironmentObject private var postVM: PostViewModel
 
     let isInFeed: Bool
@@ -26,7 +23,8 @@ struct PostDescriptionComment: View {
     var body: some View {
         HStack(alignment: .top, spacing: 5) {
             Button {
-                router.navigate(to: .accountDetail(id: postVM.post.owner.id))
+//                router.navigate(to: .accountDetail(id: postVM.post.owner.id))
+                postVM.profileIconTapped()
             } label: {
                 Text(postVM.post.owner.username)
                     .bold()
@@ -64,7 +62,6 @@ struct PostDescriptionComment: View {
             Spacer()
                 .frame(width: 35)
         }
-        .onAppear { postVM.apiService = apiManager.apiService }
         .font(.customFont(weight: .regular, size: .body))
         .multilineTextAlignment(.leading)
         .foregroundStyle(isBackgroundWhite ? Colors.textActive : Colors.whitePrimary)
@@ -72,8 +69,6 @@ struct PostDescriptionComment: View {
 }
 
 struct SingleCommentView: View {
-    @EnvironmentObject private var router: Router
-
     @EnvironmentObject private var viewModel: CommentsViewModel
 
     @Environment(\.isBackgroundWhite) private var isBackgroundWhite
@@ -83,7 +78,7 @@ struct SingleCommentView: View {
     var body: some View {
         HStack(alignment: .top, spacing: 5) {
             Button {
-                router.navigate(to: .accountDetail(id: comment.user.id))
+                viewModel.profileTapped(on: comment)
             } label: {
                 Text(comment.user.username)
                     .bold()
@@ -102,12 +97,10 @@ struct SingleCommentView: View {
 
             VStack(spacing: 5) {
                 Button {
-                    Task {
-                        do {
-                            try await viewModel.likeComment(comment: comment)
-                        } catch {
-                            showPopup(text: "Failed to perform the action. Please try again.")
-                        }
+                    do {
+                        try viewModel.likeButtonTapped(on: comment)
+                    } catch {
+                        showPopup(text: "Failed to perform the action. Please try again.")
                     }
                 } label: {
                     Group {
@@ -151,7 +144,6 @@ struct SingleCommentView: View {
             .padding()
             .background(Color.black)
             .environment(\.isBackgroundWhite, true)
-            .environmentObject(APIServiceManager(.mock))
         }
     }
 }
