@@ -14,8 +14,7 @@ public struct TargetButtonStyle: ButtonStyle {
     
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.customFont(weight: .regular, size: .title))
-            .bold()
+            .font(.customFont(weight: .bold, size: .title))
             .foregroundStyle(Colors.whitePrimary)
             .padding(.vertical, 18)
             .frame(maxWidth: .infinity)
