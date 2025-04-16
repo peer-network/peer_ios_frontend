@@ -67,7 +67,9 @@ struct PeerApp: App {
                 }
             }
             .task {
+#if RELEASE
                 await remoteConfigViewModel.fetchConfig()
+#endif
             }
             .preferredColorScheme(.dark)
         }
