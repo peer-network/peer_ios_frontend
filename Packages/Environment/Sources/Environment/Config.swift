@@ -6,7 +6,7 @@
 //
 
 public enum Config {
-    public static let appGroup = "group.ru.brightlight.Peer"
-    
-    public static let pushesRegistrationURL: String = "https://getpeer.eu/graphql"
+    public static let appGroup = "group.eu.peernetwork.PeerApp"
+
+    public static let pushesRegistrationURL: String = "https://peernetwork.eu/graphql"
 }
