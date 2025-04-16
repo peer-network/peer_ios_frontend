@@ -8,6 +8,8 @@
 import SwiftUI
 
 public struct ScaleButtonStyle: ButtonStyle {
+    public init() {}
+    
     public func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .animation(.linear(duration: 0.2)) {

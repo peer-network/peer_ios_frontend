@@ -21,7 +21,7 @@ enum MoreActions: String, CaseIterable {
             case .share:
                 Icons.arrowShare
             case .translate:
-                Icons.magnifyingglassFill
+                Icons.a
             case .report:
                 Icons.xBold
         }
@@ -71,5 +71,10 @@ struct MorePopupView: View {
 }
 
 #Preview {
-    MorePopupView()
+    ZStack {
+        Colors.textActive
+            .ignoresSafeArea()
+
+        MorePopupView()
+    }
 }

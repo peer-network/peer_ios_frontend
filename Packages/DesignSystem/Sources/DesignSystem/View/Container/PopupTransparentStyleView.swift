@@ -25,7 +25,7 @@ public struct PopupTransparentStyleView<Content: View>: View {
             .clipShape(.rect(cornerRadius: cornerRadius, style: .continuous))
             .contentShape(.rect(cornerRadius: cornerRadius, style: .continuous))
             .background {
-                BackgroundView()
+                backgroundView()
             }
             .compositingGroup()
             .onGeometryChange(for: CGSize.self) {
@@ -36,9 +36,8 @@ public struct PopupTransparentStyleView<Content: View>: View {
     }
 
     @ViewBuilder
-    private func BackgroundView() -> some View {
+    private func backgroundView() -> some View {
         RoundedRectangle(cornerRadius: 24, style: .continuous)
             .fill(.ultraThinMaterial)
-            .environment(\.colorScheme, .dark)
     }
 }

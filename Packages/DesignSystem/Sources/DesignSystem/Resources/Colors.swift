@@ -30,4 +30,5 @@ public enum Colors {
     public static let glowBlue = Color(red: 0.47, green: 0.69, blue: 1)
 
     public static let imageLoadingPlaceholder = Color(red: 0.2, green: 0.2, blue: 0.2)
+    public static let black = Color(red: 0, green: 0, blue: 0)
 }

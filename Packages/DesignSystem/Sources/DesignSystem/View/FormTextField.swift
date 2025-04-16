@@ -47,7 +47,7 @@ public struct FormTextField: View {
                             securedTextField
                     }
                 }
-                .foregroundStyle(Color.black)
+                .foregroundStyle(Colors.black)
                 .frame(maxWidth: .infinity)
                 
                 if let icon {
@@ -88,6 +88,6 @@ public struct FormTextField: View {
     
     private var placeholderText: some View {
         Text(placeholder)
-            .foregroundStyle(Color.black.opacity(0.5))
+            .foregroundStyle(Colors.textSuggestions)
     }
 }
