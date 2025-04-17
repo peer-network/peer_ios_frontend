@@ -199,6 +199,8 @@ struct ReelView: View {
     private func setupPlayer() {
         guard let videoURL = postVM.post.mediaURLs.first else { return }
 
+        cleanupPlayer()
+
         let playerItem = AVPlayerItem(url: videoURL)
         playerItem.canUseNetworkResourcesForLiveStreamingWhilePaused = false
         playerItem.preferredForwardBufferDuration = TimeInterval(1)
@@ -244,17 +246,18 @@ struct ReelView: View {
         thumbnailGenerationTask = nil
         thumbnailFrames.removeAll()
         draggingImage = nil
-        
+
+        player?.pause()
+        player?.replaceCurrentItem(with: nil)
+
         playerStatusObserver?.invalidate()
         playerStatusObserver = nil
         
-        if let observer = observer {
+        if let observer {
             player?.removeTimeObserver(observer)
             self.observer = nil
         }
-        
-        player?.pause()
-        player?.replaceCurrentItem(with: nil)
+
         looper = nil
         player = nil
     }
