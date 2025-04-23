@@ -13,7 +13,6 @@ import DesignSystem
 import MediaUI
 import Auth
 import FirebaseCore
-import FirebaseAnalytics
 import Messages
 import RemoteConfig
 import FirebaseMessaging
@@ -48,6 +47,7 @@ struct PeerApp: App {
 #else
         analyticsService = FirebaseAnalyticsService()
 #endif
+        analyticsService.track(AppEvent.launch)
     }
 
     var body: some Scene {
@@ -171,8 +171,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         let audioSession = AVAudioSession.sharedInstance()
         try? audioSession.setCategory(.ambient, mode: .default, options: [])
         try? audioSession.setActive(true)
-
-        Analytics.logEvent("app_started", parameters: nil)
 
         return true
     }
