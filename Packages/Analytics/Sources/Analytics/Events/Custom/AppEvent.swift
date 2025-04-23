@@ -11,7 +11,7 @@ public enum AppEvent: AnalyticsEvent {
     public var eventType: String {
         switch self {
             case .launch:
-                return "app_launch"
+                return "app_started"
         }
     }
 
