@@ -11,8 +11,11 @@ import Environment
 import Models
 import FeedNew
 import PhotosUI
+import Analytics
 
 public struct ProfileView: View {
+    @Environment(\.analytics) private var analytics
+
     @EnvironmentObject private var router: Router
     @EnvironmentObject private var accountManager: AccountManager
     @EnvironmentObject private var apiManager: APIServiceManager
@@ -81,6 +84,7 @@ public struct ProfileView: View {
                 await viewModel.fetchBio()
             }
         }
+        .trackScreen(AppScreen.profile)
     }
     
     private func loadImage() {

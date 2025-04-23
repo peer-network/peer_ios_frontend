@@ -9,8 +9,11 @@ import SwiftUI
 import DesignSystem
 import Models
 import Environment
+import Analytics
 
 public struct CommentsView: View {
+    @Environment(\.analytics) private var analytics
+    
     @Environment(\.isBackgroundWhite) private var isBackgroundWhite
     @EnvironmentObject private var apiManager: APIServiceManager
     @StateObject private var viewModel: CommentsViewModel
@@ -86,6 +89,7 @@ public struct CommentsView: View {
             .padding(.top, 5)
         }
         .padding(10)
+        .trackScreen(AppScreen.commentsSheet)
     }
     
     private var commentTextField: some View {

@@ -8,8 +8,10 @@
 import SwiftUI
 import DesignSystem
 import Environment
+import Analytics
 
 public struct VersionHistoryView: View {
+    @Environment(\.analytics) private var analytics
     @Environment(\.openURL) private var openURL
 
     @StateObject private var viewModel: VersionHistoryViewModel
@@ -53,6 +55,7 @@ public struct VersionHistoryView: View {
                 await viewModel.loadVersionHistory()
             }
         }
+        .trackScreen(AppScreen.versionHistory)
     }
 
     private var wikiButtons: some View {

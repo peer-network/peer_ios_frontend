@@ -9,6 +9,7 @@ import SwiftUI
 import Models
 import DesignSystem
 import Environment
+import Analytics
 
 public struct ProfilesSheetView<Fetcher>: View where Fetcher: RelationsFetcher {
     @frozen
@@ -17,6 +18,8 @@ public struct ProfilesSheetView<Fetcher>: View where Fetcher: RelationsFetcher {
         case following = "Following"
         case friends = "Peers"
     }
+
+    @Environment(\.analytics) private var analytics
 
     @EnvironmentObject private var apiManager: APIServiceManager
     @StateObject private var fetcher: Fetcher
@@ -113,6 +116,18 @@ public struct ProfilesSheetView<Fetcher>: View where Fetcher: RelationsFetcher {
                 case .friends:
                     break
             }
+        }
+        .trackScreen(trackScreen)
+    }
+
+    private var trackScreen: AppScreen {
+        switch type {
+            case .followers:
+                return .followersSheet
+            case .following:
+                return .followingSheet
+            case .friends:
+                return .friendsSheet
         }
     }
 }

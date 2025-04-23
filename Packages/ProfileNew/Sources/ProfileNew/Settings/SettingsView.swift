@@ -9,6 +9,7 @@ import SwiftUI
 import Environment
 import DesignSystem
 import PhotosUI
+import Analytics
 
 public struct SettingsView: View {
     @frozen
@@ -17,6 +18,8 @@ public struct SettingsView: View {
         case email
         case username
     }
+
+    @Environment(\.analytics) private var analytics
 
     @EnvironmentObject private var apiManager: APIServiceManager
     @EnvironmentObject private var accountManager: AccountManager
@@ -217,6 +220,7 @@ public struct SettingsView: View {
                 self.selectedPhotoItem = nil
             }
         }
+        .trackScreen(AppScreen.settings)
     }
 
     private func loadImage() {
@@ -239,6 +243,7 @@ public struct SettingsView: View {
     private var logoutButton: some View {
         Button {
             audioManager.stop()
+            analytics.resetUserID()
             authManager.logout()
         } label: {
             Text("Logout")

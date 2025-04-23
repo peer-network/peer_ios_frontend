@@ -19,7 +19,7 @@ final class ProfileViewModel: ObservableObject {
 
     public unowned var apiService: APIService!
     
-    private let userId: String
+    public let userId: String
 
     @Published private(set) var profileState: ProfileState = .loading
     @Published private(set) var user: User?
