@@ -243,6 +243,7 @@ public struct SettingsView: View {
     private var logoutButton: some View {
         Button {
             audioManager.stop()
+            analytics.track(AuthEvent.logout)
             analytics.resetUserID()
             authManager.logout()
         } label: {

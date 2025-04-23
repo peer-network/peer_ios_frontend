@@ -415,6 +415,7 @@ public struct MainAuthView: View {
                         // should be red
                     )
                     viewModel.formType = .login
+                    analytics.track(AuthEvent.signUp)
                 }
             }
         }
