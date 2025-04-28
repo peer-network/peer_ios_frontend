@@ -7,32 +7,37 @@
 
 import SwiftUI
 import Models
+import Environment
 
 @MainActor
-final class WalletViewModel: ObservableObject {
+final class WalletViewModel: SimpleContentFetcher, ObservableObject {
+    @Published public private(set) var state: ContentState<WalletBalance> = .loading(placeholder: .placeholder)
+
     public unowned var apiService: APIService!
     
     @Published var countdown: String = "00:00:00"
-    @Published var currentLiquidity: Double = 0
 
     private var timer: Timer?
 
     init() {
         startTimer()
     }
-    
-    func fetchCurrentLiquidity() async {
-        do {
-            let result = await apiService.fetchLiquidityState()
-            
-            switch result {
-            case .success(let amount):
-                currentLiquidity = amount
-            case .failure(let apiError):
-                throw apiError
-            }
-        } catch {
 
+    func fetchContent() {
+        Task { [weak self] in
+            guard let self else { return }
+
+            let result = await apiService.fetchLiquidityState()
+
+            try Task.checkCancellation()
+
+            switch result {
+                case .success(let amount):
+                    let walletBalance = WalletBalance(amount: amount, tokenPrice: 0.1)
+                    state = .display(content: walletBalance)
+                case .failure(let apiError):
+                    state = .error(error: apiError)
+            }
         }
     }
 
