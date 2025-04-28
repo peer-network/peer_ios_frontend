@@ -10,7 +10,7 @@ import Environment
 import NukeUI
 import DesignSystem
 
-struct PostView: View {
+public struct PostView: View {
     @Environment(\.redactionReasons) private var reasons
 
     @EnvironmentObject private var router: Router
@@ -22,7 +22,11 @@ struct PostView: View {
     @State private var showReportAlert: Bool = false
     @State private var showBlockAlert: Bool = false
 
-    var body: some View {
+    public init(postVM: PostViewModel) {
+        _postVM = StateObject(wrappedValue: postVM)
+    }
+
+    public var body: some View {
         Group {
             switch postVM.post.contentType {
                 case .text:
