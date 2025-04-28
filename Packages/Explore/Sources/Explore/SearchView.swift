@@ -10,6 +10,7 @@ import DesignSystem
 import Environment
 import Models
 import NukeUI
+import Analytics
 
 public struct SearchView: View {
     @frozen
@@ -34,6 +35,8 @@ public struct SearchView: View {
             }
         }
     }
+
+    @Environment(\.analytics) private var analytics
 
     @EnvironmentObject private var accountManager: AccountManager
     @EnvironmentObject private var router: Router
@@ -148,6 +151,7 @@ public struct SearchView: View {
                     }
             }
         }
+        .trackScreen(AppScreen.search)
     }
 
     @ViewBuilder

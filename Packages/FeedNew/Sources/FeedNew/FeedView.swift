@@ -8,8 +8,11 @@
 import SwiftUI
 import Environment
 import DesignSystem
+import Analytics
 
 public struct FeedView: View {
+    @Environment(\.analytics) private var analytics
+    
     @EnvironmentObject private var audioManager: AudioSessionManager
 
     @State private var feedPage: FeedPage = .normalFeed
@@ -30,6 +33,7 @@ public struct FeedView: View {
                 TabView(selection: $feedPage) {
                     NormalFeedView()
                         .tag(FeedPage.normalFeed)
+                        .trackScreen(AppScreen.photoAndTextFeed)
 
                     ReelsMainView()
                         .tag(FeedPage.videoFeed)
@@ -39,9 +43,11 @@ public struct FeedView: View {
                         .onDisappear {
                             audioManager.isInRestrictedView = false
                         }
+                        .trackScreen(AppScreen.videoFeed)
 
                     AudioFeedView()
                         .tag(FeedPage.audioFeed)
+                        .trackScreen(AppScreen.audioFeed)
                 }
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
             }
@@ -72,7 +78,10 @@ public struct FeedView: View {
             }
             .ignoresSafeArea()
         }
-
+        .onAppear {
+//            print("😘 \(type(of: self))")
+        }
+        .trackScreen(AppScreen.feed)
     }
 
     private struct NormalFeedView: View {

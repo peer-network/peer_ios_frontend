@@ -8,8 +8,11 @@
 import SwiftUI
 import Environment
 import DesignSystem
+import Analytics
 
 public struct MainAuthView: View {
+    @Environment(\.analytics) private var analytics
+    
     @EnvironmentObject private var router: Router
     @EnvironmentObject private var apiManager: APIServiceManager
     @Environment(\.openURL) private var openURL
@@ -167,6 +170,7 @@ public struct MainAuthView: View {
             router.handle(url: url)
           })
         .onFirstAppear { viewModel.apiService = apiManager.apiService }
+        .trackScreen(AppScreen.auth)
     }
     
     // MARK: - Login Form View
@@ -411,6 +415,7 @@ public struct MainAuthView: View {
                         // should be red
                     )
                     viewModel.formType = .login
+                    analytics.track(AuthEvent.signUp)
                 }
             }
         }

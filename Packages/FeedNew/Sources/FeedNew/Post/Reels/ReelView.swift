@@ -24,7 +24,7 @@ private struct CustomVideoPlayer: UIViewControllerRepresentable {
 
         return controller
     }
-    
+
     func updateUIViewController(_ uiViewController: AVPlayerViewController, context: Context) {
         uiViewController.player = player
     }
@@ -36,23 +36,23 @@ struct ReelView: View {
     @EnvironmentObject private var apiManager: APIServiceManager
     @EnvironmentObject private var accountManager: AccountManager
     @EnvironmentObject private var postVM: PostViewModel
-    
+
     @Binding var likedCounter: [ReelLike]
-    
+
     let size: CGSize
-    
+
     @State private var player: AVPlayer?
     @State private var looper: AVPlayerLooper?
-    
+
     @State private var pausedByUser = false
-    
+
     // Video Seeker Properties
     @GestureState private var isDragging: Bool = false
     @State private var isSeeking: Bool = false
     @State private var progress: CGFloat = 0
     @State private var lastDraggedProgress: CGFloat = 0
     @State private var observer: Any?
-    
+
     // Video Seeker Thumbnails
     @State private var thumbnailFrames: [UIImage] = []
     @State private var draggingImage: UIImage?
@@ -66,7 +66,7 @@ struct ReelView: View {
     var body: some View {
         GeometryReader { geo in
             let rect = geo.frame(in: .scrollView(axis: .vertical))
-            
+
             CustomVideoPlayer(player: $player)
             // Offset Updates
                 .preference(key: OffsetKeyRect.self, value: rect)
@@ -140,9 +140,9 @@ struct ReelView: View {
             // Creating Player
                 .onAppear {
                     postVM.apiService = apiManager.apiService
-                    
+
                     setupPlayer()
-                    
+
                     if scenePhase == .active && !pausedByUser {
                         player?.play()
                     }
@@ -195,7 +195,7 @@ struct ReelView: View {
             isPresented: $showAppleTranslation, text: "\(postVM.post.title)\n\n\(postVM.post.mediaDescription)")
 #endif
     }
-    
+
     private func setupPlayer() {
         guard let videoURL = postVM.post.mediaURLs.first else { return }
 
@@ -207,14 +207,14 @@ struct ReelView: View {
 
         let queue = AVQueuePlayer(playerItem: playerItem)
         looper = AVPlayerLooper(player: queue, templateItem: playerItem)
-        
+
         player = queue
 
         try? AVAudioSession.sharedInstance().setCategory(.playback)
         try? AVAudioSession.sharedInstance().setActive(true)
 
         //        player?.audiovisualBackgroundPlaybackPolicy = .pauses use it instead of scenePhases?
-        
+
         // Periodic observer for progress update
         observer = player?.addPeriodicTimeObserver(forInterval: CMTime(seconds: 0.01, preferredTimescale: 600), queue: .main) { [weak player] time in
             guard let player = player else { return }
@@ -223,12 +223,12 @@ struct ReelView: View {
                 let totalDuration = playerItem.duration.seconds
                 let currentDuration = player.currentTime().seconds
                 let calculatedProgress = currentDuration / totalDuration
-                
+
                 progress = calculatedProgress
                 lastDraggedProgress = progress
             }
         }
-        
+
         // Player status observer to generate thumbnails when player is ready
         playerStatusObserver = player?.observe(\.status, options: .new) { player, _ in
             if player.status == .readyToPlay && thumbnailFrames.isEmpty {
@@ -238,10 +238,10 @@ struct ReelView: View {
 
         player?.playImmediately(atRate: 1.0)
     }
-    
+
     private func cleanupPlayer() {
         pausedByUser = false
-        
+
         thumbnailGenerationTask?.cancel()
         thumbnailGenerationTask = nil
         thumbnailFrames.removeAll()
@@ -252,7 +252,7 @@ struct ReelView: View {
 
         playerStatusObserver?.invalidate()
         playerStatusObserver = nil
-        
+
         if let observer {
             player?.removeTimeObserver(observer)
             self.observer = nil
@@ -261,9 +261,9 @@ struct ReelView: View {
         looper = nil
         player = nil
     }
-    
+
     // MARK: - Play/Pause Logic Based on Offset
-    
+
     private func playPause(_ rect: CGRect) {
         if !pausedByUser {
             if -rect.minY < (rect.height * 0.5) && rect.minY < (rect.height * 0.5) {
@@ -272,15 +272,15 @@ struct ReelView: View {
                 player?.pause()
             }
         }
-        
+
         if rect.minY >= size.height || -rect.minY >= size.height {
             pausedByUser = false
             player?.seek(to: .zero)
         }
     }
-    
+
     // MARK: - Reel Details & Controls
-    
+
     @ViewBuilder
     private func ReelDetailsView() -> some View {
         HStack(alignment: .bottom, spacing: 10) {
@@ -294,15 +294,15 @@ struct ReelView: View {
         .padding(.bottom, 20)
         .environment(\.isBackgroundWhite, false)
     }
-    
+
     // MARK: - Video Seeker View
-    
+
     @ViewBuilder
     func VideoSeekerView() -> some View {
         ZStack(alignment: .leading) {
             Rectangle()
                 .fill(.gray)
-            
+
             Rectangle()
                 .fill(.white)
                 .frame(width: max(size.width * progress, 0))
@@ -328,7 +328,7 @@ struct ReelView: View {
                             // Calculating Progress
                             let translationX: CGFloat = value.translation.width
                             let calculatedProgress = (translationX / size.width) + lastDraggedProgress
-                            
+
                             progress = max(min(calculatedProgress, 1), 0)
                             isSeeking = true
 
@@ -350,7 +350,7 @@ struct ReelView: View {
                                 let seekTime = CMTime(seconds: totalDuration * progress, preferredTimescale: 600)
                                 player?.seek(to: seekTime)
                             }
-                            
+
                             isSeeking = false
                         }
                 )
@@ -358,9 +358,9 @@ struct ReelView: View {
                 .frame(width: 15, height: 15)
         }
     }
-    
+
     // MARK: - Dragging Thumbnail View
-    
+
     @ViewBuilder
     func SeekerThumbnailView() -> some View {
         let thumbSize: CGSize = .init(width: size.width / 5, height: size.height / 5)
@@ -400,21 +400,21 @@ struct ReelView: View {
         .offset(x: progress * (size.width - thumbSize.width - 20))
         .offset(x: 10)
     }
-    
+
     // MARK: - Generating Thumbnail Frames
-    
+
     func generateThumbnailFrames() {
         thumbnailGenerationTask?.cancel()
-        
+
         thumbnailGenerationTask = Task.detached {
             guard let asset = await self.player?.currentItem?.asset else { return }
-            
+
             let generator = AVAssetImageGenerator(asset: asset)
             generator.appliesPreferredTrackTransform = true
             generator.maximumSize = CGSize(width: 150, height: 150)
             generator.requestedTimeToleranceBefore = CMTimeMake(value: 1, timescale: 600)
             generator.requestedTimeToleranceAfter = CMTimeMake(value: 1, timescale: 600)
-            
+
             do {
                 let totalDuration = try await asset.load(.duration).seconds
                 let framesPerSecond: Double = 1
@@ -426,21 +426,21 @@ struct ReelView: View {
                     let cmTime = CMTime(seconds: currentTime, preferredTimescale: 600)
                     times.append(NSValue(time: cmTime))
                 }
-                
+
                 let frames = await withCheckedContinuation { continuation in
                     var generatedFrames = [UIImage]()
                     generatedFrames.reserveCapacity(times.count)
-                    
+
                     var remainingCount = times.count
-                    
+
                     generator.generateCGImagesAsynchronously(forTimes: times) { requestedTime, cgImage, _, _, error in
                         autoreleasepool {
                             if Task.isCancelled { return }
-                            
+
                             if let cgImage = cgImage, error == nil {
                                 generatedFrames.append(UIImage(cgImage: cgImage))
                             }
-                            
+
                             remainingCount -= 1
                             if remainingCount == 0 {
                                 continuation.resume(returning: generatedFrames)
@@ -448,7 +448,7 @@ struct ReelView: View {
                         }
                     }
                 }
-                
+
                 if !Task.isCancelled && !frames.isEmpty {
                     await MainActor.run {
                         self.thumbnailFrames = frames

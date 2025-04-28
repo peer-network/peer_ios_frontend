@@ -8,8 +8,11 @@
 import SwiftUI
 import DesignSystem
 import Environment
+import Analytics
 
 public struct WalletView: View {
+    @Environment(\.analytics) private var analytics
+    
     @EnvironmentObject private var accountManager: AccountManager
     @EnvironmentObject private var apiManager: APIServiceManager
 
@@ -38,6 +41,7 @@ public struct WalletView: View {
                 await viewModel.fetchCurrentLiquidity()
             }
         }
+        .trackScreen(AppScreen.wallet)
     }
 }
 

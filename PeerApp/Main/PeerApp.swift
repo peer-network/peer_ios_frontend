@@ -13,10 +13,10 @@ import DesignSystem
 import MediaUI
 import Auth
 import FirebaseCore
-import FirebaseAnalytics
 import Messages
 import RemoteConfig
 import FirebaseMessaging
+import Analytics
 
 @main
 struct PeerApp: App {
@@ -38,6 +38,17 @@ struct PeerApp: App {
     @StateObject private var authRouter = Router()
 
     @State private var restoreSessionResult = AuthState.loading
+
+    let analyticsService: AnalyticsServiceProtocol
+
+    init() {
+#if DEBUG
+        analyticsService = MockAnalyticsService(shouldPrintLogs: true)
+#else
+        analyticsService = FirebaseAnalyticsService()
+#endif
+        analyticsService.track(AppEvent.launch)
+    }
 
     var body: some Scene {
         WindowGroup {
@@ -67,7 +78,7 @@ struct PeerApp: App {
                 }
             }
             .task {
-#if RELEASE
+#if !DEBUG
                 await remoteConfigViewModel.fetchConfig()
 #endif
             }
@@ -100,8 +111,9 @@ struct PeerApp: App {
                     .withSafariRouter()
                     .environmentObject(authRouter)
                     .environmentObject(apiManager)
+                    .analyticsService(analyticsService)
 
-            case .authenticated(_):
+            case .authenticated(let userId):
                 ContentView(selectedTab: $selectedTab, appRouter: appRouter)
                     .environmentObject(apiManager)
                     .environmentObject(accountManager)
@@ -115,6 +127,10 @@ struct PeerApp: App {
                             .withEnvironments()
                             .preferredColorScheme(.dark)
                     }
+                    .onFirstAppear {
+                        analyticsService.setUserID(userId)
+                    }
+                    .analyticsService(analyticsService)
         }
     }
 
@@ -155,8 +171,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         let audioSession = AVAudioSession.sharedInstance()
         try? audioSession.setCategory(.ambient, mode: .default, options: [])
         try? audioSession.setActive(true)
-
-        Analytics.logEvent("app_started", parameters: nil)
 
         return true
     }

@@ -11,9 +11,11 @@ import Environment
 import Photos
 import Models
 import PhotosUI
+import Analytics
 
 public struct PostCreationView: View {
     @Environment(\.openURL) var openURL
+    @Environment(\.analytics) private var analytics
 
     @EnvironmentObject private var apiManager: APIServiceManager
     @EnvironmentObject private var router: Router
@@ -377,6 +379,7 @@ public struct PostCreationView: View {
         .onDisappear {
             audioManager.isInRestrictedView = false
         }
+        .trackScreen(AppScreen.postCreation)
     }
 
     private func openSettings() {

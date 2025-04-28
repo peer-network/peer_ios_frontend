@@ -18,6 +18,7 @@
 		7EE144D32D1454AB0054FBB2 /* Environment in Frameworks */ = {isa = PBXBuildFile; productRef = 7EE144D22D1454AB0054FBB2 /* Environment */; };
 		7EE9D1772D369DAA00D03B20 /* MediaUI in Frameworks */ = {isa = PBXBuildFile; productRef = 7E8DFE652D31304700C1725E /* MediaUI */; settings = {ATTRIBUTES = (Required, ); }; };
 		7EEBA9C22D4CF2BF001B6E76 /* FeedNew in Frameworks */ = {isa = PBXBuildFile; productRef = 7EEBA9C12D4CF2BF001B6E76 /* FeedNew */; };
+		AC104D652DB7A864005F07F0 /* Analytics in Frameworks */ = {isa = PBXBuildFile; productRef = AC104D642DB7A864005F07F0 /* Analytics */; };
 		AC10E9882D9C2D0800A72988 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = AC10E9872D9C2D0800A72988 /* SFSafeSymbols */; };
 		AC6614E52D71F02000069AB5 /* Wallet in Frameworks */ = {isa = PBXBuildFile; productRef = AC6614E42D71F02000069AB5 /* Wallet */; };
 		AC8295F32D876DD700C554D1 /* Explore in Frameworks */ = {isa = PBXBuildFile; productRef = AC8295F22D876DD700C554D1 /* Explore */; };
@@ -171,6 +172,7 @@
 				7EEBA9C22D4CF2BF001B6E76 /* FeedNew in Frameworks */,
 				ACCAB4772D8196A4001C1041 /* FirebaseAnalytics in Frameworks */,
 				ACDA53F22D886382000D6E0F /* FirebasePerformance in Frameworks */,
+				AC104D652DB7A864005F07F0 /* Analytics in Frameworks */,
 				7EE144D32D1454AB0054FBB2 /* Environment in Frameworks */,
 				ACCAB47B2D819FE9001C1041 /* FirebaseCrashlytics in Frameworks */,
 				7E3C09872D130AEF001D8227 /* Networking in Frameworks */,
@@ -295,6 +297,7 @@
 				ACF9156E2D9A85DD00338BC4 /* PostCreation */,
 				AC10E9872D9C2D0800A72988 /* SFSafeSymbols */,
 				ACE05B182DA90C7900DD6E79 /* VersionHistory */,
+				AC104D642DB7A864005F07F0 /* Analytics */,
 			);
 			productName = PeerApp;
 			productReference = 7ECF06D72D0C6DA200CA7852 /* PeerApp.app */;
@@ -996,6 +999,10 @@
 		7EEBA9C12D4CF2BF001B6E76 /* FeedNew */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FeedNew;
+		};
+		AC104D642DB7A864005F07F0 /* Analytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Analytics;
 		};
 		AC10E9872D9C2D0800A72988 /* SFSafeSymbols */ = {
 			isa = XCSwiftPackageProductDependency;
