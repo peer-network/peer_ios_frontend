@@ -38,7 +38,7 @@ struct PostView: View {
                         .environment(\.isBackgroundWhite, false)
             }
         }
-        .onAppear {
+        .onFirstAppear {
             postVM.apiService = apiManager.apiService
         }
         .ifCondition(reasons != .placeholder) {

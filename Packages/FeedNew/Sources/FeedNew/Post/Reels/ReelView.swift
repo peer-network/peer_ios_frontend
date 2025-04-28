@@ -138,9 +138,10 @@ struct ReelView: View {
                     }
                 }
             // Creating Player
-                .onAppear {
+                .onFirstAppear {
                     postVM.apiService = apiManager.apiService
-
+                }
+                .onAppear {
                     setupPlayer()
 
                     if scenePhase == .active && !pausedByUser {

@@ -44,10 +44,18 @@ public struct ProfilesSheetView<Fetcher>: View where Fetcher: RelationsFetcher {
                 .padding(.bottom, 5)
             
             switch fetcher.state {
-            case .loading:
-                Text("Loading...")
-                    .padding(20)
-                    .frame(maxHeight: .infinity, alignment: .top)
+                case .loading:
+                    ScrollView {
+                        VStack(spacing: 20) {
+                            ForEach(RowUser.placeholders(count: 15)) { user in
+                                RowProfileView(user: user)
+                                    .allowsHitTesting(false)
+                                    .skeleton(isRedacted: true)
+                            }
+                        }
+                    }
+                    .scrollIndicators(.hidden)
+                    .padding(.top, 5)
             case .display(let users, let hasMore):
                 if users.isEmpty {
                     Text("Nothing found...")
@@ -135,6 +143,7 @@ public struct ProfilesSheetView<Fetcher>: View where Fetcher: RelationsFetcher {
 struct RowProfileView: View {
     @EnvironmentObject private var router: Router
     @EnvironmentObject private var apiManager: APIServiceManager
+    @Environment(\.redactionReasons) private var redactionReasons
 
     let user: RowUser
 
@@ -162,7 +171,7 @@ struct RowProfileView: View {
 
             Spacer()
 
-            if !AccountManager.shared.isCurrentUser(id: user.id) {
+            if redactionReasons != .placeholder, !AccountManager.shared.isCurrentUser(id: user.id) {
                 let vm = FollowButtonViewModel(
                     id: user.id,
                     isFollowing: user.isFollowing,

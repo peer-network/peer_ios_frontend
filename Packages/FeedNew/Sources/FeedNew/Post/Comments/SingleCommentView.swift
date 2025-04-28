@@ -64,7 +64,9 @@ struct PostDescriptionComment: View {
             Spacer()
                 .frame(width: 35)
         }
-        .onAppear { postVM.apiService = apiManager.apiService }
+        .onFirstAppear {
+            postVM.apiService = apiManager.apiService
+        }
         .font(.customFont(weight: .regular, size: .body))
         .multilineTextAlignment(.leading)
         .foregroundStyle(isBackgroundWhite ? Colors.textActive : Colors.whitePrimary)
