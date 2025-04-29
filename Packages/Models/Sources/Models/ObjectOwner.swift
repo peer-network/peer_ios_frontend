@@ -99,7 +99,7 @@ extension ObjectOwner {
         return ObjectOwner(
             id: UUID().uuidString,
             username: "Ender Peer",
-            slug: 239100,
+            slug: 23910,
             image: "",
             isFollowing: false,
             isFollowed: false

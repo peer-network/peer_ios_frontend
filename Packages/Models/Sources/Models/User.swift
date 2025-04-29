@@ -97,17 +97,17 @@ extension User {
     public static func placeholder() -> User {
         return User(
             id: UUID().uuidString,
-            username: "Username",
+            username: "Username Username",
             status: 1,
-            slug: 1,
+            slug: 23910,
             image: "https://dummyimage.com/200x200/000/fff",
             biography: "This is a placeholder biography.",
-            postsAmount: 10,
+            postsAmount: 30,
             isFollowed: false,
             isFollowing: false,
             amountFollowers: 30,
-            amountFollowing: 20,
-            amountFriends: 10
+            amountFollowing: 30,
+            amountFriends: 30
         )
     }
 

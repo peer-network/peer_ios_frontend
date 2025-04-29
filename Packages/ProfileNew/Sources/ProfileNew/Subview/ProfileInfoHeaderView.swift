@@ -16,6 +16,8 @@ struct ProfileInfoHeaderView: View {
     @EnvironmentObject private var quickLook: QuickLook
     @EnvironmentObject private var router: Router
 
+    @Environment(\.redactionReasons) private var redactionReasons
+
     let user: User
     let bio: String
 
@@ -70,23 +72,25 @@ struct ProfileInfoHeaderView: View {
 
             Spacer()
 
-            if accountManager.isCurrentUser(id: user.id) {
-                Button {
-                    router.navigate(to: .settings)
-                } label: {
-                    Icons.gear
-                        .iconSize(height: 15)
+            if redactionReasons != .placeholder {
+                if accountManager.isCurrentUser(id: user.id) {
+                    Button {
+                        router.navigate(to: .settings)
+                    } label: {
+                        Icons.gear
+                            .iconSize(height: 15)
+                    }
+                    .padding(.trailing, 15)
+                    .frame(maxHeight: .infinity, alignment: .center)
+                } else {
+                    let vm = FollowButtonViewModel(
+                        id: user.id,
+                        isFollowing: user.isFollowed,
+                        isFollowed: user.isFollowing
+                    )
+                    FollowButton(viewModel: vm)
+                        .environment(\.isBackgroundWhite, false)
                 }
-                .padding(.trailing, 15)
-                .frame(maxHeight: .infinity, alignment: .center)
-            } else {
-                let vm = FollowButtonViewModel(
-                    id: user.id,
-                    isFollowing: user.isFollowed,
-                    isFollowed: user.isFollowing
-                )
-                FollowButton(viewModel: vm)
-                .environment(\.isBackgroundWhite, false)
             }
         }
         .font(.customFont(weight: .regular, style: .footnote))

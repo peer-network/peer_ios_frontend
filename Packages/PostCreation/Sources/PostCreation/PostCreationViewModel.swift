@@ -95,8 +95,8 @@ final class PostCreationViewModel: NSObject, ObservableObject {
                 .underlineColor: UIColor.clear,
             ],
             range: NSMakeRange(0, postText.string.utf16.count))
-        let hashtagPattern = "#[\\w_]{3,50}"
-        let urlPattern = "(?i)https?://(?:www\\.)?\\S+(?:/|\\b)"
+        let hashtagPattern = "#[\\p{L}\\p{N}_]{3,50}"
+        let urlPattern = #"(?i)\b((https?|ftp):\/\/)?(([\w-]+\.)+[a-z]{2,})(:\d+)?(\/[^\s?#]*)?(\?[^\s#]*)?(#[^\s]*)?\b"#
 
         do {
             let hashtagRegex = try NSRegularExpression(pattern: hashtagPattern, options: [])
@@ -168,7 +168,7 @@ final class PostCreationViewModel: NSObject, ObservableObject {
                 of: .text,
                 with: escapedTitle,
                 content: [base64TextString],
-                contentDescitpion: postText.string,
+                contentDescitpion: "",
                 tags: tags,
                 cover: nil
             )

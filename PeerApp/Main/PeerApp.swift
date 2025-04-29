@@ -43,7 +43,7 @@ struct PeerApp: App {
 
     init() {
 #if DEBUG
-        analyticsService = MockAnalyticsService(shouldPrintLogs: true)
+        analyticsService = MockAnalyticsService(shouldPrintLogs: false)
 #else
         analyticsService = FirebaseAnalyticsService()
 #endif

@@ -65,12 +65,19 @@ public struct CommentsView: View {
                             }
                         }
                     case .loading:
-                        EmptyView()
+                        ForEach(Comment.placeholders(count: 15)) { comment in
+                            SingleCommentView(comment: comment)
+                                .padding(.vertical, 5)
+                                .contentShape(Rectangle())
+                                .environmentObject(viewModel)
+                                .allowsHitTesting(false)
+                                .skeleton(isRedacted: true)
+                        }
                     case .error(_):
                         EmptyView()
                 }
             }
-            .onAppear {
+            .onFirstAppear {
                 viewModel.apiService = apiManager.apiService
                 viewModel.fetchComments()
             }

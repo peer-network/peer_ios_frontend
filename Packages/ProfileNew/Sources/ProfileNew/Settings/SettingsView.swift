@@ -176,7 +176,7 @@ public struct SettingsView: View {
                 .ignoresSafeArea(.all)
         }
         .photosPicker(isPresented: $isImagePickerPresented, selection: $selectedPhotoItem, matching: .images)
-        .onAppear {
+        .onFirstAppear {
             viewModel.apiService = apiManager.apiService
             Task {
                 await viewModel.fetchBio(url: viewModel.bioUrl)

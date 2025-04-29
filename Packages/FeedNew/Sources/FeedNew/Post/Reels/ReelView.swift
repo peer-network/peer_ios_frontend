@@ -138,9 +138,10 @@ struct ReelView: View {
                     }
                 }
             // Creating Player
-                .onAppear {
+                .onFirstAppear {
                     postVM.apiService = apiManager.apiService
-
+                }
+                .onAppear {
                     setupPlayer()
 
                     if scenePhase == .active && !pausedByUser {
@@ -192,7 +193,7 @@ struct ReelView: View {
         )
 #if canImport(_Translation_SwiftUI)
         .addTranslateView(
-            isPresented: $showAppleTranslation, text: "\(postVM.post.title)\n\n\(postVM.post.mediaDescription)")
+            isPresented: $showAppleTranslation, text: "\(postVM.post.title)\n\n\(postVM.description ?? "")")
 #endif
     }
 

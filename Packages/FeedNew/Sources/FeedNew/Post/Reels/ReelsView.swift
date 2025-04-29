@@ -36,6 +36,13 @@ struct ReelsView: View {
                             .frame(maxWidth: .infinity)
                             .containerRelativeFrame(.vertical)
                             .environmentObject(PostViewModel(post: post))
+                            .onAppear {
+                                if post.id == posts.last?.id {
+                                    if hasMore == .hasMore {
+                                        viewModel.fetchPosts(reset: false)
+                                    }
+                                }
+                            }
                         }
                     }
                 case .error(let error):

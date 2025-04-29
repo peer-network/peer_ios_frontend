@@ -37,31 +37,20 @@ public struct ProfileView: View {
         HeaderContainer(actionsToDisplay: .commentsAndLikes) {
             Text("Profile")
         } content: {
-            if let user = viewModel.user {
-                ScrollView {
-                    VStack(spacing: 0) {
-                        VStack(spacing: 9) {
-                            ProfileInfoHeaderView(user: user, bio: viewModel.fetchedBio, showAvatarPicker: $showAvatarPicker)
-                                .padding(.horizontal, 20)
-                            FollowersHeader(userId: user.id, postsCount: user.postsAmount, followersCount: user.amountFollowers, followingsCount: user.amountFollowing, friends: user.amountFriends)
-                                .padding(.horizontal, 20)
-                            FeedTabControllerView(feedPage: $feedPage)
-                        }
-
-                        switch feedPage {
-                            case .normalFeed:
-                                NormalFeedView(userId: user.id)
-                            case .videoFeed:
-                                EmptyView()
-                            case .audioFeed:
-                                AudioFeedView(userId: user.id)
+            switch viewModel.profileState {
+                case .loading:
+                    contentView(user: .placeholder(), isLoading: true)
+                        .allowsHitTesting(false)
+                case .data(let user):
+                    contentView(user: user, isLoading: false)
+                case .error(let error):
+                    ErrorView(title: "Error", description: error.localizedDescription) {
+                        Task {
+                            await viewModel.fetchUser()
+                            await viewModel.fetchBio()
                         }
                     }
-                }
-                .refreshable {
-                    HapticManager.shared.fireHaptic(.dataRefresh(intensity: 0.3))
-                    await viewModel.fetchUser()
-                }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
         .background {
@@ -86,7 +75,50 @@ public struct ProfileView: View {
         }
         .trackScreen(AppScreen.profile)
     }
-    
+
+    private func contentView(user: User, isLoading: Bool) -> some View {
+        ScrollView {
+            VStack(spacing: 0) {
+                ProfileInfoHeaderView(user: user, bio: viewModel.fetchedBio, showAvatarPicker: $showAvatarPicker)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 9)
+                    .skeleton(isRedacted: isLoading ? true : false)
+
+                FollowersHeader(userId: user.id, postsCount: user.postsAmount, followersCount: user.amountFollowers, followingsCount: user.amountFollowing, friends: user.amountFriends)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 9)
+                    .skeleton(isRedacted: isLoading ? true : false)
+
+                FeedTabControllerView(feedPage: $feedPage)
+
+                if isLoading {
+                    LazyVStack(alignment: .center, spacing: 20) {
+                        ForEach(0..<5, id: \.self) { _ in
+                            PostView(postVM: PostViewModel(post: Post.placeholderImage()))
+                                .skeleton(isRedacted: true)
+                        }
+                    }
+                    .padding(.bottom, 10)
+                } else {
+                    switch feedPage {
+                        case .normalFeed:
+                            NormalFeedView(userId: user.id)
+                                .skeleton(isRedacted: isLoading ? true : false)
+                        case .videoFeed:
+                            EmptyView()
+                        case .audioFeed:
+                            AudioFeedView(userId: user.id)
+                                .skeleton(isRedacted: isLoading ? true : false)
+                    }
+                }
+            }
+        }
+        .refreshable {
+            HapticManager.shared.fireHaptic(.dataRefresh(intensity: 0.3))
+            await viewModel.fetchUser()
+        }
+    }
+
     private func loadImage() {
         guard let selectedPhotoItem else { return }
         

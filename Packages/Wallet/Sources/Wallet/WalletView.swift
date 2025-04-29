@@ -30,16 +30,14 @@ public struct WalletView: View {
             }
             .refreshable {
                 HapticManager.shared.fireHaptic(.dataRefresh(intensity: 0.3))
-                await viewModel.fetchCurrentLiquidity()
+                viewModel.fetchContent()
             }
         }
         .background(Colors.textActive)
         .environmentObject(viewModel)
         .onFirstAppear {
             viewModel.apiService = apiManager.apiService
-            Task {
-                await viewModel.fetchCurrentLiquidity()
-            }
+            viewModel.fetchContent()
         }
         .trackScreen(AppScreen.wallet)
     }

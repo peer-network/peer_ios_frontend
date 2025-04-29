@@ -10,7 +10,7 @@ import Environment
 import NukeUI
 import DesignSystem
 
-struct PostView: View {
+public struct PostView: View {
     @Environment(\.redactionReasons) private var reasons
 
     @EnvironmentObject private var router: Router
@@ -22,7 +22,11 @@ struct PostView: View {
     @State private var showReportAlert: Bool = false
     @State private var showBlockAlert: Bool = false
 
-    var body: some View {
+    public init(postVM: PostViewModel) {
+        _postVM = StateObject(wrappedValue: postVM)
+    }
+
+    public var body: some View {
         Group {
             switch postVM.post.contentType {
                 case .text:
@@ -38,7 +42,7 @@ struct PostView: View {
                         .environment(\.isBackgroundWhite, false)
             }
         }
-        .onAppear {
+        .onFirstAppear {
             postVM.apiService = apiManager.apiService
         }
         .ifCondition(reasons != .placeholder) {
@@ -76,7 +80,7 @@ struct PostView: View {
         )
 #if canImport(_Translation_SwiftUI)
         .addTranslateView(
-            isPresented: $showAppleTranslation, text: "\(postVM.post.title)\n\n\(postVM.post.mediaDescription)")
+            isPresented: $showAppleTranslation, text: "\(postVM.post.title)\n\n\(postVM.description ?? "")")
 #endif
     }
     
@@ -85,9 +89,7 @@ struct PostView: View {
             PostHeaderView()
             
             PostTextView()
-            
-//            PostTagsView()
-            
+
             if !reasons.contains(.placeholder) {
                 PostActionsView(showAppleTranslation: $showAppleTranslation, showReportAlert: $showReportAlert, showBlockAlert: $showBlockAlert)
             }

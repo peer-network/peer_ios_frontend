@@ -116,15 +116,15 @@ extension RowUser {
     public static func placeholder() -> RowUser {
         return RowUser(
             id: UUID().uuidString,
-            username: "Username",
-            slug: 239100,
-            image: "https://dummyimage.com/200x200/000/fff",
+            username: "Username Username",
+            slug: 23910,
+            image: "",
             isFollowed: false,
             isFollowing: false
         )
     }
-    
-    public static func placeholders() -> [RowUser] {
-        return Array(repeating: .placeholder(), count: 10)
+
+    public static func placeholders(count: Int = 10) -> [RowUser] {
+        return Array(repeating: .placeholder(), count: count)
     }
 }

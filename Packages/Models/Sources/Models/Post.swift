@@ -133,6 +133,13 @@ public struct Post: Identifiable, Hashable {
 }
 
 extension Post {
+    /// ID which is used for UI to identify if a view related to this post should be redrawn
+    public var refreshID: String {
+        "\(id)-\(amountLikes)-\(amountDislikes)-\(amountViews)-\(amountComments)-\(isLiked)-\(isDisliked)-\(isViewed)"
+    }
+}
+
+extension Post {
     public static func placeholderText() -> Post {
         return Post(
             id: UUID().uuidString,

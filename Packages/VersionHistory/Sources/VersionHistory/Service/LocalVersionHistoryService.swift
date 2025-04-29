@@ -25,7 +25,8 @@ public class LocalVersionHistoryService: VersionHistoryServiceProtocol {
         let decoder = JSONDecoder()
 
         do {
-            return try decoder.decode([VersionHistoryItem].self, from: data)
+            let versions = try decoder.decode([VersionHistoryItem].self, from: data)
+            return versions.reversed()
         } catch {
             throw VersionHistoryError.decodingError
         }

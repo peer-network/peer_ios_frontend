@@ -34,6 +34,7 @@ public struct PostsListView<Fetcher>: View where Fetcher: PostsFetcher {
                 } else {
                     ForEach(posts) { post in
                         PostView(postVM: PostViewModel(post: post))
+                            .id(post.refreshID)
                     }
 
                     switch hasMore {

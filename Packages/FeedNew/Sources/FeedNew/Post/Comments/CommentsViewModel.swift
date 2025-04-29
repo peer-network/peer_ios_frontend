@@ -71,6 +71,12 @@ final class CommentsViewModel: ObservableObject {
     }
 
     func fetchComments() {
+        // Do not uncomment it until sending a new comment under posts with 0 comments adds 1 to its stats
+//        if post.amountComments == 0 {
+//            state = .display(comments: [], hasMore: .none)
+//            return
+//        }
+
         if let existingTask = fetchTask, !existingTask.isCancelled {
             return
         }
@@ -127,25 +133,6 @@ final class CommentsViewModel: ObservableObject {
         case .success(let createdComment):
             comments.append(createdComment)
             state = .display(comments: comments, hasMore: .none)
-        case .failure(let apiError):
-            throw CommentError.serverError(apiError)
-        }
-    }
-
-    func likeComment(comment: Comment) async throws {
-        guard !comment.isLiked else {
-            throw CommentError.alreadyLiked
-        }
-
-        guard !AccountManager.shared.isCurrentUser(id: comment.user.id) else {
-            throw CommentError.ownLike
-        }
-
-        let result = await apiService.likeComment(with: comment.id)
-        
-        switch result {
-        case .success:
-            break
         case .failure(let apiError):
             throw CommentError.serverError(apiError)
         }

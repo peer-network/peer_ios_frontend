@@ -94,7 +94,7 @@ extension Comment {
             content: "This is a placeholder comment.",
             amountLikes: 10,
             isLiked: false,
-            createdAt: Date.now.description,
+            createdAt: "2025-04-28 08:14:22.782181",
             user: ObjectOwner.placeholder()
         )
     }

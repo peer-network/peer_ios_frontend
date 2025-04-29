@@ -90,7 +90,7 @@ public struct FollowButton: View {
                 }
             }
         }
-        .onAppear {
+        .onFirstAppear {
             viewModel.apiService = apiManager.apiService
         }
     }

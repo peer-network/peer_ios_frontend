@@ -9,9 +9,26 @@ import SwiftUI
 import DesignSystem
 
 struct GemsMainView: View {
-    @EnvironmentObject private var walletViewModel: WalletViewModel
+    @EnvironmentObject private var viewModel: WalletViewModel
 
     var body: some View {
+        Group {
+            switch viewModel.state {
+                case .loading(let placeholder):
+                    contentView(balance: placeholder, isLoading: true)
+                case .display(let balance):
+                    contentView(balance: balance, isLoading: false)
+                case .error(let error):
+                    ErrorView(title: "Error", description: error.localizedDescription) {
+                        viewModel.fetchContent()
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+        }
+        .padding(20)
+    }
+
+    private func contentView(balance: WalletBalance, isLoading: Bool) -> some View {
         VStack(spacing: 32) {
             Text("Your account")
                 .font(.customFont(weight: .regular, style: .callout))
@@ -22,24 +39,26 @@ struct GemsMainView: View {
                     Icons.logoCircleWhite
                         .iconSize(height: 27)
 
-                    Text("\(walletViewModel.currentLiquidity)")
+                    Text("\(balance.amount)")
                         .font(.customFont(weight: .semiBold, style: .largeTitle))
+                        .skeleton(isRedacted: isLoading ? true : false)
                 }
 
-                let text1 = Text("Each token is ")
-                let text2 = Text("0,10 €\n").bold()
-                let text3 = Text("Now you own ")
-                let text4 = Text(walletViewModel.currentLiquidity * 0.1, format: .number.rounded(rule: .up, increment: 0.01)).bold()
-                let text5 = Text(" €").bold()
-
-                (text1 + text2 + text3 + text4 + text5)
+                balanceExplanationView(balance: balance)
                     .font(.customFont(weight: .regular, style: .headline))
+                    .skeleton(isRedacted: isLoading ? true : false)
             }
             .multilineTextAlignment(.center)
         }
         .foregroundStyle(Colors.whitePrimary)
-        .padding(20)
-        .clipShape(RoundedRectangle(cornerRadius: 24))
+    }
+
+    private func balanceExplanationView(balance: WalletBalance) -> some View {
+        VStack(alignment: .center, spacing: 0) {
+            Text("Each token is \(Text(balance.tokenPrice, format: .number.rounded(rule: .up, increment: 0.01)).bold()) €")
+
+            Text("Now you own \(Text(balance.balanceEUR, format: .number.rounded(rule: .up, increment: 0.01)).bold()) €")
+        }
     }
 }
 
