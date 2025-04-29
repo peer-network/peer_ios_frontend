@@ -51,7 +51,7 @@ public struct HeaderContainer<Header: View, Content: View>: View {
 
                 Spacer()
 
-                HStack(alignment: .center, spacing: 20) {
+                HStack(alignment: .center, spacing: 15) {
                     switch actionsToDisplay {
                         case .commentsAndLikes:
                             HStack(alignment: .center, spacing: 5) {
@@ -67,7 +67,28 @@ public struct HeaderContainer<Header: View, Content: View>: View {
 
                                 Text("\(accountManager.dailyFreeLikes)")
                             }
+
+                            HStack(alignment: .center, spacing: 5) {
+                                Icons.plustSquare
+                                    .iconSize(height: 13)
+
+                                Text("\(accountManager.dailyFreePosts)")
+                            }
                         case .posts:
+                            HStack(alignment: .center, spacing: 5) {
+                                Icons.bubbleFill
+                                    .iconSize(height: 10)
+
+                                Text("\(accountManager.dailyFreeComments)")
+                            }
+
+                            HStack(alignment: .center, spacing: 5) {
+                                Icons.heartFill
+                                    .iconSize(height: 10)
+
+                                Text("\(accountManager.dailyFreeLikes)")
+                            }
+
                             HStack(alignment: .center, spacing: 5) {
                                 Icons.plustSquare
                                     .iconSize(height: 13)

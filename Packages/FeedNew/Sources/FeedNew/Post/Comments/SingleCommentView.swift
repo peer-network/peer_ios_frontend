@@ -74,30 +74,42 @@ struct PostDescriptionComment: View {
 }
 
 struct SingleCommentView: View {
+    @EnvironmentObject private var apiManager: APIServiceManager
+    
     @EnvironmentObject private var router: Router
 
     @EnvironmentObject private var viewModel: CommentsViewModel
 
     @Environment(\.isBackgroundWhite) private var isBackgroundWhite
 
-    let comment: Comment
+    @StateObject private var commentVM: SingleCommentViewModel
+
+    init(comment: Comment) {
+        _commentVM = .init(wrappedValue: .init(comment: comment))
+    }
 
     var body: some View {
         HStack(alignment: .top, spacing: 5) {
             Button {
-                router.navigate(to: .accountDetail(id: comment.user.id))
+                router.navigate(to: .accountDetail(id: commentVM.comment.user.id))
             } label: {
-                Text(comment.user.username)
+                Text(commentVM.comment.user.username)
                     .bold()
                     .italic()
                     .frame(width: (getRect().width - 20) * 0.2, alignment: .topLeading)
             }
 
             VStack(alignment: .leading, spacing: 0) {
-                Text(comment.content)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                Group {
+                    if let attributedText = commentVM.attributedContent {
+                        Text(attributedText)
+                    } else {
+                        Text(commentVM.comment.content)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
 
-                Text(comment.formattedCreatedAt)
+                Text(commentVM.comment.formattedCreatedAt)
                     .font(.customFont(weight: .regular, style: .caption1))
                     .foregroundStyle(isBackgroundWhite ? Colors.inactiveDark : Colors.whiteSecondary)
             }
@@ -106,14 +118,14 @@ struct SingleCommentView: View {
                 Button {
                     Task {
                         do {
-                            try await viewModel.likeComment(comment: comment)
+                            try await commentVM.likeComment()
                         } catch {
                             showPopup(text: "Failed to perform the action. Please try again.")
                         }
                     }
                 } label: {
                     Group {
-                        if comment.isLiked {
+                        if commentVM.isLiked {
                             Icons.heartFill
                                 .iconSize(height: 15)
                                 .foregroundStyle(Colors.redAccent)
@@ -125,12 +137,15 @@ struct SingleCommentView: View {
                     .clipShape(Rectangle())
                 }
 
-                Text("\(comment.amountLikes)")
+                Text("\(commentVM.amountLikes)")
             }
         }
         .font(.customFont(weight: .regular, style: .footnote))
         .multilineTextAlignment(.leading)
         .foregroundStyle(isBackgroundWhite ? Colors.textActive : Colors.whitePrimary)
+        .onFirstAppear {
+            commentVM.apiService = apiManager.apiService
+        }
     }
 }
 

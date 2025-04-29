@@ -14,7 +14,7 @@ public final class PostViewModel: ObservableObject {
     let post: Post
     public unowned var apiService: APIService!
 
-    @Published public var lineLimit: Int?
+    @Published public private(set) var lineLimit: Int?
     @Published public private(set) var shouldShowCollapseButton: Bool = false
     public var isCollapsed: Bool = true {
         didSet {

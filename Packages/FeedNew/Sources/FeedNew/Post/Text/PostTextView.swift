@@ -22,7 +22,6 @@ struct PostTextView: View {
 
         if !postVM.post.media.isEmpty, let text = postVM.attributedDescription {
             VStack(spacing: 0) {
-
                 Text(text)
                     .font(.customFont(style: .body))
                     .foregroundStyle(isBackgroundWhite ? Colors.textActive : Colors.whitePrimary)
