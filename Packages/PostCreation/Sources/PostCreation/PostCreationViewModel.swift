@@ -168,7 +168,7 @@ final class PostCreationViewModel: NSObject, ObservableObject {
                 of: .text,
                 with: escapedTitle,
                 content: [base64TextString],
-                contentDescitpion: postText.string,
+                contentDescitpion: "",
                 tags: tags,
                 cover: nil
             )

@@ -32,6 +32,9 @@ public final class PostViewModel: ObservableObject {
     @Published public private(set) var amountViews: Int
     @Published public private(set) var amountComments: Int
 
+    @Published public private(set) var description: String?
+    @Published public private(set) var attributedDescription: AttributedString?
+
     public init(post: Post) {
         self.post = post
 
@@ -47,28 +50,125 @@ public final class PostViewModel: ObservableObject {
         amountComments = post.amountComments
 
         recalcCollapse()
+
+        if post.contentType == .text {
+            fetchTextPostBody()
+        } else {
+            if !post.mediaDescription.isEmpty {
+                description = post.mediaDescription
+                attributedDescription = makeAttributedString(from: post.mediaDescription)
+            }
+        }
     }
 
-    public var attributedString: AttributedString {
-        let hashtagPattern = "#[\\w_]{3,50}"
+//    public var attributedString: AttributedString {
+//        var attributedString = AttributedString(post.mediaDescription)
+//
+//        let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
+//        let nsRange = NSRange(attributedString.startIndex..<attributedString.endIndex, in: attributedString)
+//
+//        // First process URLs (more important than hashtags)
+//        detector?.enumerateMatches(in: attributedString.description, range: nsRange) { match, _, _ in
+//            guard let match = match,
+//                  let range = Range(match.range, in: attributedString) else { return }
+//
+//            // Apply URL styling
+//            attributedString[range].foregroundColor = .blue
+//            attributedString[range].underlineStyle = .single
+//            attributedString[range].underlineColor = .blue
+//
+//            if let url = match.url {
+//                attributedString[range].link = url
+//            }
+//        }
+//
+//        // Then process hashtags
+//        let hashtagPattern = "#[\\p{L}\\p{N}_]{3,50}"
+//        if let regex = try? NSRegularExpression(pattern: hashtagPattern) {
+//            regex.enumerateMatches(in: attributedString.description, range: nsRange) { match, _, _ in
+//                guard let match = match,
+//                      let range = Range(match.range, in: attributedString),
+//                      // Skip if this range is already part of a URL
+//                      attributedString[range].link == nil else { return }
+//
+//                attributedString[range].foregroundColor = .blue
+//            }
+//        }
+//
+//        return attributedString
+//    }
 
-        let inputText = post.mediaDescription
-
+    private func makeAttributedString(from inputText: String) -> AttributedString {
         var attributedString = AttributedString(inputText)
-        let regex = try? NSRegularExpression(pattern: hashtagPattern)
-        let nsRange = NSRange(inputText.startIndex..<inputText.endIndex, in: inputText)
 
-        if let matches = regex?.matches(in: inputText, range: nsRange) {
-            for match in matches {
-                if let range = Range(match.range, in: inputText) {
-                    let attributedRange = attributedString.range(of: String(inputText[range]))
-                    if let attributedRange = attributedRange {
-                        attributedString[attributedRange].foregroundColor = .blue
-                    }
+        // Helper function to safely convert NSRange to Range<AttributedString.Index>
+        func attributedRange(from nsRange: NSRange, in string: String) -> Range<AttributedString.Index>? {
+            guard let stringRange = Range(nsRange, in: string) else { return nil }
+
+            let startIndex = attributedString.characters.index(
+                attributedString.startIndex,
+                offsetBy: string.distance(from: string.startIndex, to: stringRange.lowerBound)
+            )
+            let endIndex = attributedString.characters.index(
+                startIndex,
+                offsetBy: string.distance(from: stringRange.lowerBound, to: stringRange.upperBound)
+            )
+
+            return startIndex..<endIndex
+        }
+
+        // First process URLs
+        let urlPattern = #"(?i)\b((https?|ftp):\/\/)?(([\w-]+\.)+[\w-]{2,}|localhost|\d{1,3}(\.\d{1,3}){3})(:\d+)?(\/[^\s?#]*)?(\?[^\s#]*)?(#[^\s]*)?\b"#
+
+        if let urlRegex = try? NSRegularExpression(pattern: urlPattern, options: .caseInsensitive) {
+            let nsRange = NSRange(inputText.startIndex..<inputText.endIndex, in: inputText)
+
+            urlRegex.enumerateMatches(in: inputText, range: nsRange) { match, _, _ in
+                guard let match = match,
+                      let attributedRange = attributedRange(from: match.range, in: inputText) else { return }
+
+                let substring = String(inputText[Range(match.range, in: inputText)!])
+                var urlString = substring
+
+                if !substring.lowercased().hasPrefix("http") {
+                    urlString = "https://" + substring
+                }
+
+                attributedString[attributedRange].foregroundColor = .systemBlue
+                attributedString[attributedRange].underlineStyle = .single
+                attributedString[attributedRange].underlineColor = .systemBlue
+                if let url = URL(string: urlString) {
+                    attributedString[attributedRange].link = url
                 }
             }
         }
+
+        // Then process hashtags
+        let hashtagPattern = "#[\\p{L}\\p{N}_]{3,50}"
+        if let hashtagRegex = try? NSRegularExpression(pattern: hashtagPattern) {
+            let nsRange = NSRange(inputText.startIndex..<inputText.endIndex, in: inputText)
+
+            hashtagRegex.enumerateMatches(in: inputText, range: nsRange) { match, _, _ in
+                guard let match = match,
+                      let attributedRange = attributedRange(from: match.range, in: inputText),
+                      attributedString[attributedRange].link == nil else { return }
+
+                attributedString[attributedRange].foregroundColor = .blue
+            }
+        }
+
         return attributedString
+    }
+
+    private func fetchTextPostBody() {
+        Task { [weak self] in
+            guard let self else { return }
+            guard let url = post.mediaURLs.first  else { return }
+            let (data, _) = try await URLSession.shared.data(from: url)
+            guard let text = String(data: data, encoding: .utf8) else { return }
+            description = text
+            attributedDescription = makeAttributedString(from: text)
+        }
     }
 
     public func toggleLike() async throws {

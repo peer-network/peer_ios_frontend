@@ -46,8 +46,8 @@ struct PostDescriptionComment: View {
                         .foregroundStyle(isBackgroundWhite ? Colors.inactiveDark : Colors.whiteSecondary)
                 }
 
-                if !postVM.post.mediaDescription.isEmpty {
-                    Text(postVM.attributedString)
+                if !postVM.post.media.isEmpty, let text = postVM.attributedDescription {
+                    Text(text)
                 }
 
 //                if !postVM.post.tags.isEmpty {

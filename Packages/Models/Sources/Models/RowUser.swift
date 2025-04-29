@@ -116,7 +116,7 @@ extension RowUser {
     public static func placeholder() -> RowUser {
         return RowUser(
             id: UUID().uuidString,
-            username: "Username",
+            username: "Username Username",
             slug: 23910,
             image: "",
             isFollowed: false,

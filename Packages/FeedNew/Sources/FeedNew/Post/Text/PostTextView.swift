@@ -21,7 +21,7 @@ struct PostTextView: View {
             .foregroundStyle(isBackgroundWhite ? Colors.textActive : Colors.whitePrimary)
             .frame(maxWidth: .infinity, alignment: .leading)
 
-        if !postVM.post.mediaDescription.isEmpty {
+        if !postVM.post.media.isEmpty, let text = postVM.attributedDescription {
             VStack(spacing: 0) {
                 //            HashtagTextView(
                 //                inputString: postVM.post.mediaDescription,
@@ -35,7 +35,7 @@ struct PostTextView: View {
                 //            )
                 //            .frame(maxWidth: .infinity, alignment: .leading)
 
-                Text(postVM.attributedString)
+                Text(text)
                 //                .font(.customFont(weight: .regular, size: .footnote))
                     .font(.customFont(style: .body))
                     .foregroundStyle(isBackgroundWhite ? Colors.textActive : Colors.whitePrimary)

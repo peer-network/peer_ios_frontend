@@ -80,7 +80,7 @@ public struct PostView: View {
         )
 #if canImport(_Translation_SwiftUI)
         .addTranslateView(
-            isPresented: $showAppleTranslation, text: "\(postVM.post.title)\n\n\(postVM.post.mediaDescription)")
+            isPresented: $showAppleTranslation, text: "\(postVM.post.title)\n\n\(postVM.description ?? "")")
 #endif
     }
     
