@@ -15,6 +15,7 @@ public final class PostViewModel: ObservableObject {
     public unowned var apiService: APIService!
 
     @Published public var lineLimit: Int?
+    @Published public private(set) var shouldShowCollapseButton: Bool = false
     public var isCollapsed: Bool = true {
         didSet {
             recalcCollapse()
@@ -49,54 +50,16 @@ public final class PostViewModel: ObservableObject {
         amountViews = post.amountViews
         amountComments = post.amountComments
 
-        recalcCollapse()
-
         if post.contentType == .text {
             fetchTextPostBody()
         } else {
             if !post.mediaDescription.isEmpty {
                 description = post.mediaDescription
                 attributedDescription = makeAttributedString(from: post.mediaDescription)
+                recalcCollapse()
             }
         }
     }
-
-//    public var attributedString: AttributedString {
-//        var attributedString = AttributedString(post.mediaDescription)
-//
-//        let detector = try? NSDataDetector(types: NSTextCheckingResult.CheckingType.link.rawValue)
-//        let nsRange = NSRange(attributedString.startIndex..<attributedString.endIndex, in: attributedString)
-//
-//        // First process URLs (more important than hashtags)
-//        detector?.enumerateMatches(in: attributedString.description, range: nsRange) { match, _, _ in
-//            guard let match = match,
-//                  let range = Range(match.range, in: attributedString) else { return }
-//
-//            // Apply URL styling
-//            attributedString[range].foregroundColor = .blue
-//            attributedString[range].underlineStyle = .single
-//            attributedString[range].underlineColor = .blue
-//
-//            if let url = match.url {
-//                attributedString[range].link = url
-//            }
-//        }
-//
-//        // Then process hashtags
-//        let hashtagPattern = "#[\\p{L}\\p{N}_]{3,50}"
-//        if let regex = try? NSRegularExpression(pattern: hashtagPattern) {
-//            regex.enumerateMatches(in: attributedString.description, range: nsRange) { match, _, _ in
-//                guard let match = match,
-//                      let range = Range(match.range, in: attributedString),
-//                      // Skip if this range is already part of a URL
-//                      attributedString[range].link == nil else { return }
-//
-//                attributedString[range].foregroundColor = .blue
-//            }
-//        }
-//
-//        return attributedString
-//    }
 
     private func makeAttributedString(from inputText: String) -> AttributedString {
         var attributedString = AttributedString(inputText)
@@ -168,6 +131,7 @@ public final class PostViewModel: ObservableObject {
             guard let text = String(data: data, encoding: .utf8) else { return }
             description = text
             attributedDescription = makeAttributedString(from: text)
+            recalcCollapse()
         }
     }
 
@@ -297,10 +261,15 @@ public final class PostViewModel: ObservableObject {
     }
 
     private func recalcCollapse() {
-        let showCollapseButton = isCollapsed && post.mediaDescription.unicodeScalars.count > Constants.collapseThresholdLength
-        let newlineLimit = showCollapseButton && isCollapsed ? Constants.collapsedLines : nil
-        if newlineLimit != lineLimit {
-            lineLimit = newlineLimit
+        guard let description else { return }
+        guard description.count > Constants.collapseThresholdLength else { return }
+
+        shouldShowCollapseButton = true
+
+        let newLineLimit = isCollapsed ? Constants.collapsedLines : nil
+
+        if newLineLimit != lineLimit {
+            lineLimit = newLineLimit
         }
     }
 }

@@ -28,6 +28,11 @@ struct PostTextView: View {
                     .foregroundStyle(isBackgroundWhite ? Colors.textActive : Colors.whitePrimary)
                     .lineLimit(postVM.lineLimit)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .ifCondition(postVM.shouldShowCollapseButton) {
+                        $0.onTapGesture {
+                            postVM.isCollapsed.toggle()
+                        }
+                    }
 
                 collapseButton()
             }
@@ -36,13 +41,16 @@ struct PostTextView: View {
     
     @ViewBuilder
     private func collapseButton() -> some View {
-        if postVM.lineLimit != nil {
+        if postVM.shouldShowCollapseButton {
             Button {
-                postVM.isCollapsed.toggle()
+//                withAnimation {
+                    postVM.isCollapsed.toggle()
+//                }
             } label: {
-                Text("See more...")
-                    .font(.customFont(weight: .regular, size: .footnote))
-                    .foregroundStyle(Colors.whiteSecondary)
+                let textToShow: String = postVM.isCollapsed ? "See more..." : "See less..."
+                Text(textToShow)
+                    .font(.customFont(style: .body))
+                    .foregroundStyle(Colors.hashtag)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .contentShape(Rectangle())
             }

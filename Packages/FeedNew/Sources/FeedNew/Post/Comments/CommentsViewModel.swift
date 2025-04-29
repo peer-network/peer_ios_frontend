@@ -71,6 +71,11 @@ final class CommentsViewModel: ObservableObject {
     }
 
     func fetchComments() {
+        if post.amountComments == 0 {
+            state = .display(comments: [], hasMore: .none)
+            return
+        }
+
         if let existingTask = fetchTask, !existingTask.isCancelled {
             return
         }
