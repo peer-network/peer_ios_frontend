@@ -163,7 +163,7 @@ public final class PostViewModel: ObservableObject {
     private func fetchTextPostBody() {
         Task { [weak self] in
             guard let self else { return }
-            guard let url = post.mediaURLs.first  else { return }
+            guard let url = post.mediaURLs.first else { return }
             let (data, _) = try await URLSession.shared.data(from: url)
             guard let text = String(data: data, encoding: .utf8) else { return }
             description = text

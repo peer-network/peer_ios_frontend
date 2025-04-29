@@ -89,9 +89,7 @@ public struct PostView: View {
             PostHeaderView()
             
             PostTextView()
-            
-//            PostTagsView()
-            
+
             if !reasons.contains(.placeholder) {
                 PostActionsView(showAppleTranslation: $showAppleTranslation, showReportAlert: $showReportAlert, showBlockAlert: $showBlockAlert)
             }
