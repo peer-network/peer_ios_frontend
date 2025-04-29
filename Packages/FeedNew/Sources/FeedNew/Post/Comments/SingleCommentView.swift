@@ -19,10 +19,6 @@ struct PostDescriptionComment: View {
 
     let isInFeed: Bool
 
-//    var tags: [String] {
-//        postVM.post.tags.map { "#\($0)"}
-//    }
-    
     var body: some View {
         HStack(alignment: .top, spacing: 5) {
             Button {
@@ -49,11 +45,6 @@ struct PostDescriptionComment: View {
                 if !postVM.post.media.isEmpty, let text = postVM.attributedDescription {
                     Text(text)
                 }
-
-//                if !postVM.post.tags.isEmpty {
-//                    Text(tags.joined(separator: " "))
-//                        .foregroundStyle(Colors.hashtag)
-//                }
 
                 if isInFeed, postVM.post.amountComments > 0 {
                     Text("^[\(postVM.post.amountComments) comment](inflect: true) more...")
