@@ -11,7 +11,7 @@
     },
     {
         "version": "1.2.0",
-        "date": "15 Apr 2025",
+        "date": "29 Apr 2025",
         "releaseNotes": [
             "Links in post descriptions and comments are now highlighted and clickable",
             "Refreshing posts stats in Feed does not require closing the app anymore, just pull to refresh it",

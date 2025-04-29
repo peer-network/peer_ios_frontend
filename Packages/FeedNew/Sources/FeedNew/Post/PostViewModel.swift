@@ -81,7 +81,7 @@ public final class PostViewModel: ObservableObject {
         }
 
         // First process URLs
-        let urlPattern = #"(?i)\b((https?|ftp):\/\/)?(([\w-]+\.)+[\w-]{2,}|localhost|\d{1,3}(\.\d{1,3}){3})(:\d+)?(\/[^\s?#]*)?(\?[^\s#]*)?(#[^\s]*)?\b"#
+        let urlPattern = #"(?i)\b((https?|ftp):\/\/)?(([\w-]+\.)+[a-z]{2,})(:\d+)?(\/[^\s?#]*)?(\?[^\s#]*)?(#[^\s]*)?\b"#
 
         if let urlRegex = try? NSRegularExpression(pattern: urlPattern, options: .caseInsensitive) {
             let nsRange = NSRange(inputText.startIndex..<inputText.endIndex, in: inputText)
