@@ -63,7 +63,7 @@ struct FollowersHeader: View {
                 Text(typeCount(type), format: .number.notation(.compactName))
                     .bold()
                     .font(.customFont(weight: .regular, size: .body))
-                Text(type.rawValue)
+                Text(type.rawValue.lowercased())
                     .font(.customFont(weight: .regular, size: .footnote))
             }
             .contentShape(Rectangle())

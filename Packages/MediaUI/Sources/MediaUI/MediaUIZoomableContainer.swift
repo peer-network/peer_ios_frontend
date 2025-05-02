@@ -86,7 +86,8 @@ struct MediaUIZoomableContainer<Content: View>: View {
             }
         }
 
-        @MainActor func zoomRect(for scrollView: UIScrollView, scale: CGFloat, center: CGPoint) -> CGRect {
+        @MainActor
+        func zoomRect(for scrollView: UIScrollView, scale: CGFloat, center: CGPoint) -> CGRect {
             let scrollViewSize = scrollView.bounds.size
 
             let width = scrollViewSize.width / scale
