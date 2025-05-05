@@ -3,20 +3,20 @@
 
 @_exported import ApolloAPI
 
-public class VerificationMutation: GraphQLMutation {
-  public static let operationName: String = "Verification"
+public class RequestPasswordResetMutation: GraphQLMutation {
+  public static let operationName: String = "RequestPasswordReset"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"mutation Verification($userid: ID!) { verifyAccount(userid: $userid) { __typename status ResponseCode } }"#
+      #"mutation RequestPasswordReset($email: String!) { requestPasswordReset(email: $email) { __typename status ResponseCode } }"#
     ))
 
-  public var userid: ID
+  public var email: String
 
-  public init(userid: ID) {
-    self.userid = userid
+  public init(email: String) {
+    self.email = email
   }
 
-  public var __variables: Variables? { ["userid": userid] }
+  public var __variables: Variables? { ["email": email] }
 
   public struct Data: GQLOperationsGuest.SelectionSet {
     public let __data: DataDict
@@ -24,15 +24,15 @@ public class VerificationMutation: GraphQLMutation {
 
     public static var __parentType: any ApolloAPI.ParentType { GQLOperationsGuest.Objects.Mutation }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("verifyAccount", VerifyAccount.self, arguments: ["userid": .variable("userid")]),
+      .field("requestPasswordReset", RequestPasswordReset.self, arguments: ["email": .variable("email")]),
     ] }
 
-    public var verifyAccount: VerifyAccount { __data["verifyAccount"] }
+    public var requestPasswordReset: RequestPasswordReset { __data["requestPasswordReset"] }
 
-    /// VerifyAccount
+    /// RequestPasswordReset
     ///
     /// Parent Type: `DefaultResponse`
-    public struct VerifyAccount: GQLOperationsGuest.SelectionSet {
+    public struct RequestPasswordReset: GQLOperationsGuest.SelectionSet {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 

@@ -7,7 +7,7 @@ public class GetProfileQuery: GraphQLQuery {
   public static let operationName: String = "GetProfile"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetProfile($userid: ID!) { profile(userid: $userid) { __typename status ResponseCode affectedRows { __typename id username status slug img biography isfollowed isfollowing amountposts amounttrending amountfollowed amountfollower amountfriends } } }"#
+      #"query GetProfile($userid: ID!) { getProfile(userid: $userid) { __typename status ResponseCode affectedRows { __typename id username status slug img biography isfollowed isfollowing amountposts amounttrending amountfollowed amountfollower amountfriends amountblocked } } }"#
     ))
 
   public var userid: ID
@@ -24,15 +24,15 @@ public class GetProfileQuery: GraphQLQuery {
 
     public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("profile", Profile.self, arguments: ["userid": .variable("userid")]),
+      .field("getProfile", GetProfile.self, arguments: ["userid": .variable("userid")]),
     ] }
 
-    public var profile: Profile { __data["profile"] }
+    public var getProfile: GetProfile { __data["getProfile"] }
 
-    /// Profile
+    /// GetProfile
     ///
     /// Parent Type: `ProfileInfo`
-    public struct Profile: GQLOperationsUser.SelectionSet {
+    public struct GetProfile: GQLOperationsUser.SelectionSet {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
@@ -48,7 +48,7 @@ public class GetProfileQuery: GraphQLQuery {
       public var responseCode: String? { __data["ResponseCode"] }
       public var affectedRows: AffectedRows? { __data["affectedRows"] }
 
-      /// Profile.AffectedRows
+      /// GetProfile.AffectedRows
       ///
       /// Parent Type: `Profile`
       public struct AffectedRows: GQLOperationsUser.SelectionSet {
@@ -70,7 +70,8 @@ public class GetProfileQuery: GraphQLQuery {
           .field("amounttrending", Int?.self),
           .field("amountfollowed", Int?.self),
           .field("amountfollower", Int?.self),
-          .field("amountfriends", Int.self),
+          .field("amountfriends", Int?.self),
+          .field("amountblocked", Int?.self),
         ] }
 
         public var id: GQLOperationsUser.ID? { __data["id"] }
@@ -85,7 +86,8 @@ public class GetProfileQuery: GraphQLQuery {
         public var amounttrending: Int? { __data["amounttrending"] }
         public var amountfollowed: Int? { __data["amountfollowed"] }
         public var amountfollower: Int? { __data["amountfollower"] }
-        public var amountfriends: Int { __data["amountfriends"] }
+        public var amountfriends: Int? { __data["amountfriends"] }
+        public var amountblocked: Int? { __data["amountblocked"] }
       }
     }
   }

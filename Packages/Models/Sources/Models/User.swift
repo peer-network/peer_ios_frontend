@@ -60,7 +60,7 @@ public struct User: Identifiable, Hashable {
     }
 
     //TODO: Replace Apollo struct with raw params
-    public init?(gqlUser: GetProfileQuery.Data.Profile.AffectedRows) {
+    public init?(gqlUser: GetProfileQuery.Data.GetProfile.AffectedRows) {
         guard
             //TODO: exclude checks for parameters that could be considered as optionals
             let id = gqlUser.id,
@@ -73,7 +73,8 @@ public struct User: Identifiable, Hashable {
             let isFollowed = gqlUser.isfollowed,
             let isFollowing = gqlUser.isfollowing,
             let amountFollowers = gqlUser.amountfollowed,
-            let amountFollowing = gqlUser.amountfollower
+            let amountFollowing = gqlUser.amountfollower,
+            let amountFriends = gqlUser.amountfriends
         else {
             return nil
         }
@@ -89,7 +90,7 @@ public struct User: Identifiable, Hashable {
         self.isFollowing = isFollowing
         self.amountFollowers = amountFollowers
         self.amountFollowing = amountFollowing
-        self.amountFriends = gqlUser.amountfriends
+        self.amountFriends = amountFriends
     }
 }
 

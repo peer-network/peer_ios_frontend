@@ -36,7 +36,7 @@ public struct ObjectOwner: Identifiable, Hashable {
         self.isFollowed = isFollowed
     }
 
-    public init?(gqlUser: GetPostCommentsQuery.Data.Getallposts.AffectedRow.Comment.User) {
+    public init?(gqlUser: GetPostCommentsQuery.Data.ListPosts.AffectedRow.Comment.User) {
         guard
             let username = gqlUser.username,
             let slug = gqlUser.slug,
@@ -55,7 +55,7 @@ public struct ObjectOwner: Identifiable, Hashable {
         self.isFollowing = isFollowing
     }
 
-    public init?(gqlUser: GetAllPostsQuery.Data.Getallposts.AffectedRow.User) {
+    public init?(gqlUser: GetAllPostsQuery.Data.ListPosts.AffectedRow.User) {
         guard
             let username = gqlUser.username,
             let slug = gqlUser.slug,

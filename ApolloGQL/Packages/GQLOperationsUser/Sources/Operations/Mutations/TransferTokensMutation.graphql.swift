@@ -3,20 +3,28 @@
 
 @_exported import ApolloAPI
 
-public class BlockUserMutation: GraphQLMutation {
-  public static let operationName: String = "BlockUser"
+public class TransferTokensMutation: GraphQLMutation {
+  public static let operationName: String = "TransferTokens"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"mutation BlockUser($userid: ID!) { toggleBlockUserStatus(userid: $userid) { __typename status ResponseCode } }"#
+      #"mutation TransferTokens($recipient: ID!, $numberoftokens: Int!) { resolveTransfer(recipient: $recipient, numberoftokens: $numberoftokens) { __typename status ResponseCode } }"#
     ))
 
-  public var userid: ID
+  public var recipient: ID
+  public var numberoftokens: Int
 
-  public init(userid: ID) {
-    self.userid = userid
+  public init(
+    recipient: ID,
+    numberoftokens: Int
+  ) {
+    self.recipient = recipient
+    self.numberoftokens = numberoftokens
   }
 
-  public var __variables: Variables? { ["userid": userid] }
+  public var __variables: Variables? { [
+    "recipient": recipient,
+    "numberoftokens": numberoftokens
+  ] }
 
   public struct Data: GQLOperationsUser.SelectionSet {
     public let __data: DataDict
@@ -24,15 +32,18 @@ public class BlockUserMutation: GraphQLMutation {
 
     public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.Mutation }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("toggleBlockUserStatus", ToggleBlockUserStatus.self, arguments: ["userid": .variable("userid")]),
+      .field("resolveTransfer", ResolveTransfer.self, arguments: [
+        "recipient": .variable("recipient"),
+        "numberoftokens": .variable("numberoftokens")
+      ]),
     ] }
 
-    public var toggleBlockUserStatus: ToggleBlockUserStatus { __data["toggleBlockUserStatus"] }
+    public var resolveTransfer: ResolveTransfer { __data["resolveTransfer"] }
 
-    /// ToggleBlockUserStatus
+    /// ResolveTransfer
     ///
     /// Parent Type: `DefaultResponse`
-    public struct ToggleBlockUserStatus: GQLOperationsUser.SelectionSet {
+    public struct ResolveTransfer: GQLOperationsUser.SelectionSet {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 

@@ -54,7 +54,7 @@ public struct Post: Identifiable, Hashable {
         return createdAt.timeAgo(isShort: false)
     }
 
-    public init?(gqlPost: GetAllPostsQuery.Data.Getallposts.AffectedRow) {
+    public init?(gqlPost: GetAllPostsQuery.Data.ListPosts.AffectedRow) {
         guard
             let contentType = ContentType(rawValue: gqlPost.contenttype),
             let postOwner = ObjectOwner(gqlUser: gqlPost.user),
@@ -87,7 +87,7 @@ public struct Post: Identifiable, Hashable {
         self.isReported = gqlPost.isreported
         self.isDisliked = gqlPost.isdisliked
         self.isSaved = gqlPost.issaved
-        self.tags = gqlPost.tags
+        self.tags = gqlPost.tags as? [String] ?? []
         self.owner = postOwner
     }
     

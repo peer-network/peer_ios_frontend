@@ -3,20 +3,28 @@
 
 @_exported import ApolloAPI
 
-public class VerificationMutation: GraphQLMutation {
-  public static let operationName: String = "Verification"
+public class ConfirmPasswordResetMutation: GraphQLMutation {
+  public static let operationName: String = "ConfirmPasswordReset"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"mutation Verification($userid: ID!) { verifyAccount(userid: $userid) { __typename status ResponseCode } }"#
+      #"mutation ConfirmPasswordReset($token: String!, $password: String!) { resetPassword(token: $token, password: $password) { __typename status ResponseCode } }"#
     ))
 
-  public var userid: ID
+  public var token: String
+  public var password: String
 
-  public init(userid: ID) {
-    self.userid = userid
+  public init(
+    token: String,
+    password: String
+  ) {
+    self.token = token
+    self.password = password
   }
 
-  public var __variables: Variables? { ["userid": userid] }
+  public var __variables: Variables? { [
+    "token": token,
+    "password": password
+  ] }
 
   public struct Data: GQLOperationsGuest.SelectionSet {
     public let __data: DataDict
@@ -24,15 +32,18 @@ public class VerificationMutation: GraphQLMutation {
 
     public static var __parentType: any ApolloAPI.ParentType { GQLOperationsGuest.Objects.Mutation }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("verifyAccount", VerifyAccount.self, arguments: ["userid": .variable("userid")]),
+      .field("resetPassword", ResetPassword?.self, arguments: [
+        "token": .variable("token"),
+        "password": .variable("password")
+      ]),
     ] }
 
-    public var verifyAccount: VerifyAccount { __data["verifyAccount"] }
+    public var resetPassword: ResetPassword? { __data["resetPassword"] }
 
-    /// VerifyAccount
+    /// ResetPassword
     ///
     /// Parent Type: `DefaultResponse`
-    public struct VerifyAccount: GQLOperationsGuest.SelectionSet {
+    public struct ResetPassword: GQLOperationsGuest.SelectionSet {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 

@@ -37,7 +37,7 @@ public struct RowUser: Identifiable, Hashable {
         self.isFollowing = isFollowing
     }
 
-    public init?(gqlUser: GetFollowersQuery.Data.Follows.AffectedRows.Follower) {
+    public init?(gqlUser: GetFollowersQuery.Data.ListFollowRelations.AffectedRows.Follower) {
         guard
             let username = gqlUser.username,
             let slug = gqlUser.slug,
@@ -56,7 +56,7 @@ public struct RowUser: Identifiable, Hashable {
         self.isFollowing = isFollowing
     }
 
-    public init?(gqlUser: GetFollowingsQuery.Data.Follows.AffectedRows.Following) {
+    public init?(gqlUser: GetFollowingsQuery.Data.ListFollowRelations.AffectedRows.Following) {
         guard
             let username = gqlUser.username,
             let slug = gqlUser.slug,
@@ -75,7 +75,7 @@ public struct RowUser: Identifiable, Hashable {
         self.isFollowing = isFollowing
     }
 
-    public init?(gqlUser: GetFriendsQuery.Data.Friends.AffectedRow) {
+    public init?(gqlUser: GetFriendsQuery.Data.ListFriends.AffectedRow) {
         guard
             let id = gqlUser.userid,
             let username = gqlUser.username,
@@ -93,7 +93,7 @@ public struct RowUser: Identifiable, Hashable {
         self.isFollowing = true
     }
 
-    public init?(gqlUser: SearchUserQuery.Data.Searchuser.AffectedRow?) {
+    public init?(gqlUser: SearchUserQuery.Data.SearchUser.AffectedRow?) {
         guard
             let id = gqlUser?.id,
             let username = gqlUser?.username,

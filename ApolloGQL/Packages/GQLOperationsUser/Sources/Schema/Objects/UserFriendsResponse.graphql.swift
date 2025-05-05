@@ -4,8 +4,8 @@
 import ApolloAPI
 
 public extension Objects {
-  static let UserFriends = ApolloAPI.Object(
-    typename: "UserFriends",
+  static let UserFriendsResponse = ApolloAPI.Object(
+    typename: "UserFriendsResponse",
     implementedInterfaces: []
   )
 }

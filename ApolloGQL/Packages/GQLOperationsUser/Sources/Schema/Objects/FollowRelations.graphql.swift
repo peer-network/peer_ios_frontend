@@ -4,8 +4,8 @@
 import ApolloAPI
 
 public extension Objects {
-  static let GetAllPostResponse = ApolloAPI.Object(
-    typename: "GetAllPostResponse",
+  static let FollowRelations = ApolloAPI.Object(
+    typename: "FollowRelations",
     implementedInterfaces: []
   )
 }

@@ -3,7 +3,7 @@
 
 import ApolloAPI
 
-public enum SortType: String, EnumType {
+public enum PostSortType: String, EnumType {
   case newest = "NEWEST"
   case trending = "TRENDING"
   case likes = "LIKES"

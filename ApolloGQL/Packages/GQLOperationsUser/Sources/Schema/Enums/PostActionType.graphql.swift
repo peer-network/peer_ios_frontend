@@ -3,7 +3,7 @@
 
 import ApolloAPI
 
-public enum ActionType: String, EnumType {
+public enum PostActionType: String, EnumType {
   case like = "LIKE"
   case dislike = "DISLIKE"
   case report = "REPORT"

@@ -1,5 +1,5 @@
 query GetProfile($userid: ID!) {
-	profile(
+	getProfile(
         userid: $userid
     ) {
         status

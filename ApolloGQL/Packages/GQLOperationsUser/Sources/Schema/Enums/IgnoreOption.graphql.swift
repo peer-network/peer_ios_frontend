@@ -3,7 +3,7 @@
 
 import ApolloAPI
 
-public enum IgnoredList: String, EnumType {
+public enum IgnoreOption: String, EnumType {
   case yes = "YES"
   case no = "NO"
 }

@@ -4,8 +4,8 @@
 import ApolloAPI
 
 public extension Objects {
-  static let DailyResponse = ApolloAPI.Object(
-    typename: "DailyResponse",
+  static let FollowStatusResponse = ApolloAPI.Object(
+    typename: "FollowStatusResponse",
     implementedInterfaces: []
   )
 }

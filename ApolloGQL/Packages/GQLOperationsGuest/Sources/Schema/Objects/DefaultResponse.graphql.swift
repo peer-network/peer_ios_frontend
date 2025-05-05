@@ -4,8 +4,8 @@
 import ApolloAPI
 
 public extension Objects {
-  static let UserSearchResponse = ApolloAPI.Object(
-    typename: "UserSearchResponse",
+  static let DefaultResponse = ApolloAPI.Object(
+    typename: "DefaultResponse",
     implementedInterfaces: []
   )
 }

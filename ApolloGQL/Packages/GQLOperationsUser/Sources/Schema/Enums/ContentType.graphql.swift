@@ -3,7 +3,7 @@
 
 import ApolloAPI
 
-public enum ContenType: String, EnumType {
+public enum ContentType: String, EnumType {
   case image = "image"
   case audio = "audio"
   case video = "video"

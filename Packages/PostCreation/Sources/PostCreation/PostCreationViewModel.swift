@@ -402,7 +402,7 @@ final class PostCreationViewModel: NSObject, ObservableObject {
         title.replacingOccurrences(of: "\n", with: "").replacingOccurrences(of: "\"", with: "\\\"")
     }
     
-    private func addBase64Prefix(to content: inout String, ofType: ContenType) {
+    private func addBase64Prefix(to content: inout String, ofType: ContentType) {
         let prefix: String
         switch ofType {
         case .image:

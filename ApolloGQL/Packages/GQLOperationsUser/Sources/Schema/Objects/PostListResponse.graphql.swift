@@ -4,8 +4,8 @@
 import ApolloAPI
 
 public extension Objects {
-  static let SetFollowUseresponse = ApolloAPI.Object(
-    typename: "setFollowUseresponse",
+  static let PostListResponse = ApolloAPI.Object(
+    typename: "PostListResponse",
     implementedInterfaces: []
   )
 }

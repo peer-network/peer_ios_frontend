@@ -7,7 +7,7 @@ public class CreateCommentMutation: GraphQLMutation {
   public static let operationName: String = "CreateComment"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"mutation CreateComment($postid: ID!, $parentid: ID, $content: String!) { createComment( action: COMMENT postid: $postid parentid: $parentid content: $content ) { __typename status ResponseCode affectedRows { __typename commentid userid postid parentid content createdat amountlikes isliked user { __typename id username slug img isfollowed isfollowing } } } }"#
+      #"mutation CreateComment($postid: ID!, $parentid: ID, $content: String!) { createComment( action: COMMENT postid: $postid parentid: $parentid content: $content ) { __typename status ResponseCode affectedRows { __typename commentid userid postid parentid content createdat amountlikes amountreplies isliked user { __typename id username slug img isfollowed isfollowing } } } }"#
     ))
 
   public var postid: ID
@@ -82,6 +82,7 @@ public class CreateCommentMutation: GraphQLMutation {
           .field("content", String.self),
           .field("createdat", GQLOperationsUser.Date.self),
           .field("amountlikes", Int.self),
+          .field("amountreplies", Int.self),
           .field("isliked", Bool.self),
           .field("user", User.self),
         ] }
@@ -93,17 +94,18 @@ public class CreateCommentMutation: GraphQLMutation {
         public var content: String { __data["content"] }
         public var createdat: GQLOperationsUser.Date { __data["createdat"] }
         public var amountlikes: Int { __data["amountlikes"] }
+        public var amountreplies: Int { __data["amountreplies"] }
         public var isliked: Bool { __data["isliked"] }
         public var user: User { __data["user"] }
 
         /// CreateComment.AffectedRow.User
         ///
-        /// Parent Type: `ProfilUser`
+        /// Parent Type: `ProfileUser`
         public struct User: GQLOperationsUser.SelectionSet {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.ProfilUser }
+          public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.ProfileUser }
           public static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .field("id", GQLOperationsUser.ID.self),

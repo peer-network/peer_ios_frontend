@@ -71,7 +71,7 @@ public final class APIServiceStub: APIService {
         .failure(.missingData)
     }
     
-    public func makePost(of type: ContenType, with title: String, content: [String], contentDescitpion: String, tags: [String], cover: String?) async -> Result<Void, APIError> {
+    public func makePost(of type: ContentType, with title: String, content: [String], contentDescitpion: String, tags: [String], cover: String?) async -> Result<Void, APIError> {
         .success(())
     }
     

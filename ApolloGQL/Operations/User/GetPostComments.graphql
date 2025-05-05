@@ -1,5 +1,5 @@
 query GetPostComments($postid: ID!, $commentLimit: Int, $commentOffset: Int) {
-    getallposts(postid: $postid, commentLimit: $commentLimit, commentOffset: $commentOffset) {
+    listPosts(postid: $postid, commentLimit: $commentLimit, commentOffset: $commentOffset) {
         status
         ResponseCode
         affectedRows {

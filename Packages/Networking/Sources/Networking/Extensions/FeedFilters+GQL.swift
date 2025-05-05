@@ -10,7 +10,7 @@ import GQLOperationsUser
 import Foundation
 
 extension FeedContentType {
-    var apiValue: [GraphQLEnum<FilterType>] {
+    var apiValue: [GraphQLEnum<PostFilterType>] {
         switch self {
         case .regular:
             [.case(.text), .case(.image)]
@@ -23,7 +23,7 @@ extension FeedContentType {
 }
 
 extension FeedFilterByRelationship {
-    var apiValue: GraphQLEnum<FilterType>? {
+    var apiValue: GraphQLEnum<PostFilterType>? {
         switch self {
             case .all: return nil
             case .myFollowers: return .case(.followed)
@@ -33,7 +33,7 @@ extension FeedFilterByRelationship {
 }
 
 extension FeedContentSortingByPopularity {
-    var apiValue: GraphQLNullable<GraphQLEnum<SortType>> {
+    var apiValue: GraphQLNullable<GraphQLEnum<PostSortType>> {
         switch self {
             case .newest: return .some(.case(.newest))
             case .trending: return .some(.case(.trending))

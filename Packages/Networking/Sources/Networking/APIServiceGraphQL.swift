@@ -78,7 +78,7 @@ public final class APIServiceGraphQL: APIService {
             let result = try await qlClient.fetch(query: GetProfileQuery(userid: userId), cachePolicy: .fetchIgnoringCacheCompletely)
             
             guard
-                let data = result.profile.affectedRows,
+                let data = result.getProfile.affectedRows,
                 let fetchedUser = User(gqlUser: data)
             else {
                 return .failure(.missingData)
@@ -100,7 +100,7 @@ public final class APIServiceGraphQL: APIService {
             
             let result = try await GQLClient.shared.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
             
-            guard let data = result.follows.affectedRows?.followers else {
+            guard let data = result.listFollowRelations.affectedRows?.followers else {
                 throw GQLError.missingData
             }
             
@@ -124,7 +124,7 @@ public final class APIServiceGraphQL: APIService {
             
             let result = try await GQLClient.shared.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
             
-            guard let data = result.follows.affectedRows?.following else {
+            guard let data = result.listFollowRelations.affectedRows?.following else {
                 throw GQLError.missingData
             }
             
@@ -148,7 +148,7 @@ public final class APIServiceGraphQL: APIService {
             )
             let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
             
-            guard let data = result.searchuser.affectedRows else {
+            guard let data = result.searchUser.affectedRows else {
                 throw GQLError.missingData
             }
             
@@ -166,7 +166,7 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.fetch(query: GetDailyFreeQuery())
             
-            guard let dataArray = result.dailyfreestatus.affectedRows else {
+            guard let dataArray = result.getDailyFreeStatus.affectedRows else {
                 return .failure(.missingData)
             }
             
@@ -238,14 +238,14 @@ public final class APIServiceGraphQL: APIService {
         do {
             let operation = GetAllPostsQuery(
                 filterBy: [.case(.image), .case(.text), .case(.video), .case(.audio)],
-                ignorList: .some(.case(.no)),
+                ignoreOption: .some(.case(.no)),
                 sortBy: .some(.case(.newest)),
                 title: GraphQLNullable(stringLiteral: query.lowercased()),
                 tag: nil,
                 from: nil,
                 to: nil,
-                postOffset: GraphQLNullable<Int>(integerLiteral: offset),
-                postLimit: 20,
+                offset: GraphQLNullable<Int>(integerLiteral: offset),
+                limit: 20,
                 commentOffset: nil,
                 commentLimit: nil,
                 postid: nil,
@@ -253,7 +253,7 @@ public final class APIServiceGraphQL: APIService {
             )
             let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
             
-            guard let data = result.getallposts.affectedRows else {
+            guard let data = result.listPosts.affectedRows else {
                 return .failure(APIError.missingData)
             }
             
@@ -271,14 +271,14 @@ public final class APIServiceGraphQL: APIService {
         do {
             let operation = GetAllPostsQuery(
                 filterBy: [.case(.image), .case(.text), .case(.video), .case(.audio)],
-                ignorList: .some(.case(.no)),
+                ignoreOption: .some(.case(.no)),
                 sortBy: .some(.case(.newest)),
                 title: nil,
                 tag: GraphQLNullable(stringLiteral: tag),
                 from: nil,
                 to: nil,
-                postOffset: GraphQLNullable<Int>(integerLiteral: offset),
-                postLimit: 20,
+                offset: GraphQLNullable<Int>(integerLiteral: offset),
+                limit: 20,
                 commentOffset: nil,
                 commentLimit: nil,
                 postid: nil,
@@ -286,7 +286,7 @@ public final class APIServiceGraphQL: APIService {
             )
             let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
             
-            guard let data = result.getallposts.affectedRows else {
+            guard let data = result.listPosts.affectedRows else {
                 return .failure(APIError.missingData)
             }
             
@@ -301,7 +301,7 @@ public final class APIServiceGraphQL: APIService {
     }
     
     public func makePost(
-        of type: ContenType,
+        of type: ContentType,
         with title: String,
         content: [String],
         contentDescitpion: String,
@@ -315,7 +315,7 @@ public final class APIServiceGraphQL: APIService {
             }
             
             let operation = CreatePostMutation(
-                contenttype: .case(type),
+                contentType: .case(type),
                 title: title,
                 media: GraphQLNullable<[String]>.some(content),
                 mediadescription: GraphQLNullable(stringLiteral: contentDescitpion),
@@ -345,7 +345,7 @@ public final class APIServiceGraphQL: APIService {
     ) async -> Result<[Post], APIError> {
         let sortBy = byPopularity.apiValue
 
-        var filterBy: [GraphQLEnum<FilterType>] = contentType.apiValue
+        var filterBy: [GraphQLEnum<PostFilterType>] = contentType.apiValue
         if let filterByAddition = byRelationship.apiValue {
             filterBy.append(filterByAddition)
         }
@@ -354,15 +354,15 @@ public final class APIServiceGraphQL: APIService {
         let timeTo = timeframe.apiValue.1
 
         let operation = GetAllPostsQuery(
-            filterBy: GraphQLNullable<[GraphQLEnum<FilterType>]>.some(filterBy),
-            ignorList: .some(.case(.yes)),
+            filterBy: GraphQLNullable<[GraphQLEnum<PostFilterType>]>.some(filterBy),
+            ignoreOption: .some(.case(.yes)),
             sortBy: sortBy,
             title: nil,
             tag: nil,
             from: timeFrom != nil ? GraphQLNullable(stringLiteral: timeFrom!) : nil,
             to: timeTo != nil ? GraphQLNullable(stringLiteral: timeTo!) : nil,
-            postOffset: GraphQLNullable<Int>(integerLiteral: offset),
-            postLimit: GraphQLNullable<Int>(integerLiteral: 10),
+            offset: GraphQLNullable<Int>(integerLiteral: offset),
+            limit: GraphQLNullable<Int>(integerLiteral: 10),
             commentOffset: 0,
             commentLimit: 0,
             postid: nil,
@@ -372,7 +372,7 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
             
-            guard let data = result.getallposts.affectedRows else {
+            guard let data = result.listPosts.affectedRows else {
                 return .failure(.missingData)
             }
             
@@ -452,7 +452,7 @@ public final class APIServiceGraphQL: APIService {
             )
             let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
             
-            guard let data = result.getallposts.affectedRows?.first?.comments else {
+            guard let data = result.listPosts.affectedRows?.first?.comments else {
                 return .failure(.missingData)
             }
             
@@ -500,10 +500,10 @@ public final class APIServiceGraphQL: APIService {
     //MARK: Tags
     public func fetchTags(with query: String) async -> Result<[String], APIError> {
         do {
-            let operation = SearchTagsQuery(tagname: query, offset: 0, limit: 20)
+            let operation = SearchTagsQuery(tagName: query, offset: 0, limit: 20)
             let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
             
-            guard let data = result.tagsearch.affectedRows else {
+            guard let data = result.searchTags.affectedRows else {
                 return .failure(.missingData)
             }
             
@@ -522,7 +522,7 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.fetch(query: GetLiquidityQuery(), cachePolicy: .fetchIgnoringCacheCompletely)
             
-            guard let data = result.currentliquidity.currentliquidity,
+            guard let data = result.balance.currentliquidity,
                   let amount = Double(data)
             else {
                 return .failure(.missingData)

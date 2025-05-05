@@ -33,7 +33,7 @@ public protocol APIService: AnyObject {
     func fetchPostsByTitle(_ query: String, after offset: Int) async -> Result<[Post], APIError>
     func fetchPostsByTag(_ tag: String, after offset: Int) async -> Result<[Post], APIError>
     func makePost(
-        of type: ContenType,
+        of type: ContentType,
         with title: String,
         content: [String],
         contentDescitpion: String,

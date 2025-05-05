@@ -7,7 +7,7 @@ public class GetFollowingsQuery: GraphQLQuery {
   public static let operationName: String = "GetFollowings"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetFollowings($userid: ID, $offset: Int, $limit: Int) { follows(userid: $userid, offset: $offset, limit: $limit) { __typename status ResponseCode affectedRows { __typename following { __typename id username slug img isfollowed isfollowing } } } }"#
+      #"query GetFollowings($userid: ID, $offset: Int, $limit: Int) { listFollowRelations(userid: $userid, offset: $offset, limit: $limit) { __typename status ResponseCode affectedRows { __typename following { __typename id username slug img isfollowed isfollowing } } } }"#
     ))
 
   public var userid: GraphQLNullable<ID>
@@ -36,23 +36,23 @@ public class GetFollowingsQuery: GraphQLQuery {
 
     public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("follows", Follows.self, arguments: [
+      .field("listFollowRelations", ListFollowRelations.self, arguments: [
         "userid": .variable("userid"),
         "offset": .variable("offset"),
         "limit": .variable("limit")
       ]),
     ] }
 
-    public var follows: Follows { __data["follows"] }
+    public var listFollowRelations: ListFollowRelations { __data["listFollowRelations"] }
 
-    /// Follows
+    /// ListFollowRelations
     ///
-    /// Parent Type: `UserFollows`
-    public struct Follows: GQLOperationsUser.SelectionSet {
+    /// Parent Type: `FollowRelationsResponse`
+    public struct ListFollowRelations: GQLOperationsUser.SelectionSet {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.UserFollows }
+      public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.FollowRelationsResponse }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("status", String?.self),
@@ -64,14 +64,14 @@ public class GetFollowingsQuery: GraphQLQuery {
       public var responseCode: String? { __data["ResponseCode"] }
       public var affectedRows: AffectedRows? { __data["affectedRows"] }
 
-      /// Follows.AffectedRows
+      /// ListFollowRelations.AffectedRows
       ///
-      /// Parent Type: `Followes`
+      /// Parent Type: `FollowRelations`
       public struct AffectedRows: GQLOperationsUser.SelectionSet {
         public let __data: DataDict
         public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.Followes }
+        public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.FollowRelations }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("following", [Following]?.self),
@@ -79,14 +79,14 @@ public class GetFollowingsQuery: GraphQLQuery {
 
         public var following: [Following]? { __data["following"] }
 
-        /// Follows.AffectedRows.Following
+        /// ListFollowRelations.AffectedRows.Following
         ///
-        /// Parent Type: `ProfilUser`
+        /// Parent Type: `ProfileUser`
         public struct Following: GQLOperationsUser.SelectionSet {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.ProfilUser }
+          public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.ProfileUser }
           public static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .field("id", GQLOperationsUser.ID.self),

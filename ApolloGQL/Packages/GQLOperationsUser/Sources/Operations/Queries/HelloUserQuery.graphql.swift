@@ -7,7 +7,7 @@ public class HelloUserQuery: GraphQLQuery {
   public static let operationName: String = "HelloUser"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query HelloUser { hello { __typename currentuserid } }"#
+      #"query HelloUser { hello { __typename currentuserid currentVersion wikiLink } }"#
     ))
 
   public init() {}
@@ -33,10 +33,14 @@ public class HelloUserQuery: GraphQLQuery {
       public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.HelloResponse }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
-        .field("currentuserid", String?.self),
+        .field("currentuserid", GQLOperationsUser.ID?.self),
+        .field("currentVersion", String?.self),
+        .field("wikiLink", String?.self),
       ] }
 
-      public var currentuserid: String? { __data["currentuserid"] }
+      public var currentuserid: GQLOperationsUser.ID? { __data["currentuserid"] }
+      public var currentVersion: String? { __data["currentVersion"] }
+      public var wikiLink: String? { __data["wikiLink"] }
     }
   }
 }

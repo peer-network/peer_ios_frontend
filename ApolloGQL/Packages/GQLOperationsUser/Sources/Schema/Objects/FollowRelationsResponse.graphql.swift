@@ -4,8 +4,8 @@
 import ApolloAPI
 
 public extension Objects {
-  static let VerifiedAccount = ApolloAPI.Object(
-    typename: "verifiedAccount",
+  static let FollowRelationsResponse = ApolloAPI.Object(
+    typename: "FollowRelationsResponse",
     implementedInterfaces: []
   )
 }

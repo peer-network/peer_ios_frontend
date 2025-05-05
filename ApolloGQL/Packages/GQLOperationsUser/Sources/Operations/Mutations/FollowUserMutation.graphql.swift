@@ -7,7 +7,7 @@ public class FollowUserMutation: GraphQLMutation {
   public static let operationName: String = "FollowUser"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"mutation FollowUser($userid: ID!) { userFollow(userid: $userid) { __typename status ResponseCode isfollowing } }"#
+      #"mutation FollowUser($userid: ID!) { toggleUserFollowStatus(userid: $userid) { __typename status ResponseCode isfollowing } }"#
     ))
 
   public var userid: ID
@@ -24,19 +24,19 @@ public class FollowUserMutation: GraphQLMutation {
 
     public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.Mutation }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("userFollow", UserFollow.self, arguments: ["userid": .variable("userid")]),
+      .field("toggleUserFollowStatus", ToggleUserFollowStatus.self, arguments: ["userid": .variable("userid")]),
     ] }
 
-    public var userFollow: UserFollow { __data["userFollow"] }
+    public var toggleUserFollowStatus: ToggleUserFollowStatus { __data["toggleUserFollowStatus"] }
 
-    /// UserFollow
+    /// ToggleUserFollowStatus
     ///
-    /// Parent Type: `SetFollowUseresponse`
-    public struct UserFollow: GQLOperationsUser.SelectionSet {
+    /// Parent Type: `FollowStatusResponse`
+    public struct ToggleUserFollowStatus: GQLOperationsUser.SelectionSet {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.SetFollowUseresponse }
+      public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.FollowStatusResponse }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("status", String.self),

@@ -7,7 +7,7 @@ public class UpdateBioMutation: GraphQLMutation {
   public static let operationName: String = "UpdateBio"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"mutation UpdateBio($biography: String!) { updateBiography(biography: $biography) { __typename status ResponseCode } }"#
+      #"mutation UpdateBio($biography: String!) { updateBio(biography: $biography) { __typename status ResponseCode } }"#
     ))
 
   public var biography: String
@@ -24,15 +24,15 @@ public class UpdateBioMutation: GraphQLMutation {
 
     public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.Mutation }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("updateBiography", UpdateBiography.self, arguments: ["biography": .variable("biography")]),
+      .field("updateBio", UpdateBio.self, arguments: ["biography": .variable("biography")]),
     ] }
 
-    public var updateBiography: UpdateBiography { __data["updateBiography"] }
+    public var updateBio: UpdateBio { __data["updateBio"] }
 
-    /// UpdateBiography
+    /// UpdateBio
     ///
     /// Parent Type: `DefaultResponse`
-    public struct UpdateBiography: GQLOperationsUser.SelectionSet {
+    public struct UpdateBio: GQLOperationsUser.SelectionSet {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 

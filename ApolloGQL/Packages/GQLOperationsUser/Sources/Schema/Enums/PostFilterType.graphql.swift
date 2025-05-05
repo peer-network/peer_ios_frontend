@@ -3,7 +3,7 @@
 
 import ApolloAPI
 
-public enum FilterType: String, EnumType {
+public enum PostFilterType: String, EnumType {
   case image = "IMAGE"
   case audio = "AUDIO"
   case video = "VIDEO"
