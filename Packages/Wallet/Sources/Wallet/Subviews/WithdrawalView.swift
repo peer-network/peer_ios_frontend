@@ -169,7 +169,7 @@ struct TransferAmountInputView: View {
         .frame(height: 60)
         .padding(.leading, 20)
         .overlay(alignment: .trailing) {
-            if let amount {
+            if let amount, amount > 0 {
                 Button {
                     guard let recipient = viewModel.recipient else { return }
                     router.navigate(to: .transfer(recipient: recipient, amount: amount))

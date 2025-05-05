@@ -363,8 +363,8 @@ public final class APIServiceGraphQL: APIService {
             to: timeTo != nil ? GraphQLNullable(stringLiteral: timeTo!) : nil,
             offset: GraphQLNullable<Int>(integerLiteral: offset),
             limit: GraphQLNullable<Int>(integerLiteral: 10),
-            commentOffset: 0,
-            commentLimit: 0,
+            commentOffset: nil,
+            commentLimit: nil,
             postid: nil,
             userid: userID == nil ? nil : GraphQLNullable(stringLiteral: userID!)
         )
