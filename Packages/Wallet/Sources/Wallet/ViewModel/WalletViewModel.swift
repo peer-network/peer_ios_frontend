@@ -12,6 +12,7 @@ import Environment
 @MainActor
 final class WalletViewModel: SimpleContentFetcher, ObservableObject {
     @Published public private(set) var state: ContentState<WalletBalance> = .loading(placeholder: .placeholder)
+    public private(set) var balance: WalletBalance?
 
     public unowned var apiService: APIService!
     
@@ -34,6 +35,7 @@ final class WalletViewModel: SimpleContentFetcher, ObservableObject {
             switch result {
                 case .success(let amount):
                     let walletBalance = WalletBalance(amount: amount, tokenPrice: 0.1)
+                    balance = walletBalance
                     state = .display(content: walletBalance)
                 case .failure(let apiError):
                     state = .error(error: apiError)

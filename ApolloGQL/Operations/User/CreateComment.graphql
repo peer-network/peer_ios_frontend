@@ -15,6 +15,7 @@ mutation CreateComment($postid: ID!, $parentid: ID, $content: String!) {
             content
             createdat
             amountlikes
+            amountreplies
             isliked
             user {
                 id

@@ -14,6 +14,7 @@ import Models
 import LinkPresentation
 import Explore
 import VersionHistory
+import Wallet
 
 extension View {
     func withAppRouter() -> some View {
@@ -33,6 +34,9 @@ extension View {
                         .toolbar(.hidden, for: .navigationBar)
                 case .versionHistory:
                     VersionHistoryView()
+                        .toolbar(.hidden, for: .navigationBar)
+                case .transfer(let recipient, let amount):
+                    TransferPageView(recipient: recipient, amount: amount)
                         .toolbar(.hidden, for: .navigationBar)
             }
         }

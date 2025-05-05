@@ -26,4 +26,20 @@ public enum Gradients {
         startPoint: UnitPoint(x: 0.5, y: 0),
         endPoint: UnitPoint(x: 0.5, y: 1)
     )
+
+    public static let walletBG1 = EllipticalGradient(
+        stops: [
+            Gradient.Stop(color: Color(red: 0.47, green: 0.69, blue: 1), location: 0.00),
+            Gradient.Stop(color: Color(red: 0, green: 0.75, blue: 1).opacity(0), location: 1.00),
+        ],
+        center: UnitPoint(x: 0.65, y: 0.8)
+    )
+    
+    public static let walletBG2 = EllipticalGradient(
+        stops: [
+            Gradient.Stop(color: Color(red: 0, green: 0.41, blue: 1), location: 0.00),
+            Gradient.Stop(color: Color(red: 0, green: 0.41, blue: 1).opacity(0), location: 1.00),
+        ],
+        center: UnitPoint(x: 0.65, y: 0.8)
+    )
 }

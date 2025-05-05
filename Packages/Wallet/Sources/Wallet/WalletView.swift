@@ -11,8 +11,6 @@ import Environment
 import Analytics
 
 public struct WalletView: View {
-    @Environment(\.analytics) private var analytics
-    
     @EnvironmentObject private var accountManager: AccountManager
     @EnvironmentObject private var apiManager: APIServiceManager
 
@@ -26,8 +24,14 @@ public struct WalletView: View {
             Text("Wallet")
         } content: {
             ScrollView {
-                GemsMainView()
+                VStack(spacing: 20) {
+                    GemsMainView()
+                    WithdrawalView()
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 20)
             }
+            .scrollDismissesKeyboard(.interactively)
             .refreshable {
                 HapticManager.shared.fireHaptic(.dataRefresh(intensity: 0.3))
                 viewModel.fetchContent()
@@ -46,4 +50,5 @@ public struct WalletView: View {
 #Preview {
     WalletView()
         .environmentObject(APIServiceManager(.mock))
+//        .analyticsService(MockAnalyticsService())
 }

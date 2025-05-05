@@ -1,5 +1,5 @@
 mutation BlockUser($userid: ID!) {
-    userBlock(userid: $userid) {
+    toggleBlockUserStatus(userid: $userid) {
         status
         ResponseCode
     }

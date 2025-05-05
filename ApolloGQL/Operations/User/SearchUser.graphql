@@ -1,5 +1,5 @@
 query SearchUser($userid: ID, $username: String, $offset: Int, $limit: Int) {
-	searchuser(
+	searchUser(
         userid: $userid
         username: $username
         offset: $offset

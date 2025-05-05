@@ -18,6 +18,7 @@ query GetProfile($userid: ID!) {
             amountfollowed
             amountfollower
             amountfriends
+            amountblocked
         }
     }
 }

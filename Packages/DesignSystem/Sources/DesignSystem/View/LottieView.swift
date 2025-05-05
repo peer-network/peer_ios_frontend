@@ -12,16 +12,17 @@ public struct LottieView: View {
     @frozen
     public enum LottieAnimation: String {
         case splashScreenLogo = "SplashScreenLogoAnimation"
+        case loading = "LoadingAnimation"
     }
 
     private let name: String
     private let speed: Float
-    private let onLoopComplete: () -> Void
+    private let onLoopComplete: (() -> Void)?
 
     @State private var animation: DotLottieAnimation?
     @State private var dotLottieView: DotLottieView?
 
-    public init(animation: LottieAnimation, speed: Float = 1.0, onLoopComplete: @escaping () -> Void) {
+    public init(animation: LottieAnimation, speed: Float = 1.0, onLoopComplete: (() -> Void)? = nil) {
         self.name = animation.rawValue
         self.speed = speed
         self.onLoopComplete = onLoopComplete
@@ -56,9 +57,9 @@ public struct LottieView: View {
 
 // MARK: - Observer class
 private class CompletionObserver: Observer {
-    let onLoopComplete: () -> Void
+    let onLoopComplete: (() -> Void)?
 
-    init(onLoopComplete: @escaping () -> Void) {
+    init(onLoopComplete: (() -> Void)?) {
         self.onLoopComplete = onLoopComplete
     }
 
@@ -75,7 +76,7 @@ private class CompletionObserver: Observer {
     }
 
     func onLoop(loopCount: UInt32) {
-        onLoopComplete()
+        onLoopComplete?()
     }
 
     func onPause() {

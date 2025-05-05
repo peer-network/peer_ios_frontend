@@ -14,6 +14,7 @@ public enum RouterDestination: Hashable {
     case settings
     case hashTag(tag: String)
     case versionHistory
+    case transfer(recipient: RowUser, amount: Int)
 }
 
 public enum SheetDestination: Identifiable, Hashable {

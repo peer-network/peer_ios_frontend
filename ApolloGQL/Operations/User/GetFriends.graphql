@@ -1,5 +1,5 @@
 query GetFriends($offset: Int, $limit: Int) {
-	friends(
+	listFriends(
         offset: $offset
         limit: $limit
     ) {
