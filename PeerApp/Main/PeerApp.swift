@@ -82,6 +82,9 @@ struct PeerApp: App {
                 await remoteConfigViewModel.fetchConfig()
 #endif
             }
+            .task {
+                try? await ErrorCodeManager.shared.loadErrorCodes()
+            }
             .preferredColorScheme(.dark)
         }
         .onChange(of: scenePhase) {

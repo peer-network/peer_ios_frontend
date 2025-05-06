@@ -68,7 +68,7 @@ public final class AuthViewModel: ObservableObject {
             try await authManager?.login(email: loginEmail, password: loginPassword)
         } catch {
             withAnimation {
-                loginError = "Something went wrong. Please, try again"
+                loginError = error.userFriendlyMessage
             }
         }
     }
@@ -85,16 +85,16 @@ public final class AuthViewModel: ObservableObject {
 
         do {
             let regResult = await apiService.registerUser(email: regEmail, password: regPassword, username: regUsername)
-            
+
             switch regResult {
-            case .success(let registeredId):
-                let verifyResult = await apiService.verifyRegistration(userID: registeredId)
-                
-                if case .failure(let apiError) = verifyResult {
+                case .success(let registeredId):
+                    let verifyResult = await apiService.verifyRegistration(userID: registeredId)
+
+                    if case .failure(let apiError) = verifyResult {
+                        throw apiError
+                    }
+                case .failure(let apiError):
                     throw apiError
-                }
-            case .failure(let apiError):
-                throw apiError
             }
 
             regEmail = ""
@@ -102,6 +102,11 @@ public final class AuthViewModel: ObservableObject {
             regPassword = ""
 
             return true
+        } catch let apiError as APIError {
+            withAnimation {
+                regError = apiError.userFriendlyMessage
+            }
+            return false
         } catch {
             withAnimation {
                 regError = "Something went wrong. Please, try again"

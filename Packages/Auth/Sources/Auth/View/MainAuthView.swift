@@ -190,12 +190,13 @@ public struct MainAuthView: View {
                 .frame(height: 20)
             
             if !viewModel.loginError.isEmpty {
-                Text("Something went wrong. Please, try again")
+                Text(viewModel.loginError)
                     .font(.customFont(weight: .regular, size: .footnote))
                     .multilineTextAlignment(.center)
                     .foregroundStyle(Colors.warning)
                     .padding(.horizontal, 20)
-                
+                    .fixedSize(horizontal: false, vertical: true)
+
                 Spacer()
                     .frame(height: 20)
             }
@@ -297,11 +298,12 @@ public struct MainAuthView: View {
                 Spacer()
                     .frame(height: 20)
                 
-                Text("Something went wrong. Please, try again")
+                Text(viewModel.regError)
                     .font(.customFont(weight: .regular, size: .footnote))
                     .multilineTextAlignment(.center)
                     .foregroundStyle(Colors.warning)
                     .padding(.horizontal, 20)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             
             Spacer()

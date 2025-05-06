@@ -26,7 +26,7 @@ public final class AccountManager: ObservableObject {
         apiService = APIServiceManager().apiService
     }
 
-    public func login(email: String, password: String) async throws -> AuthToken {
+    public func login(email: String, password: String) async throws(APIError) -> AuthToken {
         let result = await apiService.loginWithCredentials(email: email, password: password)
         
         switch result {
@@ -38,7 +38,7 @@ public final class AccountManager: ObservableObject {
     }
 
     /// Hello query to confirm the user’s ID with the valid access token
-    public func getCurrentUserId() async throws -> String {
+    public func getCurrentUserId() async throws(APIError) -> String {
         let result = await apiService.fetchAuthorizedUserID()
         
         switch result {

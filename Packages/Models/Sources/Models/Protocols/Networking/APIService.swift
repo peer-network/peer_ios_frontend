@@ -8,8 +8,23 @@
 import GQLOperationsUser
 
 public enum APIError: Error {
-    case serverError(error: Error)
-    case missingData
+    case unknownError(error: Error)
+    case missingResponseCode // Server did not return any response code
+    case missingData // Server returns success, but since most of the fields are optional, they can be missed
+    case serverError(code: String)
+
+    public var userFriendlyMessage: String {
+        switch self {
+            case .unknownError(let error):
+                error.localizedDescription
+            case .missingResponseCode:
+                "An unexpected error from the server occurred"
+            case .missingData:
+                "Data from the server is missing"
+            case .serverError(let code):
+                ErrorCodeManager.shared.getUserFriendlyMessage(for: code)
+        }
+    }
 }
 
 public protocol APIService: AnyObject {

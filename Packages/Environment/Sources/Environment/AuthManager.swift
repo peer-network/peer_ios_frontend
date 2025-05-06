@@ -7,6 +7,7 @@
 
 import SwiftUI
 import TokenKeychainManager
+import Models
 
 @frozen
 public enum AuthState {
@@ -48,7 +49,7 @@ public final class AuthManager: ObservableObject {
     }
     
     /// Logs the user in, stores tokens, fetches current user ID.
-    public func login(email: String, password: String) async throws {
+    public func login(email: String, password: String) async throws(APIError) {
         // Login and get tokens
         let token = try await accountManager.login(email: email, password: password)
         

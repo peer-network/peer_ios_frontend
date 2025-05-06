@@ -93,8 +93,6 @@ public final class RelationsViewModel: ObservableObject, RelationsFetcher {
             } catch is CancellationError {
                 //                state = .display(posts: posts, hasMore: .hasMore)
             } catch {
-                print(error)
-                print(error.localizedDescription)
                 state = .error(error: error)
             }
         }
