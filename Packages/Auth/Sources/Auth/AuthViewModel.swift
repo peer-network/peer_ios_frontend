@@ -121,10 +121,6 @@ public final class AuthViewModel: ObservableObject {
             regError = ""
         }
     }
-
-    deinit {
-        print("AuthVM deinit 😎")
-    }
 }
 
 // MARK: - Password validation

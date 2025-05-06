@@ -663,6 +663,8 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.fetch(query: GetLiquidityQuery(), cachePolicy: .fetchIgnoringCacheCompletely)
 
+            // TODO: Add status and response code to apollo queries generation
+            
             guard
                 let data = result.balance.currentliquidity,
                 let amount = Double(data)
@@ -671,6 +673,24 @@ public final class APIServiceGraphQL: APIService {
             }
 
             return .success(amount)
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
+    public func transferTokens(to id: String, amount: Int) async -> Result<Void, APIError> {
+        do {
+            let result = try await qlClient.mutate(mutation: TransferTokensMutation(recipient: id, numberoftokens: amount))
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            return .success(())
         } catch {
             return .failure(.unknownError(error: error))
         }

@@ -117,4 +117,8 @@ public final class APIServiceStub: APIService {
     public func fetchLiquidityState() async -> Result<Double, APIError> {
         .success(1000.5)
     }
+
+    public func transferTokens(to id: String, amount: Int) async -> Result<Void, APIError> {
+        .success(())
+    }
 }

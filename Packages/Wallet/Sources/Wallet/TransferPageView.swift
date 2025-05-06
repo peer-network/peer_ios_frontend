@@ -13,6 +13,8 @@ import Analytics
 
 public struct TransferPageView: View {
     @EnvironmentObject private var router: Router
+    @EnvironmentObject private var apiManager: APIServiceManager
+    
     @StateObject private var viewModel: TransferPageViewModel
 
     public init(recipient: RowUser, amount: Int) {
@@ -48,6 +50,9 @@ public struct TransferPageView: View {
             }
         }
         .background(Colors.textActive)
+        .onFirstAppear {
+            viewModel.apiService = apiManager.apiService
+        }
 //        .trackScreen(AppScreen.wallet) TODO: TransferScreen
     }
 
