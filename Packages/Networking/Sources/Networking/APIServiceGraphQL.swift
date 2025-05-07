@@ -213,7 +213,7 @@ public final class APIServiceGraphQL: APIService {
     
     public func fetchDailyFreeLimits() async -> Result<DailyFreeQuota, APIError> {
         do {
-            let result = try await qlClient.fetch(query: GetDailyFreeQuery())
+            let result = try await qlClient.fetch(query: GetDailyFreeQuery(), cachePolicy: .fetchIgnoringCacheCompletely)
 
             guard result.isResponseCodeSuccess else {
                 if let errorCode = result.getResponseCode {

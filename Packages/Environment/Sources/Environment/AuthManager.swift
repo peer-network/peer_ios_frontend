@@ -58,14 +58,14 @@ public final class AuthManager: ObservableObject {
         
         // Query user ID (or decode from token if it includes userId claim)
         let userId = try await accountManager.getCurrentUserId()
-        
+
+        // Fetch other user info if necessary
+        try? await accountManager.fetchDailyFreeLimits()
+
         // Update state
         withAnimation {
             self.state = .authenticated(userId: userId)
         }
-
-        // Fetch other user info if necessary
-        try? await accountManager.fetchDailyFreeLimits()
     }
     
     /// Logs the user out, clears tokens, sets state to .unauthenticated
