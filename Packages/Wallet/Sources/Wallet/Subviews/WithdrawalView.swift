@@ -33,6 +33,7 @@ struct WithdrawalView: View {
                             .font(.customFont(weight: .regular, style: .footnote))
                             .foregroundStyle(Colors.whiteSecondary)
                             .padding(.leading, 10)
+                            .padding(.bottom, 20)
                     }
             }
         }
