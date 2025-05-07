@@ -33,7 +33,7 @@ extension SelectionSet {
             let codeStringValue = getResponseCode,
             let firstChar = codeStringValue.first,
             let firstResponseCodeNumber = Int(String(firstChar)),
-            firstResponseCodeNumber == 1
+            firstResponseCodeNumber == 1 || firstResponseCodeNumber == 2
         else {
             return false
         }

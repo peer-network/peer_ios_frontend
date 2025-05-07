@@ -23,10 +23,16 @@ struct WithdrawalView: View {
                     Group {
                         transferHeader
                         if let recipient = viewModel.recipient {
-                            RowProfileSearchView(user: recipient)
+                            RowUserView(user: recipient)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
                         TransferAmountInputView()
+
+                        Text("A fee of 4% applies")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .font(.customFont(weight: .regular, style: .footnote))
+                            .foregroundStyle(Colors.whiteSecondary)
+                            .padding(.leading, 10)
                     }
             }
         }

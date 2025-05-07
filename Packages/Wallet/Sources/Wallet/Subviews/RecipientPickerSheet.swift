@@ -42,7 +42,7 @@ struct RecipientPickerSheet: View {
                 switch viewModel.state {
                     case .loading(let users):
                         ForEach(users) { user in
-                            RowProfileSearchView(user: user)
+                            RowUserView(user: user)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .allowsHitTesting(false)
                                 .skeleton(isRedacted: true)
@@ -50,16 +50,18 @@ struct RecipientPickerSheet: View {
                     case .display(let users, let hasMore):
                         LazyVStack(spacing: 20) {
                             ForEach(users) { user in
-                                Button {
-                                    dismiss()
-                                    Task { @MainActor in
-                                        try? await Task.sleep(for: .seconds(0.5))
-                                        completion(user)
+                                if user.id != AccountManager.shared.user?.id {
+                                    Button {
+                                        dismiss()
+                                        Task { @MainActor in
+                                            try? await Task.sleep(for: .seconds(0.5))
+                                            completion(user)
+                                        }
+                                    } label: {
+                                        RowUserView(user: user)
+                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                            .contentShape(Rectangle())
                                     }
-                                } label: {
-                                    RowProfileSearchView(user: user)
-                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                        .contentShape(Rectangle())
                                 }
                             }
 
@@ -74,7 +76,7 @@ struct RecipientPickerSheet: View {
                             }
                         }
                     case .error(let error):
-                        ErrorView(title: "Error", description: error.localizedDescription) {
+                        ErrorView(title: "Error", description: error.userFriendlyDescription) {
                             viewModel.fetchContent(username: searchText, reset: true)
                         }
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -136,25 +138,5 @@ struct RecipientPickerSheet: View {
             RoundedRectangle(cornerRadius: 24)
                 .strokeBorder(Colors.whitePrimary, lineWidth: 1)
         }
-    }
-}
-
-struct RowProfileSearchView: View {
-    let user: RowUser
-
-    var body: some View {
-        HStack(spacing: 0) {
-            ProfileAvatarView(url: user.imageURL, name: user.username, config: .rowUser)
-                .padding(.trailing, 10)
-
-            Text(user.username)
-                .font(.customFont(weight: .boldItalic, style: .callout))
-                .padding(.trailing, 5)
-
-            Text("#\(String(user.slug))")
-                .opacity(0.5)
-        }
-        .font(.customFont(weight: .regular, style: .footnote))
-        .foregroundStyle(Colors.whitePrimary)
     }
 }

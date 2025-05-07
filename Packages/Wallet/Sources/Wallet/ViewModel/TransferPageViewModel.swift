@@ -20,12 +20,22 @@ final class TransferPageViewModel: ObservableObject {
         case confirmation
         case approving
         case done
+        case failed(error: APIError)
     }
+
     @Published private(set) var screenState: ScreenState = .confirmation
 
     init(recipient: RowUser, amount: Int) {
         self.recipient = recipient
         self.amount = amount
+    }
+
+    var amountWithFee: Double {
+        Double(amount) + feeAmount
+    }
+
+    var feeAmount: Double {
+        Double(amount) * 0.04
     }
 
     func completeTransfer() {
@@ -40,9 +50,9 @@ final class TransferPageViewModel: ObservableObject {
                     withAnimation(.easeInOut(duration: 0.2)) {
                         self.screenState = .done
                     }
-                case .failure(let failure):
-                    withAnimation(.easeInOut(duration: 0.2)) { // TODO: WHAT TO SHOW HERE?
-                        self.screenState = .done
+                case .failure(let error):
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        self.screenState = .failed(error: error)
                     }
             }
         }

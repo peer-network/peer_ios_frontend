@@ -42,6 +42,9 @@ public struct TransferPageView: View {
                         case .done:
                             TransferDoneView()
                                 .transition(.blurReplace)
+                        case .failed(let error):
+                            TransferFailedView(error: error)
+                                .transition(.blurReplace)
                     }
                 }
                 .environmentObject(viewModel)
@@ -94,10 +97,10 @@ struct TransferConfirmationView: View {
                 .foregroundStyle(Colors.whitePrimary)
                 .padding(.leading, 10)
 
-            RowProfileSearchView(user: viewModel.recipient)
+            RowUserView(user: viewModel.recipient)
 
             HStack(spacing: 10) {
-                Text(viewModel.amount, format: .number)
+                Text(viewModel.amountWithFee, format: .number)
                     .font(.customFont(weight: .bold, style: .headline))
                     .foregroundStyle(Colors.whitePrimary)
 
@@ -111,6 +114,11 @@ struct TransferConfirmationView: View {
                 RoundedRectangle(cornerRadius: 20)
                     .foregroundStyle(Colors.blackDark)
             }
+
+            Text("Including \(Text(viewModel.feeAmount, format: .number)) fee")
+                .font(.customFont(weight: .regular, style: .footnote))
+                .foregroundStyle(Colors.whiteSecondary)
+                .padding(.leading, 10)
 
             Button {
                 withAnimation(.easeInOut(duration: 0.2)) {
@@ -191,7 +199,7 @@ struct TransferDoneView: View {
                 .padding(.bottom, 20)
 
             HStack(spacing: 10) {
-                Text("-\(viewModel.amount)")
+                Text("-\(Text(viewModel.amountWithFee, format: .number))")
                     .font(.customFont(weight: .bold, style: .title1))
 
                 Icons.logoCircleWhite
@@ -205,7 +213,7 @@ struct TransferDoneView: View {
 
                 Spacer()
 
-                RowProfileSearchView(user: viewModel.recipient)
+                RowUserView(user: viewModel.recipient)
             }
             .frame(maxWidth: .infinity)
             .padding(.top, 20)
@@ -216,6 +224,92 @@ struct TransferDoneView: View {
         .background {
             RoundedRectangle(cornerRadius: 20)
                 .foregroundStyle(Colors.inactiveDark)
+        }
+    }
+}
+
+struct TransferFailedView: View {
+    @EnvironmentObject private var router: Router
+    @EnvironmentObject private var viewModel: TransferPageViewModel
+
+    let error: APIError
+
+    var body: some View {
+        VStack(spacing: 20) {
+            VStack(spacing: 0) {
+                Button {
+                    router.path.removeLast()
+                } label: {
+                    Icons.x
+                        .iconSize(height: 12)
+                        .contentShape(Rectangle())
+                }
+                .frame(maxWidth: .infinity, alignment: .trailing)
+
+                Circle()
+                    .strokeBorder(lineWidth: 2)
+                    .frame(height: 57)
+                    .overlay {
+                        Icons.x
+                            .iconSize(height: 27)
+                    }
+                    .padding(.bottom, 20)
+
+                VStack(spacing: 10) {
+                    Text("Transfer failed")
+                        .font(.customFont(weight: .bold, style: .body))
+
+                    Text(error.userFriendlyMessage)
+                        .font(.customFont(weight: .regular, style: .footnote))
+                }
+                .frame(maxWidth: .infinity)
+            }
+            .multilineTextAlignment(.center)
+            .foregroundStyle(Colors.redAccent)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 20)
+            .background {
+                RoundedRectangle(cornerRadius: 20)
+                    .foregroundStyle(Colors.inactiveDark)
+            }
+
+            HStack(spacing: 10) {
+                Button {
+                    router.path.removeAll()
+                } label: {
+                    Text("Back to Wallet")
+                        .padding(10)
+                        .frame(maxWidth: .infinity)
+                        .frame(height: 50)
+                        .overlay {
+                            RoundedRectangle(cornerRadius: 25)
+                                .strokeBorder(Colors.whitePrimary, lineWidth: 1)
+                        }
+                }
+
+                Button {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        viewModel.completeTransfer()
+                    }
+                } label: {
+                    HStack(spacing: 10) {
+                        Text("Try again")
+                            .font(.customFont(weight: .regular, style: .footnote))
+
+                        Icons.arrowCounterClockwise
+                            .iconSize(height: 18)
+                    }
+                    .foregroundStyle(Colors.blackDark)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 50)
+                    .background {
+                        RoundedRectangle(cornerRadius: 25)
+                            .foregroundStyle(Colors.whitePrimary)
+                    }
+                }
+            }
+            .foregroundStyle(Colors.whitePrimary)
+            .font(.customFont(weight: .regular, size: .body))
         }
     }
 }

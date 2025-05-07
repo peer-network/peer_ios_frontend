@@ -663,8 +663,14 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.fetch(query: GetLiquidityQuery(), cachePolicy: .fetchIgnoringCacheCompletely)
 
-            // TODO: Add status and response code to apollo queries generation
-            
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
             guard
                 let data = result.balance.currentliquidity,
                 let amount = Double(data)

@@ -20,7 +20,7 @@ public class ErrorCodeManager {
     }
 
     public func getUserFriendlyMessage(for code: String) -> String {
-        return errorCodes[code]?.userFriendlyComment ?? "Error message not found, just something went wrong"
+        return errorCodes[code]?.userFriendlyComment ?? "Something went wrong, hint: \(code)"
     }
 
     public func getDeveloperMessage(for code: String) -> String {

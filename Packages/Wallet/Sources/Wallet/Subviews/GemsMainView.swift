@@ -25,6 +25,9 @@ struct GemsMainView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
+        .onAppear {
+            viewModel.fetchContent()
+        }
     }
 
     private func contentView(balance: WalletBalance, isLoading: Bool) -> some View {
