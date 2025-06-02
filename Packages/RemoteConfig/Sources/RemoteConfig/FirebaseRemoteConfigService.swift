@@ -93,3 +93,19 @@ public final class FirebaseRemoteConfigService: RemoteConfigProtocol {
         configUpdateListener?.remove()
     }
 }
+
+extension FirebaseRemoteConfigService {
+    public func decodedObject<T: Decodable>(for key: RemoteConfigValueKey) throws -> T {
+        let jsonString = remoteConfig[key.name].stringValue
+
+        guard let data = jsonString.data(using: .utf8) else {
+            throw RemoteConfigError.keyNotFound(key.name)
+        }
+
+        do {
+            return try JSONDecoder().decode(T.self, from: data)
+        } catch {
+            throw RemoteConfigError.typeMismatch("Failed to decode \(T.self) from key \(key.name): \(error)")
+        }
+    }
+}

@@ -7,7 +7,7 @@ public class GetFriendsQuery: GraphQLQuery {
   public static let operationName: String = "GetFriends"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetFriends($offset: Int, $limit: Int) { friends(offset: $offset, limit: $limit) { __typename status ResponseCode affectedRows { __typename userid img username slug } } }"#
+      #"query GetFriends($offset: Int, $limit: Int) { listFriends(offset: $offset, limit: $limit) { __typename status ResponseCode affectedRows { __typename userid img username slug } } }"#
     ))
 
   public var offset: GraphQLNullable<Int>
@@ -32,22 +32,22 @@ public class GetFriendsQuery: GraphQLQuery {
 
     public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("friends", Friends.self, arguments: [
+      .field("listFriends", ListFriends.self, arguments: [
         "offset": .variable("offset"),
         "limit": .variable("limit")
       ]),
     ] }
 
-    public var friends: Friends { __data["friends"] }
+    public var listFriends: ListFriends { __data["listFriends"] }
 
-    /// Friends
+    /// ListFriends
     ///
-    /// Parent Type: `UserFriends`
-    public struct Friends: GQLOperationsUser.SelectionSet {
+    /// Parent Type: `UserFriendsResponse`
+    public struct ListFriends: GQLOperationsUser.SelectionSet {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.UserFriends }
+      public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.UserFriendsResponse }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("status", String.self),
@@ -59,7 +59,7 @@ public class GetFriendsQuery: GraphQLQuery {
       public var responseCode: String? { __data["ResponseCode"] }
       public var affectedRows: [AffectedRow?]? { __data["affectedRows"] }
 
-      /// Friends.AffectedRow
+      /// ListFriends.AffectedRow
       ///
       /// Parent Type: `Userinfo`
       public struct AffectedRow: GQLOperationsUser.SelectionSet {

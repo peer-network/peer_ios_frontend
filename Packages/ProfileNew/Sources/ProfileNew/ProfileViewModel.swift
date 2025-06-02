@@ -14,12 +14,12 @@ final class ProfileViewModel: ObservableObject {
     enum ProfileState {
         case loading
         case data(user: User)
-        case error(error: Error)
+        case error(error: APIError)
     }
 
-    public unowned var apiService: APIService!
+    unowned var apiService: APIService!
     
-    public let userId: String
+    let userId: String
 
     @Published private(set) var profileState: ProfileState = .loading
     @Published private(set) var user: User?
@@ -41,11 +41,12 @@ final class ProfileViewModel: ObservableObject {
                 throw apiError
             }
         } catch {
-            profileState = .error(error: error)
+            profileState = .error(error: error as! APIError)
         }
     }
 
     func fetchBio() async {
+        try? Task.checkCancellation()
         guard let url = user?.bioURL else { return }
 
         do {
@@ -53,13 +54,26 @@ final class ProfileViewModel: ObservableObject {
             config.requestCachePolicy = .reloadIgnoringLocalCacheData
             config.urlCache = nil
             let session = URLSession(configuration: config)
-            let (data, _) = try await session.data(from: url)
-            guard let text = String(data: data, encoding: .utf8) else { return }
-//            try? Task.checkCancellation()
+            let (data, response) = try await session.data(from: url)
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw APIError.missingData
+            }
+
+            try? Task.checkCancellation()
+
+            guard (200...299).contains(httpResponse.statusCode) else { // TODO: Check if 300 also appears when opening profile 2nd time, since then bio just disappears
+                throw APIError.missingData
+            }
+
+            guard let text = String(data: data, encoding: .utf8) else {
+                throw APIError.missingData
+            }
             fetchedBio = text
         } catch is CancellationError {
+            return
         } catch {
-//            fetchedBio = ""
+            return
         }
     }
 

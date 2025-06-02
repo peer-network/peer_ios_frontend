@@ -8,32 +8,56 @@
 import GQLOperationsUser
 
 public enum APIError: Error {
-    case serverError(error: Error)
-    case missingData
+    case unknownError(error: Error)
+    case missingResponseCode // Server did not return any response code
+    case missingData // Server returns success, but since most of the fields are optional, they can be missed
+    case serverError(code: String)
+
+    public var userFriendlyMessage: String {
+        switch self {
+            case .unknownError(let error):
+                error.userFriendlyDescription
+            case .missingResponseCode:
+                "An unexpected error from the server occurred"
+            case .missingData:
+                "Data from the server is missing"
+            case .serverError(let code):
+                ErrorCodeManager.shared.getUserFriendlyMessage(for: code)
+        }
+    }
 }
 
 public protocol APIService: AnyObject {
     //MARK: Auth/Reg
     func fetchAuthorizedUserID() async -> Result<String, APIError>
     func loginWithCredentials(email: String, password: String) async -> Result<AuthToken, APIError>
-    func registerUser(email: String, password: String, username: String) async -> Result<String, APIError>
+    func registerUser(email: String, password: String, username: String, referralUuid: String?) async -> Result<String, APIError>
     func verifyRegistration(userID: String) async -> Result<Void, APIError>
-    
+    func requestPasswordReset(email: String) async -> Result<Void, APIError>
+    func resetPassword(token: String, newPassword: String) async -> Result<Void, APIError>
+
     //MARK: User & Profile
+    func getMyInviter() async -> Result<RowUser, APIError>
+    func getMyReferralInfo() async -> Result<ReferralInfo, APIError>
+    func getMyReferredUsers(after offset: Int) async -> Result<[RowUser], APIError>
     func fetchUser(with userId: String) async -> Result<User, APIError>
     func fetchUserFollowers(for userID: String, after offset: Int) async -> Result<[RowUser], APIError>
     func fetchUserFollowings(for userID: String, after offset: Int) async -> Result<[RowUser], APIError>
+    func fetchUserFriends(after offset: Int) async -> Result<[RowUser], APIError>
     func fetchUsers(by query: String, after offset: Int) async -> Result<[RowUser], APIError>
     func fetchDailyFreeLimits() async -> Result<DailyFreeQuota, APIError>
     func followUser(with id: String) async -> Result<Void, APIError>
     func updateBio(new bio: String) async -> Result<Void, APIError>
     func uploadProfileImage(new image: String) async -> Result<Void, APIError>
-    
+    func updateUsername(username: String, currentPassword: String) async -> Result<Void, APIError>
+    func updatePassword(password: String, currentPassword: String) async -> Result<Void, APIError>
+    func updateEmail(email: String, currentPassword: String) async -> Result<Void, APIError>
+
     //MARK: Posts
     func fetchPostsByTitle(_ query: String, after offset: Int) async -> Result<[Post], APIError>
     func fetchPostsByTag(_ tag: String, after offset: Int) async -> Result<[Post], APIError>
     func makePost(
-        of type: ContenType,
+        of type: ContentType,
         with title: String,
         content: [String],
         contentDescitpion: String,
@@ -46,7 +70,8 @@ public protocol APIService: AnyObject {
         filter byRelationship: FeedFilterByRelationship,
         in timeframe: FeedContentSortingByTime,
         after offset: Int,
-        for userID: String?
+        for userID: String?,
+        amount: Int
     ) async -> Result<[Post], APIError>
     func likePost(with id: String) async -> Result<Void, APIError>
     func dislikePost(with id: String) async -> Result<Void, APIError>
@@ -63,4 +88,5 @@ public protocol APIService: AnyObject {
     
     //MARK: Wallet
     func fetchLiquidityState() async -> Result<Double, APIError>
+    func transferTokens(to id: String, amount: Int) async -> Result<Void, APIError>
 }

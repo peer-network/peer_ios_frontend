@@ -7,10 +7,10 @@ public class CreatePostMutation: GraphQLMutation {
   public static let operationName: String = "CreatePost"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"mutation CreatePost($contenttype: ContenType!, $title: String!, $media: [String!], $mediadescription: String, $tags: [String!], $cover: [String!]) { createPost( action: POST input: { contenttype: $contenttype title: $title media: $media mediadescription: $mediadescription tags: $tags cover: $cover } ) { __typename status ResponseCode affectedRows { __typename id contenttype title media cover mediadescription createdat amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags user { __typename id username slug img isfollowed isfollowing } } } }"#
+      #"mutation CreatePost($contentType: ContentType!, $title: String!, $media: [String!], $mediadescription: String, $tags: [String!], $cover: [String!]) { createPost( action: POST input: { contenttype: $contentType title: $title media: $media mediadescription: $mediadescription tags: $tags cover: $cover } ) { __typename status ResponseCode affectedRows { __typename id contenttype title media cover mediadescription createdat amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags user { __typename id username slug img isfollowed isfollowing } } } }"#
     ))
 
-  public var contenttype: GraphQLEnum<ContenType>
+  public var contentType: GraphQLEnum<ContentType>
   public var title: String
   public var media: GraphQLNullable<[String]>
   public var mediadescription: GraphQLNullable<String>
@@ -18,14 +18,14 @@ public class CreatePostMutation: GraphQLMutation {
   public var cover: GraphQLNullable<[String]>
 
   public init(
-    contenttype: GraphQLEnum<ContenType>,
+    contentType: GraphQLEnum<ContentType>,
     title: String,
     media: GraphQLNullable<[String]>,
     mediadescription: GraphQLNullable<String>,
     tags: GraphQLNullable<[String]>,
     cover: GraphQLNullable<[String]>
   ) {
-    self.contenttype = contenttype
+    self.contentType = contentType
     self.title = title
     self.media = media
     self.mediadescription = mediadescription
@@ -34,7 +34,7 @@ public class CreatePostMutation: GraphQLMutation {
   }
 
   public var __variables: Variables? { [
-    "contenttype": contenttype,
+    "contentType": contentType,
     "title": title,
     "media": media,
     "mediadescription": mediadescription,
@@ -51,7 +51,7 @@ public class CreatePostMutation: GraphQLMutation {
       .field("createPost", CreatePost.self, arguments: [
         "action": "POST",
         "input": [
-          "contenttype": .variable("contenttype"),
+          "contenttype": .variable("contentType"),
           "title": .variable("title"),
           "media": .variable("media"),
           "mediadescription": .variable("mediadescription"),
@@ -109,7 +109,7 @@ public class CreatePostMutation: GraphQLMutation {
           .field("isreported", Bool.self),
           .field("isdisliked", Bool.self),
           .field("issaved", Bool.self),
-          .field("tags", [String].self),
+          .field("tags", [String?].self),
           .field("user", User.self),
         ] }
 
@@ -130,17 +130,17 @@ public class CreatePostMutation: GraphQLMutation {
         public var isreported: Bool { __data["isreported"] }
         public var isdisliked: Bool { __data["isdisliked"] }
         public var issaved: Bool { __data["issaved"] }
-        public var tags: [String] { __data["tags"] }
+        public var tags: [String?] { __data["tags"] }
         public var user: User { __data["user"] }
 
         /// CreatePost.AffectedRows.User
         ///
-        /// Parent Type: `ProfilUser`
+        /// Parent Type: `ProfileUser`
         public struct User: GQLOperationsUser.SelectionSet {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.ProfilUser }
+          public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.ProfileUser }
           public static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .field("id", GQLOperationsUser.ID.self),

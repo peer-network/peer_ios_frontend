@@ -7,6 +7,7 @@
 
 import SwiftUI
 import TokenKeychainManager
+import Models
 
 @frozen
 public enum AuthState {
@@ -39,6 +40,7 @@ public final class AuthManager: ObservableObject {
 
             // Optionally, fetch daily freebies or any user data
             try? await accountManager.fetchDailyFreeLimits()
+            try? await accountManager.fetchUserInviter()
 
             return .authenticated(userId: userId)
         } catch {
@@ -48,7 +50,7 @@ public final class AuthManager: ObservableObject {
     }
     
     /// Logs the user in, stores tokens, fetches current user ID.
-    public func login(email: String, password: String) async throws {
+    public func login(email: String, password: String) async throws(APIError) {
         // Login and get tokens
         let token = try await accountManager.login(email: email, password: password)
         
@@ -57,14 +59,15 @@ public final class AuthManager: ObservableObject {
         
         // Query user ID (or decode from token if it includes userId claim)
         let userId = try await accountManager.getCurrentUserId()
-        
+
+        // Fetch other user info if necessary
+        try? await accountManager.fetchDailyFreeLimits()
+        try? await accountManager.fetchUserInviter()
+
         // Update state
         withAnimation {
             self.state = .authenticated(userId: userId)
         }
-
-        // Fetch other user info if necessary
-        try? await accountManager.fetchDailyFreeLimits()
     }
     
     /// Logs the user out, clears tokens, sets state to .unauthenticated

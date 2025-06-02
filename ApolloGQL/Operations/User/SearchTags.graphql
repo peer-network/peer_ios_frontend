@@ -1,6 +1,6 @@
-query SearchTags($tagname: String!, $offset: Int, $limit: Int) {
-	tagsearch(
-        tagname: $tagname
+query SearchTags($tagName: String!, $offset: Int, $limit: Int) {
+	searchTags(
+        tagName: $tagName
         offset: $offset
         limit: $limit
     ) {

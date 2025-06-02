@@ -1,5 +1,5 @@
 query GetFollowings($userid: ID, $offset: Int, $limit: Int) {
-	follows(
+	listFollowRelations(
         userid: $userid
         offset: $offset
         limit: $limit

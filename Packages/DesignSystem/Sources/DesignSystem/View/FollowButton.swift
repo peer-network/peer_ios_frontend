@@ -40,7 +40,6 @@ public final class FollowButtonViewModel: ObservableObject {
 }
 
 public struct FollowButton: View {
-    @Environment(\.isBackgroundWhite) private var isBackgroundWhite
     @EnvironmentObject private var apiManager: APIServiceManager
 
     @StateObject private var viewModel: FollowButtonViewModel
@@ -69,7 +68,7 @@ public struct FollowButton: View {
                         Icons.plus
                             .iconSize(height: 12)
                     }
-                    .foregroundStyle(isBackgroundWhite ? Colors.textActive : Colors.whitePrimary)
+                    .foregroundStyle(Colors.whitePrimary)
                 }
             }
             .font(.customFont(weight: .regular, size: .footnoteSmall))
@@ -86,7 +85,7 @@ public struct FollowButton: View {
                 } else {
                     RoundedRectangle(cornerRadius: 20)
                         .strokeBorder(lineWidth: 1)
-                        .foregroundStyle(isBackgroundWhite ? Colors.textActive : Colors.whitePrimary)
+                        .foregroundStyle(Colors.whitePrimary)
                 }
             }
         }
@@ -101,7 +100,6 @@ public struct FollowButton: View {
         let vm = FollowButtonViewModel(id: "", isFollowing: false, isFollowed: false)
         FollowButton(viewModel: vm)
             .environmentObject(APIServiceManager(.mock))
-            .environment(\.isBackgroundWhite, false)
     }
     .background {
         Color.orange

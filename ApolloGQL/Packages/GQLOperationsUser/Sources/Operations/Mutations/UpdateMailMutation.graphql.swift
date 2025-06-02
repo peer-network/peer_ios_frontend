@@ -7,7 +7,7 @@ public class UpdateMailMutation: GraphQLMutation {
   public static let operationName: String = "UpdateMail"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"mutation UpdateMail($email: String!, $password: String!) { updateMail(email: $email, password: $password) { __typename status ResponseCode } }"#
+      #"mutation UpdateMail($email: String!, $password: String!) { updateEmail(email: $email, password: $password) { __typename status ResponseCode } }"#
     ))
 
   public var email: String
@@ -32,18 +32,18 @@ public class UpdateMailMutation: GraphQLMutation {
 
     public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.Mutation }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("updateMail", UpdateMail.self, arguments: [
+      .field("updateEmail", UpdateEmail.self, arguments: [
         "email": .variable("email"),
         "password": .variable("password")
       ]),
     ] }
 
-    public var updateMail: UpdateMail { __data["updateMail"] }
+    public var updateEmail: UpdateEmail { __data["updateEmail"] }
 
-    /// UpdateMail
+    /// UpdateEmail
     ///
     /// Parent Type: `DefaultResponse`
-    public struct UpdateMail: GQLOperationsUser.SelectionSet {
+    public struct UpdateEmail: GQLOperationsUser.SelectionSet {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 

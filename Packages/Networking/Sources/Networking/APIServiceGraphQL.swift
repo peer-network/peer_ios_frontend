@@ -21,20 +21,29 @@ public final class APIServiceGraphQL: APIService {
     public func fetchAuthorizedUserID() async -> Result<String, APIError> {
         do {
             let result = try await qlClient.fetch(query: HelloUserQuery(), cachePolicy: .fetchIgnoringCacheCompletely)
+
             guard let userId = result.hello.currentuserid, !userId.isEmpty else {
                 return .failure(.missingData)
             }
             
             return .success(userId)
         } catch {
-            return .failure(.serverError(error: error))
+            return .failure(.unknownError(error: error))
         }
     }
     
     public func loginWithCredentials(email: String, password: String) async -> Result<AuthToken, APIError> {
         do {
             let result = try await qlClient.mutate(mutation: LoginMutation(email: email, password: password))
-            
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
             guard let accessToken = result.login.accessToken,
                   let refreshToken = result.login.refreshToken
             else {
@@ -43,23 +52,36 @@ public final class APIServiceGraphQL: APIService {
             
             return .success(AuthToken(accessToken: accessToken, refreshToken: refreshToken))
         } catch {
-            return .failure(.serverError(error: error))
+            return .failure(.unknownError(error: error))
         }
     }
     
-    public func registerUser(email: String, password: String, username: String) async -> Result<String, APIError> {
+    public func registerUser(email: String, password: String, username: String, referralUuid: String?) async -> Result<String, APIError> {
         do {
-            let result = try await qlClient.mutate(mutation: RegisterMutation(email: email, password: password, username: username))
-            
-            guard result.isSuccessStatus,
-                  let userID = result.register.userid
+            let referralParameter: GraphQLNullable<String>? = if let referralUuid, !referralUuid.isEmpty {
+                GraphQLNullable(stringLiteral: referralUuid)
+            } else {
+                nil
+            }
+            let result = try await qlClient.mutate(mutation: RegisterMutation(email: email, password: password, username: username, referralUuid: referralParameter ?? nil))
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            guard
+                let userID = result.register.userid
             else {
                 return .failure(.missingData)
             }
             
             return .success(userID)
         } catch {
-            return .failure(.serverError(error: error))
+            return .failure(.unknownError(error: error))
         }
     }
     
@@ -68,17 +90,133 @@ public final class APIServiceGraphQL: APIService {
             let _ = try await qlClient.mutate(mutation: VerificationMutation(userid: userID))
             return .success(())
         } catch {
-            return .failure(.serverError(error: error))
+            return .failure(.unknownError(error: error))
         }
     }
-    
+
+    public func requestPasswordReset(email: String) async -> Result<Void, APIError> {
+        do {
+            let result = try await qlClient.mutate(mutation: RequestPasswordResetMutation(email: email))
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            return .success(())
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
+    public func resetPassword(token: String, newPassword: String) async -> Result<Void, APIError> {
+        do {
+            let result = try await qlClient.mutate(mutation: ConfirmPasswordResetMutation(token: token, password: newPassword))
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            return .success(())
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
     //MARK: User & Profile
+    public func getMyInviter() async -> Result<RowUser, APIError> {
+        do {
+            let result = try await qlClient.fetch(query: GetMyInviterQuery(), cachePolicy: .fetchIgnoringCacheCompletely)
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            guard
+                let data = result.referralList.affectedRows.invitedBy,
+                !data.id.isEmpty,
+                let inviter = RowUser(gqlUser: data)
+            else {
+                return .failure(.missingData)
+            }
+
+            return .success(inviter)
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
+    public func getMyReferralInfo() async -> Result<ReferralInfo, APIError> {
+        do {
+            let result = try await qlClient.fetch(query: GetMyReferralInfoQuery(), cachePolicy: .fetchIgnoringCacheCompletely)
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            guard
+                let referralInfo = ReferralInfo(gqlData: result.getReferralInfo)
+            else {
+                return .failure(.missingData)
+            }
+
+            return .success(referralInfo)
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
+    public func getMyReferredUsers(after offset: Int) async -> Result<[RowUser], APIError> {
+        do {
+            let result = try await qlClient.fetch(query: GetMyReferredUsersQuery(offset: GraphQLNullable<Int>(integerLiteral: offset), limit: 20), cachePolicy: .fetchIgnoringCacheCompletely)
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            let fetchedUsers = result.referralList.affectedRows.iInvited.compactMap { value in
+                RowUser(gqlUser: value)
+            }
+
+            return .success(fetchedUsers)
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
     public func fetchUser(with userId: String) async -> Result<User, APIError> {
         do {
             let result = try await qlClient.fetch(query: GetProfileQuery(userid: userId), cachePolicy: .fetchIgnoringCacheCompletely)
-            
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
             guard
-                let data = result.profile.affectedRows,
+                let data = result.getProfile.affectedRows,
                 let fetchedUser = User(gqlUser: data)
             else {
                 return .failure(.missingData)
@@ -86,7 +224,7 @@ public final class APIServiceGraphQL: APIService {
             
             return .success(fetchedUser)
         } catch {
-            return .failure(.serverError(error: error))
+            return .failure(.unknownError(error: error))
         }
     }
     
@@ -99,9 +237,17 @@ public final class APIServiceGraphQL: APIService {
             )
             
             let result = try await GQLClient.shared.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
-            
-            guard let data = result.follows.affectedRows?.followers else {
-                throw GQLError.missingData
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            guard let data = result.listFollowRelations.affectedRows?.followers else {
+                return .failure(.missingData)
             }
             
             let fetchedUsers = data.compactMap { value in
@@ -110,7 +256,7 @@ public final class APIServiceGraphQL: APIService {
             
             return .success(fetchedUsers)
         } catch {
-            return .failure(.serverError(error: error))
+            return .failure(.unknownError(error: error))
         }
     }
     
@@ -123,9 +269,17 @@ public final class APIServiceGraphQL: APIService {
             )
             
             let result = try await GQLClient.shared.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
-            
-            guard let data = result.follows.affectedRows?.following else {
-                throw GQLError.missingData
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            guard let data = result.listFollowRelations.affectedRows?.following else {
+                return .failure(.missingData)
             }
             
             let fetchedUsers = data.compactMap { value in
@@ -134,10 +288,41 @@ public final class APIServiceGraphQL: APIService {
             
             return .success(fetchedUsers)
         } catch {
-            return .failure(.serverError(error: error))
+            return .failure(.unknownError(error: error))
         }
     }
-    
+
+    public func fetchUserFriends(after offset: Int) async -> Result<[RowUser], APIError> {
+        do {
+            let operation = GetFriendsQuery(
+                offset: GraphQLNullable<Int>(integerLiteral: offset),
+                limit: 20
+            )
+
+            let result = try await GQLClient.shared.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            guard let data = result.listFriends.affectedRows else {
+                return .failure(.missingData)
+            }
+
+            let fetchedUsers = data.compactMap { value in
+                RowUser(gqlUser: value)
+            }
+
+            return .success(fetchedUsers)
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
     public func fetchUsers(by query: String, after offset: Int) async -> Result<[RowUser], APIError> {
         do {
             let operation = SearchUserQuery(
@@ -147,9 +332,17 @@ public final class APIServiceGraphQL: APIService {
                 limit: 20
             )
             let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
-            
-            guard let data = result.searchuser.affectedRows else {
-                throw GQLError.missingData
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            guard let data = result.searchUser.affectedRows else {
+                return .failure(.missingData)
             }
             
             let fetchedUsers = data.compactMap { value in
@@ -158,15 +351,23 @@ public final class APIServiceGraphQL: APIService {
             
             return .success(fetchedUsers)
         } catch {
-            return .failure(.serverError(error: error))
+            return .failure(.unknownError(error: error))
         }
     }
     
     public func fetchDailyFreeLimits() async -> Result<DailyFreeQuota, APIError> {
         do {
-            let result = try await qlClient.fetch(query: GetDailyFreeQuery())
-            
-            guard let dataArray = result.dailyfreestatus.affectedRows else {
+            let result = try await qlClient.fetch(query: GetDailyFreeQuery(), cachePolicy: .fetchIgnoringCacheCompletely)
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            guard let dataArray = result.getDailyFreeStatus.affectedRows else {
                 return .failure(.missingData)
             }
             
@@ -186,7 +387,7 @@ public final class APIServiceGraphQL: APIService {
             
             return .success(DailyFreeQuota(likes: likes, posts: posts, comments: comments))
         } catch {
-            return .failure(.serverError(error: error))
+            return .failure(.unknownError(error: error))
         }
     }
     
@@ -194,27 +395,35 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: FollowUserMutation(userid: id))
             
-            guard result.isSuccessStatus else {
-                return .failure(.missingData)
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
             }
-            
+
             return .success(())
         } catch {
-            return .failure(.serverError(error: error))
+            return .failure(.unknownError(error: error))
         }
     }
     
     public func updateBio(new bio: String) async -> Result<Void, APIError> {
         do {
             let result = try await qlClient.mutate(mutation: UpdateBioMutation(biography: bio))
-            
-            guard result.isSuccessStatus else {
-                return .failure(.missingData)
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
             }
-            
+
             return .success(())
         } catch {
-            return .failure(.serverError(error: error))
+            return .failure(.unknownError(error: error))
         }
     }
     
@@ -222,39 +431,104 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: UpdateAvatarMutation(img: image))
             
-            guard result.isSuccessStatus else {
-                return .failure(.missingData)
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
             }
-            
+
             return .success(())
         } catch {
-            return .failure(.serverError(error: error))
+            return .failure(.unknownError(error: error))
         }
     }
-    
-    
+
+    public func updateUsername(username: String, currentPassword: String) async -> Result<Void, APIError> {
+        do {
+            let result = try await qlClient.mutate(mutation: UpdateNameMutation(username: username, password: currentPassword))
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            return .success(())
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
+    public func updatePassword(password: String, currentPassword: String) async -> Result<Void, APIError> {
+        do {
+            let result = try await qlClient.mutate(mutation: UpdatePasswordMutation(password: password, expassword: currentPassword))
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            return .success(())
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
+    public func updateEmail(email: String, currentPassword: String) async -> Result<Void, APIError> {
+        do {
+            let result = try await qlClient.mutate(mutation: UpdateMailMutation(email: email, password: currentPassword))
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            return .success(())
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
     //MARK: Posts
     public func fetchPostsByTitle(_ query: String, after offset: Int) async -> Result<[Post], APIError> {
         do {
             let operation = GetAllPostsQuery(
                 filterBy: [.case(.image), .case(.text), .case(.video), .case(.audio)],
-                ignorList: .some(.case(.no)),
+                ignoreOption: .init(.no),
                 sortBy: .some(.case(.newest)),
                 title: GraphQLNullable(stringLiteral: query.lowercased()),
                 tag: nil,
                 from: nil,
                 to: nil,
-                postOffset: GraphQLNullable<Int>(integerLiteral: offset),
-                postLimit: 20,
+                offset: GraphQLNullable<Int>(integerLiteral: offset),
+                limit: 20,
                 commentOffset: nil,
                 commentLimit: nil,
                 postid: nil,
                 userid: nil
             )
             let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
-            
-            guard let data = result.getallposts.affectedRows else {
-                return .failure(APIError.missingData)
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            guard let data = result.listPosts.affectedRows else {
+                return .failure(.missingData)
             }
             
             let fetchedPosts = data.compactMap { value in
@@ -263,7 +537,7 @@ public final class APIServiceGraphQL: APIService {
             
             return .success(fetchedPosts)
         } catch {
-            return .failure(.serverError(error: error))
+            return .failure(.unknownError(error: error))
         }
     }
     
@@ -271,23 +545,31 @@ public final class APIServiceGraphQL: APIService {
         do {
             let operation = GetAllPostsQuery(
                 filterBy: [.case(.image), .case(.text), .case(.video), .case(.audio)],
-                ignorList: .some(.case(.no)),
+                ignoreOption: .init(.no),
                 sortBy: .some(.case(.newest)),
                 title: nil,
                 tag: GraphQLNullable(stringLiteral: tag),
                 from: nil,
                 to: nil,
-                postOffset: GraphQLNullable<Int>(integerLiteral: offset),
-                postLimit: 20,
+                offset: GraphQLNullable<Int>(integerLiteral: offset),
+                limit: 20,
                 commentOffset: nil,
                 commentLimit: nil,
                 postid: nil,
                 userid: nil
             )
             let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
-            
-            guard let data = result.getallposts.affectedRows else {
-                return .failure(APIError.missingData)
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            guard let data = result.listPosts.affectedRows else {
+                return .failure(.missingData)
             }
             
             let fetchedPosts = data.compactMap { value in
@@ -296,12 +578,12 @@ public final class APIServiceGraphQL: APIService {
             
             return .success(fetchedPosts)
         } catch {
-            return .failure(.serverError(error: error))
+            return .failure(.unknownError(error: error))
         }
     }
     
     public func makePost(
-        of type: ContenType,
+        of type: ContentType,
         with title: String,
         content: [String],
         contentDescitpion: String,
@@ -315,7 +597,7 @@ public final class APIServiceGraphQL: APIService {
             }
             
             let operation = CreatePostMutation(
-                contenttype: .case(type),
+                contentType: .case(type),
                 title: title,
                 media: GraphQLNullable<[String]>.some(content),
                 mediadescription: GraphQLNullable(stringLiteral: contentDescitpion),
@@ -325,13 +607,17 @@ public final class APIServiceGraphQL: APIService {
             
             let result = try await qlClient.mutate(mutation: operation)
             
-            guard result.isSuccessStatus else {
-                return .failure(.missingData)
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
             }
-            
+
             return .success(())
         } catch {
-            return .failure(.serverError(error: error))
+            return .failure(.unknownError(error: error))
         }
     }
     
@@ -341,11 +627,12 @@ public final class APIServiceGraphQL: APIService {
         filter byRelationship: FeedFilterByRelationship,
         in timeframe: FeedContentSortingByTime,
         after offset: Int,
-        for userID: String?
+        for userID: String?,
+        amount: Int
     ) async -> Result<[Post], APIError> {
         let sortBy = byPopularity.apiValue
 
-        var filterBy: [GraphQLEnum<FilterType>] = contentType.apiValue
+        var filterBy: [GraphQLEnum<PostFilterType>] = contentType.apiValue
         if let filterByAddition = byRelationship.apiValue {
             filterBy.append(filterByAddition)
         }
@@ -354,25 +641,33 @@ public final class APIServiceGraphQL: APIService {
         let timeTo = timeframe.apiValue.1
 
         let operation = GetAllPostsQuery(
-            filterBy: GraphQLNullable<[GraphQLEnum<FilterType>]>.some(filterBy),
-            ignorList: .some(.case(.yes)),
+            filterBy: GraphQLNullable<[GraphQLEnum<PostFilterType>]>.some(filterBy),
+            ignoreOption: .init(.no),
             sortBy: sortBy,
             title: nil,
             tag: nil,
             from: timeFrom != nil ? GraphQLNullable(stringLiteral: timeFrom!) : nil,
             to: timeTo != nil ? GraphQLNullable(stringLiteral: timeTo!) : nil,
-            postOffset: GraphQLNullable<Int>(integerLiteral: offset),
-            postLimit: GraphQLNullable<Int>(integerLiteral: 10),
-            commentOffset: 0,
-            commentLimit: 0,
+            offset: GraphQLNullable<Int>(integerLiteral: offset),
+            limit: GraphQLNullable<Int>(integerLiteral: amount),
+            commentOffset: nil,
+            commentLimit: nil,
             postid: nil,
             userid: userID == nil ? nil : GraphQLNullable(stringLiteral: userID!)
         )
 
         do {
             let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
-            
-            guard let data = result.getallposts.affectedRows else {
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            guard let data = result.listPosts.affectedRows else {
                 return .failure(.missingData)
             }
             
@@ -382,7 +677,7 @@ public final class APIServiceGraphQL: APIService {
             
             return .success(fetchedPosts)
         } catch {
-            return .failure(.serverError(error: error))
+            return .failure(.unknownError(error: error))
         }
     }
     
@@ -390,13 +685,17 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: PostActionMutation(postid: id, action: .case(.like)))
             
-            guard result.isSuccessStatus else {
-                return .failure(.missingData)
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
             }
-            
+
             return .success(())
         } catch {
-            return .failure(.serverError(error: error))
+            return .failure(.unknownError(error: error))
         }
     }
     
@@ -404,13 +703,17 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: PostActionMutation(postid: id, action: .case(.dislike)))
             
-            guard result.isSuccessStatus else {
-                return .failure(.missingData)
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
             }
-            
+
             return .success(())
         } catch {
-            return .failure(.serverError(error: error))
+            return .failure(.unknownError(error: error))
         }
     }
     
@@ -418,13 +721,17 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: PostActionMutation(postid: id, action: .case(.view)))
             
-            guard result.isSuccessStatus else {
-                return .failure(.missingData)
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
             }
-            
+
             return .success(())
         } catch {
-            return .failure(.serverError(error: error))
+            return .failure(.unknownError(error: error))
         }
     }
     
@@ -432,13 +739,17 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: PostActionMutation(postid: id, action: .case(.report)))
             
-            guard result.isSuccessStatus else {
-                return .failure(.missingData)
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
             }
-            
+
             return .success(())
         } catch {
-            return .failure(.serverError(error: error))
+            return .failure(.unknownError(error: error))
         }
     }
     
@@ -451,8 +762,16 @@ public final class APIServiceGraphQL: APIService {
                 commentOffset: GraphQLNullable<Int>(integerLiteral: offset)
             )
             let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
-            
-            guard let data = result.getallposts.affectedRows?.first?.comments else {
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            guard let data = result.listPosts.affectedRows?.first?.comments else {
                 return .failure(.missingData)
             }
             
@@ -462,14 +781,22 @@ public final class APIServiceGraphQL: APIService {
             
             return .success(fetchedComments)
         } catch {
-            return .failure(.serverError(error: error))
+            return .failure(.unknownError(error: error))
         }
     }
     
     public func sendComment(for postID: String, with content: String) async -> Result<Comment, APIError> {
         do {
             let result = try await qlClient.mutate(mutation: CreateCommentMutation(postid: postID, parentid: nil, content: content))
-            
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
             guard let data = result.createComment.affectedRows?.first,
                   case let .some(commentData) = data,
                   let comment = Comment(gqlComment: commentData)
@@ -479,7 +806,7 @@ public final class APIServiceGraphQL: APIService {
             
             return .success(comment)
         } catch {
-            return .failure(.serverError(error: error))
+            return .failure(.unknownError(error: error))
         }
     }
     
@@ -487,23 +814,35 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: LikeCommentMutation(commentid: id))
             
-            guard result.isSuccessStatus else {
-                return .failure(.missingData)
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
             }
-            
+
             return .success(())
         } catch {
-            return .failure(.serverError(error: error))
+            return .failure(.unknownError(error: error))
         }
     }
     
     //MARK: Tags
     public func fetchTags(with query: String) async -> Result<[String], APIError> {
         do {
-            let operation = SearchTagsQuery(tagname: query, offset: 0, limit: 20)
+            let operation = SearchTagsQuery(tagName: query, offset: 0, limit: 20)
             let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
-            
-            guard let data = result.tagsearch.affectedRows else {
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            guard let data = result.searchTags.affectedRows else {
                 return .failure(.missingData)
             }
             
@@ -513,7 +852,7 @@ public final class APIServiceGraphQL: APIService {
             
             return .success(fetchedTags)
         } catch {
-            return .failure(.serverError(error: error))
+            return .failure(.unknownError(error: error))
         }
     }
     
@@ -521,16 +860,43 @@ public final class APIServiceGraphQL: APIService {
     public func fetchLiquidityState() async -> Result<Double, APIError> {
         do {
             let result = try await qlClient.fetch(query: GetLiquidityQuery(), cachePolicy: .fetchIgnoringCacheCompletely)
-            
-            guard let data = result.currentliquidity.currentliquidity,
-                  let amount = Double(data)
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            guard
+                let data = result.balance.currentliquidity,
+                let amount = Double(data)
             else {
                 return .failure(.missingData)
             }
-            
+
             return .success(amount)
         } catch {
-            return .failure(.serverError(error: error))
+            return .failure(.unknownError(error: error))
+        }
+    }
+
+    public func transferTokens(to id: String, amount: Int) async -> Result<Void, APIError> {
+        do {
+            let result = try await qlClient.mutate(mutation: TransferTokensMutation(recipient: id, numberoftokens: amount))
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            return .success(())
+        } catch {
+            return .failure(.unknownError(error: error))
         }
     }
 }

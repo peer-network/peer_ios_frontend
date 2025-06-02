@@ -14,25 +14,59 @@ import Models
 import LinkPresentation
 import Explore
 import VersionHistory
+import Wallet
+import Post
 
 extension View {
     func withAppRouter() -> some View {
         navigationDestination(for: RouterDestination.self) { destination in
             switch destination {
                 case .accountDetail(let id):
-                    ProfileView(userId: id)
-                        .toolbar(.hidden, for: .navigationBar)
+                    if #available(iOS 18, *) {
+                        ProfilePageView(userId: id)
+                            .toolbar(.hidden, for: .navigationBar)
+                    } else {
+                        ProfileView(userId: id)
+                            .toolbar(.hidden, for: .navigationBar)
+                    }
                 case .hashTag(let tag):
-                    SearchView(searchTag: tag)
+                    ExploreView(searchTag: tag)
                         .toolbar(.hidden, for: .navigationBar)
                 case .postDetailsWithPost(let post):
-                    FullScreenPostView(post: post)
+                    FullScreenPostView(postVM: PostViewModel(post: post))
                         .toolbar(.hidden, for: .navigationBar)
                 case .settings:
                     SettingsView()
                         .toolbar(.hidden, for: .navigationBar)
                 case .versionHistory:
                     VersionHistoryView()
+                        .toolbar(.hidden, for: .navigationBar)
+                case .transfer(let recipient, let amount):
+                    TransferPageView(recipient: recipient, amount: amount)
+                        .toolbar(.hidden, for: .navigationBar)
+                case .changePassword:
+                    EditPasswordView { newPassword, currentPassword in
+                        let apiManager = APIServiceManager()
+                        let result = await apiManager.apiService.updatePassword(password: newPassword, currentPassword: currentPassword)
+                        return result
+                    }
+                    .toolbar(.hidden, for: .navigationBar)
+                case .changeEmail:
+                    EditEmailView { newEmail, currentPassword in
+                        let apiManager = APIServiceManager()
+                        let result = await apiManager.apiService.updateEmail(email: newEmail, currentPassword: currentPassword)
+                        return result
+                    }
+                    .toolbar(.hidden, for: .navigationBar)
+                case .changeUsername:
+                    EditUsernameView { newUsername, currentPassword in
+                        let apiManager = APIServiceManager()
+                        let result = await apiManager.apiService.updateUsername(username: newUsername, currentPassword: currentPassword)
+                        return result
+                    }
+                    .toolbar(.hidden, for: .navigationBar)
+                case .referralProgram:
+                    ReferralPageView()
                         .toolbar(.hidden, for: .navigationBar)
             }
         }
@@ -68,20 +102,20 @@ extension View {
                         .presentationDetents([.fraction(0.75), .large])
                         .presentationContentInteraction(.resizes)
                         .withEnvironments()
-                case .comments(let post, let isBackgroundWhite):
-                    CommentsView(post: post)
-                        .presentationDragIndicator(.hidden)
-                        .presentationCornerRadius(24)
-                        .ifCondition(!isBackgroundWhite) {
-                            $0.presentationBackground(.ultraThinMaterial)
-                        }
-                        .ifCondition(isBackgroundWhite) {
-                            $0.presentationBackground(Colors.whitePrimary)
-                        }
-                        .presentationDetents([.fraction(0.75), .large])
-                        .presentationContentInteraction(.resizes)
-                        .environment(\.isBackgroundWhite, isBackgroundWhite ? true : false)
-                        .withEnvironments()
+//                case .comments(postVM: PostViewModel):
+//                    CommentsView(post: post)
+//                        .presentationDragIndicator(.hidden)
+//                        .presentationCornerRadius(24)
+//                        .ifCondition(!isBackgroundWhite) {
+//                            $0.presentationBackground(.ultraThinMaterial)
+//                        }
+//                        .ifCondition(isBackgroundWhite) {
+//                            $0.presentationBackground(Colors.whitePrimary)
+//                        }
+//                        .presentationDetents([.fraction(0.75), .large])
+//                        .presentationContentInteraction(.resizes)
+//                        .environment(\.isBackgroundWhite, isBackgroundWhite ? true : false)
+//                        .withEnvironments()
                 case .shareImage(let image, let post):
                     ActivityView(image: image, post: post)
                         .withEnvironments()

@@ -9,7 +9,7 @@ import SwiftUI
 import DesignSystem
 
 struct PasswordStrengthBarsView: View {
-    let strength: AuthViewModel.PasswordStrength
+    let strength: PasswordStrength
     
     var body: some View {
         HStack(alignment: .center, spacing: 0) {

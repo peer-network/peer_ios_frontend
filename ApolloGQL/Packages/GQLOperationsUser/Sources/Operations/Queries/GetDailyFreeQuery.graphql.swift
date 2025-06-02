@@ -7,7 +7,7 @@ public class GetDailyFreeQuery: GraphQLQuery {
   public static let operationName: String = "GetDailyFree"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetDailyFree { dailyfreestatus { __typename status ResponseCode affectedRows { __typename name used available } } }"#
+      #"query GetDailyFree { getDailyFreeStatus { __typename status ResponseCode affectedRows { __typename name used available } } }"#
     ))
 
   public init() {}
@@ -18,15 +18,15 @@ public class GetDailyFreeQuery: GraphQLQuery {
 
     public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("dailyfreestatus", Dailyfreestatus.self),
+      .field("getDailyFreeStatus", GetDailyFreeStatus.self),
     ] }
 
-    public var dailyfreestatus: Dailyfreestatus { __data["dailyfreestatus"] }
+    public var getDailyFreeStatus: GetDailyFreeStatus { __data["getDailyFreeStatus"] }
 
-    /// Dailyfreestatus
+    /// GetDailyFreeStatus
     ///
     /// Parent Type: `GetDailyResponse`
-    public struct Dailyfreestatus: GQLOperationsUser.SelectionSet {
+    public struct GetDailyFreeStatus: GQLOperationsUser.SelectionSet {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
@@ -42,14 +42,14 @@ public class GetDailyFreeQuery: GraphQLQuery {
       public var responseCode: String { __data["ResponseCode"] }
       public var affectedRows: [AffectedRow?]? { __data["affectedRows"] }
 
-      /// Dailyfreestatus.AffectedRow
+      /// GetDailyFreeStatus.AffectedRow
       ///
-      /// Parent Type: `DailyResponse`
+      /// Parent Type: `DailyFreeResponse`
       public struct AffectedRow: GQLOperationsUser.SelectionSet {
         public let __data: DataDict
         public init(_dataDict: DataDict) { __data = _dataDict }
 
-        public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.DailyResponse }
+        public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.DailyFreeResponse }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("name", String.self),

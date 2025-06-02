@@ -19,14 +19,15 @@ public final class AccountManager: ObservableObject {
 
     public private(set) var userId: String?
     public private(set) var user: User?
-    
+    public private(set) var inviter: RowUser?
+
     private let apiService: APIService
 
     private init() {
         apiService = APIServiceManager().apiService
     }
 
-    public func login(email: String, password: String) async throws -> AuthToken {
+    public func login(email: String, password: String) async throws(APIError) -> AuthToken {
         let result = await apiService.loginWithCredentials(email: email, password: password)
         
         switch result {
@@ -38,7 +39,7 @@ public final class AccountManager: ObservableObject {
     }
 
     /// Hello query to confirm the user’s ID with the valid access token
-    public func getCurrentUserId() async throws -> String {
+    public func getCurrentUserId() async throws(APIError) -> String {
         let result = await apiService.fetchAuthorizedUserID()
         
         switch result {
@@ -75,6 +76,18 @@ public final class AccountManager: ObservableObject {
             dailyFreeLikes = 0
             dailyFreePosts = 0
             dailyFreeComments = 0
+        }
+    }
+
+    public func fetchUserInviter() async throws {
+        let result = await apiService.getMyInviter()
+
+        switch result {
+            case .success(let inviter):
+                self.inviter = inviter
+            case .failure(let apiError):
+                self.inviter = nil
+                throw apiError
         }
     }
 

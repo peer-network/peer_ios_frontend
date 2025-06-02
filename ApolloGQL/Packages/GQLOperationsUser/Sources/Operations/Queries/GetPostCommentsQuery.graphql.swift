@@ -7,7 +7,7 @@ public class GetPostCommentsQuery: GraphQLQuery {
   public static let operationName: String = "GetPostComments"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetPostComments($postid: ID!, $commentLimit: Int, $commentOffset: Int) { getallposts( postid: $postid commentLimit: $commentLimit commentOffset: $commentOffset ) { __typename status ResponseCode affectedRows { __typename amountcomments comments { __typename commentid userid postid parentid content amountlikes isliked createdat user { __typename id username slug img isfollowed isfollowing } } } } }"#
+      #"query GetPostComments($postid: ID!, $commentLimit: Int, $commentOffset: Int) { listPosts( postid: $postid commentLimit: $commentLimit commentOffset: $commentOffset ) { __typename status ResponseCode affectedRows { __typename amountcomments comments { __typename commentid userid postid parentid content amountlikes amountreplies isliked createdat user { __typename id username slug img isfollowed isfollowing } } } } }"#
     ))
 
   public var postid: ID
@@ -36,23 +36,23 @@ public class GetPostCommentsQuery: GraphQLQuery {
 
     public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("getallposts", Getallposts.self, arguments: [
+      .field("listPosts", ListPosts.self, arguments: [
         "postid": .variable("postid"),
         "commentLimit": .variable("commentLimit"),
         "commentOffset": .variable("commentOffset")
       ]),
     ] }
 
-    public var getallposts: Getallposts { __data["getallposts"] }
+    public var listPosts: ListPosts { __data["listPosts"] }
 
-    /// Getallposts
+    /// ListPosts
     ///
-    /// Parent Type: `GetAllPostResponse`
-    public struct Getallposts: GQLOperationsUser.SelectionSet {
+    /// Parent Type: `PostListResponse`
+    public struct ListPosts: GQLOperationsUser.SelectionSet {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.GetAllPostResponse }
+      public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.PostListResponse }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("status", String.self),
@@ -64,7 +64,7 @@ public class GetPostCommentsQuery: GraphQLQuery {
       public var responseCode: String? { __data["ResponseCode"] }
       public var affectedRows: [AffectedRow]? { __data["affectedRows"] }
 
-      /// Getallposts.AffectedRow
+      /// ListPosts.AffectedRow
       ///
       /// Parent Type: `Post`
       public struct AffectedRow: GQLOperationsUser.SelectionSet {
@@ -81,7 +81,7 @@ public class GetPostCommentsQuery: GraphQLQuery {
         public var amountcomments: Int { __data["amountcomments"] }
         public var comments: [Comment] { __data["comments"] }
 
-        /// Getallposts.AffectedRow.Comment
+        /// ListPosts.AffectedRow.Comment
         ///
         /// Parent Type: `Comment`
         public struct Comment: GQLOperationsUser.SelectionSet {
@@ -97,6 +97,7 @@ public class GetPostCommentsQuery: GraphQLQuery {
             .field("parentid", GQLOperationsUser.ID?.self),
             .field("content", String.self),
             .field("amountlikes", Int.self),
+            .field("amountreplies", Int.self),
             .field("isliked", Bool.self),
             .field("createdat", GQLOperationsUser.Date.self),
             .field("user", User.self),
@@ -108,18 +109,19 @@ public class GetPostCommentsQuery: GraphQLQuery {
           public var parentid: GQLOperationsUser.ID? { __data["parentid"] }
           public var content: String { __data["content"] }
           public var amountlikes: Int { __data["amountlikes"] }
+          public var amountreplies: Int { __data["amountreplies"] }
           public var isliked: Bool { __data["isliked"] }
           public var createdat: GQLOperationsUser.Date { __data["createdat"] }
           public var user: User { __data["user"] }
 
-          /// Getallposts.AffectedRow.Comment.User
+          /// ListPosts.AffectedRow.Comment.User
           ///
-          /// Parent Type: `ProfilUser`
+          /// Parent Type: `ProfileUser`
           public struct User: GQLOperationsUser.SelectionSet {
             public let __data: DataDict
             public init(_dataDict: DataDict) { __data = _dataDict }
 
-            public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.ProfilUser }
+            public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.ProfileUser }
             public static var __selections: [ApolloAPI.Selection] { [
               .field("__typename", String.self),
               .field("id", GQLOperationsUser.ID.self),

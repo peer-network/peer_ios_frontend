@@ -18,6 +18,7 @@ public enum AppScreen: ScreenTrackable {
     case wallet
     case profile // TODO: Separate into ownProfile and otherProfile ?
     case settings
+    case referrals
 
     case commentsSheet
     case followersSheet
@@ -48,6 +49,8 @@ public enum AppScreen: ScreenTrackable {
                 return "Profile"
             case .settings:
                 return "Settings"
+            case .referrals:
+                return "Referrals"
             case .commentsSheet:
                 return "CommentsSheet"
             case .followersSheet:
@@ -83,6 +86,8 @@ public enum AppScreen: ScreenTrackable {
                 return "ProfileView"
             case .settings:
                 return "SettingsView"
+            case .referrals:
+                return "ReferralsView"
             case .commentsSheet:
                 return "CommentsView"
             case .followersSheet:

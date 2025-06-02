@@ -1,5 +1,5 @@
-mutation PostAction($postid: ID!, $action: ActionType!) {
-    resolveActionPost(postid: $postid, action: $action) {
+mutation PostAction($postid: ID!, $action: PostActionType!) {
+    resolvePostAction(postid: $postid, action: $action) {
         status
         ResponseCode
     }

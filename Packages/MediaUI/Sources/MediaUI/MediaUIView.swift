@@ -30,10 +30,10 @@ public struct MediaUIView: View {
             }
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .automatic))
             .indexViewStyle(.page(backgroundDisplayMode: .always))
-            
             .toolbar {
                 MediaToolBar(data: currentItem)
             }
+            .ignoresSafeArea(.container, edges: .bottom)
         }
     }
 }

@@ -47,7 +47,7 @@ public struct SettingsView: View {
                 if let user = accountManager.user {
                     VStack(spacing: 10) {
                         HStack(spacing: 0) {
-                            ProfileAvatarView(url: user.imageURL, name: user.username, config: .settings)
+                            ProfileAvatarView(url: user.imageURL, name: user.username, config: .settings, ignoreCache: true)
                             Spacer()
                             Button {
                                 isImagePickerPresented = true
@@ -62,6 +62,29 @@ public struct SettingsView: View {
                             Icons.camera
                                 .iconSize(height: 23)
                         }
+
+//                        Text("Your referral code:")
+//                            .font(.customFont(weight: .regular, style: .footnote))
+//                            .frame(maxWidth: .infinity, alignment: .leading)
+
+//                        if let referralCode = AccountManager.shared.userId {
+//                            Button {
+//                                HapticManager.shared.fireHaptic(.buttonPress)
+//                                UIPasteboard.general.string = referralCode
+//                                showPopup(
+//                                    text: "Copied to clipboard"
+//                                )
+//                            } label: {
+//                                HStack(alignment: .center, spacing: 10) {
+//                                    Text(referralCode)
+//                                        .multilineTextAlignment(.leading)
+//                                        .foregroundStyle(Colors.whiteSecondary)
+//
+//                                    Image(systemName: "document.on.document")
+//                                }
+//                                .frame(maxWidth: .infinity, alignment: .leading)
+//                            }
+//                        }
 
                         HStack(alignment: .top, spacing: 20) {
                             Text("Description")
@@ -111,6 +134,50 @@ public struct SettingsView: View {
                         .background {
                             RoundedRectangle(cornerRadius: 20)
                                 .foregroundStyle(Colors.inactiveDark)
+                        }
+
+                        HStack(spacing: 10) {
+                            Button {
+                                router.navigate(to: .changePassword)
+                            } label: {
+                                Text("Change password")
+                                    .font(.customFont(weight: .regular, style: .footnote))
+                                    .foregroundStyle(Colors.blackDark)
+                                    .padding(20)
+                                    .frame(maxWidth: .infinity)
+                                    .background {
+                                        RoundedRectangle(cornerRadius: 24)
+                                            .foregroundStyle(Colors.whitePrimary)
+                                    }
+                            }
+
+                            Button {
+                                router.navigate(to: .changeEmail)
+                            } label: {
+                                Text("Change e-mail")
+                                    .font(.customFont(weight: .regular, style: .footnote))
+                                    .foregroundStyle(Colors.blackDark)
+                                    .padding(20)
+                                    .frame(maxWidth: .infinity)
+                                    .background {
+                                        RoundedRectangle(cornerRadius: 24)
+                                            .foregroundStyle(Colors.whitePrimary)
+                                    }
+                            }
+
+                            Button {
+                                router.navigate(to: .changeUsername)
+                            } label: {
+                                Text("Change username")
+                                    .font(.customFont(weight: .regular, style: .footnote))
+                                    .foregroundStyle(Colors.blackDark)
+                                    .padding(20)
+                                    .frame(maxWidth: .infinity)
+                                    .background {
+                                        RoundedRectangle(cornerRadius: 24)
+                                            .foregroundStyle(Colors.whitePrimary)
+                                    }
+                            }
                         }
 
 //                        HStack(alignment: .top, spacing: 20) {

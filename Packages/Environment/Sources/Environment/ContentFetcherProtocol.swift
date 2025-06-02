@@ -28,6 +28,7 @@ public enum ContentState<Content> {
 public protocol PaginatedContentFetcher {
     associatedtype Content
     var state: PaginatedContentState<Content> { get }
+    var currentOffset: Int { get set }
     func fetchContent(reset: Bool)
 }
 

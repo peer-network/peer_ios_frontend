@@ -72,6 +72,7 @@ public enum Icons {
     public static let camera = Image(.iconCamera)
     public static let bookmark = Image(.iconBookmark)
     public static let arrowShare = Image(.iconArrowShare)
+    public static let copy = Image(.iconCopy)
 }
 
 @frozen

@@ -23,27 +23,30 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "Comment": return GQLOperationsUser.Objects.Comment
     case "CommentResponse": return GQLOperationsUser.Objects.CommentResponse
     case "CurrentLiquidity": return GQLOperationsUser.Objects.CurrentLiquidity
-    case "DailyResponse": return GQLOperationsUser.Objects.DailyResponse
+    case "DailyFreeResponse": return GQLOperationsUser.Objects.DailyFreeResponse
     case "DefaultResponse": return GQLOperationsUser.Objects.DefaultResponse
-    case "Followes": return GQLOperationsUser.Objects.Followes
-    case "GetAllPostResponse": return GQLOperationsUser.Objects.GetAllPostResponse
+    case "FollowRelations": return GQLOperationsUser.Objects.FollowRelations
+    case "FollowRelationsResponse": return GQLOperationsUser.Objects.FollowRelationsResponse
+    case "FollowStatusResponse": return GQLOperationsUser.Objects.FollowStatusResponse
     case "GetDailyResponse": return GQLOperationsUser.Objects.GetDailyResponse
     case "HelloResponse": return GQLOperationsUser.Objects.HelloResponse
     case "Mutation": return GQLOperationsUser.Objects.Mutation
     case "Post": return GQLOperationsUser.Objects.Post
+    case "PostListResponse": return GQLOperationsUser.Objects.PostListResponse
     case "PostResponse": return GQLOperationsUser.Objects.PostResponse
-    case "ProfilUser": return GQLOperationsUser.Objects.ProfilUser
     case "Profile": return GQLOperationsUser.Objects.Profile
     case "ProfileInfo": return GQLOperationsUser.Objects.ProfileInfo
+    case "ProfileUser": return GQLOperationsUser.Objects.ProfileUser
     case "Query": return GQLOperationsUser.Objects.Query
+    case "ReferralInfoResponse": return GQLOperationsUser.Objects.ReferralInfoResponse
+    case "ReferralListResponse": return GQLOperationsUser.Objects.ReferralListResponse
+    case "ReferralUsers": return GQLOperationsUser.Objects.ReferralUsers
     case "Tag": return GQLOperationsUser.Objects.Tag
     case "TagSearchResponse": return GQLOperationsUser.Objects.TagSearchResponse
     case "User": return GQLOperationsUser.Objects.User
-    case "UserFollows": return GQLOperationsUser.Objects.UserFollows
-    case "UserFriends": return GQLOperationsUser.Objects.UserFriends
-    case "UserSearchResponse": return GQLOperationsUser.Objects.UserSearchResponse
+    case "UserFriendsResponse": return GQLOperationsUser.Objects.UserFriendsResponse
+    case "UserListResponse": return GQLOperationsUser.Objects.UserListResponse
     case "Userinfo": return GQLOperationsUser.Objects.Userinfo
-    case "setFollowUseresponse": return GQLOperationsUser.Objects.SetFollowUseresponse
     default: return nil
     }
   }

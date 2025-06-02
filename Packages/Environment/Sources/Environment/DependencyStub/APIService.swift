@@ -21,15 +21,35 @@ public final class APIServiceStub: APIService {
         .success(AuthToken(accessToken: "ACCESS_TOKEN", refreshToken: "REFRESH_TOKEN"))
     }
     
-    public func registerUser(email: String, password: String, username: String) async -> Result<String, APIError> {
+    public func registerUser(email: String, password: String, username: String, referralUuid: String?) async -> Result<String, APIError> {
         .success("Registered")
     }
     
     public func verifyRegistration(userID: String) async -> Result<Void, APIError> {
         .success(())
     }
-    
+
+    public func requestPasswordReset(email: String) async -> Result<Void, APIError> {
+        .success(())
+    }
+
+    public func resetPassword(token: String, newPassword password: String) async -> Result<Void, APIError> {
+        .success(())
+    }
+
     //MARK: User & Profile
+    public func getMyInviter() async -> Result<RowUser, APIError> {
+        .failure(.missingData)
+    }
+
+    public func getMyReferralInfo() async -> Result<ReferralInfo, APIError> {
+        .failure(.missingData)
+    }
+
+    public func getMyReferredUsers(after offset: Int) async -> Result<[RowUser], APIError> {
+        .failure(.missingData)
+    }
+
     public func fetchUser(with userId: String) async -> Result<User, APIError> {
         .failure(.missingData)
     }
@@ -41,7 +61,11 @@ public final class APIServiceStub: APIService {
     public func fetchUserFollowings(for userID: String, after offset: Int) async -> Result<[Models.RowUser], Models.APIError> {
         .failure(.missingData)
     }
-    
+
+    public func fetchUserFriends(after offset: Int) async -> Result<[RowUser], APIError> {
+        .failure(.missingData)
+    }
+
     public func fetchUsers(by query: String, after offset: Int) async -> Result<[RowUser], APIError> {
         .failure(.missingData)
     }
@@ -61,7 +85,19 @@ public final class APIServiceStub: APIService {
     public func uploadProfileImage(new image: String) async -> Result<Void, APIError> {
         .success(())
     }
-    
+
+    public func updateUsername(username: String, currentPassword: String) async -> Result<Void, APIError> {
+        .success(())
+    }
+
+    public func updatePassword(password: String, currentPassword: String) async -> Result<Void, APIError> {
+        .success(())
+    }
+
+    public func updateEmail(email: String, currentPassword: String) async -> Result<Void, APIError> {
+        .success(())
+    }
+
     //MARK: Posts
     public func fetchPostsByTitle(_ query: String, after offset: Int) async -> Result<[Post], APIError> {
         .failure(.missingData)
@@ -71,11 +107,11 @@ public final class APIServiceStub: APIService {
         .failure(.missingData)
     }
     
-    public func makePost(of type: ContenType, with title: String, content: [String], contentDescitpion: String, tags: [String], cover: String?) async -> Result<Void, APIError> {
+    public func makePost(of type: ContentType, with title: String, content: [String], contentDescitpion: String, tags: [String], cover: String?) async -> Result<Void, APIError> {
         .success(())
     }
     
-    public func fetchPosts(with contentType: FeedContentType, sort byPopularity: FeedContentSortingByPopularity, filter byRelationship: FeedFilterByRelationship, in timeframe: FeedContentSortingByTime, after offset: Int, for userID: String?) async -> Result<[Post], APIError> {
+    public func fetchPosts(with contentType: FeedContentType, sort byPopularity: FeedContentSortingByPopularity, filter byRelationship: FeedFilterByRelationship, in timeframe: FeedContentSortingByTime, after offset: Int, for userID: String?, amount: Int) async -> Result<[Post], APIError> {
         .failure(.missingData)
     }
     
@@ -116,5 +152,9 @@ public final class APIServiceStub: APIService {
     //MARK: Wallet
     public func fetchLiquidityState() async -> Result<Double, APIError> {
         .success(1000.5)
+    }
+
+    public func transferTokens(to id: String, amount: Int) async -> Result<Void, APIError> {
+        .success(())
     }
 }

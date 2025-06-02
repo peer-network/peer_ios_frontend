@@ -7,47 +7,47 @@ public class GetAllPostsQuery: GraphQLQuery {
   public static let operationName: String = "GetAllPosts"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetAllPosts($filterBy: [FilterType!], $IgnorList: IgnoredList, $sortBy: SortType, $title: String, $tag: String, $from: Date, $to: Date, $postOffset: Int, $postLimit: Int, $commentOffset: Int, $commentLimit: Int, $postid: ID, $userid: ID) { getallposts( filterBy: $filterBy IgnorList: $IgnorList commentLimit: $commentLimit commentOffset: $commentOffset postLimit: $postLimit postOffset: $postOffset to: $to from: $from tag: $tag title: $title sortBy: $sortBy postid: $postid userid: $userid ) { __typename status ResponseCode affectedRows { __typename id contenttype title media cover mediadescription createdat amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags user { __typename id username slug img isfollowed isfollowing } } } }"#
+      #"query GetAllPosts($filterBy: [PostFilterType!], $ignoreOption: IgnoreOption, $sortBy: PostSortType, $title: String, $tag: String, $from: Date, $to: Date, $offset: Int, $limit: Int, $commentOffset: Int, $commentLimit: Int, $postid: ID, $userid: ID) { listPosts( filterBy: $filterBy IgnorList: $ignoreOption commentLimit: $commentLimit commentOffset: $commentOffset limit: $limit offset: $offset to: $to from: $from tag: $tag title: $title sortBy: $sortBy postid: $postid userid: $userid ) { __typename status ResponseCode affectedRows { __typename id contenttype title media cover mediadescription createdat amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags user { __typename id username slug img isfollowed isfollowing } } } }"#
     ))
 
-  public var filterBy: GraphQLNullable<[GraphQLEnum<FilterType>]>
-  public var ignorList: GraphQLNullable<GraphQLEnum<IgnoredList>>
-  public var sortBy: GraphQLNullable<GraphQLEnum<SortType>>
+  public var filterBy: GraphQLNullable<[GraphQLEnum<PostFilterType>]>
+  public var ignoreOption: GraphQLNullable<GraphQLEnum<IgnoreOption>>
+  public var sortBy: GraphQLNullable<GraphQLEnum<PostSortType>>
   public var title: GraphQLNullable<String>
   public var tag: GraphQLNullable<String>
   public var from: GraphQLNullable<Date>
   public var to: GraphQLNullable<Date>
-  public var postOffset: GraphQLNullable<Int>
-  public var postLimit: GraphQLNullable<Int>
+  public var offset: GraphQLNullable<Int>
+  public var limit: GraphQLNullable<Int>
   public var commentOffset: GraphQLNullable<Int>
   public var commentLimit: GraphQLNullable<Int>
   public var postid: GraphQLNullable<ID>
   public var userid: GraphQLNullable<ID>
 
   public init(
-    filterBy: GraphQLNullable<[GraphQLEnum<FilterType>]>,
-    ignorList: GraphQLNullable<GraphQLEnum<IgnoredList>>,
-    sortBy: GraphQLNullable<GraphQLEnum<SortType>>,
+    filterBy: GraphQLNullable<[GraphQLEnum<PostFilterType>]>,
+    ignoreOption: GraphQLNullable<GraphQLEnum<IgnoreOption>>,
+    sortBy: GraphQLNullable<GraphQLEnum<PostSortType>>,
     title: GraphQLNullable<String>,
     tag: GraphQLNullable<String>,
     from: GraphQLNullable<Date>,
     to: GraphQLNullable<Date>,
-    postOffset: GraphQLNullable<Int>,
-    postLimit: GraphQLNullable<Int>,
+    offset: GraphQLNullable<Int>,
+    limit: GraphQLNullable<Int>,
     commentOffset: GraphQLNullable<Int>,
     commentLimit: GraphQLNullable<Int>,
     postid: GraphQLNullable<ID>,
     userid: GraphQLNullable<ID>
   ) {
     self.filterBy = filterBy
-    self.ignorList = ignorList
+    self.ignoreOption = ignoreOption
     self.sortBy = sortBy
     self.title = title
     self.tag = tag
     self.from = from
     self.to = to
-    self.postOffset = postOffset
-    self.postLimit = postLimit
+    self.offset = offset
+    self.limit = limit
     self.commentOffset = commentOffset
     self.commentLimit = commentLimit
     self.postid = postid
@@ -56,14 +56,14 @@ public class GetAllPostsQuery: GraphQLQuery {
 
   public var __variables: Variables? { [
     "filterBy": filterBy,
-    "IgnorList": ignorList,
+    "ignoreOption": ignoreOption,
     "sortBy": sortBy,
     "title": title,
     "tag": tag,
     "from": from,
     "to": to,
-    "postOffset": postOffset,
-    "postLimit": postLimit,
+    "offset": offset,
+    "limit": limit,
     "commentOffset": commentOffset,
     "commentLimit": commentLimit,
     "postid": postid,
@@ -76,13 +76,13 @@ public class GetAllPostsQuery: GraphQLQuery {
 
     public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("getallposts", Getallposts.self, arguments: [
+      .field("listPosts", ListPosts.self, arguments: [
         "filterBy": .variable("filterBy"),
-        "IgnorList": .variable("IgnorList"),
+        "IgnorList": .variable("ignoreOption"),
         "commentLimit": .variable("commentLimit"),
         "commentOffset": .variable("commentOffset"),
-        "postLimit": .variable("postLimit"),
-        "postOffset": .variable("postOffset"),
+        "limit": .variable("limit"),
+        "offset": .variable("offset"),
         "to": .variable("to"),
         "from": .variable("from"),
         "tag": .variable("tag"),
@@ -93,16 +93,16 @@ public class GetAllPostsQuery: GraphQLQuery {
       ]),
     ] }
 
-    public var getallposts: Getallposts { __data["getallposts"] }
+    public var listPosts: ListPosts { __data["listPosts"] }
 
-    /// Getallposts
+    /// ListPosts
     ///
-    /// Parent Type: `GetAllPostResponse`
-    public struct Getallposts: GQLOperationsUser.SelectionSet {
+    /// Parent Type: `PostListResponse`
+    public struct ListPosts: GQLOperationsUser.SelectionSet {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.GetAllPostResponse }
+      public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.PostListResponse }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("status", String.self),
@@ -114,7 +114,7 @@ public class GetAllPostsQuery: GraphQLQuery {
       public var responseCode: String? { __data["ResponseCode"] }
       public var affectedRows: [AffectedRow]? { __data["affectedRows"] }
 
-      /// Getallposts.AffectedRow
+      /// ListPosts.AffectedRow
       ///
       /// Parent Type: `Post`
       public struct AffectedRow: GQLOperationsUser.SelectionSet {
@@ -141,7 +141,7 @@ public class GetAllPostsQuery: GraphQLQuery {
           .field("isreported", Bool.self),
           .field("isdisliked", Bool.self),
           .field("issaved", Bool.self),
-          .field("tags", [String].self),
+          .field("tags", [String?].self),
           .field("user", User.self),
         ] }
 
@@ -162,17 +162,17 @@ public class GetAllPostsQuery: GraphQLQuery {
         public var isreported: Bool { __data["isreported"] }
         public var isdisliked: Bool { __data["isdisliked"] }
         public var issaved: Bool { __data["issaved"] }
-        public var tags: [String] { __data["tags"] }
+        public var tags: [String?] { __data["tags"] }
         public var user: User { __data["user"] }
 
-        /// Getallposts.AffectedRow.User
+        /// ListPosts.AffectedRow.User
         ///
-        /// Parent Type: `ProfilUser`
+        /// Parent Type: `ProfileUser`
         public struct User: GQLOperationsUser.SelectionSet {
           public let __data: DataDict
           public init(_dataDict: DataDict) { __data = _dataDict }
 
-          public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.ProfilUser }
+          public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.ProfileUser }
           public static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .field("id", GQLOperationsUser.ID.self),

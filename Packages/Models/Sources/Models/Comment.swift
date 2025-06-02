@@ -45,7 +45,7 @@ public struct Comment: Identifiable, Hashable {
         self.user = user
     }
 
-    public init?(gqlComment: GetPostCommentsQuery.Data.Getallposts.AffectedRow.Comment) {
+    public init?(gqlComment: GetPostCommentsQuery.Data.ListPosts.AffectedRow.Comment) {
         guard
             let parentId = gqlComment.parentid,
             let user = ObjectOwner(gqlUser: gqlComment.user)

@@ -355,66 +355,93 @@ final class PostCreationViewModel: NSObject, ObservableObject {
     private func convertAndCompressImagesToBase64(assets: [PHAsset]) async -> [String] {
         let imageManager = PHImageManager.default()
         let requestOptions = PHImageRequestOptions()
-        requestOptions.isSynchronous = false  // Async processing
+        requestOptions.isSynchronous = false
+        requestOptions.isNetworkAccessAllowed = true
         requestOptions.deliveryMode = .highQualityFormat
 
-        return await withTaskGroup(of: String?.self) { group in
-            var base64Strings: [String] = []
+        var results = [Int: String]()
 
-            for asset in assets {
+        await withTaskGroup(of: (Int, String?).self) { group in
+            for (index, asset) in assets.enumerated() {
                 group.addTask {
-                    return await self.fetchCompressedBase64(from: asset, imageManager: imageManager, options: requestOptions)
+                    let base64 = await self.fetchCompressedBase64(
+                        from: asset,
+                        imageManager: imageManager,
+                        options: requestOptions
+                    )
+                    return (index, base64)
                 }
             }
 
-            for await base64String in group {
-                if var base64StringUnwrapped = base64String {
-                    addBase64Prefix(to: &base64StringUnwrapped, ofType: .image)
-                    base64Strings.append(base64StringUnwrapped)
+            for await (index, base64) in group {
+                if let base64 = base64 {
+                    results[index] = base64
                 }
             }
+        }
 
-            return base64Strings
+        return assets.indices.compactMap { index in
+            guard var base64 = results[index] else { return nil }
+            addBase64Prefix(to: &base64, ofType: .image)
+            return base64
         }
     }
 
-    private func fetchCompressedBase64(from asset: PHAsset, imageManager: PHImageManager, options: PHImageRequestOptions) async -> String? {
-        guard let uiImage = await fetchUIImage(from: asset, imageManager: imageManager, options: options) else {
+    private func fetchCompressedBase64(
+        from asset: PHAsset,
+        imageManager: PHImageManager,
+        options: PHImageRequestOptions
+    ) async -> String? {
+        guard let uiImage = await fetchUIImage(
+            from: asset,
+            imageManager: imageManager,
+            options: options
+        ) else {
             return nil
         }
 
-        if let compressedImageData = try? await Compressor.shared.compressImageForUpload(uiImage) {
+        do {
+            let compressedImageData = try await Compressor.shared.compressImageForUpload(uiImage)
             return compressedImageData.base64EncodedString()
+        } catch {
+            print("Image compression failed: \(error)")
+            return nil
         }
-
-        return nil
     }
 
-    private func fetchUIImage(from asset: PHAsset, imageManager: PHImageManager, options: PHImageRequestOptions) async -> UIImage? {
+    private func fetchUIImage(
+        from asset: PHAsset,
+        imageManager: PHImageManager,
+        options: PHImageRequestOptions
+    ) async -> UIImage? {
         return await withCheckedContinuation { continuation in
-            imageManager.requestImage(for: asset, targetSize: CGSize(width: 2000, height: 2000), contentMode: .aspectFit, options: options) { image, _ in
+            imageManager.requestImage(
+                for: asset,
+                targetSize: CGSize(width: 2000, height: 2000),
+                contentMode: .aspectFit,
+                options: options
+            ) { image, _ in
                 continuation.resume(returning: image)
             }
         }
     }
-    
+
     private func preprocessRawTitle(_ title: String) -> String {
-        title.replacingOccurrences(of: "\n", with: "").replacingOccurrences(of: "\"", with: "\\\"")
+        title
+            .replacingOccurrences(of: "\n", with: "")
+            .replacingOccurrences(of: "\"", with: "\\\"")
     }
-    
-    private func addBase64Prefix(to content: inout String, ofType: ContenType) {
-        let prefix: String
-        switch ofType {
-        case .image:
-            prefix = "data:image/jpeg;base64,"
-        case .audio:
-            prefix = "data:audio/mpeg;base64,"
-        case .video:
-            prefix = "data:video/mp4;base64,"
-        case .text:
-            prefix = "data:text/plain;base64,"
-        }
-        
+
+    private func addBase64Prefix(to content: inout String, ofType: ContentType) {
+        let prefix: String = {
+            switch ofType {
+                case .image: return "data:image/jpeg;base64,"
+                case .audio: return "data:audio/mpeg;base64,"
+                case .video: return "data:video/mp4;base64,"
+                case .text: return "data:text/plain;base64,"
+            }
+        }()
+
         content.insert(contentsOf: prefix, at: content.startIndex)
     }
 }

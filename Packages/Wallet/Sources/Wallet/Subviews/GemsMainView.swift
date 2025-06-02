@@ -25,7 +25,9 @@ struct GemsMainView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .padding(20)
+        .onAppear {
+            viewModel.fetchContent()
+        }
     }
 
     private func contentView(balance: WalletBalance, isLoading: Bool) -> some View {
@@ -51,6 +53,25 @@ struct GemsMainView: View {
             .multilineTextAlignment(.center)
         }
         .foregroundStyle(Colors.whitePrimary)
+        .background {
+            ZStack {
+                Ellipse()
+                    .fill(Gradients.walletBG1)
+                    .frame(width: 265, height: 220)
+                    .offset(x: 192, y: -59)
+                    .blur(radius: 10)
+
+                Ellipse()
+                    .fill(Gradients.walletBG2)
+                    .frame(width: 479, height: 208)
+                    .offset(x: -114, y: 7)
+                    .blur(radius: 10)
+            }
+            .ignoresSafeArea()
+        }
+        .padding(20)
+        .background(Colors.inactiveDark)
+        .clipShape(RoundedRectangle(cornerRadius: 24))
     }
 
     private func balanceExplanationView(balance: WalletBalance) -> some View {

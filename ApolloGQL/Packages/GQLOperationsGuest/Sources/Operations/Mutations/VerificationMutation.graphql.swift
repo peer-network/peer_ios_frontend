@@ -7,7 +7,7 @@ public class VerificationMutation: GraphQLMutation {
   public static let operationName: String = "Verification"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"mutation Verification($userid: ID!) { verifiedAccount(userid: $userid) { __typename status ResponseCode } }"#
+      #"mutation Verification($userid: ID!) { verifyAccount(userid: $userid) { __typename status ResponseCode } }"#
     ))
 
   public var userid: ID
@@ -24,19 +24,19 @@ public class VerificationMutation: GraphQLMutation {
 
     public static var __parentType: any ApolloAPI.ParentType { GQLOperationsGuest.Objects.Mutation }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("verifiedAccount", VerifiedAccount.self, arguments: ["userid": .variable("userid")]),
+      .field("verifyAccount", VerifyAccount.self, arguments: ["userid": .variable("userid")]),
     ] }
 
-    public var verifiedAccount: VerifiedAccount { __data["verifiedAccount"] }
+    public var verifyAccount: VerifyAccount { __data["verifyAccount"] }
 
-    /// VerifiedAccount
+    /// VerifyAccount
     ///
-    /// Parent Type: `VerifiedAccount`
-    public struct VerifiedAccount: GQLOperationsGuest.SelectionSet {
+    /// Parent Type: `DefaultResponse`
+    public struct VerifyAccount: GQLOperationsGuest.SelectionSet {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: any ApolloAPI.ParentType { GQLOperationsGuest.Objects.VerifiedAccount }
+      public static var __parentType: any ApolloAPI.ParentType { GQLOperationsGuest.Objects.DefaultResponse }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("status", String.self),

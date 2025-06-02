@@ -7,7 +7,7 @@ public class UpdateAvatarMutation: GraphQLMutation {
   public static let operationName: String = "UpdateAvatar"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"mutation UpdateAvatar($img: String!) { updateProfilePicture(img: $img) { __typename status ResponseCode } }"#
+      #"mutation UpdateAvatar($img: String!) { updateProfileImage(img: $img) { __typename status ResponseCode } }"#
     ))
 
   public var img: String
@@ -24,15 +24,15 @@ public class UpdateAvatarMutation: GraphQLMutation {
 
     public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.Mutation }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("updateProfilePicture", UpdateProfilePicture.self, arguments: ["img": .variable("img")]),
+      .field("updateProfileImage", UpdateProfileImage.self, arguments: ["img": .variable("img")]),
     ] }
 
-    public var updateProfilePicture: UpdateProfilePicture { __data["updateProfilePicture"] }
+    public var updateProfileImage: UpdateProfileImage { __data["updateProfileImage"] }
 
-    /// UpdateProfilePicture
+    /// UpdateProfileImage
     ///
     /// Parent Type: `DefaultResponse`
-    public struct UpdateProfilePicture: GQLOperationsUser.SelectionSet {
+    public struct UpdateProfileImage: GQLOperationsUser.SelectionSet {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 

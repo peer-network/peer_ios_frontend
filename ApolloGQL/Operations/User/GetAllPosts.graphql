@@ -1,11 +1,11 @@
-query GetAllPosts($filterBy: [FilterType!], $IgnorList: IgnoredList, $sortBy: SortType, $title: String, $tag: String, $from: Date, $to: Date, $postOffset: Int, $postLimit: Int, $commentOffset: Int, $commentLimit: Int, $postid: ID, $userid: ID) {
-	getallposts(
+query GetAllPosts($filterBy: [PostFilterType!], $ignoreOption: IgnoreOption, $sortBy: PostSortType, $title: String, $tag: String, $from: Date, $to: Date, $offset: Int, $limit: Int, $commentOffset: Int, $commentLimit: Int, $postid: ID, $userid: ID) {
+	listPosts(
         filterBy: $filterBy
-        IgnorList: $IgnorList
+        IgnorList: $ignoreOption
         commentLimit: $commentLimit
         commentOffset: $commentOffset
-        postLimit: $postLimit
-        postOffset: $postOffset
+        limit: $limit
+        offset: $offset
         to: $to
         from: $from
         tag: $tag

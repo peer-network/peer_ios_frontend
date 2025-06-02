@@ -69,3 +69,12 @@ public final class MockRemoteConfigService: RemoteConfigProtocol {
         mockValues[key] as? Double ?? 0.0
     }
 }
+
+extension MockRemoteConfigService {
+    public func decodedObject<T: Decodable>(for key: RemoteConfigValueKey) throws -> T {
+        guard let value = mockValues[key] as? T else {
+            throw RemoteConfigError.typeMismatch("Mock value for \(key.name) is not of type \(T.self)")
+        }
+        return value
+    }
+}

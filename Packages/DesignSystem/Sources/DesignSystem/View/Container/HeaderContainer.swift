@@ -22,6 +22,8 @@ public struct HeaderContainer<Header: View, Content: View>: View {
     private let content: () -> Content
     private let actionsToDisplay: ActionsToDisplay
 
+    @State private var showPopover = false
+
     public init(
         actionsToDisplay: ActionsToDisplay,
         @ViewBuilder header: @escaping () -> Header,
@@ -76,20 +78,6 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                             }
                         case .posts:
                             HStack(alignment: .center, spacing: 5) {
-                                Icons.bubbleFill
-                                    .iconSize(height: 10)
-
-                                Text("\(accountManager.dailyFreeComments)")
-                            }
-
-                            HStack(alignment: .center, spacing: 5) {
-                                Icons.heartFill
-                                    .iconSize(height: 10)
-
-                                Text("\(accountManager.dailyFreeLikes)")
-                            }
-
-                            HStack(alignment: .center, spacing: 5) {
                                 Icons.plustSquare
                                     .iconSize(height: 13)
 
@@ -102,6 +90,17 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                 .padding(.vertical, 5)
                 .background(Colors.inactiveDark)
                 .cornerRadius(5)
+                .contentShape(.rect)
+                .onTapGesture {
+                    showPopover = true
+                }
+                .popover(isPresented: $showPopover, arrowEdge: .top) {
+                    Text("Your daily free actions")
+                        .font(.customFont(weight: .regular, style: .footnote))
+                        .padding()
+                        .presentationBackground(.ultraThinMaterial)
+                        .presentationCompactAdaptation(.popover)
+                }
 
                 if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
                     Button {
@@ -126,6 +125,6 @@ public struct HeaderContainer<Header: View, Content: View>: View {
             content()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(Colors.textActive)
+        .background(Colors.textActive.ignoresSafeArea())
     }
 }

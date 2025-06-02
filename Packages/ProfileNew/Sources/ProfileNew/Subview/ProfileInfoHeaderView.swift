@@ -26,7 +26,7 @@ struct ProfileInfoHeaderView: View {
     var body: some View {
         HStack(alignment: .top, spacing: 10) {
             if accountManager.isCurrentUser(id: user.id) {
-                ProfileAvatarView(url: user.imageURL, name: user.username, config: .profile)
+                ProfileAvatarView(url: user.imageURL, name: user.username, config: .profile, ignoreCache: true)
                     .overlay(alignment: .bottomTrailing) {
                         Circle()
                             .frame(width: 16, height: 16)
@@ -47,7 +47,7 @@ struct ProfileInfoHeaderView: View {
                         showAvatarPicker = true
                     }
             } else {
-                ProfileAvatarView(url: user.imageURL, name: user.username, config: .profile)
+                ProfileAvatarView(url: user.imageURL, name: user.username, config: .profile, ignoreCache: false)
                     .onTapGesture {
                         let mediaData = MediaData(url: user.imageURL, type: .image)
                         quickLook.prepareFor(selectedMediaAttachment: mediaData, mediaAttachments: [mediaData])

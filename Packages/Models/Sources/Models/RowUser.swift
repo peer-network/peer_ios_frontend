@@ -37,7 +37,7 @@ public struct RowUser: Identifiable, Hashable {
         self.isFollowing = isFollowing
     }
 
-    public init?(gqlUser: GetFollowersQuery.Data.Follows.AffectedRows.Follower) {
+    public init?(gqlUser: GetFollowersQuery.Data.ListFollowRelations.AffectedRows.Follower) {
         guard
             let username = gqlUser.username,
             let slug = gqlUser.slug,
@@ -56,7 +56,7 @@ public struct RowUser: Identifiable, Hashable {
         self.isFollowing = isFollowing
     }
 
-    public init?(gqlUser: GetFollowingsQuery.Data.Follows.AffectedRows.Following) {
+    public init?(gqlUser: GetFollowingsQuery.Data.ListFollowRelations.AffectedRows.Following) {
         guard
             let username = gqlUser.username,
             let slug = gqlUser.slug,
@@ -75,12 +75,12 @@ public struct RowUser: Identifiable, Hashable {
         self.isFollowing = isFollowing
     }
 
-    public init?(gqlUser: GetFriendsQuery.Data.Friends.AffectedRow) {
+    public init?(gqlUser: GetFriendsQuery.Data.ListFriends.AffectedRow?) {
         guard
-            let id = gqlUser.userid,
-            let username = gqlUser.username,
-            let slug = gqlUser.slug,
-            let image = gqlUser.img
+            let id = gqlUser?.userid,
+            let username = gqlUser?.username,
+            let slug = gqlUser?.slug,
+            let image = gqlUser?.img
         else {
             return nil
         }
@@ -93,7 +93,7 @@ public struct RowUser: Identifiable, Hashable {
         self.isFollowing = true
     }
 
-    public init?(gqlUser: SearchUserQuery.Data.Searchuser.AffectedRow?) {
+    public init?(gqlUser: SearchUserQuery.Data.SearchUser.AffectedRow?) {
         guard
             let id = gqlUser?.id,
             let username = gqlUser?.username,
@@ -110,21 +110,57 @@ public struct RowUser: Identifiable, Hashable {
         self.isFollowed = false
         self.isFollowing = false
     }
+
+    public init?(gqlUser: GetMyInviterQuery.Data.ReferralList.AffectedRows.InvitedBy) {
+        guard
+            let username = gqlUser.username,
+            let slug = gqlUser.slug,
+            let image = gqlUser.img,
+            let isFollowed = gqlUser.isfollowed,
+            let isFollowing = gqlUser.isfollowing
+        else {
+            return nil
+        }
+
+        self.id = gqlUser.id
+        self.username = username
+        self.slug = slug
+        self.image = image
+        self.isFollowed = isFollowed
+        self.isFollowing = isFollowing
+    }
+
+    public init?(gqlUser: GetMyReferredUsersQuery.Data.ReferralList.AffectedRows.IInvited) {
+        guard
+            let username = gqlUser.username,
+            let slug = gqlUser.slug,
+            let image = gqlUser.img,
+            let isFollowed = gqlUser.isfollowed,
+            let isFollowing = gqlUser.isfollowing
+        else {
+            return nil
+        }
+
+        self.id = gqlUser.id
+        self.username = username
+        self.slug = slug
+        self.image = image
+        self.isFollowed = isFollowed
+        self.isFollowing = isFollowing
+    }
 }
 
 extension RowUser {
-    public static func placeholder() -> RowUser {
-        return RowUser(
-            id: UUID().uuidString,
-            username: "Username Username",
-            slug: 23910,
-            image: "",
-            isFollowed: false,
-            isFollowing: false
-        )
-    }
-
     public static func placeholders(count: Int = 10) -> [RowUser] {
-        return Array(repeating: .placeholder(), count: count)
+        return (0..<count).map { _ in
+            RowUser(
+                id: UUID().uuidString,
+                username: "Username Username",
+                slug: 23910,
+                image: "",
+                isFollowed: false,
+                isFollowing: false
+            )
+        }
     }
 }

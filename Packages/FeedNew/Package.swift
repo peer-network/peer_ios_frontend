@@ -18,6 +18,8 @@ let package = Package(
         .package(name: "Environment", path: "../Environment"),
         .package(name: "Networking", path: "../Networking"),
         .package(name: "GQLOperationsUser", path: "../GQLOperationsUser"),
+        .package(name: "Post", path: "../Post"),
+        .package(name: "FeedList", path: "../FeedList"),
         .package(url: "https://github.com/kean/Nuke.git", .upToNextMajor(from: "12.8.0"))
     ],
     targets: [
@@ -28,6 +30,8 @@ let package = Package(
                 .product(name: "Environment", package: "Environment"),
                 .product(name: "Networking", package: "Networking"),
                 .product(name: "GQLOperationsUser", package: "GQLOperationsUser"),
+                .product(name: "Post", package: "Post"),
+                .product(name: "FeedList", package: "FeedList"),
                 .product(name: "NukeUI", package: "Nuke")
             ]
         ),

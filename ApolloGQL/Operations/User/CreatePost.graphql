@@ -1,7 +1,7 @@
-mutation CreatePost($contenttype: ContenType!, $title: String!, $media: [String!], $mediadescription: String, $tags: [String!], $cover: [String!]) {
+mutation CreatePost($contentType: ContentType!, $title: String!, $media: [String!], $mediadescription: String, $tags: [String!], $cover: [String!]) {
     createPost(
         action: POST
-        input: { contenttype: $contenttype, title: $title, media: $media, mediadescription: $mediadescription, tags: $tags, cover: $cover }
+        input: { contenttype: $contentType, title: $title, media: $media, mediadescription: $mediadescription, tags: $tags, cover: $cover }
     ) {
         status
         ResponseCode

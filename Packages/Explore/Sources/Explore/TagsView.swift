@@ -8,13 +8,11 @@
 import SwiftUI
 
 struct TagsView<Content: View, Tag: Equatable>: View where Tag: Hashable {
-    var spacing: CGFloat = 10
-    var animation: Animation = .easeInOut(duration: 0.2)
-    var tags: [Tag]
-    @ViewBuilder var content: (Tag) -> Content
-    var didChangeSelection: (Tag?) -> ()
-
-    @State private var selectedTag: Tag? = nil
+    let spacing: CGFloat = 10
+    let animation: Animation = .easeInOut(duration: 0.2)
+    let tags: [Tag]
+    @ViewBuilder let content: (Tag) -> Content
+    let onClick: (Tag) -> ()
 
     var body: some View {
         CustomChipLayout(spacing: spacing) {
@@ -22,12 +20,7 @@ struct TagsView<Content: View, Tag: Equatable>: View where Tag: Hashable {
                 content(tag)
                     .contentShape(.rect)
                     .onTapGesture {
-                        withAnimation(animation) {
-                            selectedTag = tag
-                        }
-
-                        /// Callback after update!
-                        didChangeSelection(selectedTag)
+                        onClick(tag)
                     }
             }
         }

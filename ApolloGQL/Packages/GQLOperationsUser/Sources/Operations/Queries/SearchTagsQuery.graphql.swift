@@ -7,25 +7,25 @@ public class SearchTagsQuery: GraphQLQuery {
   public static let operationName: String = "SearchTags"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query SearchTags($tagname: String!, $offset: Int, $limit: Int) { tagsearch(tagname: $tagname, offset: $offset, limit: $limit) { __typename status counter ResponseCode affectedRows { __typename name } } }"#
+      #"query SearchTags($tagName: String!, $offset: Int, $limit: Int) { searchTags(tagName: $tagName, offset: $offset, limit: $limit) { __typename status counter ResponseCode affectedRows { __typename name } } }"#
     ))
 
-  public var tagname: String
+  public var tagName: String
   public var offset: GraphQLNullable<Int>
   public var limit: GraphQLNullable<Int>
 
   public init(
-    tagname: String,
+    tagName: String,
     offset: GraphQLNullable<Int>,
     limit: GraphQLNullable<Int>
   ) {
-    self.tagname = tagname
+    self.tagName = tagName
     self.offset = offset
     self.limit = limit
   }
 
   public var __variables: Variables? { [
-    "tagname": tagname,
+    "tagName": tagName,
     "offset": offset,
     "limit": limit
   ] }
@@ -36,19 +36,19 @@ public class SearchTagsQuery: GraphQLQuery {
 
     public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("tagsearch", Tagsearch.self, arguments: [
-        "tagname": .variable("tagname"),
+      .field("searchTags", SearchTags.self, arguments: [
+        "tagName": .variable("tagName"),
         "offset": .variable("offset"),
         "limit": .variable("limit")
       ]),
     ] }
 
-    public var tagsearch: Tagsearch { __data["tagsearch"] }
+    public var searchTags: SearchTags { __data["searchTags"] }
 
-    /// Tagsearch
+    /// SearchTags
     ///
     /// Parent Type: `TagSearchResponse`
-    public struct Tagsearch: GQLOperationsUser.SelectionSet {
+    public struct SearchTags: GQLOperationsUser.SelectionSet {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
@@ -66,7 +66,7 @@ public class SearchTagsQuery: GraphQLQuery {
       public var responseCode: String? { __data["ResponseCode"] }
       public var affectedRows: [AffectedRow?]? { __data["affectedRows"] }
 
-      /// Tagsearch.AffectedRow
+      /// SearchTags.AffectedRow
       ///
       /// Parent Type: `Tag`
       public struct AffectedRow: GQLOperationsUser.SelectionSet {

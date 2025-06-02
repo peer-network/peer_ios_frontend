@@ -14,13 +14,17 @@ public enum RouterDestination: Hashable {
     case settings
     case hashTag(tag: String)
     case versionHistory
+    case transfer(recipient: RowUser, amount: Int)
+    case changePassword
+    case changeEmail
+    case changeUsername
+    case referralProgram
 }
 
 public enum SheetDestination: Identifiable, Hashable {
     case followers(userId: String)
     case following(userId: String)
     case friends(userId: String)
-    case comments(post: Post, isBackgroundWhite: Bool)
     case shareImage(image: UIImage, post: Post)
     
     public var id: String {
@@ -33,8 +37,6 @@ public enum SheetDestination: Identifiable, Hashable {
                 return "following"
             case .friends:
                 return "friends"
-            case .comments:
-                return "comments"
         }
     }
     
@@ -61,7 +63,13 @@ public final class Router: ObservableObject {
     }
     
     public func handle(url: URL) -> OpenURLAction.Result {
-        urlHandler?(url) ?? .systemAction
+        if url.scheme == "peer" && url.host == "hashtag",
+           let tag = url.pathComponents.last {
+            navigate(to: .hashTag(tag: tag))
+            return .handled
+        }
+        
+        return urlHandler?(url) ?? .systemAction
     }
 
     public func emptyPath() {

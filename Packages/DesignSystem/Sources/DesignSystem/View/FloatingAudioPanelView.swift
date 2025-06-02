@@ -16,7 +16,7 @@ public struct FloatingAudioPanelView: View {
     public var body: some View {
         if let currentItem = audioManager.currentPlayerObject {
             HStack(spacing: 0) {
-                ProfileAvatarView(url: currentItem.pictureURL, name: currentItem.title, config: .audioPlayer)
+                ProfileAvatarView(url: currentItem.pictureURL, name: currentItem.title, config: .audioPlayer, ignoreCache: true)
 
                 Spacer()
                     .frame(width: 10)
