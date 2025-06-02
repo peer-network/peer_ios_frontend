@@ -42,6 +42,7 @@ struct PeerApp: App {
     private let analyticsService: AnalyticsServiceProtocol
 
     init() {
+        FirebaseApp.configure()
 #if DEBUG
         analyticsService = MockAnalyticsService(shouldPrintLogs: false)
         let remoteConfigService = MockRemoteConfigService()
@@ -167,8 +168,6 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil
     ) -> Bool {
-        FirebaseApp.configure()
-
         PushNotifications.register(in: application, using: notificationCenter)
 
         Messaging.messaging().delegate = notificationCenter

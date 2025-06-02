@@ -6,6 +6,7 @@
 //
 
 import FirebaseRemoteConfig
+import FirebaseCore
 
 public final class FirebaseRemoteConfigService: RemoteConfigProtocol {
     private let remoteConfig: RemoteConfig
