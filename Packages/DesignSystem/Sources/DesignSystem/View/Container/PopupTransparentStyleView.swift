@@ -41,3 +41,5 @@ public struct PopupTransparentStyleView<Content: View>: View {
             .fill(.ultraThinMaterial)
     }
 }
+
+extension CGSize: @retroactive @unchecked Sendable { }

@@ -107,3 +107,5 @@ public struct FeedView: View {
         }
     }
 }
+
+extension CGRect: @retroactive @unchecked Sendable { }
