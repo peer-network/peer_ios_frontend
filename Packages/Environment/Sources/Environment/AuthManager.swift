@@ -34,6 +34,10 @@ public final class AuthManager: ObservableObject {
     
     /// Checks if we have valid tokens and tries to fetch the current user ID.
     public func restoreSessionIfPossible() async -> AuthState {
+        if tokenManager.getAccessToken() == nil {
+            tokenManager.removeCredentials()
+            return .unauthenticated
+        }
         do {
             // If the token is valid, confirm it by calling "Hello" query
             let userId = try await accountManager.getCurrentUserId()
@@ -45,6 +49,7 @@ public final class AuthManager: ObservableObject {
             return .authenticated(userId: userId)
         } catch {
             // If the token call fails, user is unauthenticated
+            tokenManager.removeCredentials()
             return .unauthenticated
         }
     }

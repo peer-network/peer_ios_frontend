@@ -24,7 +24,7 @@ public class GQLClient {
         let store = ApolloStore(cache: InMemoryNormalizedCache())
         let provider = NetworkInterceptorProvider(store: store)
         let transport = RequestChainNetworkTransport(interceptorProvider: provider, endpointURL: Constants.apiURL)
-        
+
         let webSocket = WebSocket(url: Constants.apiURL, protocol: .graphql_ws)
         let webSocketTransport = WebSocketTransport(websocket: webSocket)
         
