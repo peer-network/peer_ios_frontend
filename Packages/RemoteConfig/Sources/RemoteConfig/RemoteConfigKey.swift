@@ -10,6 +10,7 @@ public enum RemoteConfigValueKey: CaseIterable {
     case forceUpdateCurrentVersion
     case forceUpdateStoreURL
     case isForceUpdateRequired
+    case backendURLs
 
     public var name: String {
         switch self {
@@ -19,6 +20,8 @@ public enum RemoteConfigValueKey: CaseIterable {
                 return "force_update_store_url"
             case .isForceUpdateRequired:
                 return "is_force_update_required"
+            case .backendURLs:
+                return "ios_backend_urls"
         }
     }
 
@@ -30,6 +33,8 @@ public enum RemoteConfigValueKey: CaseIterable {
                 return "https://testflight.apple.com/join/xcCR5A67"
             case .isForceUpdateRequired:
                 return false
+            case .backendURLs:
+                return BackendURLs.placeholder
         }
     }
 }

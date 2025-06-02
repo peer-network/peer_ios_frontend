@@ -35,7 +35,11 @@ final class TransferPageViewModel: ObservableObject {
     }
 
     var feeAmount: Double {
-        Double(amount) * 0.04
+        if AccountManager.shared.inviter != nil {
+            return Double(amount) * 0.05
+        } else {
+            return Double(amount) * 0.04
+        }
     }
 
     func completeTransfer() {

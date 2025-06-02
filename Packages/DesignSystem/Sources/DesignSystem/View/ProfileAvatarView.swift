@@ -13,16 +13,18 @@ public struct ProfileAvatarView: View {
     public let url: URL?
     public let name: String?
     public let config: FrameConfig
-    
-    public init(url: URL? = nil, name: String? = nil, config: FrameConfig) {
+    public let ignoreCache: Bool
+
+    public init(url: URL? = nil, name: String? = nil, config: FrameConfig, ignoreCache: Bool) {
         self.url = url
         self.name = name
         self.config = config
+        self.ignoreCache = ignoreCache
     }
     
     public var body: some View {
         if let url {
-            AvatarImage(url: url, name: name, config: config)
+            AvatarImage(url: url, name: name, config: config, ignoreCache: ignoreCache)
         } else {
             AvatarPlaceHolder(name: name, config: config)
         }
@@ -53,19 +55,24 @@ public struct ProfileAvatarView: View {
         let url: URL
         let name: String?
         let config: FrameConfig
+        let ignoreCache: Bool
 
         var body: some View {
             if reasons == .placeholder {
                 AvatarPlaceHolder(name: name, config: config)
             } else {
-                let imageRequest = ImageRequest(
-                    urlRequest: URLRequest(
-                        url: url,
-                        cachePolicy: .useProtocolCachePolicy),
+                let request = ignoreCache ?
+                ImageRequest(
+                    url: url,
                     processors: [.resize(size: config.size)],
-                    options: [.reloadIgnoringCachedData])
+                    options: [.reloadIgnoringCachedData]
+                ) :
+                ImageRequest(
+                    url: url,
+                    processors: [.resize(size: config.size)]
+                )
 
-                LazyImage(request: imageRequest) { state in
+                LazyImage(request: request) { state in
                     if let image = state.image {
                         image
                             .resizable()
@@ -104,8 +111,8 @@ public struct ProfileAvatarView: View {
 
 #Preview {
     VStack {
-        ProfileAvatarView(url: URL(string: ""), name: "Artem", config: .profile)
+        ProfileAvatarView(url: URL(string: ""), name: "Artem", config: .profile, ignoreCache: true)
 
-        ProfileAvatarView(url: URL(string: "https://www.zoobasel.ch/uploads/images/news/fotos/shetlandpony_cacahuete_Z6B5123.jpg"), name: "Daniel", config: .profile)
+        ProfileAvatarView(url: URL(string: "https://www.zoobasel.ch/uploads/images/news/fotos/shetlandpony_cacahuete_Z6B5123.jpg"), name: "Daniel", config: .profile, ignoreCache: true)
     }
 }

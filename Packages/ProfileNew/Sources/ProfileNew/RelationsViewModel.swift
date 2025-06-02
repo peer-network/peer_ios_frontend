@@ -13,6 +13,7 @@ public protocol RelationsFetcher: ObservableObject {
     var state: RelationsSheetState { get }
     func fetchFollowers(reset: Bool)
     func fetchFollowings(reset: Bool)
+    func fetchFriends(reset: Bool)
 }
 
 public enum RelationsSheetState {
@@ -39,11 +40,14 @@ public final class RelationsViewModel: ObservableObject, RelationsFetcher {
 
     private var fetchFollowersTask: Task<Void, Never>?
     private var fetchFollowingsTask: Task<Void, Never>?
+    private var fetchFriendsTask: Task<Void, Never>?
 
     private var currentOffsetFollowers: Int = 0
     private var currentOffsetFollowings: Int = 0
+    private var currentOffsetFriends: Int = 0
     private var hasMoreFollowers: Bool = true
     private var hasMoreFollowings: Bool = true
+    private var hasMoreFriends: Bool = true
 
     public init(userId: String, apiService: APIService) {
         self.userId = userId
@@ -138,6 +142,56 @@ public final class RelationsViewModel: ObservableObject, RelationsFetcher {
                 }
 
                 fetchFollowingsTask = nil
+            } catch is CancellationError {
+                //                state = .display(posts: posts, hasMore: .hasMore)
+            } catch {
+                print(error)
+                print(error.localizedDescription)
+                state = .error(error: error)
+            }
+        }
+    }
+
+    public func fetchFriends(reset: Bool) {
+        if let existingTask = fetchFriendsTask, !existingTask.isCancelled {
+            return
+        }
+
+        if reset {
+            if friends.isEmpty {
+                state = .loading
+            }
+
+            currentOffsetFriends = 0
+            hasMoreFriends = true
+        }
+
+        fetchFriendsTask = Task {
+            do {
+                let result = await apiService.fetchUserFriends(after: currentOffsetFriends)
+
+                try Task.checkCancellation()
+
+                switch result {
+                    case .success(let fetchedFriends):
+                        if reset {
+                            friends.removeAll()
+                        }
+
+                        friends.append(contentsOf: fetchedFriends)
+
+                        if fetchedFriends.count != 20 {
+                            hasMoreFriends = false
+                            state = .display(users: friends, hasMore: .none)
+                        } else {
+                            currentOffsetFriends += 20
+                            state = .display(users: friends, hasMore: .hasMore)
+                        }
+                    case .failure(let apiError):
+                        throw apiError
+                }
+
+                fetchFriendsTask = nil
             } catch is CancellationError {
                 //                state = .display(posts: posts, hasMore: .hasMore)
             } catch {

@@ -20,11 +20,19 @@ struct ProfileTab: View {
         NavigationStack(path: $router.path) {
             Group {
                 if let userId = accountManager.userId {
-                    ProfileView(userId: userId)
-                        .toolbar(.hidden, for: .navigationBar)
-                        .withAppRouter()
-                        .withSheetDestinations(sheetDestinations: $router.presentedSheet)
-                        .id(userId)
+                    if #available(iOS 18, *) {
+                        ProfilePageView(userId: userId)
+                            .toolbar(.hidden, for: .navigationBar)
+                            .withAppRouter()
+                            .withSheetDestinations(sheetDestinations: $router.presentedSheet)
+                            .id(userId)
+                    } else {
+                        ProfileView(userId: userId)
+                            .toolbar(.hidden, for: .navigationBar)
+                            .withAppRouter()
+                            .withSheetDestinations(sheetDestinations: $router.presentedSheet)
+                            .id(userId)
+                    }
                 } else {
                     ProfileView(userId: "")
                         .toolbar(.hidden, for: .navigationBar)

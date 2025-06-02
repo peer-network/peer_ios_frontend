@@ -163,30 +163,32 @@ extension Post {
         )
     }
 
-    public static func placeholderImage() -> Post {
-        return Post(
-            id: UUID().uuidString,
-            contentType: .image,
-            title: "Placeholder Title",
-            media: [MediaItem(path: "/image/5edde530-f3e6-4862-a5a8-1ab24bf457a8.jpeg", options: nil)],
-            cover: [],
-            mediaDescription: "Lorem ipsum dolor sit amet sed lorem dolore takimata et elitr vel nulla.",
-            createdAt: Date.now.description,
-            amountLikes: 10,
-            amountViews: 20,
-            amountComments: 10,
-            amountDislikes: 1,
-            isLiked: false,
-            isViewed: false,
-            isReported: false,
-            isDisliked: false,
-            isSaved: false,
-            tags: ["placeholder", "example", "text"],
-            owner: ObjectOwner.placeholder()
-        )
-    }
-
     public static func placeholders(count: Int = 10) -> [Post] {
         return Array(repeating: .placeholderText(), count: count)
+    }
+
+    public static func placeholdersImage(count: Int = 10) -> [Post] {
+        return (0..<count).map { _ in
+            Post(
+                id: UUID().uuidString,
+                contentType: .image,
+                title: "Placeholder Title",
+                media: [MediaItem(path: "/image/5edde530-f3e6-4862-a5a8-1ab24bf457a8.jpeg", options: nil)],
+                cover: [],
+                mediaDescription: "Lorem ipsum dolor sit amet sed lorem dolore takimata et elitr vel nulla.",
+                createdAt: Date.now.description,
+                amountLikes: 10,
+                amountViews: 20,
+                amountComments: 10,
+                amountDislikes: 1,
+                isLiked: false,
+                isViewed: false,
+                isReported: false,
+                isDisliked: false,
+                isSaved: false,
+                tags: ["placeholder", "example", "text"],
+                owner: ObjectOwner.placeholder()
+            )
+        }
     }
 }

@@ -28,7 +28,7 @@ struct WithdrawalView: View {
                         }
                         TransferAmountInputView()
 
-                        Text("A fee of 4% applies")
+                        Text("A fee of \(viewModel.feePercents)% applies")
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .font(.customFont(weight: .regular, style: .footnote))
                             .foregroundStyle(Colors.whiteSecondary)

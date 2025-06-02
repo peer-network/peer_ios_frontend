@@ -73,12 +73,25 @@ final class SettingsViewModel: ObservableObject {
             config.requestCachePolicy = .reloadIgnoringLocalCacheData
             config.urlCache = nil
             let session = URLSession(configuration: config)
-            let (data, _) = try await session.data(from: url)
-            guard let text = String(data: data, encoding: .utf8) else { return }
-            bio = text
+            let (data, response) = try await session.data(from: url)
+
+            guard let httpResponse = response as? HTTPURLResponse else {
+                throw APIError.missingData
+            }
+
+            guard (200...299).contains(httpResponse.statusCode) else {
+                throw APIError.missingData
+            }
+
+            guard let text = String(data: data, encoding: .utf8) else {
+                throw APIError.missingData
+            }
+            withAnimation {
+                bio = text
+            }
             bioState = .success
         } catch {
-//            bio = ""
+            bio = ""
             bioState = .failure
         }
     }

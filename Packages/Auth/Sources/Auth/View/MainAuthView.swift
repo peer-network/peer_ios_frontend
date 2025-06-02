@@ -24,6 +24,7 @@ public struct MainAuthView: View {
         case registerEmail
         case registerUsername
         case registerPassword
+        case registerReferralCode
     }
     
     @StateObject var viewModel: AuthViewModel
@@ -95,12 +96,29 @@ public struct MainAuthView: View {
                         .frame(height: 25.5)
                     
                     switch viewModel.formType {
+                        case .forgotPassword:
+                            PasswordResetView()
+                                .padding(.horizontal, 20)
+                                .transition(.blurReplace())
+                                .environmentObject(viewModel)
                         case .login:
                             loginFormView
                                 .transition(.move(edge: .leading))
                         case .register:
                             registerFormView
                                 .transition(.move(edge: .trailing))
+                                .onFirstAppear {
+                                    Task { @MainActor in
+                                        try? await Task.sleep(for: .seconds(0.3))
+
+                                        if let pasteboardString = UIPasteboard.general.string {
+                                            if pasteboardString.hasPrefix("peer://invite/") {
+                                                let referralCode = String(pasteboardString.split(separator: "/").last ?? "")
+                                                viewModel.setReferralCode(referralCode)
+                                            }
+                                        }
+                                    }
+                                }
                     }
                     
                     Spacer()
@@ -166,9 +184,15 @@ public struct MainAuthView: View {
         .ignoresSafeArea(.keyboard)
         .environment(
           \.openURL,
-          OpenURLAction { url in
-            router.handle(url: url)
+           OpenURLAction { url in
+               router.handle(url: url)
           })
+        .onOpenURL(perform: { url in
+            if url.scheme == "peer" && url.host == "invite",
+               let referralCode = url.pathComponents.last {
+                viewModel.setReferralCode(referralCode)
+            }
+        })
         .onFirstAppear { viewModel.apiService = apiManager.apiService }
         .trackScreen(AppScreen.auth)
     }
@@ -208,10 +232,12 @@ public struct MainAuthView: View {
                 .frame(height: 20)
             
             Button {
-                // TODO: Not implemented in the API
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    viewModel.formType = .forgotPassword
+                }
             } label: {
                 Text("Forgot password")
-                    .font(.customFont(weight: .regular, size: .footnote))
+                    .font(.customFont(weight: .regular, style: .footnote))
                     .underline(true, pattern: .solid)
                     .foregroundStyle(Colors.whitePrimary.opacity(0.6))
                     .contentShape(Rectangle())
@@ -225,7 +251,7 @@ public struct MainAuthView: View {
             text: $viewModel.loginEmail,
             type: .default,
             icon: viewModel.isValidEmail(viewModel.loginEmail) ? Icons.checkmarkCircle : Icons.xCircle,
-            errorMessage: "Invalid email format",
+            errorMessage: "Invalid email format.",
             isValid: viewModel.isValidEmail(viewModel.loginEmail),
             focusedField: $focusedField,
             field: .loginEmail
@@ -293,7 +319,13 @@ public struct MainAuthView: View {
                 PasswordStrengthBarsView(strength: viewModel.passwordStrength)
                     .padding(.horizontal, 35)
             }
-            
+
+            Spacer()
+                .frame(height: 10)
+
+            registerReferralTextField
+                .padding(.horizontal, 20)
+
             if !viewModel.regError.isEmpty {
                 Spacer()
                     .frame(height: 20)
@@ -320,7 +352,7 @@ public struct MainAuthView: View {
             text: $viewModel.regEmail,
             type: .default,
             icon:  viewModel.isValidEmail(viewModel.regEmail) ? Icons.checkmarkCircle : Icons.xCircle,
-            errorMessage: "Invalid email format",
+            errorMessage: "Invalid email format.",
             isValid: viewModel.isValidEmail(viewModel.regEmail),
             focusedField: $focusedField,
             field: .registerEmail
@@ -350,7 +382,7 @@ public struct MainAuthView: View {
             type: .default,
             icon: viewModel.isValidUsername(viewModel.regUsername) ? Icons.checkmarkCircle : Icons.xCircle,
             hint: "3-23 characters, letters/numbers/_ only",
-            errorMessage: "Invalid username format",
+            errorMessage: "Invalid username format.",
             isValid: viewModel.isValidUsername(viewModel.regUsername),
             focusedField: $focusedField,
             field: .registerUsername
@@ -396,7 +428,19 @@ public struct MainAuthView: View {
             focusedField = .registerPassword
         }
     }
-    
+
+    private var registerReferralTextField: some View {
+        FormTextField(placeholder: "Referral code (optional)", text: $viewModel.regReferralCode, type: .default)
+            .focused($focusedField, equals: .registerReferralCode)
+            .submitLabel(.done)
+            .keyboardType(.asciiCapable)
+            .textInputAutocapitalization(.never)
+            .autocorrectionDisabled(true)
+            .onTapGesture {
+                focusedField = .registerReferralCode
+            }
+    }
+
     private var loginButton: some View {
         Button("Login") {
             Task {

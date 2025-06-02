@@ -16,7 +16,7 @@ struct ExploreTab: View {
 
     var body: some View {
         NavigationStack(path: $router.path) {
-            SearchView()
+            ExploreView()
                 .toolbar(.hidden, for: .navigationBar)
                 .withAppRouter()
                 .withSheetDestinations(sheetDestinations: $router.presentedSheet)

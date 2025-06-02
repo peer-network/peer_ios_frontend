@@ -20,7 +20,9 @@
 		7EEBA9C22D4CF2BF001B6E76 /* FeedNew in Frameworks */ = {isa = PBXBuildFile; productRef = 7EEBA9C12D4CF2BF001B6E76 /* FeedNew */; };
 		AC104D652DB7A864005F07F0 /* Analytics in Frameworks */ = {isa = PBXBuildFile; productRef = AC104D642DB7A864005F07F0 /* Analytics */; };
 		AC10E9882D9C2D0800A72988 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = AC10E9872D9C2D0800A72988 /* SFSafeSymbols */; };
+		AC655A862DDCBB0F0050FEBA /* Post in Frameworks */ = {isa = PBXBuildFile; productRef = AC655A852DDCBB0F0050FEBA /* Post */; };
 		AC6614E52D71F02000069AB5 /* Wallet in Frameworks */ = {isa = PBXBuildFile; productRef = AC6614E42D71F02000069AB5 /* Wallet */; };
+		AC79340F2DCE4E350069CAEF /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = AC79340E2DCE4E350069CAEF /* Swinject */; };
 		AC8295F32D876DD700C554D1 /* Explore in Frameworks */ = {isa = PBXBuildFile; productRef = AC8295F22D876DD700C554D1 /* Explore */; };
 		ACCAB4772D8196A4001C1041 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = ACCAB4762D8196A4001C1041 /* FirebaseAnalytics */; };
 		ACCAB47B2D819FE9001C1041 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = ACCAB47A2D819FE9001C1041 /* FirebaseCrashlytics */; };
@@ -87,6 +89,8 @@
 		7EE144D02D1452230054FBB2 /* Models */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Models; path = Packages/Models; sourceTree = "<group>"; };
 		7EE144D12D1454770054FBB2 /* Environment */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Environment; path = Packages/Environment; sourceTree = "<group>"; };
 		7EEBA9C02D4CDC97001B6E76 /* FeedNew */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FeedNew; path = Packages/FeedNew; sourceTree = "<group>"; };
+		AC6041E62DDB18B200D8DD5B /* Post */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Post; path = Packages/Post; sourceTree = "<group>"; };
+		AC6041E72DDB3FFB00D8DD5B /* FeedList */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FeedList; path = Packages/FeedList; sourceTree = "<group>"; };
 		AC8295F12D876DAD00C554D1 /* Explore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Explore; path = Packages/Explore; sourceTree = "<group>"; };
 		ACCAB48A2D81DE23001C1041 /* Analytics */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Analytics; path = Packages/Analytics; sourceTree = "<group>"; };
 		ACCAB48B2D81E07E001C1041 /* RemoteConfig */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = RemoteConfig; path = Packages/RemoteConfig; sourceTree = "<group>"; };
@@ -159,11 +163,13 @@
 				ACE05B192DA90C7900DD6E79 /* VersionHistory in Frameworks */,
 				7EE1447B2D1435DD0054FBB2 /* DesignSystem in Frameworks */,
 				7E3C09892D130B1E001D8227 /* GQLOperationsGuest in Frameworks */,
+				AC79340F2DCE4E350069CAEF /* Swinject in Frameworks */,
 				7E3C098B2D130EBF001D8227 /* GQLOperationsUser in Frameworks */,
 				ACF9156D2D9A85D800338BC4 /* ProfileNew in Frameworks */,
 				7E043B5B2D43EAD300CD365B /* Auth in Frameworks */,
 				AC6614E52D71F02000069AB5 /* Wallet in Frameworks */,
 				ACF9156F2D9A85DD00338BC4 /* PostCreation in Frameworks */,
+				AC655A862DDCBB0F0050FEBA /* Post in Frameworks */,
 				ACCAB48D2D81E500001C1041 /* RemoteConfig in Frameworks */,
 				7ED27FE62D4BCF3100A6EFE0 /* TokenKeychainManager in Frameworks */,
 				AC10E9882D9C2D0800A72988 /* SFSafeSymbols in Frameworks */,
@@ -217,12 +223,14 @@
 				7EE144782D142B150054FBB2 /* DesignSystem */,
 				7EE144D12D1454770054FBB2 /* Environment */,
 				AC8295F12D876DAD00C554D1 /* Explore */,
+				AC6041E72DDB3FFB00D8DD5B /* FeedList */,
 				7EEBA9C02D4CDC97001B6E76 /* FeedNew */,
 				7EB325A02D11909200DBF2AF /* GQLOperationsGuest */,
 				7ECF07102D0C8EA100CA7852 /* GQLOperationsUser */,
 				7ECFE79E2D15CB96002D98DD /* MediaUI */,
 				7EE144D02D1452230054FBB2 /* Models */,
 				7ECF07042D0C6DE300CA7852 /* Networking */,
+				AC6041E62DDB18B200D8DD5B /* Post */,
 				ACDF9D152D9A84B700832C1E /* PostCreation */,
 				ACDF9D162D9A84B700832C1E /* ProfileNew */,
 				ACCAB48B2D81E07E001C1041 /* RemoteConfig */,
@@ -298,6 +306,8 @@
 				AC10E9872D9C2D0800A72988 /* SFSafeSymbols */,
 				ACE05B182DA90C7900DD6E79 /* VersionHistory */,
 				AC104D642DB7A864005F07F0 /* Analytics */,
+				AC79340E2DCE4E350069CAEF /* Swinject */,
+				AC655A852DDCBB0F0050FEBA /* Post */,
 			);
 			productName = PeerApp;
 			productReference = 7ECF06D72D0C6DA200CA7852 /* PeerApp.app */;
@@ -411,6 +421,7 @@
 				7E2EEA6F2D1991A10022B381 /* XCLocalSwiftPackageReference "Packages/Networking" */,
 				ACCAB4752D8196A4001C1041 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				AC10E9862D9C2D0800A72988 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */,
+				AC79340D2DCE4E350069CAEF /* XCRemoteSwiftPackageReference "Swinject" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7ECF06D82D0C6DA200CA7852 /* Products */;
@@ -704,7 +715,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = eu.peernetwork.PeerApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -744,7 +755,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = eu.peernetwork.PeerApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -846,7 +857,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = eu.peernetwork.PeerApp.PayloadModification;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -873,7 +884,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.2.0;
+				MARKETING_VERSION = 1.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = eu.peernetwork.PeerApp.PayloadModification;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -949,6 +960,14 @@
 				version = 5.3.0;
 			};
 		};
+		AC79340D2DCE4E350069CAEF /* XCRemoteSwiftPackageReference "Swinject" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Swinject/Swinject";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.9.1;
+			};
+		};
 		ACCAB4752D8196A4001C1041 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -1009,9 +1028,18 @@
 			package = AC10E9862D9C2D0800A72988 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
 			productName = SFSafeSymbols;
 		};
+		AC655A852DDCBB0F0050FEBA /* Post */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Post;
+		};
 		AC6614E42D71F02000069AB5 /* Wallet */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Wallet;
+		};
+		AC79340E2DCE4E350069CAEF /* Swinject */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AC79340D2DCE4E350069CAEF /* XCRemoteSwiftPackageReference "Swinject" */;
+			productName = Swinject;
 		};
 		AC8295F22D876DD700C554D1 /* Explore */ = {
 			isa = XCSwiftPackageProductDependency;

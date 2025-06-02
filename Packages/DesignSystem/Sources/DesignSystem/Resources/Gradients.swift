@@ -42,4 +42,13 @@ public enum Gradients {
         ],
         center: UnitPoint(x: 0.65, y: 0.8)
     )
+
+    public static let postCreationFloatingButtonsBG = LinearGradient(
+        stops: [
+            Gradient.Stop(color: Color(red: 0.15, green: 0.15, blue: 0.15).opacity(0), location: 0.00),
+            Gradient.Stop(color: Colors.blackDark, location: 1.00),
+        ],
+        startPoint: UnitPoint(x: 0.5, y: 0),
+        endPoint: UnitPoint(x: 0.5, y: 1)
+    )
 }

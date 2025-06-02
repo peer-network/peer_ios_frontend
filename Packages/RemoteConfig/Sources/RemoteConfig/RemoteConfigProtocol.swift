@@ -15,4 +15,5 @@ public protocol RemoteConfigProtocol {
     func bool(for key: RemoteConfigValueKey) -> Bool
     func int(for key: RemoteConfigValueKey) -> Int
     func double(for key: RemoteConfigValueKey) -> Double
+    func decodedObject<T: Decodable>(for key: RemoteConfigValueKey) throws -> T
 }

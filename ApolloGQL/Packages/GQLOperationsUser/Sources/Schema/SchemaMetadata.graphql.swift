@@ -38,6 +38,9 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "ProfileInfo": return GQLOperationsUser.Objects.ProfileInfo
     case "ProfileUser": return GQLOperationsUser.Objects.ProfileUser
     case "Query": return GQLOperationsUser.Objects.Query
+    case "ReferralInfoResponse": return GQLOperationsUser.Objects.ReferralInfoResponse
+    case "ReferralListResponse": return GQLOperationsUser.Objects.ReferralListResponse
+    case "ReferralUsers": return GQLOperationsUser.Objects.ReferralUsers
     case "Tag": return GQLOperationsUser.Objects.Tag
     case "TagSearchResponse": return GQLOperationsUser.Objects.TagSearchResponse
     case "User": return GQLOperationsUser.Objects.User

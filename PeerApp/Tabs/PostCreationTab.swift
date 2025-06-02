@@ -16,7 +16,8 @@ struct PostCreationTab: View {
 
     var body: some View {
         NavigationStack(path: $router.path) {
-            PostCreationView()
+//            PostCreationView()
+            PostCreationMainView()
                 .toolbar(.hidden, for: .navigationBar)
                 .withAppRouter()
                 .withSheetDestinations(sheetDestinations: $router.presentedSheet)

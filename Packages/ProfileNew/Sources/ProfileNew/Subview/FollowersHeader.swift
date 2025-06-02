@@ -28,18 +28,14 @@ struct FollowersHeader: View {
     let friends: Int
 
     var body: some View {
-        HStack(spacing: 0) {
-            countButton(type: .posts)
-
-            Spacer()
+        HStack(spacing: 15) {
+//            countButton(type: .posts)
+//
+//            Spacer()
 
             countButton(type: .followers)
 
-            Spacer()
-
             countButton(type: .followings)
-
-            Spacer()
 
             countButton(type: .friends)
         }
@@ -55,8 +51,11 @@ struct FollowersHeader: View {
                 case .followings:
                     router.presentedSheet = .following(userId: userId)
                 case .friends:
-//                    router.presentedSheet = .friends(users: relationsViewModel.friends)
-                    break
+                    if userId == AccountManager.shared.userId {
+                        router.presentedSheet = .friends(userId: userId)
+                    } else {
+                        break
+                    }
             }
         } label: {
             VStack(spacing: 0) {
@@ -66,7 +65,8 @@ struct FollowersHeader: View {
                 Text(type.rawValue.lowercased())
                     .font(.customFont(weight: .regular, size: .footnote))
             }
-            .contentShape(Rectangle())
+            .fixedSize(horizontal: true, vertical: false)
+            .contentShape(.rect)
         }
         .foregroundStyle(Colors.whitePrimary)
     }

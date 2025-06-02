@@ -18,6 +18,8 @@ extension FeedContentType {
             [.case(.audio)]
         case .video:
             [.case(.video)]
+        case .image:
+            [.case(.image)]
         }
     }
 }
@@ -26,8 +28,8 @@ extension FeedFilterByRelationship {
     var apiValue: GraphQLEnum<PostFilterType>? {
         switch self {
             case .all: return nil
-            case .myFollowers: return .case(.followed)
-            case .whoIAmFollowing: return .case(.follower)
+            case .myFollowers: return .case(.follower)
+            case .whoIAmFollowing: return .case(.followed)
         }
     }
 }

@@ -7,27 +7,31 @@ public class RegisterMutation: GraphQLMutation {
   public static let operationName: String = "Register"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"mutation Register($email: String!, $password: String!, $username: String!) { register(input: { email: $email, password: $password, username: $username }) { __typename status ResponseCode userid } }"#
+      #"mutation Register($email: String!, $password: String!, $username: String!, $referralUuid: ID) { register( input: { email: $email password: $password username: $username referralUuid: $referralUuid } ) { __typename status ResponseCode userid } }"#
     ))
 
   public var email: String
   public var password: String
   public var username: String
+  public var referralUuid: GraphQLNullable<ID>
 
   public init(
     email: String,
     password: String,
-    username: String
+    username: String,
+    referralUuid: GraphQLNullable<ID>
   ) {
     self.email = email
     self.password = password
     self.username = username
+    self.referralUuid = referralUuid
   }
 
   public var __variables: Variables? { [
     "email": email,
     "password": password,
-    "username": username
+    "username": username,
+    "referralUuid": referralUuid
   ] }
 
   public struct Data: GQLOperationsGuest.SelectionSet {
@@ -39,7 +43,8 @@ public class RegisterMutation: GraphQLMutation {
       .field("register", Register.self, arguments: ["input": [
         "email": .variable("email"),
         "password": .variable("password"),
-        "username": .variable("username")
+        "username": .variable("username"),
+        "referralUuid": .variable("referralUuid")
       ]]),
     ] }
 

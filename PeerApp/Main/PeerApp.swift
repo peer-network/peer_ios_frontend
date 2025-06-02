@@ -30,7 +30,7 @@ struct PeerApp: App {
     @StateObject private var quickLook = QuickLook.shared
     @StateObject private var audioManager = AudioSessionManager.shared
 
-    @StateObject private var remoteConfigViewModel = RemoteConfigViewModel()
+    @StateObject private var remoteConfigViewModel: RemoteConfigViewModel
 
     @State private var selectedTab: AppTab = .feed
     @StateObject private var appRouter = Router()
@@ -39,15 +39,19 @@ struct PeerApp: App {
 
     @State private var restoreSessionResult = AuthState.loading
 
-    let analyticsService: AnalyticsServiceProtocol
+    private let analyticsService: AnalyticsServiceProtocol
 
     init() {
 #if DEBUG
         analyticsService = MockAnalyticsService(shouldPrintLogs: false)
+        let remoteConfigService = MockRemoteConfigService()
 #else
         analyticsService = FirebaseAnalyticsService()
+        let remoteConfigService = FirebaseRemoteConfigService()
 #endif
         analyticsService.track(AppEvent.launch)
+
+        _remoteConfigViewModel = .init(wrappedValue: RemoteConfigViewModel(configService: remoteConfigService))
     }
 
     var body: some Scene {
@@ -78,9 +82,7 @@ struct PeerApp: App {
                 }
             }
             .task {
-#if !DEBUG
                 await remoteConfigViewModel.fetchConfig()
-#endif
             }
             .task {
                 try? await ErrorCodeManager.shared.loadErrorCodes()

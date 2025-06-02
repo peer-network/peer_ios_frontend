@@ -7,6 +7,7 @@
 
 import Models
 import SwiftUI
+import Environment
 
 public struct RowUserView: View {
     private let user: RowUser
@@ -15,9 +16,13 @@ public struct RowUserView: View {
         self.user = user
     }
 
+    var profileImageIgnoreCache: Bool {
+        AccountManager.shared.isCurrentUser(id: user.id)
+    }
+
     public var body: some View {
         HStack(spacing: 0) {
-            ProfileAvatarView(url: user.imageURL, name: user.username, config: .rowUser)
+            ProfileAvatarView(url: user.imageURL, name: user.username, config: .rowUser, ignoreCache: profileImageIgnoreCache)
                 .padding(.trailing, 10)
 
             Text(user.username)

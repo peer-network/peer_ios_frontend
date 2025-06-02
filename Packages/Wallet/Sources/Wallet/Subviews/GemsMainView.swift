@@ -70,6 +70,7 @@ struct GemsMainView: View {
             .ignoresSafeArea()
         }
         .padding(20)
+        .background(Colors.inactiveDark)
         .clipShape(RoundedRectangle(cornerRadius: 24))
     }
 

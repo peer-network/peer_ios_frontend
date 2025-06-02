@@ -18,7 +18,8 @@ let package = Package(
         .package(name: "Environment", path: "../Environment"),
         .package(name: "Networking", path: "../Networking"),
         .package(name: "FeedNew", path: "../FeedNew"),
-        .package(name: "GQLOperationsUser", path: "../GQLOperationsUser")
+        .package(name: "FeedList", path: "../FeedList"),
+        .package(name: "Analytics", path: "../Analytics")
     ],
     targets: [
         .target(
@@ -28,7 +29,8 @@ let package = Package(
                 .product(name: "Environment", package: "Environment"),
                 .product(name: "Networking", package: "Networking"),
                 .product(name: "FeedNew", package: "FeedNew"),
-                .product(name: "GQLOperationsUser", package: "GQLOperationsUser")
+                .product(name: "FeedList", package: "FeedList"),
+                .product(name: "Analytics", package: "Analytics")
             ]
         ),
     ],

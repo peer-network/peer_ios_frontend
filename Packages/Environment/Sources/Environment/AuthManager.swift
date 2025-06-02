@@ -40,6 +40,7 @@ public final class AuthManager: ObservableObject {
 
             // Optionally, fetch daily freebies or any user data
             try? await accountManager.fetchDailyFreeLimits()
+            try? await accountManager.fetchUserInviter()
 
             return .authenticated(userId: userId)
         } catch {
@@ -61,6 +62,7 @@ public final class AuthManager: ObservableObject {
 
         // Fetch other user info if necessary
         try? await accountManager.fetchDailyFreeLimits()
+        try? await accountManager.fetchUserInviter()
 
         // Update state
         withAnimation {

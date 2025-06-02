@@ -20,6 +20,9 @@ public final class RemoteConfigViewModel: ObservableObject {
     }
 
     @Published public private(set) var state: State = .idle
+
+    @Published public private(set) var backendURL: String?
+
     @Published public var showUpdateAlert = false
 
     private let configService: RemoteConfigProtocol
@@ -51,6 +54,10 @@ public final class RemoteConfigViewModel: ObservableObject {
         do {
             try await configService.fetchConfig()
             try await configService.activateConfig()
+
+            let backendURLs: BackendURLs = try configService.decodedObject(for: .backendURLs)
+            backendURL = backendURLs.urlForCurrentVersion()
+
             state = .loaded
             checkForUpdate()
         } catch {

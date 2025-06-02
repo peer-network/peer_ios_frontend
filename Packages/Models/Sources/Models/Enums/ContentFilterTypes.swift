@@ -9,6 +9,7 @@ public enum FeedContentType: String, CaseIterable {
     case regular
     case audio
     case video
+    case image
 }
 
 public enum FeedContentSortingByTime: String, CaseIterable {

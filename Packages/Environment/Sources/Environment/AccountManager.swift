@@ -19,7 +19,8 @@ public final class AccountManager: ObservableObject {
 
     public private(set) var userId: String?
     public private(set) var user: User?
-    
+    public private(set) var inviter: RowUser?
+
     private let apiService: APIService
 
     private init() {
@@ -75,6 +76,18 @@ public final class AccountManager: ObservableObject {
             dailyFreeLikes = 0
             dailyFreePosts = 0
             dailyFreeComments = 0
+        }
+    }
+
+    public func fetchUserInviter() async throws {
+        let result = await apiService.getMyInviter()
+
+        switch result {
+            case .success(let inviter):
+                self.inviter = inviter
+            case .failure(let apiError):
+                self.inviter = nil
+                throw apiError
         }
     }
 

@@ -16,6 +16,7 @@ public final class AuthViewModel: ObservableObject {
     enum FormType {
         case login
         case register
+        case forgotPassword
     }
 
     @Published var formType: FormType = .login
@@ -36,12 +37,13 @@ public final class AuthViewModel: ObservableObject {
                 }
             } else {
                 withAnimation {
-                    passwordStrength = evaluatePasswordStrength(regPassword)
+                    passwordStrength = PasswordStrength.evaluatePasswordStrength(regPassword)
                 }
             }
         }
     }
     @Published var regUsername = ""
+    @Published var regReferralCode = ""
     @Published var regError = ""
 
     @Published private(set) var passwordStrength: PasswordStrength = .empty
@@ -84,7 +86,7 @@ public final class AuthViewModel: ObservableObject {
         }
 
         do {
-            let regResult = await apiService.registerUser(email: regEmail, password: regPassword, username: regUsername)
+            let regResult = await apiService.registerUser(email: regEmail, password: regPassword, username: regUsername, referralUuid: regReferralCode)
 
             switch regResult {
                 case .success(let registeredId):
@@ -100,6 +102,7 @@ public final class AuthViewModel: ObservableObject {
             regEmail = ""
             regUsername = ""
             regPassword = ""
+            regReferralCode = ""
 
             return true
         } catch let apiError as APIError {
@@ -115,70 +118,16 @@ public final class AuthViewModel: ObservableObject {
         }
     }
 
+    func setReferralCode(_ code: String) {
+        // TODO: Validation checks here
+        regReferralCode = code
+        formType = .register
+    }
+
     private func resetErrors() {
         withAnimation {
             loginError = ""
             regError = ""
-        }
-    }
-}
-
-// MARK: - Password validation
-
-extension AuthViewModel {
-    enum PasswordStrength: String {
-        case empty = ""
-        case tooWeak = "Too weak!"
-        case notStrongEnough = "Not strong enough!"
-        case good = "Good!"
-        case excellent = "Excellent!"
-    }
-
-    private func evaluatePasswordStrength(_ password: String) -> PasswordStrength {
-        // At minimum, a password must be:
-        // 1) >= 8 characters
-        // 2) contain at least one uppercase letter
-        // 3) contain at least one lowercase letter
-        // 4) contain at least one digit
-
-        // Check each requirement
-        let lengthRequirement = password.count >= 8
-        let hasUppercase = password.rangeOfCharacter(from: .uppercaseLetters) != nil
-        let hasLowercase = password.rangeOfCharacter(from: .lowercaseLetters) != nil
-        let hasDigit = password.rangeOfCharacter(from: .decimalDigits) != nil
-
-        // Count how many are satisfied
-        var score = 0
-        score += lengthRequirement ? 1 : 0
-        score += hasUppercase      ? 1 : 0
-        score += hasLowercase      ? 1 : 0
-        score += hasDigit          ? 1 : 0
-
-        // Additional requirement to qualify as "excellent"
-        // e.g., length ≥ 12 or has a special character, etc.
-        let hasSpecialCharacter = password.rangeOfCharacter(
-            from: CharacterSet.punctuationCharacters.union(.symbols)
-        ) != nil
-        let lengthBonus = password.count >= 12
-
-        let meetsExcellentBonus = hasSpecialCharacter || lengthBonus
-
-        // Decide on final rating:
-        switch score {
-            case 0, 1:
-                return .tooWeak
-            case 2:
-                return .notStrongEnough
-            case 3:
-                // 3 means one of the four core checks is missing
-                // so still "notStrongEnough" if it doesn't meet all 4
-                return .notStrongEnough
-            case 4:
-                // All minimum requirements are met
-                return meetsExcellentBonus ? .excellent : .good
-            default:
-                // Should never hit here, but as a fallback:
-                return .tooWeak
         }
     }
 }
