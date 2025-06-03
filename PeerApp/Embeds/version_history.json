@@ -44,5 +44,12 @@
             "Profile page updated with a new header design",
             "Overall improvements and fixes"
         ]
+    },
+    {
+        "version": "1.3.2",
+        "date": "3 Jun 2025",
+        "releaseNotes": [
+            "Overall improvements and fixes"
+        ]
     }
 ]

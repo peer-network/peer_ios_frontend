@@ -20,7 +20,9 @@ struct PostDescriptionComment: View {
     var body: some View {
         HStack(alignment: .top, spacing: 5) {
             Button {
-                dismiss()
+                if !isInFeed {
+                    dismiss()
+                }
                 router.navigate(to: .accountDetail(id: postVM.post.owner.id))
             } label: {
                 Text(postVM.post.owner.username)
