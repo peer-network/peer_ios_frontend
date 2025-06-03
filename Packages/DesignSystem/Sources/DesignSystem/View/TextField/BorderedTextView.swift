@@ -213,7 +213,8 @@ public struct BorderedTextView<Value: Hashable>: UIViewRepresentable {
                 let hashtagMatches = hashtagRegex.matches(in: currentText, range: wholeRange)
 
                 for match in hashtagMatches {
-                    let hashtag = attributedString.attributedSubstring(from: match.range).string
+                    let hashtagWithSymbol = attributedString.attributedSubstring(from: match.range).string
+                    let hashtag = String(hashtagWithSymbol.dropFirst())
                     parent.hashtags.append(hashtag)
 
                     attributedString.addAttributes([
