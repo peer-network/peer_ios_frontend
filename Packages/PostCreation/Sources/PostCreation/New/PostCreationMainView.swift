@@ -47,7 +47,10 @@ public struct PostCreationMainView: View {
     // Attachments
     @State private var imageStates: [ImageState]?
     @State private var selectedPhotoItems: [PhotosPickerItem] = []
+
     @State private var videoState: VideoState?
+
+    @State private var audioState: AudioState?
 
     // View logic properties
     @State private var focusOnEditing = false
@@ -64,7 +67,7 @@ public struct PostCreationMainView: View {
         } content: {
             ScrollView {
                 VStack(spacing: 20) {
-                    AttachmentMainView(focusOnEditing: $focusOnEditing, postType: $postType, imageStates: $imageStates, selectedPhotoItems: $selectedPhotoItems, videoState: $videoState)
+                    AttachmentMainView(focusOnEditing: $focusOnEditing, postType: $postType, imageStates: $imageStates, selectedPhotoItems: $selectedPhotoItems, videoState: $videoState, audioState: $audioState)
 
                     if !focusOnEditing {
                         VStack(spacing: 20) {
@@ -122,7 +125,6 @@ public struct PostCreationMainView: View {
                                     showConfirmationAlert = true
                                 }
                             }
-
                         }
                         .transition(.blurReplace)
                     }
@@ -195,7 +197,9 @@ public struct PostCreationMainView: View {
                 guard let videoURL = getVideoURL() else { return false }
                 result = await postCreationVM.makeVideoPost(title: titleText, description: descriptionText, hashtags: combinedHashtags, videoURL: videoURL)
             case .audio:
-                result = false
+                guard let audioURL = getAudioURL() else { return false }
+                let coverImage = getAudioCoverImage()
+                result = await postCreationVM.makeAudioPost(title: titleText, description: descriptionText, hashtags: combinedHashtags, audioURL: audioURL, cover: coverImage)
             case .text:
                 result = await postCreationVM.makeTextPost(title: titleText, description: descriptionText, hashtags: combinedHashtags)
         }
@@ -204,7 +208,7 @@ public struct PostCreationMainView: View {
     }
 
     private func getPhotos() -> [UIImage] {
-        guard let imageStates = imageStates else { return [] }
+        guard let imageStates else { return [] }
 
         return imageStates.compactMap { state in
             if case .loaded(let image) = state.state {
@@ -215,10 +219,26 @@ public struct PostCreationMainView: View {
     }
 
     private func getVideoURL() -> URL? {
-        guard let videoState = videoState else { return nil }
+        guard let videoState else { return nil }
 
         if case .loaded(_, let videoURL, _) = videoState.state {
             return videoURL
+        }
+
+        return nil
+    }
+
+    private func getAudioURL() -> URL? {
+        guard let audioState else { return nil }
+        return audioState.url
+    }
+
+    private func getAudioCoverImage() -> UIImage? {
+        guard let audioState else { return nil }
+        guard let coverState = audioState.cover else { return nil }
+
+        if case .loaded(let image) = coverState.state {
+            return image
         }
 
         return nil
@@ -233,6 +253,7 @@ public struct PostCreationMainView: View {
         imageStates = nil
         selectedPhotoItems = []
         videoState = nil
+        audioState = nil
     }
 
     @ViewBuilder

@@ -155,6 +155,59 @@ final class PostCreationVM: ObservableObject {
         }
     }
 
+    func makeAudioPost(title: String, description: String, hashtags: [String], audioURL: URL, cover coverImage: UIImage?) async -> Bool {
+        withAnimation {
+            error = ""
+            isLoading = true
+        }
+
+        let isFreePost = takeFreePost()
+
+        do {
+            let fixedTitle = trimWhitespaces(from: title)
+            let fixedDescription = trimWhitespaces(from: description)
+
+            let audioData = try Data(contentsOf: audioURL)
+            var base64AudioData = audioData.base64EncodedString()
+            addBase64Prefix(to: &base64AudioData, ofType: .audio)
+
+            var base64CoverString: String?
+
+            if let coverImage {
+                let compressedImageData = try await Compressor.shared.compressImageForUpload(coverImage)
+                var base64 = compressedImageData.base64EncodedString()
+                addBase64Prefix(to: &base64, ofType: .photo)
+                base64CoverString = base64
+            }
+
+            let result = await apiService.makePost(
+                of: .audio,
+                with: fixedTitle,
+                content: [base64AudioData],
+                contentDescitpion: fixedDescription,
+                tags: hashtags,
+                cover: base64CoverString
+            )
+
+            isLoading = false
+
+            switch result {
+            case .success:
+                return true
+            case .failure(let apiError):
+                throw apiError
+            }
+        } catch {
+            withAnimation {
+                self.error = error.userFriendlyDescription
+            }
+            if isFreePost {
+                returnFreePost()
+            }
+            return false
+        }
+    }
+
     private func takeFreePost() -> Bool {
         if accountManager.dailyFreePosts > 0 {
             accountManager.freePostUsed()
