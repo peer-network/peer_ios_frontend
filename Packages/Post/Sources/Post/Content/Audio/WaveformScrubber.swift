@@ -7,8 +7,9 @@
 
 import SwiftUI
 import AVKit
+import DesignSystem
 
-struct WaveformScrubber: View {
+public struct WaveformScrubber: View {
     var config: Config = .init()
     var url: URL
 
@@ -43,7 +44,25 @@ struct WaveformScrubber: View {
         Array(repeating: 0.1, count: barCount)
     }
 
-    var body: some View {
+    public init(
+        config: Config = .init(),
+        url: URL,
+        progress: Binding<CGFloat>,
+        playClicked: Binding<Bool>,
+        info: @escaping (AudioInfo) -> () = { _ in },
+        onGestureActive: @escaping (Bool) -> () = { _ in },
+        onGestureEnded: @escaping () -> Void = { }
+    ) {
+        self.config = config
+        self.url = url
+        self._progress = progress
+        self._playClicked = playClicked
+        self.info = info
+        self.onGestureActive = onGestureActive
+        self.onGestureEnded = onGestureEnded
+    }
+
+    public var body: some View {
         HStack(spacing: 6) {
             ZStack {
                 WaveformShape(samples: audioFileURL == nil || isLoading || error != nil ? placeholderSamples : dowsizedSamples)
@@ -105,15 +124,26 @@ struct WaveformScrubber: View {
         }
     }
 
-    struct Config {
-        var spacing: Float = 3
-        var shapeWidth: Float = 3.5
-        var activeTint: Color = .blue
-        var inActiveTint: Color = .white
+    public struct Config {
+        let spacing: Float
+        let shapeWidth: Float
+        let activeTint: Color
+        let inActiveTint: Color
+
+        public init(spacing: Float = 3, shapeWidth: Float = 3.5, activeTint: Color = Colors.hashtag, inActiveTint: Color = Colors.whitePrimary) {
+            self.spacing = spacing
+            self.shapeWidth = shapeWidth
+            self.activeTint = activeTint
+            self.inActiveTint = inActiveTint
+        }
     }
 
-    struct AudioInfo {
-        var duration: TimeInterval = 0
+    public struct AudioInfo {
+        public let duration: TimeInterval
+
+        public init(duration: TimeInterval = 0) {
+            self.duration = duration
+        }
     }
 }
 

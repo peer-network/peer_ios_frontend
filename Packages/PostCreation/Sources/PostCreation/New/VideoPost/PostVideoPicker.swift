@@ -25,16 +25,6 @@ enum VideoLoadingError: Error, LocalizedError {
     }
 }
 
-struct VideoState {
-    enum LoadingState {
-        case loading
-        case loaded(thumbnail: Image, videoURL: URL, duration: Double?)
-    }
-
-    let id: String
-    var state: LoadingState
-}
-
 struct PostVideoPicker<Content: View>: View {
     @Binding var videoState: VideoState?
     @ViewBuilder let content: () -> Content

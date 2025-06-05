@@ -89,7 +89,7 @@ public final class AudioSessionManager: ObservableObject {
     }
 
     public func play() {
-        guard !isPlaying, !isInRestrictedView else { return }
+        guard !isPlaying else { return }
 
         if currentTime == duration {
             seek(to: 0)
@@ -112,8 +112,8 @@ public final class AudioSessionManager: ObservableObject {
         player = AVPlayer(url: item.url)
         player?.audiovisualBackgroundPlaybackPolicy = .continuesIfPossible
 
-        NotificationCenter.default.addObserver(forName: AVPlayerItem.didPlayToEndTimeNotification, object: player?.currentItem, queue: .main) { [weak self] _ in
-            self?.pause() // TODO: Check if it actually needs this pause since pause() may be not going through guard
+        player?.currentItem?.errorLog()?.events.forEach { event in
+            print("Player error: \(event.errorComment ?? "Unknown error")")
         }
 
         // Observe duration
@@ -141,10 +141,11 @@ public final class AudioSessionManager: ObservableObject {
 
     private func configureSession() {
         do {
-            try session.setCategory(.playback, mode: .default, options: [.allowAirPlay, .allowBluetooth])
+            try session.setCategory(.playback, mode: .default)
             try session.setActive(true, options: [.notifyOthersOnDeactivation])
         } catch {
             print("Failed to configure audio session: \(error)")
+            print(error.localizedDescription)
         }
     }
 

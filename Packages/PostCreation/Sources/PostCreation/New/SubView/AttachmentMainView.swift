@@ -16,8 +16,11 @@ struct AttachmentMainView: View {
     @Binding var imageStates: [ImageState]?
     @Binding var selectedPhotoItems: [PhotosPickerItem]
     @Binding var videoState: VideoState?
+    @Binding var audioState: AudioState?
 
     @State private var isExpanded: Bool = false
+
+    @State private var isAudioPickerPresented: Bool = false
 
     var body: some View {
         Group {
@@ -36,6 +39,11 @@ struct AttachmentMainView: View {
                 .onAppear {
                     postType = .video
                 }
+            } else if audioState != nil {
+                SelectedAudioView(audioState: $audioState)
+                    .onAppear {
+                        postType = .audio
+                    }
             } else {
                 uploadMediaRectangle2
                     .onAppear {
@@ -76,6 +84,7 @@ struct AttachmentMainView: View {
             .frame(width: 68, height: 68)
             .background {
                 ZStack {
+                    audioButton
                     videoButton
                     photoButton
                 }
@@ -100,7 +109,8 @@ struct AttachmentMainView: View {
         }
         .buttonStyle(PressableButtonStyle())
         .disabled(!isExpanded)
-        .offset(x: isExpanded ? -offset / 2 : 0)
+        .offset(x: isExpanded ? -offset / 2.5 : 0)
+        .offset(y: isExpanded ? -offset / 2.5 : 0)
     }
 
     private var photoButton: some View {
@@ -114,7 +124,51 @@ struct AttachmentMainView: View {
         }
         .buttonStyle(PressableButtonStyle())
         .disabled(!isExpanded)
-        .offset(y: isExpanded ? -offset / 2 : 0)
+        .offset(x: isExpanded ? -offset / 1.75 : 0)
+    }
+
+    private var audioButton: some View {
+        Button {
+            isAudioPickerPresented = true
+        } label: {
+            Image(systemName: "music.note")
+                .font(.title3)
+                .foregroundStyle(Colors.whitePrimary)
+                .frame(width: 68, height: 68)
+                .background(Colors.inactiveDark, in: .circle)
+                .contentShape(.circle)
+        }
+        .buttonStyle(PressableButtonStyle())
+        .disabled(!isExpanded)
+        .offset(y: isExpanded ? -offset / 1.75 : 0)
+        .fileImporter(
+            isPresented: $isAudioPickerPresented,
+            allowedContentTypes: [UTType.mp3],
+            allowsMultipleSelection: false
+        ) { result in
+            handleAudioImport(result: result)
+        }
+    }
+
+    private func handleAudioImport(result: Result<[URL], Error>) {
+        do {
+            guard let url = try result.get().first else { return }
+            if url.startAccessingSecurityScopedResource() {
+                defer { url.stopAccessingSecurityScopedResource() }
+
+                let tempDir = FileManager.default.temporaryDirectory
+                let uniqueName = UUID().uuidString + ".mp3"
+                let localURL = tempDir.appendingPathComponent(uniqueName)
+
+                try FileManager.default.copyItem(at: url, to: localURL)
+
+                audioState = AudioState(id: uniqueName, url: localURL)
+            } else {
+                throw CocoaError(.fileReadNoPermission)
+            }
+        } catch {
+            print("Error accessing file: \(error.localizedDescription)")
+        }
     }
 
     private var offset: CGFloat {
@@ -122,7 +176,7 @@ struct AttachmentMainView: View {
     }
 }
 
-fileprivate struct PressableButtonStyle: ButtonStyle {
+struct PressableButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .scaleEffect(configuration.isPressed ? 0.9 : 1)

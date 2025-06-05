@@ -19,18 +19,6 @@ enum ImageLoadingError: Error, LocalizedError {
     }
 }
 
-struct ImageState {
-    enum LoadingState {
-        case loading
-        case loaded(UIImage)
-        case failed(Error)
-    }
-
-    let id: String
-    var state: LoadingState
-    var pickerItem: PhotosPickerItem?
-}
-
 struct PostPhotoPicker<Content: View>: View {
     @Binding var imageStates: [ImageState]?
     @Binding var selectedItems: [PhotosPickerItem]
