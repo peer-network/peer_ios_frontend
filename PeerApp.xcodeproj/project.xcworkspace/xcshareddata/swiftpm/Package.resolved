@@ -28,6 +28,15 @@
       }
     },
     {
+      "identity" : "chatlayout",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/ekazaev/ChatLayout",
+      "state" : {
+        "revision" : "0576ac90f9e0f94c9f7acc7983381394544ceb7b",
+        "version" : "2.0.13"
+      }
+    },
+    {
       "identity" : "dotlottie-ios",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/LottieFiles/dotlottie-ios.git",

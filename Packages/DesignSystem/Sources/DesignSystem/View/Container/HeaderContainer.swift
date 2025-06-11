@@ -83,6 +83,7 @@ public struct HeaderContainer<Header: View, Content: View>: View {
 
                                 Text("\(accountManager.dailyFreePosts)")
                             }
+                        
                     }
                 }
                 .font(.customFont(weight: .regular, size: .body))
@@ -117,11 +118,22 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                     }
                     .padding(.leading, 10)
                 }
+                // Added Chat Icon
+                Button {
+                    if router.path.last != .chat {
+                        router.navigate(to: .chat)
+                    }
+                } label: {
+                    Icons.bubble
+                        .iconSize(height: 20)
+                        .foregroundColor(Colors.whitePrimary)
+                }
+                .padding(.leading, 10)
             }
             .foregroundStyle(Colors.whitePrimary)
             .padding(.vertical, 10)
             .padding(.horizontal, 20)
-
+            
             content()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)

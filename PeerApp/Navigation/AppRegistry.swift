@@ -14,6 +14,7 @@ import Models
 import LinkPresentation
 import Explore
 import VersionHistory
+import Chat
 import Wallet
 import Post
 
@@ -41,6 +42,8 @@ extension View {
                 case .versionHistory:
                     VersionHistoryView()
                         .toolbar(.hidden, for: .navigationBar)
+                case .chat:
+                    ChatView()
                 case .transfer(let recipient, let amount):
                     TransferPageView(recipient: recipient, amount: amount)
                         .toolbar(.hidden, for: .navigationBar)

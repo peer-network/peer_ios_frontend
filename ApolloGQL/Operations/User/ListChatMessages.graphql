@@ -1,0 +1,16 @@
+query ListChatMessages($chatid: ID!) {
+    listChatMessages(
+        chatid: $chatid
+    ) {
+         status
+        counter
+        ResponseCode
+        affectedRows {
+            messid
+            chatid
+            userid
+            content
+            createdat
+        }
+    }
+}

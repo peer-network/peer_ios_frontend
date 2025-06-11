@@ -14,14 +14,14 @@ let package = Package(
             targets: ["Models"]),
     ],
     dependencies: [
-        .package(name: "GQLOperationsUser", path: "../GQLOperationsUser")
+        .package(name: "GQLOperationsUser", path: "../GQLOperationsUser"),
     ],
     targets: [
         .target(
             name: "Models",
             dependencies: [
-                .product(name: "GQLOperationsUser", package: "GQLOperationsUser")
-            ]
+                .product(name: "GQLOperationsUser", package: "GQLOperationsUser"),
+              ]
         ),
     ],
     swiftLanguageModes: [.v5]

@@ -8,7 +8,7 @@
 import Foundation
 
 extension String {
-    func timeAgo(isShort: Bool) -> String {
+    public func timeAgo(isShort: Bool) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSSSS"
         dateFormatter.timeZone = TimeZone(abbreviation: "UTC") // Server time is in UTC

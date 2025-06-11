@@ -20,6 +20,14 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
 
   public static func objectType(forTypename typename: String) -> ApolloAPI.Object? {
     switch typename {
+    case "AddChatResponse": return GQLOperationsUser.Objects.AddChatResponse
+    case "AddChatmessageResponse": return GQLOperationsUser.Objects.AddChatmessageResponse
+    case "Chat": return GQLOperationsUser.Objects.Chat
+    case "ChatMessage": return GQLOperationsUser.Objects.ChatMessage
+    case "ChatMessageInfo": return GQLOperationsUser.Objects.ChatMessageInfo
+    case "ChatParticipant": return GQLOperationsUser.Objects.ChatParticipant
+    case "ChatResponse": return GQLOperationsUser.Objects.ChatResponse
+    case "Chatinfo": return GQLOperationsUser.Objects.Chatinfo
     case "Comment": return GQLOperationsUser.Objects.Comment
     case "CommentResponse": return GQLOperationsUser.Objects.CommentResponse
     case "CurrentLiquidity": return GQLOperationsUser.Objects.CurrentLiquidity
@@ -41,6 +49,7 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "ReferralInfoResponse": return GQLOperationsUser.Objects.ReferralInfoResponse
     case "ReferralListResponse": return GQLOperationsUser.Objects.ReferralListResponse
     case "ReferralUsers": return GQLOperationsUser.Objects.ReferralUsers
+    case "Subscription": return GQLOperationsUser.Objects.Subscription
     case "Tag": return GQLOperationsUser.Objects.Tag
     case "TagSearchResponse": return GQLOperationsUser.Objects.TagSearchResponse
     case "User": return GQLOperationsUser.Objects.User

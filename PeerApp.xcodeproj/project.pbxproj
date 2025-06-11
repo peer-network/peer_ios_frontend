@@ -34,6 +34,8 @@
 		ACE05B192DA90C7900DD6E79 /* VersionHistory in Frameworks */ = {isa = PBXBuildFile; productRef = ACE05B182DA90C7900DD6E79 /* VersionHistory */; };
 		ACF9156D2D9A85D800338BC4 /* ProfileNew in Frameworks */ = {isa = PBXBuildFile; productRef = ACF9156C2D9A85D800338BC4 /* ProfileNew */; };
 		ACF9156F2D9A85DD00338BC4 /* PostCreation in Frameworks */ = {isa = PBXBuildFile; productRef = ACF9156E2D9A85DD00338BC4 /* PostCreation */; };
+		D66BF4AB2DEF62A300471115 /* Chat in Frameworks */ = {isa = PBXBuildFile; productRef = D66BF4AA2DEF62A300471115 /* Chat */; };
+		D66BF4AE2DEF6E4A00471115 /* ChatLayout in Frameworks */ = {isa = PBXBuildFile; productRef = D66BF4AD2DEF6E4A00471115 /* ChatLayout */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -98,6 +100,7 @@
 		ACDF9D152D9A84B700832C1E /* PostCreation */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = PostCreation; path = Packages/PostCreation; sourceTree = "<group>"; };
 		ACDF9D162D9A84B700832C1E /* ProfileNew */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ProfileNew; path = Packages/ProfileNew; sourceTree = "<group>"; };
 		ACE05B1C2DA92B0300DD6E79 /* VersionHistory */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = VersionHistory; path = Packages/VersionHistory; sourceTree = "<group>"; };
+		D66BF42B2DEF39A100471115 /* Chat */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Chat; path = Packages/Chat; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -162,6 +165,7 @@
 			files = (
 				7EE9D1772D369DAA00D03B20 /* MediaUI in Frameworks */,
 				ACE05B192DA90C7900DD6E79 /* VersionHistory in Frameworks */,
+				D66BF4AB2DEF62A300471115 /* Chat in Frameworks */,
 				7EE1447B2D1435DD0054FBB2 /* DesignSystem in Frameworks */,
 				AC7BD8C02DEDCEEE0094BC9A /* FirebaseMessaging in Frameworks */,
 				7E3C09892D130B1E001D8227 /* GQLOperationsGuest in Frameworks */,
@@ -177,6 +181,7 @@
 				AC7BD8C22DEDCEEE0094BC9A /* FirebasePerformance in Frameworks */,
 				ACCAB48D2D81E500001C1041 /* RemoteConfig in Frameworks */,
 				7ED27FE62D4BCF3100A6EFE0 /* TokenKeychainManager in Frameworks */,
+				D66BF4AE2DEF6E4A00471115 /* ChatLayout in Frameworks */,
 				AC10E9882D9C2D0800A72988 /* SFSafeSymbols in Frameworks */,
 				AC8295F32D876DD700C554D1 /* Explore in Frameworks */,
 				AC7BD8C42DEDCEEE0094BC9A /* FirebaseRemoteConfig in Frameworks */,
@@ -222,6 +227,7 @@
 				7ED0F7A12D0DD8410027A49B /* PayloadModification */,
 				ACCAB48A2D81DE23001C1041 /* Analytics */,
 				7E043B592D43EA4C00CD365B /* Auth */,
+				D66BF42B2DEF39A100471115 /* Chat */,
 				7EE144782D142B150054FBB2 /* DesignSystem */,
 				7EE144D12D1454770054FBB2 /* Environment */,
 				AC8295F12D876DAD00C554D1 /* Explore */,
@@ -311,6 +317,8 @@
 				AC7BD8BF2DEDCEEE0094BC9A /* FirebaseMessaging */,
 				AC7BD8C12DEDCEEE0094BC9A /* FirebasePerformance */,
 				AC7BD8C32DEDCEEE0094BC9A /* FirebaseRemoteConfig */,
+				D66BF4AA2DEF62A300471115 /* Chat */,
+				D66BF4AD2DEF6E4A00471115 /* ChatLayout */,
 			);
 			productName = PeerApp;
 			productReference = 7ECF06D72D0C6DA200CA7852 /* PeerApp.app */;
@@ -425,6 +433,7 @@
 				AC10E9862D9C2D0800A72988 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */,
 				AC79340D2DCE4E350069CAEF /* XCRemoteSwiftPackageReference "Swinject" */,
 				AC7BD8B82DEDCEEE0094BC9A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				D66BF4AC2DEF6D4700471115 /* XCRemoteSwiftPackageReference "ChatLayout" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7ECF06D82D0C6DA200CA7852 /* Products */;
@@ -980,6 +989,14 @@
 				minimumVersion = 11.9.0;
 			};
 		};
+		D66BF4AC2DEF6D4700471115 /* XCRemoteSwiftPackageReference "ChatLayout" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ekazaev/ChatLayout";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.13;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1094,6 +1111,15 @@
 		ACF9156E2D9A85DD00338BC4 /* PostCreation */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PostCreation;
+		};
+		D66BF4AA2DEF62A300471115 /* Chat */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Chat;
+		};
+		D66BF4AD2DEF6E4A00471115 /* ChatLayout */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D66BF4AC2DEF6D4700471115 /* XCRemoteSwiftPackageReference "ChatLayout" */;
+			productName = ChatLayout;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

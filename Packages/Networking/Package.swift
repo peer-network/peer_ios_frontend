@@ -19,7 +19,8 @@ let package = Package(
             .upToNextMajor(from: "1.15.3")
         ),
         .package(name: "TokenKeychainManager", path: "../TokenKeychainManager"),
-        .package(name: "Models", path: "../Models")
+        .package(name: "Models", path: "../Models"),
+        .package(name: "GQLOperationsGuest", path: "../GQLOperationsGuest"),
     ],
     targets: [
         .target(
@@ -27,6 +28,7 @@ let package = Package(
             dependencies: [
                 .product(name: "Apollo", package: "apollo-ios"),
                 .product(name: "ApolloWebSocket", package: "apollo-ios"),
+                .product(name: "GQLOperationsGuest", package: "GQLOperationsGuest"),
                 .product(name: "TokenKeychainManager", package: "TokenKeychainManager"),
                 .product(name: "Models", package: "Models")
             ]

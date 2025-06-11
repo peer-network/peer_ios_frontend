@@ -1,0 +1,7 @@
+subscription GetChatMessages($chatid: ID!) {
+  getChatMessages(chatid: $chatid) {
+    status
+    counter
+    ResponseCode
+  }
+}

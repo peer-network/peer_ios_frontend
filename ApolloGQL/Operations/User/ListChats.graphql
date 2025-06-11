@@ -1,0 +1,28 @@
+query ListChats {
+  listChats {
+    status
+    counter
+    ResponseCode
+    affectedRows {
+      id
+      image
+      name
+      createdat
+      updatedat
+      chatmessages {
+        id
+        senderid
+        chatid
+        content
+        createdat
+      }
+      chatparticipants {
+        userid
+        img
+        username
+        slug
+        hasaccess
+      }
+    }
+  }
+}

@@ -171,7 +171,7 @@ public final class RelationsViewModel: ObservableObject, RelationsFetcher {
                 let result = await apiService.fetchUserFriends(after: currentOffsetFriends)
 
                 try Task.checkCancellation()
-
+                print("frdresult", result)
                 switch result {
                     case .success(let fetchedFriends):
                         if reset {
@@ -179,7 +179,7 @@ public final class RelationsViewModel: ObservableObject, RelationsFetcher {
                         }
 
                         friends.append(contentsOf: fetchedFriends)
-
+                    print("fetchedFriends", fetchedFriends)
                         if fetchedFriends.count != 20 {
                             hasMoreFriends = false
                             state = .display(users: friends, hasMore: .none)

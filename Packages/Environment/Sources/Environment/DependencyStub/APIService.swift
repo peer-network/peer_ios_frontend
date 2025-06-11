@@ -10,6 +10,9 @@ import GQLOperationsUser
 import Foundation
 
 public final class APIServiceStub: APIService {
+  
+    
+
     public init(){}
     
     //MARK: Auth/Reg
@@ -148,6 +151,53 @@ public final class APIServiceStub: APIService {
     public func fetchTags(with query: String) async -> Result<[String], APIError> {
         .success(["Tag1", "2gaT"])
     }
+    
+    //MARK: Chats
+    public func sendChatMessage(with chatid: GQLOperationsUser.ID, content: String) async -> Result<Void, Models.APIError> {
+        .success(())
+    }
+    public func createChat(name: String, recipients: [String], image: String?) async -> Result<String, Models.APIError> {
+        .success("test")
+    }
+
+    public func addChatParticipants(chatId: GQLOperationsUser.ID, recipients: [String]) async -> Result<Void, Models.APIError> {
+        .success(())
+    }
+    
+    public func listChatMessages(for chatid: GQLOperationsUser.ID) async -> Result<Models.ListChatMessages, Models.APIError> {
+        .failure(.missingData)
+    }
+    
+    public func listChats() async -> Result<[Models.ListChats], Models.APIError> {
+        return .success([])
+    }
+
+    public func subscribeToChatMessages(
+        chatId: GQLOperationsUser.ID
+    ) -> AsyncThrowingStream<GetChatMessagesSubscription.Data, Error> {
+        // Create properly typed mock data
+        let mockDataDict: [String: AnyHashable] = [
+            "getChatMessages": [
+                "__typename": "AddChatmessageResponse",
+                "status": "success",
+                "counter": 1,
+                "ResponseCode": "200"
+            ] as [String: AnyHashable]
+        ]
+        
+        let mockData = GetChatMessagesSubscription.Data(
+            _dataDict: DataDict(
+                data: mockDataDict,
+                fulfilledFragments: []
+            )
+        )
+        
+        return AsyncThrowingStream { continuation in
+            continuation.yield(mockData)
+            continuation.finish()
+        }
+    }
+    
     
     //MARK: Wallet
     public func fetchLiquidityState() async -> Result<Double, APIError> {

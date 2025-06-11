@@ -13,6 +13,7 @@ public enum AppScreen: ScreenTrackable {
     case videoFeed
     case audioFeed
     case versionHistory
+    case chat
     case search
     case postCreation
     case wallet
@@ -39,6 +40,8 @@ public enum AppScreen: ScreenTrackable {
                 return "AudioFeed"
             case .versionHistory:
                 return "VersionHistory"
+            case .chat:
+                return "Chat"
             case .search:
                 return "Search"
             case .postCreation:
@@ -76,6 +79,8 @@ public enum AppScreen: ScreenTrackable {
                 return "FeedView"
             case .versionHistory:
                 return "VersionHistoryView"
+            case .chat:
+                return "ChatView"
             case .search:
                 return "SearchView"
             case .postCreation:
