@@ -43,7 +43,7 @@ struct GroupChatListView: View {
                 Color.gray.opacity(0.3)
             }
             .frame(width: 40, height: 40)
-            .clipShape(RoundedRectangle(cornerRadius: 6))
+            .clipShape(Circle())
         } else {
             RoundedRectangle(cornerRadius: 6)
                 .fill(Color.gray.opacity(0.3))

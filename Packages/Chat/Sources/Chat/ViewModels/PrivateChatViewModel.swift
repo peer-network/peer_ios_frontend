@@ -10,7 +10,7 @@ struct Message1: Identifiable {
     let id: String
     let text: String
     let isIncoming: Bool
-    let timestamp: Date
+    let timestamp: String
     let sender: User
 }
 
@@ -49,7 +49,7 @@ final class PrivateChatViewModel: ObservableObject {
                 id: currentUser.id,
                 text: text,
                 isIncoming: false,
-                timestamp: Date(),
+                timestamp: "",
                 sender: currentUser
             )
             messages.append(outgoing)

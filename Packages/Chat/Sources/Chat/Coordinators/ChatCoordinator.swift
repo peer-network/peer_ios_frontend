@@ -107,10 +107,9 @@ class ChatCoordinator: ObservableObject, Coordinator {
         // Convert server messages → Message1
         let initialMessages: [Message1] = chat.chatMessages.map { m in
             let sender = participants.first(where: { $0.id == m.senderId }) ?? me
-            let date   = m.createdAt.flatMap { ISO8601DateFormatter().date(from: $0) } ?? Date()
             return Message1(id: m.senderId, text: m.content,
                             isIncoming: m.senderId != currentUserId,
-                            timestamp: date,
+                            timestamp: m.createdAt ?? "",
                             sender: sender)
         }
 
@@ -249,7 +248,7 @@ class ChatCoordinator: ObservableObject, Coordinator {
                 id: msg.userid,
                 text: msg.content,
                 isIncoming: incoming,
-                timestamp: Date(), // Parse from msg.createdAt if needed
+                timestamp: msg.createdAt ?? "", // Parse from msg.createdAt if needed
                 sender: incoming ? peer : me
             )
         }
@@ -306,7 +305,7 @@ print("chatId", chatId)
                 id: msg.userid,
                 text: msg.content,
                 isIncoming: incoming,
-                timestamp: Date(),
+                timestamp: msg.createdAt ?? "",
                 sender: incoming ? peer : me
             )
         }

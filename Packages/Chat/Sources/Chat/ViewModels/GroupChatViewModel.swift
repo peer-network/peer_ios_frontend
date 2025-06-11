@@ -47,7 +47,7 @@ final class GroupChatViewModel: ObservableObject {
             id: currentUser.id,
             text: text,
             isIncoming: false,
-            timestamp: Date(),
+            timestamp: "",
             sender: currentUser
         )
         messages.append(optimistic)
