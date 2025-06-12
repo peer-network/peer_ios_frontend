@@ -13,6 +13,33 @@ struct GroupCreationView: View {
     @ObservedObject var vm: GroupCreationViewModel
     
     var body: some View {
+        ZStack {
+            // Show either GroupCreationView or FriendSelectionView
+            if vm.showFriendSelection {
+                FriendSelectionView(
+                    viewModel: vm.friendSelectionViewModel,
+                    isGroupChat: true,
+                    onDone: { selectedUsers in
+                        vm.handleSelectedUsers(selectedUsers)
+                        vm.showFriendSelection = false
+                    },
+                    onCreateGroupChat: vm.onCreateChat
+                )
+                .transition(.move(edge: .trailing)) // Slide in animation
+            } else {
+                GroupCreationContentView(vm: vm)
+                    .transition(.move(edge: .leading)) // Slide out animation
+            }
+        }
+        .animation(.default, value: vm.showFriendSelection)
+    }
+}
+
+// Extracted the main content to a separate view for clarity
+struct GroupCreationContentView: View {
+    @ObservedObject var vm: GroupCreationViewModel
+    
+    var body: some View {
         VStack(spacing: 0) {
             // Header
             Text("Create Group Chat")
@@ -55,37 +82,54 @@ struct GroupCreationView: View {
             }
             
             // Bottom buttons
+            // Bottom buttons
             HStack(spacing: 16) {
-                            // Add Members button (light blue)
-                            Button(action: vm.onAddAccounts) {
-                                HStack {
-                                    Text("Add Members")
-                                    Image(systemName: "plus.circle.fill")
-                                }
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                
-                            }
-                            
-                            // Create button (solid blue)
-                            Button(action: vm.createChat) {
-                                HStack {
-                                    Text("Create")
-                                    Image(systemName: "arrow.right")
-                                }
-                                .frame(maxWidth: .infinity)
-                                .background(vm.isValid ? Color.blue : Color.gray)
-                            }
-                            .disabled(!vm.isValid || vm.isSubmitting)
-                        }
-            
-                        .padding(.horizontal)
-                        .padding(.bottom)
+                // Add People Button
+                Button(action: {
+                    withAnimation {
+                        vm.prepareForFriendSelection()
                     }
+                }) {
+                    HStack {
+                        Text("Add people")
+                        Image(systemName: "plus")
+                    }
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(.white)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.clear)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 24)
+                            .stroke(Color.white, lineWidth: 2)
+                    )
+                    .cornerRadius(24)
+                }
+
+                // Create Chat Button
+                Button(action: {
+                    vm.createChat()
+                }) {
+                    HStack {
+                        Text("Create Chat")
+                        Image(systemName: "arrow.right")
+                    }
+                    .font(.system(size: 14, weight: .bold))
+                    .foregroundColor(.white)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.accentColor)
+                    .cornerRadius(24)
+                }
+            }
+            .padding(.horizontal)
+            .padding(.bottom)
+
+        }
         .background(Color(.systemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .shadow(radius: 8)
-        .toast(isShowing: $vm.showSuccessToast, message: "Group created successfully") // Moved here
+        .toast(isShowing: $vm.showSuccessToast, message: "Group created successfully")
     }
     
     private func memberRow(for user: RowUser) -> some View {

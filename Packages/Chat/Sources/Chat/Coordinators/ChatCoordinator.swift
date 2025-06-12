@@ -455,6 +455,7 @@ print("chatId", chatId)
                         onCreateSuccess: { [weak self] in
                             self?.closeGroupCreationOverlay()
                         },
+                        friendSelectionViewModel: friendSelectionViewModel!,
                         onCreateChat: { [weak self] name, ids async -> Result<String, APIError> in
                             guard let self else { return .failure(.missingData) }
                             

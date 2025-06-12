@@ -13,6 +13,9 @@ final class GroupCreationViewModel: ObservableObject {
     
     let onCreateChat: (String, [String]) async -> Result<String, APIError>
     
+    @Published var showFriendSelection = false
+    let friendSelectionViewModel: FriendSelectionViewModel
+    
     var isValid: Bool {
             !groupName.trimmingCharacters(in: .whitespaces).isEmpty && members.count >= 2
         }
@@ -39,11 +42,14 @@ final class GroupCreationViewModel: ObservableObject {
         initialMembers: [RowUser],
         onAddAccounts: @escaping () -> Void,
         onCreateSuccess: (() -> Void)? = nil,
+        friendSelectionViewModel: FriendSelectionViewModel,
         onCreateChat: @escaping (String, [String]) async -> Result<String, APIError>
         
     ) {
         self.onCreateChat = onCreateChat
         self.members = initialMembers
+        self.friendSelectionViewModel = friendSelectionViewModel
+        self.friendSelectionViewModel.selectedUsers = initialMembers
         self.onAddAccounts = onAddAccounts
         self.onCreateSuccess = onCreateSuccess
     }
@@ -52,6 +58,16 @@ final class GroupCreationViewModel: ObservableObject {
     func remove(_ user: RowUser) {
         members.removeAll { $0.id == user.id }
         onMembersUpdated?(members)
+    }
+    
+    func handleSelectedUsers(_ users: [RowUser]) {
+            members = users
+            onMembersUpdated?(members)
+        }
+    
+    func prepareForFriendSelection() {
+        friendSelectionViewModel.selectedUsers = members
+        showFriendSelection = true
     }
     
     func createChat() {
