@@ -6,11 +6,15 @@
 //
 
 import SwiftUI
-import DesignSystem
 
 public struct PageLabel {
     var title: String
     var icon: Image
+
+    public init(title: String, icon: Image) {
+        self.title = title
+        self.icon = icon
+    }
 }
 
 @resultBuilder

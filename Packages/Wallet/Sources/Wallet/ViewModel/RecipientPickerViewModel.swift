@@ -11,17 +11,13 @@ import Combine
 
 @MainActor
 final class RecipientPickerViewModel: ObservableObject {
+    unowned var apiService: APIService!
+
     @Published private(set) var state: PaginatedContentState<[RowUser]> = .display(content: [], hasMore: .none)
     private var users: [RowUser] = []
 
-    private let apiService: APIService
-
     private var fetchUsersTask: Task<Void, Never>?
     private var currentOffset: Int = 0
-
-    init(apiService: APIService) {
-        self.apiService = apiService
-    }
 
     func fetchContent(username: String, reset: Bool) {
         if let existingTask = fetchUsersTask {

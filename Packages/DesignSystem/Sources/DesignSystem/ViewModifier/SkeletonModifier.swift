@@ -71,3 +71,21 @@ private struct SkeletonModifier: ViewModifier {
             }
     }
 }
+
+#Preview {
+    ZStack {
+        Color.black.ignoresSafeArea()
+
+        VStack {
+            Text("Hello, World!")
+
+            Text("Hello, World!")
+                .frame(width: 350, height: 500)
+                .padding()
+                .background(Color.gray)
+                .cornerRadius(8)
+        }
+        .skeleton(isRedacted: true)
+    }
+    .environment(\.colorScheme, .dark)
+}

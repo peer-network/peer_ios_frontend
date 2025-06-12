@@ -12,8 +12,9 @@ import Models
 
 struct RecipientPickerSheet: View {
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var apiManager: APIServiceManager
 
-    @StateObject private var viewModel = RecipientPickerViewModel(apiService: APIServiceManager().apiService)
+    @StateObject private var viewModel = RecipientPickerViewModel()
 
     let completion: (RowUser) -> Void
 
@@ -94,6 +95,9 @@ struct RecipientPickerSheet: View {
             if !username.isEmpty && username.count > 2 {
                 viewModel.fetchContent(username: username, reset: true)
             }
+        }
+        .onFirstAppear {
+            viewModel.apiService = apiManager.apiService
         }
     }
 

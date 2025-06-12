@@ -25,35 +25,11 @@ public struct FeedView: View {
         HeaderContainer(actionsToDisplay: .commentsAndLikes) {
             headerView
         } content: {
-            VStack(alignment: .center, spacing: 0) {
-                FeedTabControllerView(feedPage: $feedPage)
-
-                TabView(selection: $feedPage) {
-                    RegularFeedView()
-                        .tag(FeedPage.normalFeed)
-                        .trackScreen(AppScreen.photoAndTextFeed)
-
-                    ReelsFeedView()
-                        .ignoresSafeArea(.container, edges: .all)
-                        .tag(FeedPage.videoFeed)
-                        .onAppear {
-                            audioManager.isInRestrictedView = true
-                        }
-                        .onDisappear {
-                            audioManager.isInRestrictedView = false
-                        }
-                        .trackScreen(AppScreen.videoFeed)
-
-                    AudioFeedView()
-                        .tag(FeedPage.audioFeed)
-                        .trackScreen(AppScreen.audioFeed)
-                }
-                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-            }
-        }
-        .background {
-            Colors.textActive
-                .ignoresSafeArea(.all)
+//            if #available(iOS 18, *) {
+//                newContentView
+//            } else {
+                oldContentView
+//            }
         }
         .overlay(alignment: .topLeading) {
             ZStack(alignment: .topLeading) {
@@ -80,29 +56,84 @@ public struct FeedView: View {
         .trackScreen(AppScreen.feed)
     }
 
+    @available(iOS 18.0, *)
+    public var newContentView: some View {
+        HeaderPageScrollView {
+            EmptyView()
+        } labels: {
+            PageLabel(title: "Regular", icon: Icons.smile)
+            PageLabel(title: "Video", icon: Icons.playRectangle)
+            PageLabel(title: "Audio", icon: Icons.musicNote)
+        } pages: {
+            RegularFeedView()
+                .trackScreen(AppScreen.photoAndTextFeed)
+
+            Text("123")
+
+//            ReelsFeedView()
+//                .ignoresSafeArea(.container, edges: .all)
+//                .onAppear {
+//                    audioManager.isInRestrictedView = true
+//                }
+//                .onDisappear {
+//                    audioManager.isInRestrictedView = false
+//                }
+//                .trackScreen(AppScreen.videoFeed)
+
+            AudioFeedView()
+                .trackScreen(AppScreen.audioFeed)
+        } onRefresh: {
+            //
+        }
+    }
+
+    public var oldContentView: some View {
+        VStack(alignment: .center, spacing: 0) {
+            FeedTabControllerView(feedPage: $feedPage)
+
+            TabView(selection: $feedPage) {
+                RegularFeedView()
+                    .tag(FeedPage.normalFeed)
+                    .trackScreen(AppScreen.photoAndTextFeed)
+
+                ReelsFeedView()
+                    .ignoresSafeArea(.container, edges: .all)
+                    .tag(FeedPage.videoFeed)
+                    .onAppear {
+                        audioManager.isInRestrictedView = true
+                    }
+                    .onDisappear {
+                        audioManager.isInRestrictedView = false
+                    }
+                    .trackScreen(AppScreen.videoFeed)
+
+                AudioFeedView()
+                    .tag(FeedPage.audioFeed)
+                    .trackScreen(AppScreen.audioFeed)
+            }
+            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+        }
+    }
+
     private var headerView: some View {
         Button {
-            //
+            withAnimation(.smooth(duration: 0.3, extraBounce: 0)) {
+                showFilters.toggle()
+            }
         } label: {
-            Button {
-                withAnimation(.smooth(duration: 0.3, extraBounce: 0)) {
-                    showFilters.toggle()
-                }
-            } label: {
-                HStack(alignment: .center, spacing: 10) {
-                    Text("Feed")
+            HStack(alignment: .center, spacing: 10) {
+                Text("Feed")
 
-                    Icons.arrowDown
-                        .iconSize(height: 7)
-                        .rotationEffect(.degrees(showFilters ? 180 : 0))
-                        .animation(.default, value: showFilters)
-                }
-                .contentShape(Rectangle())
-                .onGeometryChange(for: CGRect.self) {
-                    $0.frame(in: .global)
-                } action: { newValue in
-                    filtersPosition = newValue
-                }
+                Icons.arrowDown
+                    .iconSize(height: 7)
+                    .rotationEffect(.degrees(showFilters ? 180 : 0))
+                    .animation(.default, value: showFilters)
+            }
+            .contentShape(Rectangle())
+            .onGeometryChange(for: CGRect.self) {
+                $0.frame(in: .global)
+            } action: { newValue in
+                filtersPosition = newValue
             }
         }
     }

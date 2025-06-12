@@ -126,10 +126,12 @@ struct CommentsListView: View {
                     showPopup(
                         text: "You used 1 comment! Free comments left for today: \(AccountManager.shared.dailyFreeComments)"
                     )
+                    commentText = ""
                 } catch {
-                    AccountManager.shared.increaseFreeComments()
+                    showPopup(
+                        text: error.userFriendlyDescription
+                    )
                 }
-                commentText = ""
             }
         } label: {
             Circle()

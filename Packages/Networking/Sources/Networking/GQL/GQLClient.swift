@@ -15,24 +15,38 @@ public enum GQLError: Error {
     case missingData
 }
 
-public class GQLClient {
-    static public let shared = GQLClient()
-    
-    public let apolloClient: ApolloClient
+public protocol GQLClientConfigurable {
+    var apiEndpointURL: URL { get }
+}
 
-    private init() {
+public class GQLClient {
+    static public private(set) var shared: GQLClient!
+
+    public let apolloClient: ApolloClient
+    private var currentEndpointURL: URL
+
+    private init(endpointURL: URL) {
+        self.currentEndpointURL = endpointURL
+        self.apolloClient = GQLClient.createApolloClient(with: endpointURL)
+    }
+
+    public static func configure(with config: GQLClientConfigurable) {
+        shared = GQLClient(endpointURL: config.apiEndpointURL)
+    }
+
+    private static func createApolloClient(with endpointURL: URL) -> ApolloClient {
         let store = ApolloStore(cache: InMemoryNormalizedCache())
         let provider = NetworkInterceptorProvider(store: store)
-        let transport = RequestChainNetworkTransport(interceptorProvider: provider, endpointURL: Constants.apiURL)
+        let transport = RequestChainNetworkTransport(interceptorProvider: provider, endpointURL: endpointURL)
 
-        let webSocket = WebSocket(url: Constants.apiURL, protocol: .graphql_ws)
+        let webSocket = WebSocket(url: endpointURL, protocol: .graphql_ws)
         let webSocketTransport = WebSocketTransport(websocket: webSocket)
-        
+
         let splitTransport = SplitNetworkTransport(uploadingNetworkTransport: transport, webSocketNetworkTransport: webSocketTransport)
-        
-        apolloClient = ApolloClient(networkTransport: splitTransport, store: store)
+
+        return ApolloClient(networkTransport: splitTransport, store: store)
     }
-    
+
     public func fetch<Query>(query: Query, cachePolicy: CachePolicy = .returnCacheDataElseFetch) async throws -> Query.Data where Query: GraphQLQuery {
         try await withCheckedThrowingContinuation { continuation in
             var queryAlreadyCompletedOnce = false
@@ -52,7 +66,7 @@ public class GQLClient {
             }
         }
     }
-    
+
     public func mutate<Mutation>(mutation: Mutation) async throws -> Mutation.Data where Mutation: GraphQLMutation {
         try await withCheckedThrowingContinuation { continuation in
             apolloClient.perform(mutation: mutation) { result in
@@ -69,7 +83,7 @@ public class GQLClient {
             }
         }
     }
-    
+
     public func subscribe<Subscription>(subscription: Subscription) -> AsyncThrowingStream<Subscription.Data, Error> where Subscription: GraphQLSubscription {
         AsyncThrowingStream { continuation in
             let cancellable = apolloClient.subscribe(subscription: subscription) { result in
@@ -84,7 +98,7 @@ public class GQLClient {
                         continuation.yield(data)
                 }
             }
-            
+
             continuation.onTermination = { _ in
                 cancellable.cancel()
             }

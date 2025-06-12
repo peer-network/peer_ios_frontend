@@ -249,7 +249,9 @@ public struct PostCreationMainView: View {
         focusedField = nil
         postType = .text
         titleText = ""
+        titleHashtags = []
         descriptionText = ""
+        descriptionHashtags = []
         imageStates = nil
         selectedPhotoItems = []
         videoState = nil

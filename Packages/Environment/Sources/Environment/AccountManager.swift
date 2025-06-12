@@ -11,7 +11,15 @@ import TokenKeychainManager
 
 @MainActor
 public final class AccountManager: ObservableObject {
-    public static let shared = AccountManager()
+    public static var shared: AccountManager {
+        if let instance = _shared {
+            return instance
+        }
+        let instance = AccountManager()
+        _shared = instance
+        return instance
+    }
+    private static var _shared: AccountManager?
 
     @Published public private(set) var dailyFreeLikes: Int = 0
     @Published public private(set) var dailyFreeComments: Int = 0
@@ -21,61 +29,87 @@ public final class AccountManager: ObservableObject {
     public private(set) var user: User?
     public private(set) var inviter: RowUser?
 
-    private let apiService: APIService
-
+    private var apiService: APIService
+    private var currentConfiguration: APIConfiguration
+    
     private init() {
-        apiService = APIServiceManager().apiService
+        // Default to production configuration
+        self.currentConfiguration = APIConfiguration(endpoint: .production)
+        self.apiService = APIServiceManager(.normal(config: currentConfiguration)).apiService
+    }
+
+    public static func configure(with config: APIConfiguration) {
+        if _shared != nil {
+            // If shared instance already exists, we need to recreate it with new configuration
+            _shared = AccountManager(config: config)
+        } else {
+            // Store configuration for future use
+            _shared?.currentConfiguration = config
+        }
+    }
+
+    private init(config: APIConfiguration) {
+        self.currentConfiguration = config
+        self.apiService = APIServiceManager(.normal(config: config)).apiService
+    }
+
+    public func updateConfiguration(_ config: APIConfiguration) {
+        self.currentConfiguration = config
+        // Recreate the API service with new configuration
+        let newAPIService = APIServiceManager(.normal(config: config)).apiService
+        // Since AccountManager is a class, we can update the reference
+        self.apiService = newAPIService
     }
 
     public func login(email: String, password: String) async throws(APIError) -> AuthToken {
         let result = await apiService.loginWithCredentials(email: email, password: password)
-        
+
         switch result {
-        case .success(let token):
-            return token
-        case .failure(let apiError):
-            throw apiError
+            case .success(let token):
+                return token
+            case .failure(let apiError):
+                throw apiError
         }
     }
 
     /// Hello query to confirm the user’s ID with the valid access token
     public func getCurrentUserId() async throws(APIError) -> String {
         let result = await apiService.fetchAuthorizedUserID()
-        
+
         switch result {
-        case .success(let userID):
-            self.userId = userID
-            try? await fetchUser(userId: userID)
-            
-            return userID
-        case .failure(let apiError):
-            throw apiError
+            case .success(let userID):
+                self.userId = userID
+                try? await fetchUser(userId: userID)
+
+                return userID
+            case .failure(let apiError):
+                throw apiError
         }
     }
 
     private func fetchUser(userId: String) async throws {
         let result = await apiService.fetchUser(with: userId)
-        
+
         switch result {
-        case .success(let user):
-            self.user = user
-        case .failure(let apiError):
-            throw apiError
+            case .success(let user):
+                self.user = user
+            case .failure(let apiError):
+                throw apiError
         }
     }
 
     public func fetchDailyFreeLimits() async throws {
         let result = await apiService.fetchDailyFreeLimits()
-        
+
         switch result {
-        case .success(let quotas):
-            dailyFreeLikes = quotas.likes
-            dailyFreePosts = quotas.posts
-            dailyFreeComments = quotas.comments
-        case .failure(_):
-            dailyFreeLikes = 0
-            dailyFreePosts = 0
-            dailyFreeComments = 0
+            case .success(let quotas):
+                dailyFreeLikes = quotas.likes
+                dailyFreePosts = quotas.posts
+                dailyFreeComments = quotas.comments
+            case .failure(_):
+                dailyFreeLikes = 0
+                dailyFreePosts = 0
+                dailyFreeComments = 0
         }
     }
 

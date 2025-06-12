@@ -107,14 +107,14 @@ extension PostViewModel {
             throw PostActionError.alreadyLiked
         }
 
-        guard await !AccountManager.shared.isCurrentUser(id: post.owner.id) else {
+        guard !AccountManager.shared.isCurrentUser(id: post.owner.id) else {
             throw PostActionError.ownPostLike
         }
 
         var isFreeLike = false
 
-        if await AccountManager.shared.dailyFreeLikes > 0 {
-            await AccountManager.shared.freeLikeUsed()
+        if AccountManager.shared.dailyFreeLikes > 0 {
+            AccountManager.shared.freeLikeUsed()
             isFreeLike = true
         }
 
@@ -140,7 +140,7 @@ extension PostViewModel {
                 amountLikes -= 1
             }
             if isFreeLike {
-                await AccountManager.shared.increaseFreeLikes()
+                AccountManager.shared.increaseFreeLikes()
             }
             throw APIError.unknownError(error: error)
         }
@@ -151,7 +151,7 @@ extension PostViewModel {
             throw PostActionError.alreadyDisliked
         }
 
-        guard await !AccountManager.shared.isCurrentUser(id: post.owner.id) else {
+        guard !AccountManager.shared.isCurrentUser(id: post.owner.id) else {
             throw PostActionError.ownPostDislike
         }
 
@@ -185,7 +185,7 @@ extension PostViewModel {
             throw PostActionError.alreadyViewed
         }
 
-        guard await !AccountManager.shared.isCurrentUser(id: post.owner.id) else {
+        guard !AccountManager.shared.isCurrentUser(id: post.owner.id) else {
             throw PostActionError.ownPostView
         }
 
@@ -219,7 +219,7 @@ extension PostViewModel {
             throw PostActionError.alreadyReported
         }
 
-        guard await !AccountManager.shared.isCurrentUser(id: post.owner.id) else {
+        guard !AccountManager.shared.isCurrentUser(id: post.owner.id) else {
             throw PostActionError.ownPostReport
         }
 
@@ -308,8 +308,8 @@ extension PostViewModel {
 
         var isFreeComment = false
 
-        if await AccountManager.shared.dailyFreeComments > 0 {
-            await AccountManager.shared.freeCommentUsed()
+        if AccountManager.shared.dailyFreeComments > 0 {
+            AccountManager.shared.freeCommentUsed()
             isFreeComment = true
         }
 
@@ -331,7 +331,7 @@ extension PostViewModel {
                     amountComments -= 1
                 }
                 if isFreeComment {
-                    await AccountManager.shared.increaseFreeComments()
+                    AccountManager.shared.increaseFreeComments()
                 }
                 throw apiError
         }

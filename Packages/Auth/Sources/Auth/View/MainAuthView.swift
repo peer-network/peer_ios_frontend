@@ -528,10 +528,10 @@ public extension MainAuthView {
     
 }
 
-#Preview {
-    let authManager = AuthManager()
-    let apiService = APIServiceStub()
-    
-    MainAuthView(viewModel: AuthViewModel(authManager: authManager))
-        .environmentObject(APIServiceManager(.mock))
-}
+//#Preview {
+//    let authManager = AuthManager()
+//    let apiService = APIServiceStub()
+//    
+//    MainAuthView(viewModel: AuthViewModel(authManager: authManager))
+//        .environmentObject(APIServiceManager(.mock))
+//}

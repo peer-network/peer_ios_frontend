@@ -51,5 +51,20 @@
         "releaseNotes": [
             "Overall improvements and fixes"
         ]
+    },
+    {
+        "version": "1.3.3",
+        "date": "11 Jun 2025",
+        "releaseNotes": [
+            "Audio posts creation is back",
+            "Overall improvements and fixes"
+        ]
+    },
+    {
+        "version": "1.3.4",
+        "date": "12 Jun 2025",
+        "releaseNotes": [
+            "Overall improvements and fixes"
+        ]
     }
 ]
