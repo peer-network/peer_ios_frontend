@@ -12,9 +12,9 @@ struct PrivateChatView: View {
     @ObservedObject var viewModel: PrivateChatViewModel
     
     var body: some View {
-        ChatContainerView(
-            viewModel: viewModel,
-            title: viewModel.peer.name
-        )
-    }
+            ChatContainerView(
+                viewModel: viewModel,
+                title: viewModel.peer.name
+            )
+        }
 }

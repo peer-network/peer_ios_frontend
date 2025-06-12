@@ -11,6 +11,7 @@ import DesignSystem
 struct ChatInputView: View {
     let profileImageURL: URL?
     let profileName: String
+    let timestamp: String
     @Binding var messageText: String
     let onSend: () -> Void
     
@@ -64,7 +65,8 @@ struct ChatInputView: View {
             .animation(.default, value: messageText.isEmpty)
         }
         .padding(.horizontal, 16)
-        .padding(.vertical, 12)
-        .background(Color(.systemBackground))
+        .padding(.top, 12)
+        .padding(.bottom, 4)
+        .background(Colors.textActive)
     }
 }

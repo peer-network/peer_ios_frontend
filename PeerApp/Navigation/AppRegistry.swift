@@ -44,6 +44,7 @@ extension View {
                         .toolbar(.hidden, for: .navigationBar)
                 case .chat:
                     ChatView()
+                        .toolbar(.hidden, for: .navigationBar)
                 case .transfer(let recipient, let amount):
                     TransferPageView(recipient: recipient, amount: amount)
                         .toolbar(.hidden, for: .navigationBar)

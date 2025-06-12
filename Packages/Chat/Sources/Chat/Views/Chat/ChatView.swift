@@ -8,6 +8,7 @@
 import SwiftUI
 import Models
 import Environment
+import DesignSystem
 
 public struct ChatView: View {
     @StateObject private var appCoordinator = AppCoordinator()
@@ -35,34 +36,38 @@ private struct MainChatView: View {
     @StateObject private var accountManager = AccountManager.shared
     
     var body: some View {
-        ZStack {
-            chatContentView
-            
-            if coordinator.isPresentingFriendSelection {
-                friendSelectionOverlay
+        HeaderContainer(actionsToDisplay: .commentsAndLikes) {
+                    Text("Chat")
+        } content: {
+            ZStack {
+                chatContentView
+                
+                if coordinator.isPresentingFriendSelection {
+                    friendSelectionOverlay
+                }
+                
+                if coordinator.isPresentingGroupCreation {
+                    groupCreationOverlay
+                }
             }
-            
-            if coordinator.isPresentingGroupCreation {
-                groupCreationOverlay
+            .navigationDestination(
+                isPresented: Binding(
+                    get: { coordinator.selectedChat != nil },
+                    set: { if !$0 { coordinator.clearChatSelection() } }
+                )
+            ) {
+                chatDestinationView
             }
-        }
-        .navigationDestination(
-            isPresented: Binding(
-                get: { coordinator.selectedChat != nil },
-                set: { if !$0 { coordinator.clearChatSelection() } }
-            )
-        ) {
-            chatDestinationView
-        }
-        .alert("Error",
-               isPresented: Binding(
-                get: { coordinator.error != nil },
-                set: { if !$0 { coordinator.error = nil } }
-               ),
-               presenting: coordinator.error) { error in
-            Button("OK", role: .cancel) {}
-        } message: { error in
-            Text(error.localizedDescription)
+            .alert("Error",
+                   isPresented: Binding(
+                    get: { coordinator.error != nil },
+                    set: { if !$0 { coordinator.error = nil } }
+                   ),
+                   presenting: coordinator.error) { error in
+                Button("OK", role: .cancel) {}
+            } message: { error in
+                Text(error.localizedDescription)
+            }
         }
     }
     
@@ -82,32 +87,55 @@ private struct MainChatView: View {
             Spacer()
         }
     }
-    
     private var friendSelectionOverlay: some View {
-        Color.black.opacity(0.3)
-            .ignoresSafeArea()
-            .onTapGesture {
-                coordinator.isPresentingFriendSelection = false
-            }
-            .overlay {
-                if let viewModel = coordinator.friendSelectionViewModel {
-                    FriendSelectionView(
-                        viewModel: viewModel,
-                        isGroupChat: coordinator.selectedChatType == .groupChat,
-                        onDone: coordinator.handleFriendSelectionCompletion,
-                        onCreateGroupChat: { name, memberIds async -> Result<String, APIError> in
-                              //  guard let self = self else { return .failure(.missingData) }
-                                return await coordinator.createGroupChat(name: name, memberIds: memberIds)
-                            }
-
-                    )
-                    .frame(
-                        width: UIScreen.main.bounds.width * 0.8
-                    )
-                    .frame(maxHeight: .infinity)
+        ZStack {
+            Colors.textActive
+                .ignoresSafeArea()
+                .onTapGesture {
+                    coordinator.isPresentingFriendSelection = false
                 }
+
+            if let viewModel = coordinator.friendSelectionViewModel {
+                FriendSelectionView(
+                    viewModel: viewModel,
+                    isGroupChat: coordinator.selectedChatType == .groupChat,
+                    onDone: coordinator.handleFriendSelectionCompletion,
+                    onCreateGroupChat: { name, memberIds async -> Result<String, APIError> in
+                        return await coordinator.createGroupChat(name: name, memberIds: memberIds)
+                    }
+                )
+                .transition(.move(edge: .bottom))
+                .zIndex(1)
             }
+        }
     }
+
+
+//    private var friendSelectionOverlay: some View {
+//        Color.black.opacity(0.3)
+//            .ignoresSafeArea()
+//            .onTapGesture {
+//                coordinator.isPresentingFriendSelection = false
+//            }
+//            .overlay {
+//                if let viewModel = coordinator.friendSelectionViewModel {
+//                    FriendSelectionView(
+//                        viewModel: viewModel,
+//                        isGroupChat: coordinator.selectedChatType == .groupChat,
+//                        onDone: coordinator.handleFriendSelectionCompletion,
+//                        onCreateGroupChat: { name, memberIds async -> Result<String, APIError> in
+//                              //  guard let self = self else { return .failure(.missingData) }
+//                                return await coordinator.createGroupChat(name: name, memberIds: memberIds)
+//                            }
+//
+//                    )
+//                    .frame(
+//                        width: UIScreen.main.bounds.width * 0.8
+//                    )
+//                    .frame(maxHeight: .infinity)
+//                }
+//            }
+//    }
     
     private var groupCreationOverlay: some View {
         Color.black.opacity(0.3)
@@ -115,7 +143,6 @@ private struct MainChatView: View {
             .overlay {
                 if let viewModel = coordinator.groupCreationViewModel {
                     GroupCreationView(vm: viewModel)
-                        .frame(width: UIScreen.main.bounds.width * 0.9)
                 }
             }
     }

@@ -38,7 +38,7 @@ final class ChatViewModel: ObservableObject {
         case .group: return currentUser.name
         }
     }
-    
+   
     init(currentUser: User,
          chatType: ChatMessageType,
          initialMessages: [Message1] = [],

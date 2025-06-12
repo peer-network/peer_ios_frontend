@@ -49,7 +49,7 @@ final class PrivateChatViewModel: ObservableObject {
                 id: currentUser.id,
                 text: text,
                 isIncoming: false,
-                timestamp: "",
+                timestamp: Date().formattedWithMicroseconds,
                 sender: currentUser
             )
             messages.append(outgoing)

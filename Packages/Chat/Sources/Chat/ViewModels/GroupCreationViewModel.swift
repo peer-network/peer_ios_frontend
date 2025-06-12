@@ -17,23 +17,21 @@ final class GroupCreationViewModel: ObservableObject {
     let friendSelectionViewModel: FriendSelectionViewModel
     
     var isValid: Bool {
-            !groupName.trimmingCharacters(in: .whitespaces).isEmpty && members.count >= 2
-        }
+        !groupName.trimmingCharacters(in: .whitespaces).isEmpty && members.count >= 2
+    }
     
     @Published var showSuccessToast = false
 
-    
     // MARK: - Input
     @Published var groupName: String = ""
     @Published var members: [RowUser]
-    
     
     // MARK: - Output
     @Published var isSubmitting = false
     @Published var inlineError: String?
     
     var onMembersUpdated: (([RowUser]) -> Void)?
-    var onCreateSuccess: (() -> Void)? // Add this callback
+    var onCreateSuccess: (() -> Void)?
     
     // MARK: - Callbacks
     let onAddAccounts: () -> Void
@@ -61,9 +59,9 @@ final class GroupCreationViewModel: ObservableObject {
     }
     
     func handleSelectedUsers(_ users: [RowUser]) {
-            members = users
-            onMembersUpdated?(members)
-        }
+        members = users
+        onMembersUpdated?(members)
+    }
     
     func prepareForFriendSelection() {
         friendSelectionViewModel.selectedUsers = members
@@ -74,22 +72,25 @@ final class GroupCreationViewModel: ObservableObject {
         guard validateInputs() else { return }
         
         isSubmitting = true
+        
         Task {
             let memberIds = members.map(\.id)
             let result = await onCreateChat(groupName, memberIds)
-            print("onCreateChat", [groupName, memberIds,result])
-           // let result = await coordinator.createGroupChat(name: groupName, memberIds: memberIds)
             
             await MainActor.run {
                 isSubmitting = false
+                
                 switch result {
                 case .success:
+                    // Show toast
                     showSuccessToast = true
-                                       // Hide the toast after 5 seconds
-                                       DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                                           self.showSuccessToast = false
-                                           self.onCreateSuccess?()
-                                       }
+                    
+                    // Hide toast after 2 seconds and then call success callback to dismiss
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        self.showSuccessToast = false
+                        self.onCreateSuccess?()
+                    }
+                    
                 case .failure(let error):
                     inlineError = error.userFriendlyMessage
                 }
@@ -114,3 +115,4 @@ final class GroupCreationViewModel: ObservableObject {
         return true
     }
 }
+

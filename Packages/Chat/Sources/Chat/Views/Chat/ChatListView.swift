@@ -8,6 +8,7 @@
 import SwiftUI
 import Models
 import Environment
+import DesignSystem
 
 struct ChatListView: View {
     let chats: [ListChats]
@@ -30,7 +31,13 @@ struct ChatItemView: View {
     var body: some View {
         HStack(spacing: 12) {
             // Unified avatar view
-            ChatAvatarView(chat: chat, isGroupChat: isGroupChat)
+            ProfileAvatarView(
+                url: chat.imageURL,
+                name: chat.name,
+                config: .message,
+                ignoreCache: false
+            )
+            //ChatAvatarView(chat: chat, isGroupChat: isGroupChat)
             
             VStack(alignment: .leading, spacing: 2) {
                 Text(chatDisplayName)
