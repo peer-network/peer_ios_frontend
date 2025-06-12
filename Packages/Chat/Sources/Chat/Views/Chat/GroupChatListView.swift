@@ -21,11 +21,29 @@ struct GroupChatListView: View {
                 HStack(spacing: 12) {
                     avatar(for: chat)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(chat.name ?? "Unnamed group")
-                            .font(.headline)
+                        HStack(alignment: .top) {
+                            Text(chat.name ?? "Unnamed group")
+                                .font(.headline)
+                            
+                            Spacer()
+                            
+                            if let createdAt = chat.createdAt {
+                                Text(createdAt.timeAgo(isShort: true))
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
+                            }
+                        }
+                        
                         Text("\(chat.chatParticipants.count) members")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
+                        
+                        if let lastMessage = chat.chatMessages.last {
+                            Text(lastMessage.content)
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                                .lineLimit(1)
+                        }
                     }
                 }
                 .padding(.vertical, 4)
@@ -45,10 +63,13 @@ struct GroupChatListView: View {
             .frame(width: 40, height: 40)
             .clipShape(Circle())
         } else {
-            RoundedRectangle(cornerRadius: 6)
-                .fill(Color.gray.opacity(0.3))
+            Image(systemName: "person.2.fill")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .padding(8)
                 .frame(width: 40, height: 40)
+                .background(Color.gray.opacity(0.3))
+                .clipShape(Circle())
         }
     }
-    
 }

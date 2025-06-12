@@ -42,7 +42,7 @@ final class ReliableChatCell: UICollectionViewCell {
         contentView.addSubview(avatarImageView)
 
         // Bubble
-        bubbleView.layer.cornerRadius = 12
+        bubbleView.layer.cornerRadius = 24
         bubbleView.layer.masksToBounds = true
         bubbleView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(bubbleView)
@@ -67,10 +67,16 @@ final class ReliableChatCell: UICollectionViewCell {
 
         // Message
         messageLabel.numberOfLines = 0
+        messageLabel.lineBreakMode = .byWordWrapping
         messageLabel.font = .systemFont(ofSize: 16)
+        messageLabel.setContentHuggingPriority(.required, for: .horizontal)
+        messageLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
         messageLabel.translatesAutoresizingMaskIntoConstraints = false
         bubbleView.addSubview(messageLabel)
 
+        let bubbleWidthConstraint = bubbleView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.55)
+            bubbleWidthConstraint.priority = .required
+            bubbleWidthConstraint.isActive = true
         // Layout
         NSLayoutConstraint.activate([
             // Header
@@ -97,10 +103,27 @@ final class ReliableChatCell: UICollectionViewCell {
             // Bubble vertical padding relative to cell
             bubbleView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 6),
             bubbleView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -6),
-            bubbleView.widthAnchor.constraint(lessThanOrEqualTo: contentView.widthAnchor, multiplier: 0.85)
+            //bubbleView.widthAnchor.constraint(lessThanOrEqualTo: contentView.widthAnchor, multiplier: 0.75)
         ])
     }
 
+    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+        let targetSize = CGSize(width: layoutAttributes.bounds.width, height: UIView.layoutFittingCompressedSize.height)
+        
+        layoutIfNeeded()
+        
+        let calculatedSize = contentView.systemLayoutSizeFitting(
+            targetSize,
+            withHorizontalFittingPriority: .required,
+            verticalFittingPriority: .fittingSizeLevel
+        )
+        
+        var attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
+        attributes.frame.size.height = calculatedSize.height
+        return attributes
+    }
+
+    
     // MARK: - Configuration
     func configure(with message: Message1) {
         resetConstraints()
@@ -122,12 +145,14 @@ final class ReliableChatCell: UICollectionViewCell {
     }
 
     private func resetConstraints() {
-        NSLayoutConstraint.deactivate([
-            leadingConstraint,
-            trailingConstraint,
-            avatarLeadingConstraint,
-            avatarTrailingConstraint
-        ].compactMap { $0 })
+        [leadingConstraint, trailingConstraint, avatarLeadingConstraint, avatarTrailingConstraint].forEach {
+            $0?.isActive = false
+        }
+
+        leadingConstraint = nil
+        trailingConstraint = nil
+        avatarLeadingConstraint = nil
+        avatarTrailingConstraint = nil
     }
 
     private func styleIncoming() {

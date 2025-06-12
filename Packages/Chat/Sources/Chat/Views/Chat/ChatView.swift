@@ -49,10 +49,6 @@ private struct MainChatView: View {
         .navigationDestination(
             isPresented: Binding(
                 get: { coordinator.selectedChat != nil },
-//                get: {
-//                            coordinator.privateChatViewModel != nil ||
-//                            coordinator.groupChatViewModel   != nil
-//                        },
                 set: { if !$0 { coordinator.clearChatSelection() } }
             )
         ) {

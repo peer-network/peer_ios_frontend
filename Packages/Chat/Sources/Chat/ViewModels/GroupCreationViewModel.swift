@@ -13,12 +13,17 @@ final class GroupCreationViewModel: ObservableObject {
     
     let onCreateChat: (String, [String]) async -> Result<String, APIError>
     
+    var isValid: Bool {
+            !groupName.trimmingCharacters(in: .whitespaces).isEmpty && members.count >= 2
+        }
+    
     @Published var showSuccessToast = false
 
     
     // MARK: - Input
     @Published var groupName: String = ""
     @Published var members: [RowUser]
+    
     
     // MARK: - Output
     @Published var isSubmitting = false

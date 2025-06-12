@@ -37,8 +37,8 @@ extension Constants {
        }
        
     struct ButtonSize {
-           static let toggleHeight: CGFloat = 60
-           static let addButton: CGFloat = 60
+           static let toggleHeight: CGFloat = 50
+           static let addButton: CGFloat = 50
        }
     struct Colors {
             static let selectedBackground = Color(hex: "#323232")

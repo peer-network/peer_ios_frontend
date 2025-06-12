@@ -55,29 +55,33 @@ struct GroupCreationView: View {
             }
             
             // Bottom buttons
-            HStack {
-                Button("Add Members") { vm.onAddAccounts() }
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.accentColor))
-                
-                Button {
-                    vm.createChat()
-                } label: {
-                    HStack {
-                        Text("Create")
-                        Image(systemName: "arrow.right")
+            HStack(spacing: 16) {
+                            // Add Members button (light blue)
+                            Button(action: vm.onAddAccounts) {
+                                HStack {
+                                    Text("Add Members")
+                                    Image(systemName: "plus.circle.fill")
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                
+                            }
+                            
+                            // Create button (solid blue)
+                            Button(action: vm.createChat) {
+                                HStack {
+                                    Text("Create")
+                                    Image(systemName: "arrow.right")
+                                }
+                                .frame(maxWidth: .infinity)
+                                .background(vm.isValid ? Color.blue : Color.gray)
+                            }
+                            .disabled(!vm.isValid || vm.isSubmitting)
+                        }
+            
+                        .padding(.horizontal)
+                        .padding(.bottom)
                     }
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.accentColor)
-                    .foregroundColor(.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-                }
-                .disabled(vm.isSubmitting || vm.groupName.isEmpty)
-            }
-            .padding()
-        }
         .background(Color(.systemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .shadow(radius: 8)

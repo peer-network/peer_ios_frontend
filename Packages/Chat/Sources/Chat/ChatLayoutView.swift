@@ -28,24 +28,29 @@ struct ChatLayoutView: UIViewRepresentable {
         
         return collectionView
     }
-    
-    func updateUIView(_ uiView: UICollectionView, context: Context) {
-        context.coordinator.messages = messages
-        uiView.reloadData()
         
-        DispatchQueue.main.async {
-            let sections = uiView.numberOfSections
-            guard sections > 0 else { return }
-            
-            let items = uiView.numberOfItems(inSection: sections - 1)
-            guard items > 0 else { return }
-            
-            let indexPath = IndexPath(item: items - 1, section: sections - 1)
-            if indexPath.item >= 0 && indexPath.section >= 0 {
-                uiView.scrollToItem(at: indexPath, at: .bottom, animated: true)
+    func updateUIView(_ uiView: UICollectionView, context: Context) {
+        let previousCount = context.coordinator.messages.count
+        context.coordinator.messages = messages
+
+        guard messages.count != previousCount else { return }
+
+        let newItemsCount = messages.count - previousCount
+        if newItemsCount > 0 {
+            let newIndexPaths = (previousCount..<messages.count).map { IndexPath(item: $0, section: 0) }
+
+            uiView.performBatchUpdates {
+                uiView.insertItems(at: newIndexPaths)
+            } completion: { _ in
+                if let last = newIndexPaths.last {
+                    uiView.scrollToItem(at: last, at: .bottom, animated: true)
+                }
             }
+        } else {
+            uiView.reloadData()
         }
     }
+
     
     func makeCoordinator() -> Coordinator {
         Coordinator(messages: messages)

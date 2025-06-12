@@ -13,7 +13,6 @@ import Models
 import Environment
 import DesignSystem
 
-
 struct PrivateChatListView: View {
     let chats: [ListChats]
     var onChatSelected: (ListChats) -> Void
@@ -42,7 +41,18 @@ struct PrivateChatListView: View {
                 .clipShape(Circle())
                 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(peer.username).font(.headline)
+                    HStack(alignment: .top) {
+                        Text(peer.username)
+                            .font(.headline)
+                        
+                        Spacer()
+                        
+                        if let createdAt = chat.createdAt {
+                            Text(createdAt.timeAgo(isShort: true))
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
+                    }
                     
                     if let last = chat.chatMessages.last {
                         Text(last.content)
@@ -58,5 +68,17 @@ struct PrivateChatListView: View {
             }
             .padding(.vertical, 4)
         }
+    }
+}
+
+// Extension for time formatting (add this if you don't have it already)
+extension String {
+    func timeAgo() -> String {
+        let dateFormatter = ISO8601DateFormatter()
+        guard let date = dateFormatter.date(from: self) else { return self }
+        
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .abbreviated
+        return formatter.localizedString(for: date, relativeTo: Date())
     }
 }

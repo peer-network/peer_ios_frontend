@@ -25,7 +25,7 @@ struct ChatContainerView<ViewModel: ChatViewModelProtocol>: View {
                 ProgressView()
             } else {
                 ChatLayoutView(messages: viewModel.messages)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                   // .frame(maxWidth: .infinity, maxHeight: .infinity)
                 
                 if let user = accountManager.user?.imageURL {
                     ChatInputView(

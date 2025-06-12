@@ -13,41 +13,58 @@ struct ChatInputView: View {
     let profileName: String
     @Binding var messageText: String
     let onSend: () -> Void
-
+    
     var body: some View {
-        HStack(alignment: .center, spacing: 10) {
-
+        HStack(alignment: .center, spacing: 12) {
             // 👤 Profile image
             ProfileAvatarView(
                 url: profileImageURL,
                 name: profileName,
-                config: .message,
-                ignoreCache: false)
-            .frame(width: 32, height: 32)
-
-            // 📝 Message input
-            TextField("Type message", text: $messageText)
-                .padding(10)
-                .background(Color(.systemGray6))
-                .cornerRadius(20)
-                .autocapitalization(.none)
-                .disableAutocorrection(true)
-
-            // 📤 Send button
-            Button(action: {
-                onSend()
-            }) {
-                Text("Send")
-                    .foregroundColor(.black)
-                    .padding(.horizontal, 12)
-                    .padding(.vertical, 8)
+                config: .settings,
+                ignoreCache: false
+            )
+            .frame(width: 36, height: 36)
+            
+            // 📝 Message input with built-in send button
+            HStack {
+                TextField("", text: $messageText)
+                    .textFieldStyle(PlainTextFieldStyle())
+                    .disableAutocorrection(true)
+                    .autocapitalization(.none)
+                    .padding(.horizontal, 16)
+                    .frame(minHeight: 50)
                     .background(Color.white)
-                    .cornerRadius(16)
-                    .shadow(radius: 1)
+                    .foregroundColor(.black)
+                    .cornerRadius(25)
+                    .overlay(
+                        Group {
+                            if messageText.isEmpty {
+                                Text("Write a message...")
+                                    .foregroundColor(Color(.systemGray2))
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .padding(.leading, 16)
+                            }
+                        }
+                    )
+                
+                // Send button
+                if !messageText.isEmpty {
+                    Button(action: onSend) {
+                        Image(systemName: "arrow.right.circle.fill")
+                            .font(.system(size: 28))
+                            .foregroundColor(.blue)
+                    }
+                    .padding(.trailing, 8)
+                }
             }
+            .overlay(
+                RoundedRectangle(cornerRadius: 25)
+                    .stroke(Color(.systemGray4), lineWidth: 1)
+            )
+            .animation(.default, value: messageText.isEmpty)
         }
-        .padding(.horizontal)
-        .padding(.vertical, 8)
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
         .background(Color(.systemBackground))
     }
 }
