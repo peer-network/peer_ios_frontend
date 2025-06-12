@@ -12,6 +12,8 @@ import Models
 final class GroupCreationViewModel: ObservableObject {
     
     let onCreateChat: (String, [String]) async -> Result<String, APIError>
+    
+    @Published var showSuccessToast = false
 
     
     // MARK: - Input
@@ -61,7 +63,12 @@ final class GroupCreationViewModel: ObservableObject {
                 isSubmitting = false
                 switch result {
                 case .success:
-                    onCreateSuccess?()
+                    showSuccessToast = true
+                                       // Hide the toast after 5 seconds
+                                       DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                           self.showSuccessToast = false
+                                           self.onCreateSuccess?()
+                                       }
                 case .failure(let error):
                     inlineError = error.userFriendlyMessage
                 }

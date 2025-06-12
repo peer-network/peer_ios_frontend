@@ -94,11 +94,11 @@ struct FriendSelectionView: View {
         .background(Color(.systemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .shadow(radius: 8)
-        .navigationDestination(isPresented: $isShowingGroupCreation) {
-            if let vm = groupCreationViewModel {
-                GroupCreationView(vm: vm)
-            }
-        }
+//        .navigationDestination(isPresented: $isShowingGroupCreation) {
+//            if let vm = groupCreationViewModel {
+//                GroupCreationView(vm: vm)
+//            }
+//        }
     }
     
     // MARK: - Subviews
@@ -177,17 +177,18 @@ struct FriendSelectionView: View {
         
         if isGroupChat {
             // Proceed to group creation
-            groupCreationViewModel = GroupCreationViewModel(
-                initialMembers: viewModel.selectedUsers,
-                onAddAccounts: { isShowingGroupCreation = false },
-                onCreateChat: onCreateGroupChat
-            )
-            
-            groupCreationViewModel?.onMembersUpdated = { updatedMembers in
-                viewModel.selectedUsers = updatedMembers
-            }
-            
-            isShowingGroupCreation = true
+//            groupCreationViewModel = GroupCreationViewModel(
+//                initialMembers: viewModel.selectedUsers,
+//                onAddAccounts: { isShowingGroupCreation = false },
+//                onCreateChat: onCreateGroupChat
+//            )
+//            
+//            groupCreationViewModel?.onMembersUpdated = { updatedMembers in
+//                viewModel.selectedUsers = updatedMembers
+//            }
+//            
+//            isShowingGroupCreation = true
+            onDone(viewModel.selectedUsers)
         } else {
             // For private chat, call the completion handler with selected user
             onDone(viewModel.selectedUsers)

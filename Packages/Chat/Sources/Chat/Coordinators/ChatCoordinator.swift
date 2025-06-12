@@ -405,43 +405,76 @@ print("chatId", chatId)
             }
             
         case .groupChat:
+//            guard selected.count >= 2 else { return }
+//
+//            // 1️⃣  SHOW the sheet (only here)
+//            isPresentingGroupCreation = true
+//
+//            groupCreationViewModel = GroupCreationViewModel(
+//                initialMembers: selected,
+//                onAddAccounts: { [weak self] in
+//                    self?.isPresentingFriendSelection = true
+//                },
+//                onCreateSuccess: { [weak self] in        // ← path if VM calls its own success
+//                    self?.closeGroupCreationOverlay()
+//                },
+//                onCreateChat: { [weak self] name, ids async -> Result<String, APIError> in
+//                    guard let self else { return .failure(.missingData) }
+//
+//                    // ── create chat on server ─────────────────────────────
+//                    let res = await self.createGroupChat(name: name, memberIds: ids)
+//                    guard case .success(let chatId) = res else { return res }
+//
+//                    // ── fetch chat row ───────────────────────────────────
+//                    let listRes = await APIServiceManager().apiService.listChats()
+//                    guard case .success(let all) = listRes,
+//                          let newChat = all.first(where: { $0.id == chatId }) else { return res }
+//
+//                    // ── update list & dismiss sheet on main thread ───────
+//                    await MainActor.run {
+//                        if !self.chats.contains(where: { $0.id == chatId }) {
+//                            self.chats.insert(newChat, at: 0)
+//                        }
+//                        self.closeGroupCreationOverlay()      // 🔑 hide sheet
+//                    }
+//                    return res
+//                }
+//            )
+//
+//        }
             guard selected.count >= 2 else { return }
-
-            // 1️⃣  SHOW the sheet (only here)
-            isPresentingGroupCreation = true
-
-            groupCreationViewModel = GroupCreationViewModel(
-                initialMembers: selected,
-                onAddAccounts: { [weak self] in
-                    self?.isPresentingFriendSelection = true
-                },
-                onCreateSuccess: { [weak self] in        // ← path if VM calls its own success
-                    self?.closeGroupCreationOverlay()
-                },
-                onCreateChat: { [weak self] name, ids async -> Result<String, APIError> in
-                    guard let self else { return .failure(.missingData) }
-
-                    // ── create chat on server ─────────────────────────────
-                    let res = await self.createGroupChat(name: name, memberIds: ids)
-                    guard case .success(let chatId) = res else { return res }
-
-                    // ── fetch chat row ───────────────────────────────────
-                    let listRes = await APIServiceManager().apiService.listChats()
-                    guard case .success(let all) = listRes,
-                          let newChat = all.first(where: { $0.id == chatId }) else { return res }
-
-                    // ── update list & dismiss sheet on main thread ───────
-                    await MainActor.run {
-                        if !self.chats.contains(where: { $0.id == chatId }) {
-                            self.chats.insert(newChat, at: 0)
+                    
+                    // Show the group creation sheet
+                    isPresentingGroupCreation = true
+                    
+                    groupCreationViewModel = GroupCreationViewModel(
+                        initialMembers: selected,
+                        onAddAccounts: { [weak self] in
+                            self?.isPresentingFriendSelection = true
+                        },
+                        onCreateSuccess: { [weak self] in
+                            self?.closeGroupCreationOverlay()
+                        },
+                        onCreateChat: { [weak self] name, ids async -> Result<String, APIError> in
+                            guard let self else { return .failure(.missingData) }
+                            
+                            let res = await self.createGroupChat(name: name, memberIds: ids)
+                            guard case .success(let chatId) = res else { return res }
+                            
+                            let listRes = await APIServiceManager().apiService.listChats()
+                            guard case .success(let all) = listRes,
+                                  let newChat = all.first(where: { $0.id == chatId }) else { return res }
+                            
+                            await MainActor.run {
+                                if !self.chats.contains(where: { $0.id == chatId }) {
+                                    self.chats.insert(newChat, at: 0)
+                                }
+                                self.closeGroupCreationOverlay()
+                            }
+                            return res
                         }
-                        self.closeGroupCreationOverlay()      // 🔑 hide sheet
-                    }
-                    return res
+                    )
                 }
-            )
-
-        }
     }
 
     @MainActor

@@ -11,65 +11,61 @@ import DesignSystem
 
 struct GroupCreationView: View {
     @ObservedObject var vm: GroupCreationViewModel
-
+    
     var body: some View {
-        VStack(spacing: 16) {
-
-            // ── title field ───────────────────────────
-            TextField("*Give a name to a chat", text: $vm.groupName)
+        VStack(spacing: 0) {
+            // Header
+            Text("Create Group Chat")
+                .font(.headline)
+                .padding()
+            
+            Divider()
+            
+            // Group Name Field
+            TextField("Group Name", text: $vm.groupName)
                 .padding()
                 .background(Color(.secondarySystemBackground))
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .cornerRadius(12)
+                .padding(.horizontal)
+                .padding(.vertical, 8)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
-
-            // ── members list ──────────────────────────
-            ScrollView {
+            
+            // Members List
+            List {
                 ForEach(vm.members, id: \.id) { user in
-                    HStack {
-                        ProfileAvatarView(
-                            url: user.imageURL,
-                            name: user.username,
-                            config: .rowUser,
-                            ignoreCache: false
-                        )
-                        Text(user.username)
-                            .foregroundColor(.primary)
-                        Spacer()
-                        Button {
-                            vm.remove(user)
-                        } label: {
-                            Image(systemName: "minus")
-                                .foregroundColor(.white)
-                                .frame(width: 32, height: 6) // thin bar
-                        }
-                        .background(Color.white.opacity(0.4))
-                        .clipShape(Capsule())
-                    }
-                    .padding(.vertical, 4)
+                    memberRow(for: user)
+                        .contentShape(Rectangle())
+                        .onTapGesture { vm.remove(user) }
                 }
+                .listRowInsets(EdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16))
+                .listRowSeparator(.hidden)
             }
-
-            // ── inline error ──────────────────────────
+            .listStyle(.plain)
+            
+            Divider()
+            
+            // Inline error
             if let err = vm.inlineError {
                 Text(err)
                     .foregroundColor(.red)
                     .font(.footnote)
+                    .padding(.horizontal)
+                    .transition(.opacity)
             }
-
-            // ── bottom buttons ────────────────────────
-            HStack(spacing: 0) {
-
-                Button("Add accounts") { vm.onAddAccounts() }
+            
+            // Bottom buttons
+            HStack {
+                Button("Add Members") { vm.onAddAccounts() }
                     .frame(maxWidth: .infinity)
                     .padding()
                     .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.accentColor))
-
+                
                 Button {
                     vm.createChat()
                 } label: {
                     HStack {
-                        Text("Create chat")
+                        Text("Create")
                         Image(systemName: "arrow.right")
                     }
                     .frame(maxWidth: .infinity)
@@ -78,12 +74,35 @@ struct GroupCreationView: View {
                     .foregroundColor(.white)
                     .clipShape(RoundedRectangle(cornerRadius: 12))
                 }
-                .disabled(vm.isSubmitting)
+                .disabled(vm.isSubmitting || vm.groupName.isEmpty)
             }
+            .padding()
         }
-        .padding()
         .background(Color(.systemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .shadow(radius: 8)
+        .toast(isShowing: $vm.showSuccessToast, message: "Group created successfully") // Moved here
+    }
+    
+    private func memberRow(for user: RowUser) -> some View {
+        HStack(spacing: 12) {
+            ProfileAvatarView(
+                url: user.imageURL,
+                name: user.username,
+                config: .rowUser,
+                ignoreCache: false
+            )
+            
+            Text(user.username)
+                .fontWeight(.regular)
+            
+            Spacer()
+            
+            Image(systemName: "minus.circle.fill")
+                .foregroundColor(.red)
+        }
+        .padding(.vertical, 4)
+        .background(Color.accentColor.opacity(0.1))
+        .cornerRadius(8)
     }
 }
