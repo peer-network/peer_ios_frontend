@@ -28,14 +28,18 @@ struct FollowersHeader: View {
     let friends: Int
 
     var body: some View {
-        HStack(spacing: 15) {
-//            countButton(type: .posts)
-//
-//            Spacer()
+        HStack(spacing: 0) {
+            countButton(type: .posts)
+
+            Spacer()
 
             countButton(type: .followers)
 
+            Spacer()
+
             countButton(type: .followings)
+
+            Spacer()
 
             countButton(type: .friends)
         }

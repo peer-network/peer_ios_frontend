@@ -34,44 +34,44 @@ struct CommentsListView: View {
                 .padding(.bottom, 5)
 
             ScrollView {
-                PostDescriptionComment(postVM: viewModel, isInFeed: false)
+                LazyVStack(spacing: 10) {
+                    PostDescriptionComment(postVM: viewModel, isInFeed: false)
 
-                switch viewModel.state {
-                    case .loading:
-                        ForEach(Comment.placeholders(count: 15)) { comment in
-                            SingleCommentView(comment: comment)
-                                .padding(.vertical, 5)
-                                .contentShape(Rectangle())
-                                .environmentObject(viewModel)
-                                .allowsHitTesting(false)
-                                .skeleton(isRedacted: true)
-                        }
-                    case .display:
-                        if viewModel.comments.isEmpty {
-                            Text("No comments yet...")
-                                .padding(.top, 30)
-                        } else {
-                            ForEach(viewModel.comments) { comment in
+                    switch viewModel.state {
+                        case .loading:
+                            ForEach(Comment.placeholders(count: 15)) { comment in
                                 SingleCommentView(comment: comment)
-                                    .padding(.vertical, 5)
                                     .contentShape(Rectangle())
                                     .environmentObject(viewModel)
+                                    .allowsHitTesting(false)
+                                    .skeleton(isRedacted: true)
                             }
-
-                            if viewModel.hasMoreComments {
-                                NextPageView {
-                                    viewModel.fetchComments(reset: false)
-                                }
-                                .padding(.horizontal, 20)
+                        case .display:
+                            if viewModel.comments.isEmpty {
+                                Text("No comments yet...")
+                                    .padding(.top, 20)
                             } else {
-                                EmptyView()
+                                ForEach(viewModel.comments) { comment in
+                                    SingleCommentView(comment: comment)
+                                        .contentShape(Rectangle())
+                                        .environmentObject(viewModel)
+                                }
+
+                                if viewModel.hasMoreComments {
+                                    NextPageView {
+                                        viewModel.fetchComments(reset: false)
+                                    }
+                                    .padding(.horizontal, 20)
+                                } else {
+                                    EmptyView()
+                                }
                             }
-                        }
-                    case .error(let error):
-                        ErrorView(title: "Error", description: error.userFriendlyDescription) {
-                            viewModel.fetchComments(reset: true)
-                        }
-                        .padding(20)
+                        case .error(let error):
+                            ErrorView(title: "Error", description: error.userFriendlyDescription) {
+                                viewModel.fetchComments(reset: true)
+                            }
+                            .padding(20)
+                    }
                 }
             }
             .scrollDismissesKeyboard(.never)

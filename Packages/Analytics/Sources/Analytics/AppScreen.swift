@@ -98,4 +98,13 @@ public enum AppScreen: ScreenTrackable {
                 return "ProfilesSheetView"
         }
     }
+
+    public var shouldSuspendWhenBackgrounded: Bool {
+        switch self {
+            case .auth, .versionHistory, .wallet, .settings, .referrals, .commentsSheet, .followersSheet, .followingSheet, .friendsSheet:
+                return true
+            case .feed, .photoAndTextFeed, .videoFeed, .audioFeed, .search, .postCreation, .profile:
+                return false
+        }
+    }
 }

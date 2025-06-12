@@ -56,7 +56,9 @@ public struct FollowButton: View {
         } label: {
             Group {
                 if viewModel.isFollowing && viewModel.isFollowed {
-                    Text("Peer")
+                    Text("peer")
+                        .bold()
+                        .italic()
                         .foregroundStyle(Colors.whitePrimary)
                 } else if viewModel.isFollowed {
                     Text("Following")
@@ -78,7 +80,7 @@ public struct FollowButton: View {
                 if viewModel.isFollowing && viewModel.isFollowed {
                     RoundedRectangle(cornerRadius: 20)
                         .foregroundStyle(Gradients.activeButtonBlue)
-                        .shadow(color: .black.opacity(0.5), radius: 25, x: 0, y: 4)
+//                        .shadow(color: .black.opacity(0.5), radius: 25, x: 0, y: 4)
                 } else if viewModel.isFollowed {
                     RoundedRectangle(cornerRadius: 20)
                         .foregroundStyle(Colors.hashtag)

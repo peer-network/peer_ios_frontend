@@ -11,6 +11,8 @@ import Environment
 import Models
 
 struct ProfileHeader: View {
+    @Environment(\.redactionReasons) private var redactionReasons
+    
     @EnvironmentObject private var accountManager: AccountManager
     @EnvironmentObject private var quickLook: QuickLook
     @EnvironmentObject private var router: Router
@@ -21,6 +23,42 @@ struct ProfileHeader: View {
     @Binding var showAvatarPicker: Bool
 
     var body: some View {
+        VStack(spacing: 10) {
+            HStack(alignment: .center, spacing: 15) {
+                profileImage
+
+                VStack(alignment: .leading, spacing: 10) {
+                    username
+
+                    FollowersHeader(userId: user.id, postsCount: user.postsAmount, followersCount: user.amountFollowers, followingsCount: user.amountFollowing, friends: user.amountFriends)
+                }
+            }
+
+            HStack(spacing: 0) {
+                Text(bio)
+                    .font(.customFont(weight: .regular, style: .footnote))
+                    .foregroundStyle(Colors.whiteSecondary)
+
+                Spacer()
+                    .frame(minWidth: 20)
+                    .frame(maxWidth: .infinity)
+                    .layoutPriority(-1)
+
+                if redactionReasons != .placeholder, !AccountManager.shared.isCurrentUser(id: user.id) {
+                    let vm = FollowButtonViewModel(
+                        id: user.id,
+                        isFollowing: user.isFollowed,
+                        isFollowed: user.isFollowing
+                    )
+                    FollowButton(viewModel: vm)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .multilineTextAlignment(.leading)
+        }
+    }
+
+    var oldbody: some View {
         VStack(spacing: 10) {
             HStack(alignment: .center) {
                 profileImage
@@ -44,7 +82,7 @@ struct ProfileHeader: View {
                     .frame(maxWidth: .infinity)
                     .layoutPriority(-1)
 
-                if !AccountManager.shared.isCurrentUser(id: user.id) {
+                if redactionReasons != .placeholder, !AccountManager.shared.isCurrentUser(id: user.id) {
                     let vm = FollowButtonViewModel(
                         id: user.id,
                         isFollowing: user.isFollowed,
@@ -92,7 +130,7 @@ struct ProfileHeader: View {
     }
 
     private var username: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        HStack(alignment: .center, spacing: 5) {
             Text(user.username)
                 .font(.customFont(weight: .boldItalic, style: .callout))
                 .foregroundStyle(Colors.whitePrimary)

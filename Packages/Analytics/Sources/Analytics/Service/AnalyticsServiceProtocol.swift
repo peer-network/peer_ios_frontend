@@ -11,6 +11,7 @@ struct ScreenTimeTracker {
     let id: UUID
     let screen: ScreenTrackable
     var startTime: Date
+    var backgroundStartTime: Date? // Track when backgrounding started
 }
 
 public protocol AnalyticsServiceProtocol {

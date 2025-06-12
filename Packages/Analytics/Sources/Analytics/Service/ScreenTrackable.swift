@@ -8,4 +8,5 @@
 public protocol ScreenTrackable {
     var screenName: String { get }
     var screenClass: String { get }
+    var shouldSuspendWhenBackgrounded: Bool { get }
 }

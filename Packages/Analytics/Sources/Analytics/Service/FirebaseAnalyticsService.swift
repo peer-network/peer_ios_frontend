@@ -11,10 +11,11 @@ import FirebaseAnalytics
 
 public final class FirebaseAnalyticsService: AnalyticsServiceProtocol {
     private var screenTimeStack: [ScreenTimeTracker] = []
-    // TODO: Improvement for the future: observe UIApplication.willResignActiveNotification to stop and resume tracking while the app goes to the background and back
     private var cancellables = Set<AnyCancellable>()
 
-    public init() {}
+    public init() {
+        setupAppStateObservers()
+    }
 
     deinit {
         stopTrackingAllScreenTimes()
@@ -98,5 +99,43 @@ public final class FirebaseAnalyticsService: AnalyticsServiceProtocol {
 
     public func resetUserID() {
         Analytics.setUserID(nil)
+    }
+
+    private func setupAppStateObservers() {
+        // Handle app going to background
+        NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)
+            .sink { [weak self] _ in
+                self?.handleAppBackgrounded()
+            }
+            .store(in: &cancellables)
+
+        // Handle app returning to foreground
+        NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
+            .sink { [weak self] _ in
+                self?.handleAppForegrounded()
+            }
+            .store(in: &cancellables)
+    }
+
+    private func handleAppBackgrounded() {
+        let now = Date()
+
+        for index in screenTimeStack.indices where screenTimeStack[index].screen.shouldSuspendWhenBackgrounded {
+            screenTimeStack[index].backgroundStartTime = now
+        }
+    }
+
+    private func handleAppForegrounded() {
+        let now = Date()
+
+        for index in screenTimeStack.indices where screenTimeStack[index].screen.shouldSuspendWhenBackgrounded {
+            if let backgroundStartTime = screenTimeStack[index].backgroundStartTime {
+                let backgroundDuration = now.timeIntervalSince(backgroundStartTime)
+                screenTimeStack[index].startTime = screenTimeStack[index].startTime.addingTimeInterval(backgroundDuration)
+                screenTimeStack[index].backgroundStartTime = nil
+
+                print("\(screenTimeStack[index].screen.screenName) - \(screenTimeStack[index].startTime)")
+            }
+        }
     }
 }

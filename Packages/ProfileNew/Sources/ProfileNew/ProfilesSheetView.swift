@@ -19,10 +19,9 @@ public struct ProfilesSheetView<Fetcher>: View where Fetcher: RelationsFetcher {
         case friends = "Peers"
     }
     
-    @Environment(\.analytics) private var analytics
-    
     @EnvironmentObject private var apiManager: APIServiceManager
     @StateObject private var fetcher: Fetcher
+
     private let type: SheetType
     
     public init(type: SheetType, fetcher: Fetcher) {
@@ -41,77 +40,63 @@ public struct ProfilesSheetView<Fetcher>: View where Fetcher: RelationsFetcher {
                 .font(.customFont(weight: .regular, size: .body))
                 .foregroundStyle(Colors.whitePrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.bottom, 5)
-            
-            switch fetcher.state {
-                case .loading:
-                    ScrollView {
-                        VStack(spacing: 20) {
+                .padding(.bottom, 10)
+
+            ScrollView {
+                LazyVStack(spacing: 20) {
+                    switch fetcher.state {
+                        case .error(let error):
+                            ErrorView(title: "Error", description: error.userFriendlyDescription) {
+                                switch type {
+                                    case .followers:
+                                        fetcher.fetchFollowers(reset: true)
+                                    case .following:
+                                        fetcher.fetchFollowings(reset: true)
+                                    case .friends:
+                                        fetcher.fetchFriends(reset: true)
+                                }
+                            }
+                            .padding(20)
+
+                        case .loading:
                             ForEach(RowUser.placeholders(count: 15)) { user in
                                 RowProfileView(user: user)
                                     .allowsHitTesting(false)
                                     .skeleton(isRedacted: true)
                             }
-                        }
-                    }
-                    .scrollIndicators(.hidden)
-                    .padding(.top, 5)
-                case .display(let users, let hasMore):
-                    if users.isEmpty {
-                        Text("Nothing found...")
-                            .padding(20)
-                            .frame(maxHeight: .infinity, alignment: .top)
-                    } else {
-                        ScrollView {
-                            LazyVStack(spacing: 20) {
+
+                        case .display(let users, let hasMore):
+                            if users.isEmpty {
+                                Text("Nothing found...")
+                                    .padding(20)
+                            } else {
                                 ForEach(users) { user in
                                     RowProfileView(user: user)
+                                        .contentShape(Rectangle())
+                                }
+
+                                switch hasMore {
+                                    case .hasMore:
+                                        NextPageView {
+                                            switch type {
+                                                case .followers:
+                                                    fetcher.fetchFollowers(reset: false)
+                                                case .following:
+                                                    fetcher.fetchFollowings(reset: false)
+                                                case .friends:
+                                                    fetcher.fetchFriends(reset: false)
+                                            }
+                                        }
+                                        .padding(.horizontal, 20)
+                                    case .none:
+                                        EmptyView()
                                 }
                             }
-                            .padding(.horizontal, 10) // to prevent shadows being clipped
-                            .padding(.vertical, 10) // to prevent shadows being clipped
-                        }
-                        .scrollIndicators(.hidden)
-                        .padding(.top, 5)
-                        .padding(.horizontal, -10) // to prevent shadows being clipped
-                        .padding(.vertical, -10) // to prevent shadows being clipped
                     }
-                    
-                    switch hasMore {
-                        case .hasMore:
-                            NextPageView {
-                                switch type {
-                                    case .followers:
-                                        fetcher.fetchFollowers(reset: false)
-                                    case .following:
-                                        fetcher.fetchFollowings(reset: false)
-                                    case .friends:
-                                        fetcher.fetchFriends(reset: false)
-                                }
-                            }
-                            .padding(.horizontal, 20)
-                        case .none:
-                            EmptyView()
-                    }
-                case .error(let error):
-                    VStack(spacing: 20) {
-                        Text("An error occurred while loading \(type.rawValue), please try again.")
-                            .font(.customFont(weight: .bold, style: .headline))
-                        
-                        Button("Retry") {
-                            switch type {
-                                case .followers:
-                                    fetcher.fetchFollowers(reset: true)
-                                case .following:
-                                    fetcher.fetchFollowings(reset: true)
-                                case .friends:
-                                    fetcher.fetchFriends(reset: true)
-                            }
-                        }
-                        .buttonStyle(.bordered)
-                    }
-                    .padding(20)
+                }
+                .padding(.bottom, 34)
             }
+            .scrollIndicators(.hidden)
         }
         .padding(10)
         .ignoresSafeArea(.all, edges: .bottom)

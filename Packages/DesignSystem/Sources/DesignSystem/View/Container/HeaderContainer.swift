@@ -44,8 +44,13 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                         Icons.arrowDown
                             .iconSize(height: 7)
                             .rotationEffect(.degrees(90))
+                            .padding(.leading, 20)
                             .padding(.trailing, 10)
                     }
+                    .contentShape(.rect)
+                } else {
+                    Spacer()
+                        .frame(width: 20)
                 }
 
                 header()
@@ -120,7 +125,7 @@ public struct HeaderContainer<Header: View, Content: View>: View {
             }
             .foregroundStyle(Colors.whitePrimary)
             .padding(.vertical, 10)
-            .padding(.horizontal, 20)
+            .padding(.trailing, 20)
 
             content()
         }

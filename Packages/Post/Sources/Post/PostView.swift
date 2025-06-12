@@ -129,13 +129,11 @@ public struct PostView: View {
 
     private func imagePost() -> some View {
         VStack(alignment: .center, spacing: 0) {
-            ZStack(alignment: .top) {
-                ImagesContent(postVM: postVM)
+            PostHeaderView(postVM: postVM, showFollowButton: showFollowButton)
+                .padding(.horizontal, 20)
+                .padding(.vertical, 10)
 
-                PostHeaderView(postVM: postVM, showFollowButton: showFollowButton)
-                    .padding(.horizontal, 20)
-                    .padding(.top, 10)
-            }
+            ImagesContent(postVM: postVM)
 
             if !reasons.contains(.placeholder) {
                 PostActionsView(layout: .horizontal, postViewModel: postVM, showAppleTranslation: $showAppleTranslation, showReportAlert: $showReportAlert)
