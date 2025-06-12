@@ -10,6 +10,7 @@ import ChatLayout
 
 struct ChatLayoutView: UIViewRepresentable {
     let messages: [Message1]
+    var scrollToLatest: Bool
     
     func makeUIView(context: Context) -> UICollectionView {
         let layout = CollectionViewChatLayout()
@@ -19,19 +20,28 @@ struct ChatLayoutView: UIViewRepresentable {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .clear
         collectionView.alwaysBounceVertical = true
-        collectionView.contentInset = UIEdgeInsets(top: 4, left: 2, bottom: 60, right: 2)
+        collectionView.contentInset = UIEdgeInsets(top: 4, left: 2, bottom: 40, right: 2)
         
         collectionView.register(ReliableChatCell.self, forCellWithReuseIdentifier: "ReliableChatCell")
         collectionView.dataSource = context.coordinator
         collectionView.delegate = context.coordinator
         context.coordinator.collectionView = collectionView
         
+        // Ensure layout is completed before scrolling
+        DispatchQueue.main.async {
+            context.coordinator.scrollToBottom(animated: false)
+        }
+
         return collectionView
     }
+
         
     func updateUIView(_ uiView: UICollectionView, context: Context) {
             let previousCount = context.coordinator.messages.count
             context.coordinator.messages = messages
+        if scrollToLatest {
+                context.coordinator.scrollToBottom(animated: true)
+            }
 
             guard messages.count != previousCount else { return }
 
@@ -100,22 +110,14 @@ struct ChatLayoutView: UIViewRepresentable {
             collectionView.scrollIndicatorInsets.bottom = 4
         }
 
-        func scrollToBottom(extraPadding: CGFloat = 80) {
+        func scrollToBottom(animated: Bool = true, extraPadding: CGFloat = 60) {
             guard let collectionView = collectionView, messages.count > 0 else { return }
-
-            // Temporarily increase bottom inset
-            collectionView.contentInset.bottom += extraPadding
-            collectionView.scrollIndicatorInsets.bottom += extraPadding
-
-            // Scroll to bottom
+            
             let indexPath = IndexPath(item: messages.count - 1, section: 0)
-            collectionView.scrollToItem(at: indexPath, at: .bottom, animated: false)
-
-            // Optionally, reset the inset after a slight delay
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                // Revert back to normal bottom inset
-                collectionView.contentInset.bottom -= extraPadding
-                collectionView.scrollIndicatorInsets.bottom -= extraPadding
+            
+            // Ensure layout pass is complete before scrolling
+            DispatchQueue.main.async {
+                collectionView.scrollToItem(at: indexPath, at: .bottom, animated: animated)
             }
         }
 

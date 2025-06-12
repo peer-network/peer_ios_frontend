@@ -11,6 +11,7 @@ import DesignSystem
 
 struct ChatContainerView<ViewModel: ChatViewModelProtocol>: View {
     @ObservedObject var viewModel: ViewModel
+    @State private var scrollToBottom = true
     
     @StateObject private var accountManager = AccountManager.shared
     private let title: String
@@ -30,14 +31,10 @@ struct ChatContainerView<ViewModel: ChatViewModelProtocol>: View {
                             ProgressView()
                                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                         } else {
-                            ChatLayoutView(messages: viewModel.messages)
-                                // Give bottom padding to avoid overlap with input
-                                //.padding(.bottom, 70) // ~height of input view + some buffer
-                                .edgesIgnoringSafeArea(.bottom)
-//                            let formatter = DateFormatter()
-//                            formatter.dateStyle = .medium
-//                            formatter.timeStyle = .short
-//                            let formattedDate = DateFormatter(.string(from: Date())
+                            ChatLayoutView(messages: viewModel.messages, scrollToLatest: scrollToBottom)
+                                .onAppear {
+                                    scrollToBottom = true
+                                }
                           
                             if let user = accountManager.user?.imageURL {
                                
@@ -51,37 +48,14 @@ struct ChatContainerView<ViewModel: ChatViewModelProtocol>: View {
                                     ),
                                     onSend: viewModel.sendMessage
                                 )
-                                //.frame(height: 60)  // fixed height matching your input view design
                                 .padding(.horizontal)
-                                .background(Colors.textActive)  // optionally a background color
+                                .background(Colors.textActive)
                             }
                         }
                     }
-                    .toolbar(.hidden, for: .navigationBar)
-//                    .toolbar {
-//                        ToolbarItem(placement: .navigationBarTrailing) {
-//                            Button {
-//                                Task { await viewModel.refreshMessages() }
-//                            } label: {
-//                                Image(systemName: "arrow.clockwise")
-//                            }
-//                            .disabled(viewModel.isLoading)
-//                        }
-//                    }
-
+                 
             .toolbar(.hidden, for: .navigationBar)
-            //.navigationTitle(title)
             .padding(.vertical)
-//            .toolbar {
-//                ToolbarItem(placement: .navigationBarTrailing) {
-//                    Button {
-//                        Task { await viewModel.refreshMessages() }
-//                    } label: {
-//                        Image(systemName: "arrow.clockwise")
-//                    }
-//                    .disabled(viewModel.isLoading)
-//                }
-//            }
         }
     }
 }
