@@ -48,19 +48,30 @@ struct FriendSelectionView: View {
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
 
             case .display(let users, _):
-                ScrollView {
-                    LazyVStack(spacing: 12) {
-                        ForEach(users, id: \.id) { user in
-                            friendRow(for: user)
-                                .onTapGesture {
-                                    handleSelection(for: user)
-                                }
+                if users.isEmpty {
+                        VStack {
+                            Spacer()
+                            Text("No friends available.\nPlease add friends to chat.")
+                                .multilineTextAlignment(.center)
+                                .foregroundColor(.secondary)
+                                .padding()
+                            Spacer()
                         }
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    ScrollView {
+                        LazyVStack(spacing: 12) {
+                            ForEach(users, id: \.id) { user in
+                                friendRow(for: user)
+                                    .onTapGesture {
+                                        handleSelection(for: user)
+                                    }
+                            }
+                        }
+                        .padding(.horizontal)
+                        .padding(.top, 8)
                     }
-                    .padding(.horizontal)
-                    .padding(.top, 8)
                 }
-
             case .error(let err):
                 Text(err.localizedDescription)
                     .foregroundColor(.red)
