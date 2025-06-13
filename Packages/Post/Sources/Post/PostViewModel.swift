@@ -126,7 +126,7 @@ extension PostViewModel {
         }
 
         do {
-            let result = await apiService.likePost(with: post.id) // TODO: CRASHES THE APP NOW. FeedNew/PostViewModel.swift:96: Fatal error: Unexpectedly found nil while implicitly unwrapping an Optional value
+            let result = await apiService.likePost(with: post.id)
 
             switch result {
             case .success:

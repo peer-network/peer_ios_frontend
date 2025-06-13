@@ -54,7 +54,7 @@ struct PeerApp: App {
 
         _authManager = .init(wrappedValue: AuthManager(accountManager: accountManager, tokenManager: .shared))
 
-        analyticsService = MockAnalyticsService(shouldPrintLogs: false)
+        analyticsService = MockAnalyticsService(shouldPrintLogs: true)
         let remoteConfigService = MockRemoteConfigService()
 #else
         analyticsService = FirebaseAnalyticsService()
