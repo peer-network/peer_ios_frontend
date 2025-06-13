@@ -11,7 +11,7 @@ struct Constants {
     // MARK: - Chat View
     struct ToggleViewChat {
         static let privateTitle = "Private"
-        static let groupTitle = "Group Chats"
+        static let groupTitle = "Groups"
         static let plusTitle = "plus"
         static let chatAccessibilityTitle = "Add new chat"
         static let addChatAccessibilityButton = "Add new chat"

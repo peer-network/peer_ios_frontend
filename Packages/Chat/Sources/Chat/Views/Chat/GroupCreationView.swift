@@ -47,7 +47,7 @@ struct GroupCreationContentView: View {
         VStack(spacing: 0) {
             // Header
             Text("Create Group Chat")
-                .font(.headline)
+                .font(.customFont(weight: .bold, style: .body))
                 .foregroundColor(.white)
                 .padding()
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -59,6 +59,7 @@ struct GroupCreationContentView: View {
             TextField("*Give a name to chat", text: $vm.groupName)
                 .padding(.leading, 44)
                 .padding(.vertical, 12)
+                .font(.customFont(weight: .regular, style: .body))
                 .background(
                     RoundedRectangle(cornerRadius: 24, style: .continuous)
                         .fill(Color.white.opacity(0.15))
@@ -120,7 +121,7 @@ struct GroupCreationContentView: View {
                         Text("Add people")
                         Image(systemName: "plus")
                     }
-                    .font(.system(size: 14, weight: .bold))
+                    .font(.customFont(weight: .bold, style: .body))
                     .foregroundColor(.white)
                     .padding()
                     .frame(maxWidth: .infinity)
@@ -136,7 +137,7 @@ struct GroupCreationContentView: View {
                         Text("Create Chat")
                         Image(systemName: "arrow.right")
                     }
-                    .font(.system(size: 14, weight: .bold))
+                    .font(.customFont(weight: .bold, style: .body))
                     .foregroundColor(.white)
                     .padding()
                     .frame(maxWidth: .infinity)
@@ -162,7 +163,7 @@ struct GroupCreationContentView: View {
             .frame(width: 40, height: 40)
             
             Text(user.username)
-                .fontWeight(.regular)
+                .font(.customFont(weight: .boldItalic, style: .body))
                 .foregroundColor(.white)
             
             Spacer()

@@ -57,6 +57,26 @@ class ChatCoordinator: ObservableObject, Coordinator {
     // MARK: - Public Methods
     func start() { /* Initial setup */ }
     
+//    func view(for chatType: ChatType) -> AnyView {
+//        let filtered = chats(for: chatType)
+//        
+//        if isLoading { return AnyView(ProgressView()) }
+//        if filtered.isEmpty { return AnyView(Text(chatType.emptyStateMessage).italic()) }
+//        
+//        let chatListView = ChatListView(
+//            chats: filtered,
+//            isGroupChat: chatType == .groupChat,
+//            onChatSelected: { [weak self] chat in
+//                Task { @MainActor in
+//                    self?.handleChatSelection(chat)
+//                }
+//            },
+//            onAddTapped: chatType == .groupChat ? handleAddTapped : nil
+//        )
+//        
+//        return AnyView(chatListView.navigationTitle(chatType.navigationTitle))
+//    }
+    
     func view(for chatType: ChatType) -> AnyView {
         let filtered = chats(for: chatType)
         

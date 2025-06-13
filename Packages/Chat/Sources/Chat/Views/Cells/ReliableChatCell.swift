@@ -53,11 +53,11 @@ final class ReliableChatCell: UICollectionViewCell {
         headerView.translatesAutoresizingMaskIntoConstraints = false
         bubbleView.addSubview(headerView)
 
-        usernameLabel.font = .boldSystemFont(ofSize: 13)
+        usernameLabel.font = .customFont(weight: .boldItalic, size: .body)
         usernameLabel.translatesAutoresizingMaskIntoConstraints = false
         headerView.addSubview(usernameLabel)
 
-        timestampLabel.font = .systemFont(ofSize: 11)
+        timestampLabel.font = .customFont(weight: .regular, size: .footnoteSmall)
         timestampLabel.textAlignment = .right
         timestampLabel.translatesAutoresizingMaskIntoConstraints = false
         headerView.addSubview(timestampLabel)
@@ -70,7 +70,7 @@ final class ReliableChatCell: UICollectionViewCell {
         // Message
         messageLabel.numberOfLines = 0
         messageLabel.lineBreakMode = .byWordWrapping
-        messageLabel.font = .systemFont(ofSize: 16)
+        messageLabel.font = .customFont(weight: .regular, size: .body)
         messageLabel.setContentHuggingPriority(.required, for: .horizontal)
         messageLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
         messageLabel.translatesAutoresizingMaskIntoConstraints = false

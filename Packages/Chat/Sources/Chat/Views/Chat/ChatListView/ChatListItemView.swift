@@ -58,14 +58,14 @@ struct ChatListItemView: View {
     private var headerView: some View {
         HStack {
             Text(isGroupChat ? (chat.name ?? "Unnamed group") : peerUsername)
-                .font(.system(size: 16, weight: .semibold))
+                .font(.customFont(weight: .boldItalic, style: .body))
                 .foregroundColor(.white)
             
             Spacer()
             
             if let createdAt = chat.createdAt {
                 Text(createdAt.timeAgo(isShort: true))
-                    .font(.caption)
+                    .font(.customFont(weight: .light, size: .body))
                     .foregroundColor(.gray)
             }
         }
@@ -75,12 +75,12 @@ struct ChatListItemView: View {
         Group {
             if let lastMessage = chat.chatMessages.last {
                 Text(lastMessage.content)
-                    .font(.subheadline)
+                    .font(.customFont(weight: .regular, size: .body))
                     .foregroundColor(.gray)
                     .lineLimit(1)
             } else {
                 Text(isGroupChat ? "No messages yet" : "Tap to start chatting")
-                    .font(.subheadline)
+                    .font(.customFont(weight: .bold, size: .body ))
                     .foregroundColor(.gray)
             }
         }

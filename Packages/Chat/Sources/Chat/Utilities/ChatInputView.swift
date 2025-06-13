@@ -28,45 +28,77 @@ struct ChatInputView: View {
             
             // 📝 Message input with built-in send button
             HStack {
-                TextField("", text: $messageText)
-                    .textFieldStyle(PlainTextFieldStyle())
-                    .disableAutocorrection(true)
-                    .autocapitalization(.none)
-                    .padding(.horizontal, 16)
-                    .frame(minHeight: 50)
-                    .background(Color.white)
-                    .foregroundColor(.black)
-                    .cornerRadius(25)
-                    .overlay(
-                        Group {
-                            if messageText.isEmpty {
-                                Text("Write a message...")
-                                    .foregroundColor(Color(.systemGray2))
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                    .padding(.leading, 16)
+                            TextField("Write a message...", text: $messageText)
+                                .textFieldStyle(PlainTextFieldStyle())
+                                .disableAutocorrection(true)
+                                .autocapitalization(.none)
+                                .padding(.horizontal, 16)
+                                .frame(minHeight: 50)
+                                .background(Color.white)
+                                .foregroundColor(.black)
+                                .cornerRadius(25)
+                            
+                            // Send button
+                            if !messageText.isEmpty {
+                                Button(action: onSend) {
+                                    Image(systemName: "arrow.right.circle.fill")
+                                        .font(.system(size: 28))
+                                        .foregroundColor(.blue)
+                                }
+                                .padding(.trailing, 8)
                             }
                         }
-                    )
-                
-                // Send button
-                if !messageText.isEmpty {
-                    Button(action: onSend) {
-                        Image(systemName: "arrow.right.circle.fill")
-                            .font(.system(size: 28))
-                            .foregroundColor(.blue)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 25)
+                                .stroke(Color(.systemGray4), lineWidth: 1)
+                        )
+                        .animation(.default, value: messageText.isEmpty)
                     }
-                    .padding(.trailing, 8)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 12)
+                    .padding(.bottom, 4)
+                    .background(Colors.textActive)
                 }
-            }
-            .overlay(
-                RoundedRectangle(cornerRadius: 25)
-                    .stroke(Color(.systemGray4), lineWidth: 1)
-            )
-            .animation(.default, value: messageText.isEmpty)
-        }
-        .padding(.horizontal, 16)
-        .padding(.top, 12)
-        .padding(.bottom, 4)
-        .background(Colors.textActive)
+    
+//            HStack {
+//                TextField("", text: $messageText)
+//                    .textFieldStyle(PlainTextFieldStyle())
+//                    .disableAutocorrection(true)
+//                    .autocapitalization(.none)
+//                    .padding(.horizontal, 16)
+//                    .frame(minHeight: 50)
+//                    .background(Color.white)
+//                    .foregroundColor(.black)
+//                    .cornerRadius(25)
+//                    .overlay(
+//                        Group {
+//                            if messageText.isEmpty {
+//                                Text("Write a message...")
+//                                    .foregroundColor(Color(.systemGray2))
+//                                    .frame(maxWidth: .infinity, alignment: .leading)
+//                                    .padding(.leading, 16)
+//                            }
+//                        }
+//                    )
+//                
+//                // Send button
+//                if !messageText.isEmpty {
+//                    Button(action: onSend) {
+//                        Image(systemName: "arrow.right.circle.fill")
+//                            .font(.system(size: 28))
+//                            .foregroundColor(.blue)
+//                    }
+//                    .padding(.trailing, 8)
+//                }
+//            }
+//            .overlay(
+//                RoundedRectangle(cornerRadius: 25)
+//                    .stroke(Color(.systemGray4), lineWidth: 1)
+//            )
+//            .animation(.default, value: messageText.isEmpty)
+//        }
+//        .padding(.horizontal, 16)
+//        .padding(.top, 12)
+//        .padding(.bottom, 4)
+//        .background(Colors.textActive)
     }
-}

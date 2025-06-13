@@ -104,8 +104,8 @@ struct ChatLayoutView: UIViewRepresentable {
             // Calculate the overlap
             let bottomInset = intersection.height
             
-            collectionView.contentInset.bottom = bottomInset + 60 
-            collectionView.scrollIndicatorInsets.bottom = bottomInset + 60
+            collectionView.contentInset.bottom = bottomInset + 10
+            collectionView.scrollIndicatorInsets.bottom = bottomInset + 10
             
             // Scroll to bottom if needed
             scrollToBottom()

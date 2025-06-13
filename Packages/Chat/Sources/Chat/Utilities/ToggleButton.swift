@@ -15,8 +15,7 @@ struct ToggleButton: View {
     var body: some View {
         Button(action: action) {
             Text(title)
-                .font(.system(size: Constants.FontSize.toggleButton,
-                                           weight: .bold))
+                .font(.customFont(weight: .bold, size: .body ))
                 .foregroundColor(isSelected ? Constants.Colors.selectedText : Constants.Colors.unselectedText)
                 .frame(height: Constants.ButtonSize.toggleHeight)
                 .padding(.horizontal, Constants.ToggleViewChatPadding.toggleHorizontal)

@@ -84,7 +84,7 @@ struct FriendSelectionView: View {
             if let msg = inlineError {
                 Text(msg)
                     .foregroundColor(.red)
-                    .font(.footnote)
+                    .font(.customFont(weight: .bold, style: .body))
                     .padding(.horizontal)
                     .transition(.opacity)
             }
@@ -107,8 +107,8 @@ struct FriendSelectionView: View {
             .frame(width: 44, height: 44)
 
             Text(user.username)
-                .font(.body)
-                .fontWeight(isSelected(user) ? .semibold : .regular)
+                .font(.customFont(weight: .boldItalic, style: .body))
+                //.fontWeight(isSelected(user) ? .semibold : .regular)
 
             Spacer()
 
@@ -138,9 +138,11 @@ struct FriendSelectionView: View {
             Text("\(viewModel.selectedUsers.count) account" +
                  (viewModel.selectedUsers.count == 1 ? "" : "s") +
                  " selected")
+            .font(.customFont(weight: .boldItalic, style: .body))
             Spacer()
             Button("Next") { validateAndFinish() }
                 .disabled(viewModel.selectedUsers.isEmpty)
+                .font(.customFont(weight: .bold, style: .body))
         }
         .padding()
     }

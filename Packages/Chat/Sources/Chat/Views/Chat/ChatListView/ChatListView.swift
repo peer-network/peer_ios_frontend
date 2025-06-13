@@ -7,21 +7,30 @@
 
 import SwiftUI
 import Models
-import Environment
 import DesignSystem
 
-struct ChatListView<Header: View>: View {
+struct ChatListView: View {
     let chats: [ListChats]
     let isGroupChat: Bool
     let onChatSelected: (ListChats) -> Void
-    var header: (() -> Header)? = nil
+    var onAddTapped: (() -> Void)? = nil
     
     var body: some View {
         ScrollView {
             LazyVStack(spacing: 12) {
-                if let header = header {
-                    header()
-                }
+//                if isGroupChat {
+//                    HStack {
+//                        Spacer()
+//                        Button(action: {
+//                            onAddTapped?()
+//                        }) {
+//                            Image(systemName: "plus.circle.fill")
+//                                .font(.title)
+//                                .foregroundColor(.blue)
+//                        }
+//                        .padding(.trailing)
+//                    }
+//                }
                 
                 ForEach(chats) { chat in
                     Button(action: {
@@ -37,12 +46,5 @@ struct ChatListView<Header: View>: View {
             .padding()
         }
         .background(Colors.textActive.ignoresSafeArea())
-    }
-}
-
-// Default implementation without header
-extension ChatListView where Header == EmptyView {
-    init(chats: [ListChats], isGroupChat: Bool, onChatSelected: @escaping (ListChats) -> Void) {
-        self.init(chats: chats, isGroupChat: isGroupChat, onChatSelected: onChatSelected, header: nil)
     }
 }
