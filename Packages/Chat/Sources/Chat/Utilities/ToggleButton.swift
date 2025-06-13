@@ -15,7 +15,6 @@ struct ToggleButton: View {
     var body: some View {
         Button(action: action) {
             Text(title)
-               // .font(Constants.Fonts.toggleFont, weight: .bold) // Apply custom font
                 .font(.system(size: Constants.FontSize.toggleButton,
                                            weight: .bold))
                 .foregroundColor(isSelected ? Constants.Colors.selectedText : Constants.Colors.unselectedText)

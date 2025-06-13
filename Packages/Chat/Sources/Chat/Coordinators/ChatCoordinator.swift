@@ -142,20 +142,6 @@ class ChatCoordinator: ObservableObject, Coordinator {
                         guard let self else { return }
                     await self.refreshMessages(for: peer.id)
                     },
-//                fetchAction: { chatId async -> [Message1] in
-//                    print("fetch action called")
-//                    // 1. Make the call
-////                    let result = await APIServiceManager().apiService
-////                                    .listChatMessages(for: chatId)
-////
-////                    // 2. Bail out on failure
-////                    guard case .success(let payload) = result else { return [] }
-//
-//                    // 3. Map the payload → [Message1]
-//                   // return ChatCoordinator.map(payload,
-//                                        //       currentUserId: AccountManager.shared.userId)
-//                },
-                
                 sendAction: { [weak self] text in
                     print("sendtext and id",[chat.id, text])
                     self?.sendMessage(chatId: chat.id, content: text) { optimistic in
@@ -170,22 +156,11 @@ class ChatCoordinator: ObservableObject, Coordinator {
         }
 
         selectedChat = chat
-       // startChatMessagesSubscription(chatId: chat.id)
     }
 
     
     @MainActor
-    func sendMessage(chatId: String, content: String, optimistic localAppend: @escaping (Message1) -> Void) {
-//        let outgoing = Message1(
-//            id: chatId,
-//            text: content,
-//            isIncoming: false,
-//            timestamp: Date(),
-//            sender: User(id: AccountManager.shared.userId ?? "", name: "You", image: "\(String(describing: AccountManager.shared.user?.imageURL))")
-//        )
-//        localAppend(outgoing)
-        print("send messages calling", chatId)
-        Task {
+    func sendMessage(chatId: String, content: String, optimistic localAppend: @escaping (Message1) -> Void) {        Task {
             let result = await APIServiceManager().apiService.sendChatMessage(with: chatId, content: content)
             
             switch result {
@@ -284,19 +259,16 @@ class ChatCoordinator: ObservableObject, Coordinator {
     func refreshMessages(for chatId: String) async {
         isFetchingMessages = true
         defer { isFetchingMessages = false }
-print("chatId", chatId)
         let result = await APIServiceManager().apiService.listChatMessages(for: chatId)
-        print("listddd", result)
         guard case .success(let list) = result else {
-            
-            if case .failure(let err) = result {
+        if case .failure(let err) = result {
                 self.error = err
             }
             return
         }
 
         guard let currentUserId = AccountManager.shared.userId else { return }
-        let me = User(id: currentUserId, name: "Me", image: "\(AccountManager.shared.user?.imageURL)" ?? nil)
+        let me = User(id: currentUserId, name: "Me", image: "\(String(describing: AccountManager.shared.user?.imageURL))")
         let peer = User(id: "peer", name: "Peer", image: nil)
 
         let latest = list.messages.map { msg -> Message1 in
@@ -405,43 +377,6 @@ print("chatId", chatId)
             }
             
         case .groupChat:
-//            guard selected.count >= 2 else { return }
-//
-//            // 1️⃣  SHOW the sheet (only here)
-//            isPresentingGroupCreation = true
-//
-//            groupCreationViewModel = GroupCreationViewModel(
-//                initialMembers: selected,
-//                onAddAccounts: { [weak self] in
-//                    self?.isPresentingFriendSelection = true
-//                },
-//                onCreateSuccess: { [weak self] in        // ← path if VM calls its own success
-//                    self?.closeGroupCreationOverlay()
-//                },
-//                onCreateChat: { [weak self] name, ids async -> Result<String, APIError> in
-//                    guard let self else { return .failure(.missingData) }
-//
-//                    // ── create chat on server ─────────────────────────────
-//                    let res = await self.createGroupChat(name: name, memberIds: ids)
-//                    guard case .success(let chatId) = res else { return res }
-//
-//                    // ── fetch chat row ───────────────────────────────────
-//                    let listRes = await APIServiceManager().apiService.listChats()
-//                    guard case .success(let all) = listRes,
-//                          let newChat = all.first(where: { $0.id == chatId }) else { return res }
-//
-//                    // ── update list & dismiss sheet on main thread ───────
-//                    await MainActor.run {
-//                        if !self.chats.contains(where: { $0.id == chatId }) {
-//                            self.chats.insert(newChat, at: 0)
-//                        }
-//                        self.closeGroupCreationOverlay()      // 🔑 hide sheet
-//                    }
-//                    return res
-//                }
-//            )
-//
-//        }
             guard selected.count >= 2 else { return }
                     
                     // Show the group creation sheet

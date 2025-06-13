@@ -121,30 +121,6 @@ struct FriendSelectionView: View {
 
 
     
-//    // MARK: - Subviews
-//    
-//    private func friendRow(for user: RowUser) -> some View {
-//        HStack(spacing: 12) {
-//            ProfileAvatarView(
-//                url: user.imageURL,
-//                name: user.username,
-//                config: .rowUser,
-//                ignoreCache: false
-//            )
-//            
-//            Text(user.username)
-//                .fontWeight(isSelected(user) ? .bold : .regular)
-//            
-//            Spacer()
-//            
-//            if isSelected(user) {
-//                Image(systemName: "checkmark.circle.fill")
-//                    .foregroundColor(.accentColor)
-//            }
-//        }
-//        .contentShape(Rectangle())
-//        .background(isSelected(user) ? Color.accentColor.opacity(0.1) : Color.clear)
-//    }
     
     private var groupChatBottomBar: some View {
         HStack {

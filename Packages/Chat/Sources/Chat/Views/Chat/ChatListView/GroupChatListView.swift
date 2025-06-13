@@ -20,13 +20,6 @@ struct GroupChatListView: View {
             chats: chats,
             isGroupChat: true,
             onChatSelected: onChatSelected
-//            header: {
-//                Button(action: onAddTapped) {
-//                    Text("Create New Group")
-//                        .foregroundColor(.blue)
-//                        .padding()
-//                }
-//            }
         )
     }
 }

@@ -6,13 +6,14 @@
 //
 import UIKit
 import Models
+import DesignSystem
 
 final class ReliableChatCell: UICollectionViewCell {
     // MARK: - UI
     private let bubbleView = UIView()
     private let headerView = UIView()
     private let usernameLabel = UILabel()
-    private let timestampLabel = UILabel()  // Renamed from headerTimestampLabel
+    private let timestampLabel = UILabel()
     private let messageLabel = UILabel()
     private let avatarImageView = UIImageView()
     
@@ -161,7 +162,7 @@ final class ReliableChatCell: UICollectionViewCell {
         leadingConstraint = bubbleView.leadingAnchor.constraint(equalTo: avatarImageView.trailingAnchor, constant: 8)
         trailingConstraint = bubbleView.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -8)
 
-        applyCommonStyle(bg: UIColor(hex: "#77AFFF"))
+        applyCommonStyle(bg: Colors.blueLight.uiColor)
         bubbleView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMaxXMaxYCorner]
         
         activateDynamicConstraints()
@@ -172,7 +173,7 @@ final class ReliableChatCell: UICollectionViewCell {
         leadingConstraint = bubbleView.leadingAnchor.constraint(greaterThanOrEqualTo: contentView.leadingAnchor, constant: 8)
         trailingConstraint = bubbleView.trailingAnchor.constraint(equalTo: avatarImageView.leadingAnchor, constant: -8)
 
-        applyCommonStyle(bg: UIColor(hex: "#323232"))
+        applyCommonStyle(bg: Colors.inactiveDark.uiColor)
         bubbleView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner]
         
         activateDynamicConstraints()
@@ -216,19 +217,5 @@ final class ReliableChatCell: UICollectionViewCell {
         super.prepareForReuse()
         resetConstraints()
         avatarImageView.image = nil
-    }
-}
-private extension UIColor {
-    convenience init(hex: String) {
-        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        var int = UInt64(); Scanner(string: hex).scanHexInt64(&int)
-        let (a,r,g,b): (UInt64,UInt64,UInt64,UInt64)
-        switch hex.count {
-        case 3: (a,r,g,b) = (255,(int>>8)*17,(int>>4 & 0xF)*17,(int & 0xF)*17)
-        case 6: (a,r,g,b) = (255,int>>16,int>>8 & 0xFF,int & 0xFF)
-        case 8: (a,r,g,b) = (int>>24,int>>16 & 0xFF,int>>8 & 0xFF,int & 0xFF)
-        default:(a,r,g,b) = (255,0,0,0)
-        }
-        self.init(red: CGFloat(r)/255, green: CGFloat(g)/255, blue: CGFloat(b)/255, alpha: CGFloat(a)/255)
     }
 }

@@ -17,7 +17,7 @@ struct ChatInputView: View {
     
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
-            // 👤 Profile image
+            //  Profile image
             ProfileAvatarView(
                 url: profileImageURL,
                 name: profileName,
