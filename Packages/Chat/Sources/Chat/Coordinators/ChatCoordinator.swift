@@ -450,6 +450,7 @@ print("chatId", chatId)
                     groupCreationViewModel = GroupCreationViewModel(
                         initialMembers: selected,
                         onAddAccounts: { [weak self] in
+                            print("add account called")
                             self?.isPresentingFriendSelection = true
                         },
                         onCreateSuccess: { [weak self] in

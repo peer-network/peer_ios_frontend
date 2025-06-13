@@ -88,7 +88,8 @@ private struct MainChatView: View {
         }
     }
     private var friendSelectionOverlay: some View {
-        ZStack {
+        print("frednd claa")
+        return ZStack {
             Colors.textActive
                 .ignoresSafeArea()
                 .onTapGesture {
@@ -105,38 +106,21 @@ private struct MainChatView: View {
                     }
                 )
                 .transition(.move(edge: .bottom))
-                .zIndex(2)
+                .zIndex(1)
             }
         }
     }
 
 
-//    private var groupCreationOverlay: some View {
-//        Color.black.opacity(0.3)
-//            .ignoresSafeArea()
-//            .overlay {
-//                if let viewModel = coordinator.groupCreationViewModel {
-//                    GroupCreationView(vm: viewModel)
-//                }
-//            }
-//    }
-    
     private var groupCreationOverlay: some View {
-        Color.black.opacity(0.4)
+        Color.black.opacity(0.3)
             .ignoresSafeArea()
             .overlay {
                 if let viewModel = coordinator.groupCreationViewModel {
-                    GroupCreationView(vm: viewModel, onCreateSuccess: {
-                        coordinator.closeGroupCreationOverlay()
-                    })
-                    .transition(.move(edge: .bottom))
+                    GroupCreationView(vm: viewModel)
                 }
             }
-            .zIndex(1) // Lower than friend selection
     }
-
-    
-    
     
     
     @ViewBuilder
