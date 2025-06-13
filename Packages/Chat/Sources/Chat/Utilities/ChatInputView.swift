@@ -24,7 +24,7 @@ struct ChatInputView: View {
                 config: .settings,
                 ignoreCache: false
             )
-            .frame(width: 36, height: 36)
+       
             
             // 📝 Message input with built-in send button
             HStack {

@@ -105,47 +105,37 @@ private struct MainChatView: View {
                     }
                 )
                 .transition(.move(edge: .bottom))
-                .zIndex(1)
+                .zIndex(2)
             }
         }
     }
 
 
-//    private var friendSelectionOverlay: some View {
+//    private var groupCreationOverlay: some View {
 //        Color.black.opacity(0.3)
 //            .ignoresSafeArea()
-//            .onTapGesture {
-//                coordinator.isPresentingFriendSelection = false
-//            }
 //            .overlay {
-//                if let viewModel = coordinator.friendSelectionViewModel {
-//                    FriendSelectionView(
-//                        viewModel: viewModel,
-//                        isGroupChat: coordinator.selectedChatType == .groupChat,
-//                        onDone: coordinator.handleFriendSelectionCompletion,
-//                        onCreateGroupChat: { name, memberIds async -> Result<String, APIError> in
-//                              //  guard let self = self else { return .failure(.missingData) }
-//                                return await coordinator.createGroupChat(name: name, memberIds: memberIds)
-//                            }
-//
-//                    )
-//                    .frame(
-//                        width: UIScreen.main.bounds.width * 0.8
-//                    )
-//                    .frame(maxHeight: .infinity)
+//                if let viewModel = coordinator.groupCreationViewModel {
+//                    GroupCreationView(vm: viewModel)
 //                }
 //            }
 //    }
     
     private var groupCreationOverlay: some View {
-        Color.black.opacity(0.3)
+        Color.black.opacity(0.4)
             .ignoresSafeArea()
             .overlay {
                 if let viewModel = coordinator.groupCreationViewModel {
-                    GroupCreationView(vm: viewModel)
+                    GroupCreationView(vm: viewModel, onCreateSuccess: {
+                        coordinator.closeGroupCreationOverlay()
+                    })
+                    .transition(.move(edge: .bottom))
                 }
             }
+            .zIndex(1) // Lower than friend selection
     }
+
+    
     
     
     

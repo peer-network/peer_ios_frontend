@@ -17,6 +17,7 @@ struct GroupCreationView: View {
     @State private var isSubmitting = false
     var onCreateSuccess: (() -> Void)?
     
+    
     var body: some View {
         ZStack {
             VStack(spacing: 0) {
@@ -90,7 +91,7 @@ struct GroupCreationView: View {
                     // Add People Button
                     Button(action: {
                         withAnimation {
-                            vm.prepareForFriendSelection()
+                            vm.onAddAccounts()
                         }
                     }) {
                         HStack {

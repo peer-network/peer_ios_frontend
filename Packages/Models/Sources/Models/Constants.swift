@@ -8,8 +8,8 @@
 import Foundation
 
 enum Constants {
-    static let mediaURL: String = "https://media.peernetwork.eu"
-//    static let mediaURL: String = "https://media.getpeer.eu"
+//    static let mediaURL: String = "https://media.peernetwork.eu"
+    static let mediaURL: String = "https://media.getpeer.eu"
 
     static let errorCodesURL = URL(string: "https://media.getpeer.eu/assets/response-codes.json")!
 }

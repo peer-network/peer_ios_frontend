@@ -15,6 +15,7 @@ final class ReliableChatCell: UICollectionViewCell {
     private let timestampLabel = UILabel()  // Renamed from headerTimestampLabel
     private let messageLabel = UILabel()
     private let avatarImageView = UIImageView()
+    
 
     // Alignment constraints
     private var leadingConstraint: NSLayoutConstraint?

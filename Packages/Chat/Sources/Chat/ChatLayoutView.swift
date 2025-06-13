@@ -94,13 +94,21 @@ struct ChatLayoutView: UIViewRepresentable {
         @objc func keyboardWillShow(_ notification: Notification) {
             guard let collectionView = collectionView,
                   let userInfo = notification.userInfo,
-                  let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
-
-            let inputViewHeight: CGFloat = 60
-            let bottomInset = keyboardFrame.height + inputViewHeight
-
-            collectionView.contentInset.bottom = bottomInset
-            collectionView.scrollIndicatorInsets.bottom = bottomInset
+                  let keyboardFrame = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect,
+                  let window = collectionView.window else { return }
+            
+            // Convert keyboard frame to collectionView coordinates
+            let convertedFrame = collectionView.convert(keyboardFrame, from: window)
+            let intersection = collectionView.bounds.intersection(convertedFrame)
+            
+            // Calculate the overlap
+            let bottomInset = intersection.height
+            
+            collectionView.contentInset.bottom = bottomInset + 60 
+            collectionView.scrollIndicatorInsets.bottom = bottomInset + 60
+            
+            // Scroll to bottom if needed
+            scrollToBottom()
         }
 
 
