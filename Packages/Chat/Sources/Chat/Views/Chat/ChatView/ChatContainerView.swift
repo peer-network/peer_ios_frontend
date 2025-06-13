@@ -41,7 +41,7 @@ struct ChatContainerView<ViewModel: ChatViewModelProtocol>: View {
                                 ChatInputView(
                                     profileImageURL: user,
                                     profileName: viewModel.senderName,
-                                    timestamp: "",
+                                    //timestamp: "",
                                     messageText: Binding(
                                         get: { viewModel.newMessage },
                                         set: { viewModel.newMessage = $0 }
