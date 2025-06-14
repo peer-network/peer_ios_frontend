@@ -94,7 +94,7 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                 .padding(.horizontal, 10)
                 .padding(.vertical, 5)
                 .background(Colors.inactiveDark)
-                .cornerRadius(34)
+                .clipShape(RoundedRectangle(cornerRadius: 34))
                 .contentShape(.rect)
                 .onTapGesture {
                     showPopover = true
@@ -118,7 +118,8 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                             .padding(.horizontal, 10)
                             .padding(.vertical, 5)
                             .background(Colors.inactiveDark)
-                            .cornerRadius(34)
+                            .clipShape(RoundedRectangle(cornerRadius: 34))
+                            .contentShape(.rect)
                     }
                     .padding(.leading, 10)
                 }

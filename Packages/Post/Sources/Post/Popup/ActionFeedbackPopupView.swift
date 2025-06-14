@@ -16,5 +16,6 @@ struct ActionFeedbackPopupView: View {
 }
 
 #Preview {
-    ActionFeedbackPopupView()
+    ActionFeedbackPopupView {
+    }
 }
