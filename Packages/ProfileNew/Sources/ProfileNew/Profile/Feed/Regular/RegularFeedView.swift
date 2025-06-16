@@ -18,7 +18,7 @@ struct RegularFeedView: View {
         LazyVStack(spacing: 20) {
             PostsListView(fetcher: viewModel, displayType: .list, showFollowButton: false)
         }
-        .padding(.bottom, 10)
+        .padding(.vertical, 10)
         .onFirstAppear {
             viewModel.apiService = apiManager.apiService
         }

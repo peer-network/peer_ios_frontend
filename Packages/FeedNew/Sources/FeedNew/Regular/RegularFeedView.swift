@@ -24,7 +24,7 @@ struct RegularFeedView: View {
                 LazyVStack(spacing: 20) {
                     PostsListView(fetcher: normalFeedVM, displayType: .list, showFollowButton: true)
                 }
-                .padding(.bottom, 10)
+                .padding(.vertical, 10)
             }
             .refreshable {
                 HapticManager.shared.fireHaptic(.dataRefresh(intensity: 0.3))

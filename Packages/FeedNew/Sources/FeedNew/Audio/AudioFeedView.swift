@@ -25,7 +25,7 @@ struct AudioFeedView: View {
                 LazyVStack(alignment: .center, spacing: 20) {
                     PostsListView(fetcher: audioFeedVM, displayType: .list, showFollowButton: true)
                 }
-                .padding(.bottom, 10)
+                .padding(.vertical, 10)
                 .geometryGroup()
             }
             .refreshable {
