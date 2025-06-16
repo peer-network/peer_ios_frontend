@@ -73,6 +73,8 @@ public enum Icons {
     public static let bookmark = Image(.iconBookmark)
     public static let arrowShare = Image(.iconArrowShare)
     public static let copy = Image(.iconCopy)
+    public static let checkMarkSqareEnable = Image(.iconCheckmarkSquareEnable)
+    public static let checkMarkSqareDisable = Image(.iconCheckmarkSquareDisable)
 }
 
 @frozen

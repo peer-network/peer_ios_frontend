@@ -44,7 +44,7 @@ struct SingleCommentView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
 
                 Text(commentVM.comment.formattedCreatedAt)
-                    .font(.customFont(weight: .regular, style: .caption1))
+                    .font(.customFont(weight: .regular, size: .footnoteSmall))
                     .foregroundStyle(Colors.whiteSecondary)
             }
 
@@ -74,7 +74,7 @@ struct SingleCommentView: View {
                 Text("\(commentVM.amountLikes)")
             }
         }
-        .font(.customFont(weight: .regular, style: .footnote))
+        .font(.customFont(weight: .regular, size: .body))
         .multilineTextAlignment(.leading)
         .foregroundStyle(Colors.whitePrimary)
         .onFirstAppear {

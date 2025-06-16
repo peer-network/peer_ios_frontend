@@ -120,16 +120,17 @@ struct ReelView: View {
                         do {
                             HapticManager.shared.fireHaptic(.notification(.success))
                             try await postVM.like()
-                            showPopup(
-                                text: "You used 1 like! Free likes left for today: \(AccountManager.shared.dailyFreeLikes)",
-                                icon: Icons.heartFill
-                                //.foregroundStyle(Colors.redAccent)
-                            )
-                        } catch let error as PostActionError {
-                            showPopup(
-                                text: error.displayMessage,
-                                icon: error.displayIcon
-                            )
+                        } catch {
+                            if let error = error as? PostActionError {
+                                showPopup(
+                                    text: error.displayMessage,
+                                    icon: error.displayIcon
+                                )
+                            } else {
+                                showPopup(
+                                    text: error.userFriendlyDescription
+                                )
+                            }
                         }
                     }
                 }

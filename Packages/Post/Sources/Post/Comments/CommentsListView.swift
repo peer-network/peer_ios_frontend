@@ -14,8 +14,6 @@ import Analytics
 struct CommentsListView: View {
     @ObservedObject var viewModel: PostViewModel
 
-    @State private var commentText = ""
-
     public init(viewModel: PostViewModel) {
         self.viewModel = viewModel
     }
@@ -97,7 +95,7 @@ struct CommentsListView: View {
 
     private var commentTextField: some View {
         HStack(alignment: .center, spacing: 10) {
-            TextField(text: $commentText, axis: .vertical) {
+            TextField(text: $viewModel.commentText, axis: .vertical) {
                 Text("Write a comment...")
                     .foregroundStyle(Colors.textSuggestions)
             }
@@ -122,11 +120,7 @@ struct CommentsListView: View {
         Button {
             Task {
                 do {
-                    try await viewModel.sendComment(commentText)
-                    showPopup(
-                        text: "You used 1 comment! Free comments left for today: \(AccountManager.shared.dailyFreeComments)"
-                    )
-                    commentText = ""
+                    try await viewModel.checkCommentRequirements()
                 } catch {
                     showPopup(
                         text: error.userFriendlyDescription
@@ -144,7 +138,7 @@ struct CommentsListView: View {
                         .foregroundStyle(Colors.whitePrimary)
                 }
         }
-        .disabled(commentText.isEmpty)
+        .disabled(viewModel.commentText.isEmpty)
     }
 
     private var contextMenu: some View {

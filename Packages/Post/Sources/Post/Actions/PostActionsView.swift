@@ -119,11 +119,17 @@ struct PostActionsView: View {
             Task {
                 do {
                     try await handleAction(action: action)
-                } catch let error as PostActionError {
-                    showPopup(
-                        text: error.displayMessage,
-                        icon: error.displayIcon
-                    )
+                } catch {
+                    if let error = error as? PostActionError {
+                        showPopup(
+                            text: error.displayMessage,
+                            icon: error.displayIcon
+                        )
+                    } else {
+                        showPopup(
+                            text: error.userFriendlyDescription
+                        )
+                    }
                 }
             }
         } label: {
@@ -184,11 +190,6 @@ struct PostActionsView: View {
         switch action {
             case .like:
                 try await postViewModel.like()
-                showPopup(
-                    text: "You used 1 like! Free likes left for today: \(AccountManager.shared.dailyFreeLikes)",
-                    icon: Icons.heartFill
-                    //.foregroundStyle(Colors.redAccent)
-                )
             case .dislike:
                 try await postViewModel.dislike()
             case .comment:
