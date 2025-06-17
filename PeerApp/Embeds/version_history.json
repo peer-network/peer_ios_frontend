@@ -66,5 +66,15 @@
         "releaseNotes": [
             "Overall improvements and fixes"
         ]
+    },
+    {
+        "version": "1.3.5",
+        "date": "17 Jun 2025",
+        "releaseNotes": [
+            "Small UI tweaks for a cleaner, more polished look throughout the app",
+            "Fixed an issue where you couldn’t scroll beyond 40 comments or profile entries",
+            "Added helpful confirmation popups for post-related actions",
+            "Various improvements and bug fixes to keep everything running smoothly"
+        ]
     }
 ]
