@@ -76,5 +76,14 @@
             "Added helpful confirmation popups for post-related actions",
             "Various improvements and bug fixes to keep everything running smoothly"
         ]
+    },
+    {
+        "version": "1.4.0",
+        "date": "19 Jun 2025",
+        "releaseNotes": [
+            "Report comments easily by long-pressing any comment – let us know if something's not right",
+            "You can now hide posts from specific users directly from the 3-dots menu under any post. You’ll find a list of blocked users in your Settings",
+            "As always, we've made some improvements and bug fixes to enhance your overall experience and app performance"
+        ]
     }
 ]

@@ -34,6 +34,7 @@ public struct BlockedUsersPageView: View {
         ScrollView {
             blockedUsersView
                 .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity)
                 .padding(.top, 20)
                 .padding(.horizontal, 20)
         }

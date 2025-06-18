@@ -24,7 +24,7 @@ struct PeerApp: App {
 
     @Environment(\.scenePhase) private var scenePhase
 
-    @StateObject private var appState: AppState
+//    @StateObject private var appState: AppState
 
     @StateObject private var apiManager = APIServiceManager()
     @StateObject private var authManager: AuthManager
@@ -46,7 +46,7 @@ struct PeerApp: App {
     init() {
         FirebaseApp.configure()
 
-        _appState = .init(wrappedValue: AppState())
+//        _appState = .init(wrappedValue: AppState())
 #if DEBUG
         let testConfig = APIConfiguration(endpoint: .custom)
         let testServiceManager = APIServiceManager(.normal(config: testConfig))
@@ -104,10 +104,10 @@ struct PeerApp: App {
             .task {
                 try? await ErrorCodeManager.shared.loadErrorCodes()
             }
-            .task {
-                await appState.initializeApp()
-                dump(appState.getConstants())
-            }
+//            .task {
+//                await appState.initializeApp()
+//                dump(appState.getConstants())
+//            }
             .preferredColorScheme(.dark)
         }
         .onChange(of: scenePhase) {
@@ -181,7 +181,7 @@ struct PeerApp: App {
                     .environmentObject(quickLook)
                     .environmentObject(authManager)
                     .environmentObject(audioManager)
-                    .environmentObject(appState)
+//                    .environmentObject(appState)
                     .sheet(item: $quickLook.selectedMediaAttachment) { selectedMediaAttachment in
                         MediaUIView(data: quickLook.mediaAttachments, initialItem: selectedMediaAttachment)
                             .presentationBackground(.ultraThinMaterial)

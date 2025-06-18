@@ -15,7 +15,7 @@ public struct PostCreationMainView: View {
     @EnvironmentObject private var apiManager: APIServiceManager
     @EnvironmentObject private var accountManager: AccountManager
     @EnvironmentObject private var audioManager: AudioSessionManager
-    @EnvironmentObject private var appState: AppState
+//    @EnvironmentObject private var appState: AppState
 
     @StateObject private var postCreationVM = PostCreationVM()
 
@@ -83,7 +83,8 @@ public struct PostCreationMainView: View {
                                 hashtags: $titleHashtags,
                                 minHeight: 30,
                                 placeholder: "Write a title...",
-                                maxLength: appState.getConstants()?.data.post.title.maxLength ?? 1,
+//                                maxLength: appState.getConstants()?.data.post.title.maxLength ?? 1,
+                                maxLength: 50,
                                 allowNewLines: false,
                                 focusState: $focusedField,
                                 focusEquals: .title
