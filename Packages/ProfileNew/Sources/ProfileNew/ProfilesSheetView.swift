@@ -60,16 +60,9 @@ public struct ProfilesSheetView<Fetcher>: View where Fetcher: RelationsFetcher {
 
                         case .loading:
                             ForEach(RowUser.placeholders(count: 15)) { user in
-                                RowProfileView(user: user) {
-                                    let vm = FollowButtonViewModel(
-                                        id: user.id,
-                                        isFollowing: user.isFollowing,
-                                        isFollowed: user.isFollowed
-                                    )
-                                    FollowButton(viewModel: vm)
-                                }
-                                .allowsHitTesting(false)
-                                .skeleton(isRedacted: true)
+                                RowProfileView(user: user)
+                                    .allowsHitTesting(false)
+                                    .skeleton(isRedacted: true)
                             }
 
                         case .display(let users, let hasMore):
@@ -78,8 +71,15 @@ public struct ProfilesSheetView<Fetcher>: View where Fetcher: RelationsFetcher {
                                     .padding(20)
                             } else {
                                 ForEach(users) { user in
-                                    RowProfileView(user: user)
-                                        .contentShape(Rectangle())
+                                    RowProfileView(user: user) {
+                                        let vm = FollowButtonViewModel(
+                                            id: user.id,
+                                            isFollowing: user.isFollowing,
+                                            isFollowed: user.isFollowed
+                                        )
+                                        FollowButton(viewModel: vm)
+                                    }
+                                    .contentShape(Rectangle())
                                 }
 
                                 switch hasMore {
