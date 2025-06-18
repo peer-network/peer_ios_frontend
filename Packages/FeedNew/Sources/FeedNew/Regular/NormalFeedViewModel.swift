@@ -56,6 +56,7 @@ public final class NormalFeedViewModel: ObservableObject, PostsFetcher {
                 let result = await apiService.fetchPosts(
                     with: .regular,
                     sort: sort,
+                    showHiddenContent: false,
                     filter: filter,
                     in: inTimeframe,
                     after: currentOffset,

@@ -499,6 +499,66 @@ public final class APIServiceGraphQL: APIService {
         }
     }
 
+    public func toggleHideUserContent(with id: String) async -> Result<Bool, APIError> {
+        do {
+            let result = try await qlClient.mutate(mutation: BlockUserMutation(userid: id))
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            if result.getResponseCode == "11105" {
+
+            }
+
+            switch result.getResponseCode {
+                case "11105":
+                    return .success(true)
+                case "11106":
+                    return .success(false)
+                default:
+                    return .failure(.missingResponseCode)
+            }
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
+    public func fetchUsersWithHiddenContent(after offset: Int) async -> Result<[RowUser], APIError> {
+        do {
+            let operation = GetBlockedUsersQuery(
+                offset: GraphQLNullable<Int>(integerLiteral: offset),
+                limit: 20
+            )
+
+            let result = try await GQLClient.shared.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            guard let data = result.listBlockedUsers.affectedRows?.iBlocked else {
+                return .failure(.missingData)
+            }
+
+            let fetchedUsers = data.compactMap { value in
+                RowUser(gqlUser: value)
+            }
+
+            return .success(fetchedUsers)
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
     //MARK: Posts
     public func fetchPostsByTitle(_ query: String, after offset: Int) async -> Result<[Post], APIError> {
         do {
@@ -624,6 +684,7 @@ public final class APIServiceGraphQL: APIService {
     public func fetchPosts(
         with contentType: FeedContentType,
         sort byPopularity: FeedContentSortingByPopularity,
+        showHiddenContent: Bool,
         filter byRelationship: FeedFilterByRelationship,
         in timeframe: FeedContentSortingByTime,
         after offset: Int,
@@ -642,7 +703,7 @@ public final class APIServiceGraphQL: APIService {
 
         let operation = GetAllPostsQuery(
             filterBy: GraphQLNullable<[GraphQLEnum<PostFilterType>]>.some(filterBy),
-            ignoreOption: .init(.no),
+            ignoreOption: .init(showHiddenContent ? .no : .yes),
             sortBy: sortBy,
             title: nil,
             tag: nil,
@@ -827,7 +888,25 @@ public final class APIServiceGraphQL: APIService {
             return .failure(.unknownError(error: error))
         }
     }
-    
+
+    public func reportComment(with id: String) async -> Result<Void, APIError> {
+        do {
+            let result = try await qlClient.mutate(mutation: ReportCommentMutation(commentid: id))
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            return .success(())
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
     //MARK: Tags
     public func fetchTags(with query: String) async -> Result<[String], APIError> {
         do {

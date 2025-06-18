@@ -27,6 +27,7 @@ struct PostActionsView: View {
 
     @Binding var showAppleTranslation: Bool
     @Binding var showReportAlert: Bool
+    @Binding var showHideAlert: Bool
 
     var body: some View {
         actionButtonsView
@@ -57,15 +58,13 @@ struct PostActionsView: View {
                                         } label: {
                                             Label("Report Post", systemImage: "exclamationmark.bubble")
                                         }
-                                    }
 
-                                    //                                    if !AccountManager.shared.isCurrentUser(id: postVM.post.owner.id) {
-                                    //                                        Button(role: .destructive) {
-                                    //                                            showBlockAlert = true
-                                    //                                        } label: {
-                                    //                                            Label("Block User", systemImage: "person.crop.circle.badge.exclamationmark")
-                                    //                                        }
-                                    //                                    }
+                                        Button(role: .destructive) {
+                                            showHideAlert = true
+                                        } label: {
+                                            Label("Hide Content from Feed", systemImage: "person.slash.fill")
+                                        }
+                                    }
                                 }
                             } label: {
                                 actionButton(action: action)

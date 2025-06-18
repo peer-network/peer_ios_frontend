@@ -51,6 +51,7 @@ final class AudioFeedViewModel: ObservableObject, PostsFetcher {
                 let result = await apiService.fetchPosts(
                     with: .audio,
                     sort: .newest,
+                    showHiddenContent: true,
                     filter: .all,
                     in: .allTime,
                     after: currentOffset,

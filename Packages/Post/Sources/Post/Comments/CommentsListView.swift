@@ -30,20 +30,22 @@ struct CommentsListView: View {
                 .foregroundStyle(Colors.whitePrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.bottom, 5)
+                .padding(.leading, 10)
 
             ScrollView {
                 LazyVStack(spacing: 10) {
                     PostDescriptionComment(postVM: viewModel, isInFeed: false)
+                        .padding(.horizontal, 10)
 
                     switch viewModel.state {
                         case .loading:
                             ForEach(Comment.placeholders(count: 15)) { comment in
                                 SingleCommentView(comment: comment)
                                     .contentShape(Rectangle())
-                                    .environmentObject(viewModel)
                                     .allowsHitTesting(false)
                                     .skeleton(isRedacted: true)
                             }
+                            .padding(.horizontal, 10)
                         case .display:
                             if viewModel.comments.isEmpty {
                                 Text("No comments yet...")
@@ -51,15 +53,13 @@ struct CommentsListView: View {
                             } else {
                                 ForEach(viewModel.comments) { comment in
                                     SingleCommentView(comment: comment)
-                                        .contentShape(Rectangle())
-                                        .environmentObject(viewModel)
+                                        .padding(.horizontal, 10)
                                 }
 
                                 if viewModel.hasMoreComments {
                                     NextPageView {
                                         viewModel.fetchComments(reset: false)
                                     }
-                                    .padding(.horizontal, 20)
                                 } else {
                                     EmptyView()
                                 }
@@ -85,8 +85,9 @@ struct CommentsListView: View {
                 commentTextField
             }
             .padding(.top, 5)
+            .padding(.horizontal, 10)
         }
-        .padding(10)
+        .padding(.vertical, 10)
         .onFirstAppear {
             viewModel.fetchComments(reset: true)
         }

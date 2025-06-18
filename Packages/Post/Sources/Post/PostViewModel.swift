@@ -317,6 +317,21 @@ extension PostViewModel {
             throw error
         }
     }
+
+    public func blockContent() async throws -> Bool {
+        do {
+            let result = await apiService.toggleHideUserContent(with: post.owner.id)
+
+            switch result {
+            case .success(let isBlocked):
+                return isBlocked
+            case .failure(let apiError):
+                throw apiError
+            }
+        } catch {
+            throw error
+        }
+    }
 }
 
 // MARK: - Comments

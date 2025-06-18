@@ -56,7 +56,7 @@ final class ExploreViewModel: ObservableObject {
                 state = .loading
             }
 
-            let result = await apiService.fetchPosts(with: .image, sort: .trending, filter: .all, in: .week, after: currentOffsetTrendind, for: nil, amount: 18)
+            let result = await apiService.fetchPosts(with: .image, sort: .trending, showHiddenContent: false, filter: .all, in: .week, after: currentOffsetTrendind, for: nil, amount: 18)
 
             try Task.checkCancellation()
 

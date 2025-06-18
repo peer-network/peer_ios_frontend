@@ -98,6 +98,14 @@ public final class APIServiceStub: APIService {
         .success(())
     }
 
+    public func toggleHideUserContent(with id: String) async -> Result<Bool, APIError> {
+        .success(true)
+    }
+
+    public func fetchUsersWithHiddenContent(after offset: Int) async -> Result<[RowUser], APIError> {
+        .failure(.missingData)
+    }
+
     //MARK: Posts
     public func fetchPostsByTitle(_ query: String, after offset: Int) async -> Result<[Post], APIError> {
         .failure(.missingData)
@@ -111,7 +119,7 @@ public final class APIServiceStub: APIService {
         .success(())
     }
     
-    public func fetchPosts(with contentType: FeedContentType, sort byPopularity: FeedContentSortingByPopularity, filter byRelationship: FeedFilterByRelationship, in timeframe: FeedContentSortingByTime, after offset: Int, for userID: String?, amount: Int) async -> Result<[Post], APIError> {
+    public func fetchPosts(with contentType: FeedContentType, sort byPopularity: FeedContentSortingByPopularity, showHiddenContent: Bool, filter byRelationship: FeedFilterByRelationship, in timeframe: FeedContentSortingByTime, after offset: Int, for userID: String?, amount: Int) async -> Result<[Post], APIError> {
         .failure(.missingData)
     }
     
@@ -143,7 +151,11 @@ public final class APIServiceStub: APIService {
     public func likeComment(with id: String) async -> Result<Void, APIError> {
         .success(())
     }
-    
+
+    public func reportComment(with id: String) async -> Result<Void, APIError> {
+        .success(())
+    }
+
     //MARK: Tags
     public func fetchTags(with query: String) async -> Result<[String], APIError> {
         .success(["Tag1", "2gaT"])

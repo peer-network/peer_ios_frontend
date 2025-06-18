@@ -54,6 +54,7 @@ final class VideoFeedViewModel: ObservableObject, PostsFetcher {
                 let result = await apiService.fetchPosts(
                     with: .video,
                     sort: sort,
+                    showHiddenContent: false,
                     filter: filter,
                     in: inTimeframe,
                     after: currentOffset,

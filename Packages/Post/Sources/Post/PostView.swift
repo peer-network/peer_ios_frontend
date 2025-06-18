@@ -26,7 +26,7 @@ public struct PostView: View {
 
     @State private var showAppleTranslation: Bool = false
     @State private var showReportAlert: Bool = false
-    @State private var showBlockAlert: Bool = false
+    @State private var showHideAlert: Bool = false
 
     private let displayType: DisplayType
     private let showFollowButton: Bool
@@ -98,6 +98,34 @@ public struct PostView: View {
                 )
             }
         )
+        .alert(
+            isPresented: $showHideAlert,
+            content: {
+                Alert(
+                    title: Text("Confirm"),
+                    message: Text("Are you sure you want to hide this user's content from Feed?"),
+                    primaryButton: .destructive(
+                        Text("Hide")
+                    ) {
+                        Task {
+                            do {
+                                let isBlocked = try await postVM.blockContent()
+                                if isBlocked {
+                                    showPopup(text: "User's content will be hidden.")
+                                } else {
+                                    showPopup(text: "User's content will be visible.")
+                                }
+                            } catch {
+                                showPopup(
+                                    text: error.userFriendlyDescription
+                                )
+                            }
+                        }
+                    },
+                    secondaryButton: .cancel()
+                )
+            }
+        )
 #if canImport(_Translation_SwiftUI)
         .addTranslateView(
             isPresented: $showAppleTranslation, text: "\(postVM.post.title)\n\n\(postVM.description ?? "")")
@@ -111,7 +139,7 @@ public struct PostView: View {
             TextContent(postVM: postVM)
 
             if !reasons.contains(.placeholder) {
-                PostActionsView(layout: .horizontal, postViewModel: postVM, showAppleTranslation: $showAppleTranslation, showReportAlert: $showReportAlert)
+                PostActionsView(layout: .horizontal, postViewModel: postVM, showAppleTranslation: $showAppleTranslation, showReportAlert: $showReportAlert, showHideAlert: $showHideAlert)
             }
         }
         .padding(10)
@@ -136,7 +164,7 @@ public struct PostView: View {
             ImagesContent(postVM: postVM)
 
             if !reasons.contains(.placeholder) {
-                PostActionsView(layout: .horizontal, postViewModel: postVM, showAppleTranslation: $showAppleTranslation, showReportAlert: $showReportAlert)
+                PostActionsView(layout: .horizontal, postViewModel: postVM, showAppleTranslation: $showAppleTranslation, showReportAlert: $showReportAlert, showHideAlert: $showHideAlert)
                     .padding(.horizontal, 20)
             } else {
                 Spacer()
@@ -163,7 +191,7 @@ public struct PostView: View {
             AudioContent(postVM: postVM)
 
             if !reasons.contains(.placeholder) {
-                PostActionsView(layout: .horizontal, postViewModel: postVM, showAppleTranslation: $showAppleTranslation, showReportAlert: $showReportAlert)
+                PostActionsView(layout: .horizontal, postViewModel: postVM, showAppleTranslation: $showAppleTranslation, showReportAlert: $showReportAlert, showHideAlert: $showHideAlert)
                     .padding(10)
             }
         }
@@ -196,7 +224,7 @@ public struct PostView: View {
 
     private func videoPost() -> some View {
         GeometryReader { geo in
-            ReelView(postVM: postVM, size: geo.size, showAppleTranslation: $showAppleTranslation, showReportAlert: $showReportAlert)
+            ReelView(postVM: postVM, size: geo.size, showAppleTranslation: $showAppleTranslation, showReportAlert: $showReportAlert, showHideAlert: $showHideAlert)
         }
         .frame(maxWidth: .infinity)
         .containerRelativeFrame(.vertical)

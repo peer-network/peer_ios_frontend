@@ -15,6 +15,7 @@ import Analytics
 public struct ExploreView: View {
     @EnvironmentObject private var router: Router
     @EnvironmentObject private var apiManager: APIServiceManager
+    @Environment(\.selectedTabScrollToTop) private var selectedTabScrollToTop
 
     @StateObject private var viewModel = ExploreViewModel()
 
@@ -55,12 +56,22 @@ public struct ExploreView: View {
                 searchBar
                     .padding(.horizontal, 10)
 
-                ScrollView {
-                    searchResultsView
-                        .padding(.top, 10)
+                ScrollViewReader { proxy in
+                    ScrollView {
+                        ScrollToView()
+                        searchResultsView
+                            .padding(.top, 10)
+                    }
+                    .scrollDismissesKeyboard(.interactively)
+                    .scrollDisabled(viewModel.isLoading)
+                    .onChange(of: selectedTabScrollToTop) {
+                        if selectedTabScrollToTop == 1, router.path.isEmpty {
+                            withAnimation {
+                                proxy.scrollTo(ScrollToView.Constants.scrollToTop, anchor: .top)
+                            }
+                        }
+                    }
                 }
-                .scrollDismissesKeyboard(.interactively)
-                .scrollDisabled(viewModel.isLoading)
             }
             .padding(.top, 10)
         }

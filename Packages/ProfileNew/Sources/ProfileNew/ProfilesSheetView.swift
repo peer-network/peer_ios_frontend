@@ -18,24 +18,24 @@ public struct ProfilesSheetView<Fetcher>: View where Fetcher: RelationsFetcher {
         case following = "Following"
         case friends = "Peers"
     }
-    
+
     @EnvironmentObject private var apiManager: APIServiceManager
     @StateObject private var fetcher: Fetcher
 
     private let type: SheetType
-    
+
     public init(type: SheetType, fetcher: Fetcher) {
         self.type = type
         self._fetcher = StateObject(wrappedValue: fetcher)
     }
-    
+
     public var body: some View {
         VStack(alignment: .center, spacing: 0) {
             Capsule()
                 .frame(width: 44.5, height: 1)
                 .foregroundStyle(Colors.whitePrimary)
                 .padding(.bottom, 10)
-            
+
             Text(type.rawValue)
                 .font(.customFont(weight: .regular, size: .body))
                 .foregroundStyle(Colors.whitePrimary)
@@ -60,9 +60,16 @@ public struct ProfilesSheetView<Fetcher>: View where Fetcher: RelationsFetcher {
 
                         case .loading:
                             ForEach(RowUser.placeholders(count: 15)) { user in
-                                RowProfileView(user: user)
-                                    .allowsHitTesting(false)
-                                    .skeleton(isRedacted: true)
+                                RowProfileView(user: user) {
+                                    let vm = FollowButtonViewModel(
+                                        id: user.id,
+                                        isFollowing: user.isFollowing,
+                                        isFollowed: user.isFollowed
+                                    )
+                                    FollowButton(viewModel: vm)
+                                }
+                                .allowsHitTesting(false)
+                                .skeleton(isRedacted: true)
                             }
 
                         case .display(let users, let hasMore):
@@ -112,7 +119,7 @@ public struct ProfilesSheetView<Fetcher>: View where Fetcher: RelationsFetcher {
         }
         .trackScreen(trackScreen)
     }
-    
+
     private var trackScreen: AppScreen {
         switch type {
             case .followers:
@@ -125,17 +132,28 @@ public struct ProfilesSheetView<Fetcher>: View where Fetcher: RelationsFetcher {
     }
 }
 
-struct RowProfileView: View {
+struct RowProfileView<TrailingContent: View>: View {
     @EnvironmentObject private var router: Router
     @EnvironmentObject private var apiManager: APIServiceManager
     @Environment(\.redactionReasons) private var redactionReasons
-    
-    let user: RowUser
-    
+
+    private let user: RowUser
+    private let trailingContent: () -> TrailingContent
+
     private var profileImageIgnoreCache: Bool {
         AccountManager.shared.isCurrentUser(id: user.id)
     }
-    
+
+    enum TrailingContent {
+        case unblockButton
+        case followButton
+    }
+
+    init(user: RowUser, @ViewBuilder trailingContent: @escaping () -> TrailingContent = { EmptyView() }) {
+        self.user = user
+        self.trailingContent = trailingContent
+    }
+
     var body: some View {
         HStack(spacing: 0) {
             Button {
@@ -144,11 +162,11 @@ struct RowProfileView: View {
                 HStack(spacing: 0) {
                     ProfileAvatarView(url: user.imageURL, name: user.username, config: .rowUser, ignoreCache: profileImageIgnoreCache)
                         .padding(.trailing, 10)
-                    
+
                     Text(user.username)
                         .font(.customFont(weight: .boldItalic, style: .callout))
                         .padding(.trailing, 5)
-                    
+
                     Text("#\(String(user.slug))")
                         .opacity(0.5)
                 }
@@ -158,17 +176,11 @@ struct RowProfileView: View {
             .font(.customFont(weight: .regular, style: .footnote))
             .foregroundStyle(Colors.whitePrimary)
             .simultaneousGesture(TapGesture())
-            
+
             Spacer()
-            
+
             if redactionReasons != .placeholder, !AccountManager.shared.isCurrentUser(id: user.id) {
-                let vm = FollowButtonViewModel(
-                    id: user.id,
-                    isFollowing: user.isFollowing,
-                    isFollowed: user.isFollowed
-                )
-                FollowButton(viewModel: vm)
-                    .environment(\.isBackgroundWhite, false)
+                trailingContent()
             }
         }
     }

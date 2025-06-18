@@ -83,6 +83,9 @@ extension View {
                 case .referralProgram:
                     ReferralPageView()
                         .toolbar(.hidden, for: .navigationBar)
+                case .blockedUsers:
+                    BlockedUsersPageView()
+                        .toolbar(.hidden, for: .navigationBar)
             }
         }
     }

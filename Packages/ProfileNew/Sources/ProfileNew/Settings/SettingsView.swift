@@ -226,6 +226,11 @@ public struct SettingsView: View {
 //                                .foregroundStyle(Colors.inactiveDark)
 //                        }
 
+                        Button("Blocked Users") {
+                            router.navigate(to: .blockedUsers)
+                        }
+                        .buttonStyle(StrokeButtonStyle())
+
                         HStack(spacing: 10) {
                             logoutButton
                         }
