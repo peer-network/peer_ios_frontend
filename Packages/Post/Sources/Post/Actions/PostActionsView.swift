@@ -68,6 +68,7 @@ struct PostActionsView: View {
                                 }
                             } label: {
                                 actionButton(action: action)
+                                    .contentShape(.rect)
                             }
                             .menuStyle(.button)
                             .buttonStyle(PostActionButtonStyle(isOn: action.isOn(viewModel: postViewModel), tintColor: action.tintColor, defaultColor: action.getDefaultColor()))
@@ -75,6 +76,7 @@ struct PostActionsView: View {
                         } else {
                             actionButton(action: action)
                                 .buttonStyle(PostActionButtonStyle(isOn: action.isOn(viewModel: postViewModel), tintColor: action.tintColor, defaultColor: action.getDefaultColor()))
+                                .contentShape(.rect)
                         }
                     }
                 }
