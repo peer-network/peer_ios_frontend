@@ -17,8 +17,6 @@ struct SingleCommentView: View {
 
     @StateObject private var commentVM: SingleCommentViewModel
 
-    @State private var showReportAlert: Bool = false
-
     init(comment: Comment) {
         _commentVM = .init(wrappedValue: .init(comment: comment))
     }
@@ -56,7 +54,7 @@ struct SingleCommentView: View {
                         do {
                             try await commentVM.likeComment()
                         } catch {
-                            showPopup(text: "Failed to perform the action. Please try again.")
+                            showPopup(text: error.userFriendlyDescription)
                         }
                     }
                 } label: {
@@ -86,35 +84,20 @@ struct SingleCommentView: View {
         .contentShape(Rectangle())
         .contextMenu {
             Button(role: .destructive) {
-                showReportAlert = true
+                Task {
+                    do {
+                        try await commentVM.report()
+                        showPopup(text: "Comment was reported.")
+                    } catch {
+                        showPopup(
+                            text: error.userFriendlyDescription
+                        )
+                    }
+                }
             } label: {
                 Label("Report Comment", systemImage: "exclamationmark.bubble")
             }
         }
         .padding(-10)
-        .alert(
-            isPresented: $showReportAlert,
-            content: {
-                Alert(
-                    title: Text("Confirm"),
-                    message: Text("Are you sure you want to report this comment?"),
-                    primaryButton: .destructive(
-                        Text("Report")
-                    ) {
-                        Task {
-                            do {
-                                try await commentVM.report()
-                                showPopup(text: "Comment was reported.")
-                            } catch {
-                                showPopup(
-                                    text: error.userFriendlyDescription
-                                )
-                            }
-                        }
-                    },
-                    secondaryButton: .cancel()
-                )
-            }
-        )
     }
 }

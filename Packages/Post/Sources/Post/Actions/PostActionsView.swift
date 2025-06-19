@@ -26,8 +26,6 @@ struct PostActionsView: View {
     @ObservedObject var postViewModel: PostViewModel
 
     @Binding var showAppleTranslation: Bool
-    @Binding var showReportAlert: Bool
-    @Binding var showHideAlert: Bool
 
     var body: some View {
         actionButtonsView
@@ -54,13 +52,36 @@ struct PostActionsView: View {
 
                                     if !AccountManager.shared.isCurrentUser(id: postViewModel.post.owner.id) {
                                         Button(role: .destructive) {
-                                            showReportAlert = true
+                                            Task {
+                                                do {
+                                                    try await postViewModel.report()
+                                                    showPopup(text: "Post was reported.")
+                                                } catch let error as PostActionError {
+                                                    showPopup(
+                                                        text: error.displayMessage,
+                                                        icon: error.displayIcon
+                                                    )
+                                                }
+                                            }
                                         } label: {
                                             Label("Report Post", systemImage: "exclamationmark.bubble")
                                         }
 
                                         Button(role: .destructive) {
-                                            showHideAlert = true
+                                            Task {
+                                                do {
+                                                    let isBlocked = try await postViewModel.blockContent()
+                                                    if isBlocked {
+                                                        showPopup(text: "User's content will be hidden.")
+                                                    } else {
+                                                        showPopup(text: "User's content will be visible.")
+                                                    }
+                                                } catch {
+                                                    showPopup(
+                                                        text: error.userFriendlyDescription
+                                                    )
+                                                }
+                                            }
                                         } label: {
                                             Label("Hide Content from Feed", systemImage: "person.slash.fill")
                                         }
@@ -94,9 +115,38 @@ struct PostActionsView: View {
 
                                     if !AccountManager.shared.isCurrentUser(id: postViewModel.post.owner.id) {
                                         Button(role: .destructive) {
-                                            showReportAlert = true
+                                            Task {
+                                                do {
+                                                    try await postViewModel.report()
+                                                    showPopup(text: "Post was reported.")
+                                                } catch let error as PostActionError {
+                                                    showPopup(
+                                                        text: error.displayMessage,
+                                                        icon: error.displayIcon
+                                                    )
+                                                }
+                                            }
                                         } label: {
                                             Label("Report Post", systemImage: "exclamationmark.bubble")
+                                        }
+
+                                        Button(role: .destructive) {
+                                            Task {
+                                                do {
+                                                    let isBlocked = try await postViewModel.blockContent()
+                                                    if isBlocked {
+                                                        showPopup(text: "User's content will be hidden.")
+                                                    } else {
+                                                        showPopup(text: "User's content will be visible.")
+                                                    }
+                                                } catch {
+                                                    showPopup(
+                                                        text: error.userFriendlyDescription
+                                                    )
+                                                }
+                                            }
+                                        } label: {
+                                            Label("Hide Content from Feed", systemImage: "person.slash.fill")
                                         }
                                     }
                                 }

@@ -63,8 +63,6 @@ struct ReelView: View {
     @State private var thumbnailGenerationTask: Task<(), Never>? = nil
 
     @Binding var showAppleTranslation: Bool
-    @Binding var showReportAlert: Bool
-    @Binding var showHideAlert: Bool
 
     @State private var likedCounter: [ReelLike] = []
 
@@ -280,7 +278,7 @@ struct ReelView: View {
         HStack(alignment: .bottom, spacing: 10) {
             PostDescriptionComment(postVM: postVM, isInFeed: false)
 
-            PostActionsView(layout: .vertical, postViewModel: postVM, showAppleTranslation: $showAppleTranslation, showReportAlert: $showReportAlert, showHideAlert: $showHideAlert)
+            PostActionsView(layout: .vertical, postViewModel: postVM, showAppleTranslation: $showAppleTranslation)
         }
         .padding(.leading, 20)
         .padding(.trailing, 20)

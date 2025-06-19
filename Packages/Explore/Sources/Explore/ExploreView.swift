@@ -38,7 +38,6 @@ public struct ExploreView: View {
             GridItem(.fixed(getRect().width / 3 - 2), spacing: 1),
             GridItem(.fixed(getRect().width / 3 - 2), spacing: 1),
             GridItem(.fixed(getRect().width / 3 - 2), spacing: 1)
-            //        GridItem(.adaptive(minimum: 100), spacing: 1)
         ]
     }
 
