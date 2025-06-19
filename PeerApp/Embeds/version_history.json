@@ -92,5 +92,14 @@
         "releaseNotes": [
             "Overall improvements and fixes"
         ]
+    },
+    {
+        "version": "1.4.2",
+        "date": "19 Jun 2025",
+        "releaseNotes": [
+            "Smarter image display in Feed – Images now appear in either 4:3 or 1:1 ratio depending on their resolution, so your feed looks even better",
+            "Small UI updates for a cleaner, more polished feel across the app",
+            "General improvements and bug fixes to keep things smooth and stable"
+        ]
     }
 ]
