@@ -142,13 +142,20 @@ extension ExploreView {
                     defaultSearchBar
                 default:
                     searchTextFieldView(searchType)
+                        .padding(.horizontal, 5)
             }
         }
         .frame(height: 50)
-        .padding(.horizontal, 10)
+        .padding(.horizontal, 5)
         .background {
-            RoundedRectangle(cornerRadius: 24)
-                .strokeBorder(Colors.whitePrimary, lineWidth: 1)
+            switch searchType {
+                case .none:
+                    RoundedRectangle(cornerRadius: 24)
+                        .foregroundStyle(Colors.inactiveDark)
+                default:
+                    RoundedRectangle(cornerRadius: 24)
+                        .strokeBorder(Colors.whitePrimary, lineWidth: 1)
+            }
         }
     }
 
