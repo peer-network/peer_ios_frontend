@@ -13,6 +13,8 @@ public struct LottieView: View {
     public enum LottieAnimation: String {
         case splashScreenLogo = "SplashScreenLogoAnimation"
         case loading = "LoadingAnimation"
+        case confetti = "PartyPopperAnimation"
+        case handshake = "HandShake"
     }
 
     private let name: String

@@ -18,12 +18,21 @@ struct ImagesContent: View {
 
     @ObservedObject var postVM: PostViewModel
 
+    private var aspectRatio: CGFloat {
+        guard let firstMedia = postVM.post.media.first else { return 1.0 }
+        return firstMedia.aspectRatio
+    }
+
+    private var imageHeight: CGFloat {
+        UIScreen.main.bounds.width * aspectRatio
+    }
+
     var body: some View {
         if reasons.contains(.placeholder) {
             Colors.imageLoadingPlaceholder
                 .frame(
                     width: UIScreen.main.bounds.width,
-                    height: UIScreen.main.bounds.width
+                    height: imageHeight
                 )
         } else {
             if !postVM.post.mediaURLs.isEmpty {
@@ -36,7 +45,7 @@ struct ImagesContent: View {
                                     .aspectRatio(contentMode: .fill)
                                     .frame(
                                         width: UIScreen.main.bounds.width,
-                                        height: UIScreen.main.bounds.width
+                                        height: imageHeight
                                     )
                                     .clipShape(Rectangle())
                                     .onTapGesture {
@@ -56,7 +65,7 @@ struct ImagesContent: View {
                 .indexViewStyle(.page(backgroundDisplayMode: .always))
                 .frame(
                     width: UIScreen.main.bounds.width,
-                    height: UIScreen.main.bounds.width
+                    height: imageHeight
                 )
                 .clipped()
                 .contentShape(Rectangle())
