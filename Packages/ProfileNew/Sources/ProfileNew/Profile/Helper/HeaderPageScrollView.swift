@@ -8,20 +8,20 @@
 import SwiftUI
 import DesignSystem
 
-struct PageLabel {
+public struct PageLabel {
     var title: String
     var icon: Image
 }
 
 @resultBuilder
-struct PageLabelBuilder {
-    static func buildBlock(_ components: PageLabel...) -> [PageLabel] {
+public struct PageLabelBuilder {
+    public static func buildBlock(_ components: PageLabel...) -> [PageLabel] {
         components.compactMap({ $0 })
     }
 }
 
 @available(iOS 18.0, *)
-struct HeaderPageScrollView<Header: View, Pages: View>: View {
+public struct HeaderPageScrollView<Header: View, Pages: View>: View {
     /// Header View
     var header: Header
     /// Labels (Tab Title or Tab Image)
@@ -31,7 +31,7 @@ struct HeaderPageScrollView<Header: View, Pages: View>: View {
     /// For Refreshing
     var onRefresh: () async -> ()
 
-    init(
+    public init(
         @ViewBuilder header: @escaping () -> Header,
         @PageLabelBuilder labels: @escaping () -> [PageLabel],
         @ViewBuilder pages: @escaping () -> Pages,
@@ -56,7 +56,8 @@ struct HeaderPageScrollView<Header: View, Pages: View>: View {
     @State private var mainScrollDisabled: Bool = false
     @State private var mainScrollPhase: ScrollPhase = .idle
     @State private var mainScrollGeometry: ScrollGeometry = .init()
-    var body: some View {
+
+    public var body: some View {
         GeometryReader {
             let size = $0.size
 

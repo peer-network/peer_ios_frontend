@@ -63,29 +63,6 @@ public struct SettingsView: View {
                                 .iconSize(height: 23)
                         }
 
-//                        Text("Your referral code:")
-//                            .font(.customFont(weight: .regular, style: .footnote))
-//                            .frame(maxWidth: .infinity, alignment: .leading)
-
-//                        if let referralCode = AccountManager.shared.userId {
-//                            Button {
-//                                HapticManager.shared.fireHaptic(.buttonPress)
-//                                UIPasteboard.general.string = referralCode
-//                                showPopup(
-//                                    text: "Copied to clipboard"
-//                                )
-//                            } label: {
-//                                HStack(alignment: .center, spacing: 10) {
-//                                    Text(referralCode)
-//                                        .multilineTextAlignment(.leading)
-//                                        .foregroundStyle(Colors.whiteSecondary)
-//
-//                                    Image(systemName: "document.on.document")
-//                                }
-//                                .frame(maxWidth: .infinity, alignment: .leading)
-//                            }
-//                        }
-
                         HStack(alignment: .top, spacing: 20) {
                             Text("Description")
                                 .opacity(0.5)
@@ -136,7 +113,7 @@ public struct SettingsView: View {
                                 .foregroundStyle(Colors.inactiveDark)
                         }
 
-                        HStack(spacing: 10) {
+                        HStack(spacing: 15) {
                             Button {
                                 router.navigate(to: .changePassword)
                             } label: {
@@ -180,53 +157,11 @@ public struct SettingsView: View {
                             }
                         }
 
-//                        HStack(alignment: .top, spacing: 20) {
-//                            Text("E-mail")
-//                                .opacity(0.5)
-//                                .frame(width: textFieldTitleWidth, alignment: .leading)
-//
-//                            VStack(spacing: 10) {
-//                                TextField(text: $viewModel.email) {
-//                                    Text("me@me")
-//                                        .opacity(0.5)
-//                                }
-//                                .focused($focusedField, equals: .email)
-//                                .submitLabel(.done)
-//                                .lineLimit(1)
-//                                .multilineTextAlignment(.leading)
-//                                .frame(maxWidth: .infinity, alignment: .leading)
-//                            }
-//                        }
-//                        .padding(20)
-//                        .background {
-//                            RoundedRectangle(cornerRadius: 20)
-//                                .foregroundStyle(Colors.inactiveDark)
-//                        }
+                        blockedUsersButton
 
-//                        HStack(alignment: .top, spacing: 20) {
-//                            Text("Username")
-//                                .opacity(0.5)
-//                                .frame(width: textFieldTitleWidth, alignment: .leading)
-//
-//                            VStack(spacing: 10) {
-//                                TextField(text: $viewModel.username, axis: .vertical) {
-//                                    Text("me")
-//                                        .opacity(0.5)
-//                                }
-//                                .focused($focusedField, equals: .username)
-//                                .submitLabel(.done)
-//                                .lineLimit(1)
-//                                .multilineTextAlignment(.leading)
-//                                .frame(maxWidth: .infinity, alignment: .leading)
-//                            }
-//                        }
-//                        .padding(20)
-//                        .background {
-//                            RoundedRectangle(cornerRadius: 20)
-//                                .foregroundStyle(Colors.inactiveDark)
-//                        }
-
-                        HStack(spacing: 10) {
+                        HStack(spacing: 15) {
+                            deactivateProfileButton
+                            
                             logoutButton
                         }
                     }
@@ -252,26 +187,6 @@ public struct SettingsView: View {
         .onChange(of: selectedPhotoItem) {
             loadImage()
         }
-//        .onSubmit {
-//            focusedField = nil
-//            switch focusedField {
-//                case .bio:
-//                    Task {
-//                        do {
-//                            try await viewModel.updateBio()
-//                            showPopup(text: "Successfully updated bio.")
-//                        } catch {
-//                            showPopup(text: "Failed to update bio.")
-//                        }
-//                    }
-//                case .email:
-//                    break
-//                case .username:
-//                    break
-//                case .none:
-//                    break
-//            }
-//        }
         .onChange(of: viewModel.bio) {
             guard focusedField == .bio else { return }
             guard viewModel.bio.contains("\n") else { return }
@@ -307,22 +222,33 @@ public struct SettingsView: View {
         }
     }
 
+    @ViewBuilder
+    private var blockedUsersButton: some View {
+        let config = StateButtonConfig(buttonSize: .large, buttonType: .teritary, title: "Blocked users")
+
+        StateButton(config: config) {
+            router.navigate(to: .blockedUsers)
+        }
+    }
+
+    @ViewBuilder
+    private var deactivateProfileButton: some View {
+        let config = StateButtonConfig(buttonSize: .large, buttonType: .alert, title: "Deactivate profile")
+
+        StateButton(config: config) {
+            router.navigate(to: .deleteAccount)
+        }
+    }
+
+    @ViewBuilder
     private var logoutButton: some View {
-        Button {
+        let config = StateButtonConfig(buttonSize: .large, buttonType: .alert, title: "Logout")
+
+        StateButton(config: config) {
             audioManager.stop()
             analytics.track(AuthEvent.logout)
             analytics.resetUserID()
             authManager.logout()
-        } label: {
-            Text("Logout")
-                .padding(20)
-                .foregroundStyle(Colors.redAccent)
-                .font(.customFont(weight: .regular, style: .footnote))
-                .frame(maxWidth: .infinity)
-                .overlay {
-                    RoundedRectangle(cornerRadius: 24)
-                        .strokeBorder(Colors.redAccent, lineWidth: 1)
-                }
         }
     }
 }

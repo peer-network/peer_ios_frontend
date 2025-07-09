@@ -20,6 +20,9 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
 
   public static func objectType(forTypename typename: String) -> ApolloAPI.Object? {
     switch typename {
+    case "BlockedUser": return GQLOperationsUser.Objects.BlockedUser
+    case "BlockedUsers": return GQLOperationsUser.Objects.BlockedUsers
+    case "BlockedUsersResponse": return GQLOperationsUser.Objects.BlockedUsersResponse
     case "Comment": return GQLOperationsUser.Objects.Comment
     case "CommentResponse": return GQLOperationsUser.Objects.CommentResponse
     case "CurrentLiquidity": return GQLOperationsUser.Objects.CurrentLiquidity

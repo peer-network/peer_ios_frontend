@@ -56,6 +56,23 @@ public struct MediaItem: Codable, Hashable {
     }
 }
 
+extension MediaItem {
+    public var aspectRatio: CGFloat {
+        // Default to square if no resolution
+        guard let resolution = self.resolution else { return 1.0 }
+
+        let components = resolution.components(separatedBy: "x")
+        guard components.count == 2,
+              let width = Double(components[0]),
+              let height = Double(components[1]) else {
+            return 1.0 // Default to square if resolution format is invalid
+        }
+
+        // If height is greater than width, use 4:3 ratio (1.333)
+        return height > width ? 4/3 : 1.0
+    }
+}
+
 // MARK: - MediaOptions
 
 public enum MediaOptions: Codable {

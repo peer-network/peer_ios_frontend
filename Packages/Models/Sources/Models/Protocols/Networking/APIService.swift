@@ -35,6 +35,7 @@ public protocol APIService: AnyObject {
     func verifyRegistration(userID: String) async -> Result<Void, APIError>
     func requestPasswordReset(email: String) async -> Result<Void, APIError>
     func resetPassword(token: String, newPassword: String) async -> Result<Void, APIError>
+    func deleteAccount(password: String) async -> Result<Void, APIError>
 
     //MARK: User & Profile
     func getMyInviter() async -> Result<RowUser, APIError>
@@ -52,6 +53,9 @@ public protocol APIService: AnyObject {
     func updateUsername(username: String, currentPassword: String) async -> Result<Void, APIError>
     func updatePassword(password: String, currentPassword: String) async -> Result<Void, APIError>
     func updateEmail(email: String, currentPassword: String) async -> Result<Void, APIError>
+    func toggleHideUserContent(with id: String) async -> Result<Bool, APIError>
+    func fetchUsersWithHiddenContent(after offset: Int) async -> Result<[RowUser], APIError>
+    func reportUser(with id: String) async -> Result<Void, APIError>
 
     //MARK: Posts
     func fetchPostsByTitle(_ query: String, after offset: Int) async -> Result<[Post], APIError>
@@ -67,6 +71,7 @@ public protocol APIService: AnyObject {
     func fetchPosts(
         with contentType: FeedContentType,
         sort byPopularity: FeedContentSortingByPopularity,
+        showHiddenContent: Bool,
         filter byRelationship: FeedFilterByRelationship,
         in timeframe: FeedContentSortingByTime,
         after offset: Int,
@@ -82,7 +87,8 @@ public protocol APIService: AnyObject {
     func fetchComments(for postID: String, after offset: Int) async -> Result<[Comment], APIError>
     func sendComment(for postID: String, with content: String) async -> Result<Comment, APIError>
     func likeComment(with id: String) async -> Result<Void, APIError>
-    
+    func reportComment(with id: String) async -> Result<Void, APIError>
+
     //MARK: Tags
     func fetchTags(with query: String) async -> Result<[String], APIError>
     

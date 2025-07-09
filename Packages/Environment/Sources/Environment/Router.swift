@@ -19,6 +19,8 @@ public enum RouterDestination: Hashable {
     case changeEmail
     case changeUsername
     case referralProgram
+    case blockedUsers
+    case deleteAccount
 }
 
 public enum SheetDestination: Identifiable, Hashable {

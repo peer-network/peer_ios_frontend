@@ -7,7 +7,7 @@ public class SearchUserQuery: GraphQLQuery {
   public static let operationName: String = "SearchUser"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query SearchUser($userid: ID, $username: String, $offset: Int, $limit: Int) { searchUser(userid: $userid, username: $username, offset: $offset, limit: $limit) { __typename status counter ResponseCode affectedRows { __typename id username status slug img biography } } }"#
+      #"query SearchUser($userid: ID, $username: String, $offset: Int, $limit: Int) { searchUser( contentFilterBy: MYGRANDMALIKES userid: $userid username: $username offset: $offset limit: $limit ) { __typename status counter ResponseCode affectedRows { __typename id username status slug img biography } } }"#
     ))
 
   public var userid: GraphQLNullable<ID>
@@ -41,6 +41,7 @@ public class SearchUserQuery: GraphQLQuery {
     public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("searchUser", SearchUser.self, arguments: [
+        "contentFilterBy": "MYGRANDMALIKES",
         "userid": .variable("userid"),
         "username": .variable("username"),
         "offset": .variable("offset"),

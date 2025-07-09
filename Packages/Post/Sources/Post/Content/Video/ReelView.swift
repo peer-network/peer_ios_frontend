@@ -10,6 +10,7 @@ import AVKit
 import DesignSystem
 import Models
 import Environment
+import NukeVideo
 
 private struct ReelLike: Identifiable {
     var id: UUID = .init()
@@ -63,7 +64,6 @@ struct ReelView: View {
     @State private var thumbnailGenerationTask: Task<(), Never>? = nil
 
     @Binding var showAppleTranslation: Bool
-    @Binding var showReportAlert: Bool
 
     @State private var likedCounter: [ReelLike] = []
 
@@ -120,16 +120,17 @@ struct ReelView: View {
                         do {
                             HapticManager.shared.fireHaptic(.notification(.success))
                             try await postVM.like()
-                            showPopup(
-                                text: "You used 1 like! Free likes left for today: \(AccountManager.shared.dailyFreeLikes)",
-                                icon: Icons.heartFill
-                                //.foregroundStyle(Colors.redAccent)
-                            )
-                        } catch let error as PostActionError {
-                            showPopup(
-                                text: error.displayMessage,
-                                icon: error.displayIcon
-                            )
+                        } catch {
+                            if let error = error as? PostActionError {
+                                showPopup(
+                                    text: error.displayMessage,
+                                    icon: error.displayIcon
+                                )
+                            } else {
+                                showPopup(
+                                    text: error.userFriendlyDescription
+                                )
+                            }
                         }
                     }
                 }
@@ -278,7 +279,7 @@ struct ReelView: View {
         HStack(alignment: .bottom, spacing: 10) {
             PostDescriptionComment(postVM: postVM, isInFeed: false)
 
-            PostActionsView(layout: .vertical, postViewModel: postVM, showAppleTranslation: $showAppleTranslation, showReportAlert: $showReportAlert)
+            PostActionsView(layout: .vertical, postViewModel: postVM, showAppleTranslation: $showAppleTranslation)
         }
         .padding(.leading, 20)
         .padding(.trailing, 20)

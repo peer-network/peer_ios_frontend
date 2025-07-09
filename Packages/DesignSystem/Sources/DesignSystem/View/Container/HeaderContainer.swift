@@ -44,8 +44,13 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                         Icons.arrowDown
                             .iconSize(height: 7)
                             .rotationEffect(.degrees(90))
+                            .padding(.leading, 20)
                             .padding(.trailing, 10)
                     }
+                    .contentShape(.rect)
+                } else {
+                    Spacer()
+                        .frame(width: 20)
                 }
 
                 header()
@@ -69,13 +74,6 @@ public struct HeaderContainer<Header: View, Content: View>: View {
 
                                 Text("\(accountManager.dailyFreeLikes)")
                             }
-
-                            HStack(alignment: .center, spacing: 5) {
-                                Icons.plustSquare
-                                    .iconSize(height: 13)
-
-                                Text("\(accountManager.dailyFreePosts)")
-                            }
                         case .posts:
                             HStack(alignment: .center, spacing: 5) {
                                 Icons.plustSquare
@@ -89,7 +87,7 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                 .padding(.horizontal, 10)
                 .padding(.vertical, 5)
                 .background(Colors.inactiveDark)
-                .cornerRadius(5)
+                .clipShape(RoundedRectangle(cornerRadius: 34))
                 .contentShape(.rect)
                 .onTapGesture {
                     showPopover = true
@@ -113,14 +111,15 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                             .padding(.horizontal, 10)
                             .padding(.vertical, 5)
                             .background(Colors.inactiveDark)
-                            .cornerRadius(5)
+                            .clipShape(RoundedRectangle(cornerRadius: 34))
+                            .contentShape(.rect)
                     }
                     .padding(.leading, 10)
                 }
             }
             .foregroundStyle(Colors.whitePrimary)
             .padding(.vertical, 10)
-            .padding(.horizontal, 20)
+            .padding(.trailing, 20)
 
             content()
         }

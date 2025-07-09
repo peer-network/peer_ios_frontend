@@ -31,12 +31,12 @@ public class RequestPasswordResetMutation: GraphQLMutation {
 
     /// RequestPasswordReset
     ///
-    /// Parent Type: `DefaultResponse`
+    /// Parent Type: `ResetPasswordRequestResponse`
     public struct RequestPasswordReset: GQLOperationsGuest.SelectionSet {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: any ApolloAPI.ParentType { GQLOperationsGuest.Objects.DefaultResponse }
+      public static var __parentType: any ApolloAPI.ParentType { GQLOperationsGuest.Objects.ResetPasswordRequestResponse }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("status", String.self),

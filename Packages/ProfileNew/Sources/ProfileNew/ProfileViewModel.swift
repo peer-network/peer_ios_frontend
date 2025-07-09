@@ -69,6 +69,7 @@ final class ProfileViewModel: ObservableObject {
             guard let text = String(data: data, encoding: .utf8) else {
                 throw APIError.missingData
             }
+
             fetchedBio = text
         } catch is CancellationError {
             return

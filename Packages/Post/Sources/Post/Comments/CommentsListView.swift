@@ -14,8 +14,6 @@ import Analytics
 struct CommentsListView: View {
     @ObservedObject var viewModel: PostViewModel
 
-    @State private var commentText = ""
-
     public init(viewModel: PostViewModel) {
         self.viewModel = viewModel
     }
@@ -32,46 +30,46 @@ struct CommentsListView: View {
                 .foregroundStyle(Colors.whitePrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.bottom, 5)
+                .padding(.leading, 10)
 
             ScrollView {
-                PostDescriptionComment(postVM: viewModel, isInFeed: false)
+                LazyVStack(spacing: 10) {
+                    PostDescriptionComment(postVM: viewModel, isInFeed: false)
+                        .padding(.horizontal, 10)
 
-                switch viewModel.state {
-                    case .loading:
-                        ForEach(Comment.placeholders(count: 15)) { comment in
-                            SingleCommentView(comment: comment)
-                                .padding(.vertical, 5)
-                                .contentShape(Rectangle())
-                                .environmentObject(viewModel)
-                                .allowsHitTesting(false)
-                                .skeleton(isRedacted: true)
-                        }
-                    case .display:
-                        if viewModel.comments.isEmpty {
-                            Text("No comments yet...")
-                                .padding(.top, 30)
-                        } else {
-                            ForEach(viewModel.comments) { comment in
+                    switch viewModel.state {
+                        case .loading:
+                            ForEach(Comment.placeholders(count: 15)) { comment in
                                 SingleCommentView(comment: comment)
-                                    .padding(.vertical, 5)
                                     .contentShape(Rectangle())
-                                    .environmentObject(viewModel)
+                                    .allowsHitTesting(false)
+                                    .skeleton(isRedacted: true)
                             }
-
-                            if viewModel.hasMoreComments {
-                                NextPageView {
-                                    viewModel.fetchComments(reset: false)
-                                }
-                                .padding(.horizontal, 20)
+                            .padding(.horizontal, 10)
+                        case .display:
+                            if viewModel.comments.isEmpty {
+                                Text("No comments yet...")
+                                    .padding(.top, 20)
                             } else {
-                                EmptyView()
+                                ForEach(viewModel.comments) { comment in
+                                    SingleCommentView(comment: comment)
+                                        .padding(.horizontal, 10)
+                                }
+
+                                if viewModel.hasMoreComments {
+                                    NextPageView {
+                                        viewModel.fetchComments(reset: false)
+                                    }
+                                } else {
+                                    EmptyView()
+                                }
                             }
-                        }
-                    case .error(let error):
-                        ErrorView(title: "Error", description: error.userFriendlyDescription) {
-                            viewModel.fetchComments(reset: true)
-                        }
-                        .padding(20)
+                        case .error(let error):
+                            ErrorView(title: "Error", description: error.userFriendlyDescription) {
+                                viewModel.fetchComments(reset: true)
+                            }
+                            .padding(20)
+                    }
                 }
             }
             .scrollDismissesKeyboard(.never)
@@ -87,8 +85,9 @@ struct CommentsListView: View {
                 commentTextField
             }
             .padding(.top, 5)
+            .padding(.horizontal, 10)
         }
-        .padding(10)
+        .padding(.vertical, 10)
         .onFirstAppear {
             viewModel.fetchComments(reset: true)
         }
@@ -97,7 +96,7 @@ struct CommentsListView: View {
 
     private var commentTextField: some View {
         HStack(alignment: .center, spacing: 10) {
-            TextField(text: $commentText, axis: .vertical) {
+            TextField(text: $viewModel.commentText, axis: .vertical) {
                 Text("Write a comment...")
                     .foregroundStyle(Colors.textSuggestions)
             }
@@ -122,14 +121,12 @@ struct CommentsListView: View {
         Button {
             Task {
                 do {
-                    try await viewModel.sendComment(commentText)
-                    showPopup(
-                        text: "You used 1 comment! Free comments left for today: \(AccountManager.shared.dailyFreeComments)"
-                    )
+                    try await viewModel.checkCommentRequirements()
                 } catch {
-                    AccountManager.shared.increaseFreeComments()
+                    showPopup(
+                        text: error.userFriendlyDescription
+                    )
                 }
-                commentText = ""
             }
         } label: {
             Circle()
@@ -142,7 +139,7 @@ struct CommentsListView: View {
                         .foregroundStyle(Colors.whitePrimary)
                 }
         }
-        .disabled(commentText.isEmpty)
+        .disabled(viewModel.commentText.isEmpty)
     }
 
     private var contextMenu: some View {

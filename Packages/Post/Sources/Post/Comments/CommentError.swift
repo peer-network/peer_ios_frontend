@@ -10,7 +10,9 @@ import Foundation
 
 enum CommentError: Error {
     case alreadyLiked
+    case alreadyReported
     case ownLike
+    case ownReport
     case freeCommentsLimitReached
     case serverError(APIError)
 
@@ -35,6 +37,16 @@ enum CommentError: Error {
                 return NSLocalizedString(
                     "Failed to perform the action. Please try again.",
                     comment: "Unknown server error"
+                )
+            case .alreadyReported:
+                return NSLocalizedString(
+                    "The comment is already reported.",
+                    comment: "Already reported"
+                )
+            case .ownReport:
+                return NSLocalizedString(
+                    "You can not report your own comment.",
+                    comment: "Own comment report"
                 )
         }
     }

@@ -9,10 +9,13 @@ import SwiftUI
 import Models
 import Foundation
 import Environment
+import DesignSystem
 
 @MainActor
 public final class PostViewModel: ObservableObject {
     public unowned var apiService: APIService!
+
+    @AppStorage("enablePostActionsConfirmation", store: UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")) private var enablePostActionsConfirmation = true
 
     // MARK: Post properties
     public let post: Post
@@ -56,6 +59,7 @@ public final class PostViewModel: ObservableObject {
     private var commentsFetchTask: Task<Void, Never>?
 
     @Published var showCommentsSheet: Bool = false
+    @Published var commentText = ""
 
     public init(post: Post) {
         self.post = post
@@ -102,19 +106,66 @@ public final class PostViewModel: ObservableObject {
 // MARK: - Post Actions
 
 extension PostViewModel {
+    private func fetchBalance() async throws(APIError) -> Double {
+        let result = await apiService.fetchLiquidityState()
+
+        switch result {
+            case .success(let amount):
+                return amount
+            case .failure(let apiError):
+                throw apiError
+        }
+    }
+
     public func like() async throws {
         guard !isLiked else {
             throw PostActionError.alreadyLiked
         }
 
-        guard await !AccountManager.shared.isCurrentUser(id: post.owner.id) else {
+        guard !AccountManager.shared.isCurrentUser(id: post.owner.id) else {
             throw PostActionError.ownPostLike
         }
 
+        if enablePostActionsConfirmation {
+            // Check if we need to show confirmation
+            if AccountManager.shared.dailyFreeLikes > 0 {
+                // Show free like confirmation
+                PopupManager.shared.showActionFeedback(type: .freeLikeConfirmaion) { [weak self] in
+                    try await self?.confirmLike()
+                } cancel: {
+                    PopupManager.shared.hideActionFeedbackPopup()
+                }
+                return
+            }
+
+            let balance = try await fetchBalance()
+
+            // Check if user has enough tokens for paid like
+            guard balance >= ActionFeedbackType.noFreeLikes.priceInTokens else {
+                PopupManager.shared.showActionFeedback(type: .noTokensForLike(balance)) {
+                    PopupManager.shared.hideActionFeedbackPopup()
+                } cancel: {
+                    PopupManager.shared.hideActionFeedbackPopup()
+                }
+                return
+            }
+
+            // Show confirmation for paid like if no free likes left
+            PopupManager.shared.showActionFeedback(type: .noFreeLikes) { [weak self] in
+                try await self?.confirmLike()
+            } cancel: {
+                PopupManager.shared.hideActionFeedbackPopup()
+            }
+        } else {
+            try await confirmLike()
+        }
+    }
+
+    public func confirmLike() async throws {
         var isFreeLike = false
 
-        if await AccountManager.shared.dailyFreeLikes > 0 {
-            await AccountManager.shared.freeLikeUsed()
+        if AccountManager.shared.dailyFreeLikes > 0 {
+            AccountManager.shared.freeLikeUsed()
             isFreeLike = true
         }
 
@@ -126,7 +177,7 @@ extension PostViewModel {
         }
 
         do {
-            let result = await apiService.likePost(with: post.id) // TODO: CRASHES THE APP NOW. FeedNew/PostViewModel.swift:96: Fatal error: Unexpectedly found nil while implicitly unwrapping an Optional value
+            let result = await apiService.likePost(with: post.id)
 
             switch result {
             case .success:
@@ -140,9 +191,9 @@ extension PostViewModel {
                 amountLikes -= 1
             }
             if isFreeLike {
-                await AccountManager.shared.increaseFreeLikes()
+                AccountManager.shared.increaseFreeLikes()
             }
-            throw APIError.unknownError(error: error)
+            throw error
         }
     }
 
@@ -151,10 +202,34 @@ extension PostViewModel {
             throw PostActionError.alreadyDisliked
         }
 
-        guard await !AccountManager.shared.isCurrentUser(id: post.owner.id) else {
+        guard !AccountManager.shared.isCurrentUser(id: post.owner.id) else {
             throw PostActionError.ownPostDislike
         }
 
+        if enablePostActionsConfirmation {
+            let balance = try await fetchBalance()
+
+            guard balance >= ActionFeedbackType.dislikeConfirmaion.priceInTokens else {
+                PopupManager.shared.showActionFeedback(type: .noTokensForDislike(balance)) {
+                    PopupManager.shared.hideActionFeedbackPopup()
+                } cancel: {
+                    PopupManager.shared.hideActionFeedbackPopup()
+                }
+                return
+            }
+
+            // Always show confirmation for dislikes since they always cost
+            PopupManager.shared.showActionFeedback(type: .dislikeConfirmaion) { [weak self] in
+                try await self?.confirmDislike()
+            } cancel: {
+                PopupManager.shared.hideActionFeedbackPopup()
+            }
+        } else {
+            try await confirmDislike()
+        }
+    }
+
+    public func confirmDislike() async throws {
         await MainActor.run {
             withAnimation {
                 isDisliked = true
@@ -176,7 +251,7 @@ extension PostViewModel {
                 isDisliked = false
                 amountDislikes -= 1
             }
-            throw APIError.unknownError(error: error)
+            throw error
         }
     }
 
@@ -185,7 +260,7 @@ extension PostViewModel {
             throw PostActionError.alreadyViewed
         }
 
-        guard await !AccountManager.shared.isCurrentUser(id: post.owner.id) else {
+        guard !AccountManager.shared.isCurrentUser(id: post.owner.id) else {
             throw PostActionError.ownPostView
         }
 
@@ -210,7 +285,7 @@ extension PostViewModel {
                 isViewed = false
                 amountViews -= 1
             }
-            throw APIError.unknownError(error: error)
+            throw error
         }
     }
 
@@ -219,7 +294,7 @@ extension PostViewModel {
             throw PostActionError.alreadyReported
         }
 
-        guard await !AccountManager.shared.isCurrentUser(id: post.owner.id) else {
+        guard !AccountManager.shared.isCurrentUser(id: post.owner.id) else {
             throw PostActionError.ownPostReport
         }
 
@@ -239,7 +314,22 @@ extension PostViewModel {
             await MainActor.run {
                 isReported = false
             }
-            throw APIError.unknownError(error: error)
+            throw error
+        }
+    }
+
+    public func blockContent() async throws -> Bool {
+        do {
+            let result = await apiService.toggleHideUserContent(with: post.owner.id)
+
+            switch result {
+            case .success(let isBlocked):
+                return isBlocked
+            case .failure(let apiError):
+                throw apiError
+            }
+        } catch {
+            throw error
         }
     }
 }
@@ -299,8 +389,50 @@ extension PostViewModel {
         }
     }
 
-    public func sendComment(_ text: String) async throws {
-        let fixedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
+    public func checkCommentRequirements() async throws {
+        if enablePostActionsConfirmation {
+            let fixedText = commentText.trimmingCharacters(in: .whitespacesAndNewlines)
+
+            if fixedText.isEmpty {
+                return
+            }
+
+            if AccountManager.shared.dailyFreeComments > 0 {
+                showCommentsSheet = false
+                PopupManager.shared.showActionFeedback(type: .freeCommentConfirmaion) { [weak self] in
+                    try await self?.sendComment()
+                } cancel: {
+                    PopupManager.shared.hideActionFeedbackPopup()
+                }
+                return
+            }
+
+            let balance = try await fetchBalance()
+
+            // Check if user has enough tokens for paid comment
+            guard balance >= ActionFeedbackType.noFreeComments.priceInTokens else {
+                showCommentsSheet = false
+                PopupManager.shared.showActionFeedback(type: .noTokensForComment(balance)) {
+                    PopupManager.shared.hideActionFeedbackPopup()
+                } cancel: {
+                    PopupManager.shared.hideActionFeedbackPopup()
+                }
+                return
+            }
+
+            showCommentsSheet = false
+            PopupManager.shared.showActionFeedback(type: .noFreeComments) { [weak self] in
+                try await self?.sendComment()
+            } cancel: {
+                PopupManager.shared.hideActionFeedbackPopup()
+            }
+        } else {
+            try await sendComment()
+        }
+    }
+
+    public func sendComment() async throws {
+        let fixedText = commentText.trimmingCharacters(in: .whitespacesAndNewlines)
 
         if fixedText.isEmpty {
             return
@@ -308,8 +440,8 @@ extension PostViewModel {
 
         var isFreeComment = false
 
-        if await AccountManager.shared.dailyFreeComments > 0 {
-            await AccountManager.shared.freeCommentUsed()
+        if AccountManager.shared.dailyFreeComments > 0 {
+            AccountManager.shared.freeCommentUsed()
             isFreeComment = true
         }
 
@@ -325,13 +457,14 @@ extension PostViewModel {
             case .success(let createdComment):
                 await MainActor.run {
                     comments.append(createdComment)
+                    commentText = ""
                 }
             case .failure(let apiError):
                 await MainActor.run {
                     amountComments -= 1
                 }
                 if isFreeComment {
-                    await AccountManager.shared.increaseFreeComments()
+                    AccountManager.shared.increaseFreeComments()
                 }
                 throw apiError
         }

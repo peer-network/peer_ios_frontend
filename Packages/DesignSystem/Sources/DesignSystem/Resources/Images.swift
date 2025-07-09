@@ -73,6 +73,24 @@ public enum Icons {
     public static let bookmark = Image(.iconBookmark)
     public static let arrowShare = Image(.iconArrowShare)
     public static let copy = Image(.iconCopy)
+    public static let checkMarkSqareEnable = Image(.iconCheckmarkSquareEnable)
+    public static let checkMarkSqareDisable = Image(.iconCheckmarkSquareDisable)
+}
+
+@frozen
+public enum IconsNew {
+    public static let ageRestriction = Image(.icAgeRestriction)
+    public static let arrowRight = Image(.icArrowRight)
+    public static let checkCircle = Image(.icCheckCircle)
+    public static let checkCircle2 = Image(.icCheckCircle2)
+    public static let copy = Image(.icCopy)
+    public static let envelope = Image(.icEnvelope)
+    public static let envelopeWithCode = Image(.icEnvelopeWithCode)
+    public static let eye = Image(.icEye)
+    public static let eyeWithSlash = Image(.icEyeWithSlash)
+    public static let lock = Image(.icLock)
+    public static let person = Image(.icPerson)
+    public static let referral = Image(.icReferral)
 }
 
 @frozen

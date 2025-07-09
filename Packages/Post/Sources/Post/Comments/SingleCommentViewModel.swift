@@ -9,6 +9,7 @@ import SwiftUI
 import Models
 import Environment
 
+@MainActor
 final class SingleCommentViewModel: ObservableObject {
     unowned var apiService: APIService!
 
@@ -32,7 +33,7 @@ final class SingleCommentViewModel: ObservableObject {
             throw CommentError.alreadyLiked
         }
 
-        guard await !AccountManager.shared.isCurrentUser(id: comment.user.id) else {
+        guard !AccountManager.shared.isCurrentUser(id: comment.user.id) else {
             throw CommentError.ownLike
         }
 
@@ -58,6 +59,37 @@ final class SingleCommentViewModel: ObservableObject {
                 amountLikes -= 1
             }
             throw APIError.unknownError(error: error)
+        }
+    }
+
+    func report() async throws {
+        // FIXME: There is no way to check if the comment was already reported in the API
+//        guard !isReported else {
+//            throw CommentError.alreadyReported
+//        }
+
+        guard !AccountManager.shared.isCurrentUser(id: comment.user.id) else {
+            throw CommentError.ownReport
+        }
+
+//        await MainActor.run {
+//            isReported = true
+//        }
+
+        do {
+            let result = await apiService.reportComment(with: comment.id)
+
+            switch result {
+            case .success:
+                break
+            case .failure(let apiError):
+                throw apiError
+            }
+        } catch {
+//            await MainActor.run {
+//                isReported = false
+//            }
+            throw error
         }
     }
 }

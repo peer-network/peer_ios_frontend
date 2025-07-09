@@ -26,6 +26,7 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "Mutation": return GQLOperationsGuest.Objects.Mutation
     case "Query": return GQLOperationsGuest.Objects.Query
     case "RegisterResponse": return GQLOperationsGuest.Objects.RegisterResponse
+    case "ResetPasswordRequestResponse": return GQLOperationsGuest.Objects.ResetPasswordRequestResponse
     default: return nil
     }
   }

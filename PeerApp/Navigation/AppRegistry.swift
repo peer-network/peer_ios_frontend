@@ -16,6 +16,7 @@ import Explore
 import VersionHistory
 import Wallet
 import Post
+import TokenKeychainManager
 
 extension View {
     func withAppRouter() -> some View {
@@ -46,27 +47,64 @@ extension View {
                         .toolbar(.hidden, for: .navigationBar)
                 case .changePassword:
                     EditPasswordView { newPassword, currentPassword in
+#if DEBUG
+                        let testConfig = APIConfiguration(endpoint: .custom)
+                        let apiManager = APIServiceManager(.normal(config: testConfig))
+#else
                         let apiManager = APIServiceManager()
+#endif
                         let result = await apiManager.apiService.updatePassword(password: newPassword, currentPassword: currentPassword)
                         return result
                     }
                     .toolbar(.hidden, for: .navigationBar)
                 case .changeEmail:
                     EditEmailView { newEmail, currentPassword in
+#if DEBUG
+                        let testConfig = APIConfiguration(endpoint: .custom)
+                        let apiManager = APIServiceManager(.normal(config: testConfig))
+#else
                         let apiManager = APIServiceManager()
+#endif
                         let result = await apiManager.apiService.updateEmail(email: newEmail, currentPassword: currentPassword)
                         return result
                     }
                     .toolbar(.hidden, for: .navigationBar)
                 case .changeUsername:
                     EditUsernameView { newUsername, currentPassword in
+#if DEBUG
+                        let testConfig = APIConfiguration(endpoint: .custom)
+                        let apiManager = APIServiceManager(.normal(config: testConfig))
+#else
                         let apiManager = APIServiceManager()
+#endif
                         let result = await apiManager.apiService.updateUsername(username: newUsername, currentPassword: currentPassword)
+                        return result
+                    }
+                    .toolbar(.hidden, for: .navigationBar)
+                case .deleteAccount:
+                    DeleteAccountView { currentPassword in
+#if DEBUG
+                        let testConfig = APIConfiguration(endpoint: .custom)
+                        let apiManager = APIServiceManager(.normal(config: testConfig))
+#else
+                        let apiManager = APIServiceManager()
+#endif
+                        let audioManager = AudioSessionManager.shared
+
+                        let result = await apiManager.apiService.deleteAccount(password: currentPassword)
+                        if case .success = result {
+                            audioManager.stop()
+                            TokenKeychainManager.shared.removeCredentials()
+                            exit(0)
+                        }
                         return result
                     }
                     .toolbar(.hidden, for: .navigationBar)
                 case .referralProgram:
                     ReferralPageView()
+                        .toolbar(.hidden, for: .navigationBar)
+                case .blockedUsers:
+                    BlockedUsersPageView()
                         .toolbar(.hidden, for: .navigationBar)
             }
         }
@@ -75,8 +113,13 @@ extension View {
     func withSheetDestinations(sheetDestinations: Binding<SheetDestination?>) -> some View {
         sheet(item: sheetDestinations) { destination in
             //TODO: should be injected, not created here
+#if DEBUG
+            let testConfig = APIConfiguration(endpoint: .custom)
+            let apiManager = APIServiceManager(.normal(config: testConfig))
+#else
             let apiManager = APIServiceManager()
-            
+#endif
+
             switch destination {
                 case .following(let userId):
                     ProfilesSheetView(type: .following, fetcher: RelationsViewModel(userId: userId, apiService: apiManager.apiService))

@@ -18,20 +18,20 @@ public struct ProfileView: View {
     @EnvironmentObject private var router: Router
     @EnvironmentObject private var accountManager: AccountManager
     @EnvironmentObject private var apiManager: APIServiceManager
-
+    
     @StateObject private var viewModel: ProfileViewModel
-
+    
     @State private var feedPage: FeedPage = .normalFeed
-
+    
     @State private var showAvatarPicker: Bool = false
     @State private var isImagePickerPresented: Bool = false
     @State private var selectedPhotoItem: PhotosPickerItem?
     @State private var selectedImage: UIImage?
-
+    
     public init(userId: String) {
         _viewModel = .init(wrappedValue: .init(userId: userId))
     }
-
+    
     public var body: some View {
         HeaderContainer(actionsToDisplay: .commentsAndLikes) {
             Text("Profile")
@@ -74,30 +74,30 @@ public struct ProfileView: View {
         }
         .trackScreen(AppScreen.profile)
     }
-
+    
     private func contentView(user: User, isLoading: Bool) -> some View {
         ScrollView {
             VStack(spacing: 0) {
-//                ProfileInfoHeaderView(user: user, bio: viewModel.fetchedBio, showAvatarPicker: $showAvatarPicker)
-//                    .padding(.horizontal, 20)
-//                    .padding(.bottom, 9)
-//                    .skeleton(isRedacted: isLoading ? true : false)
-//
-//                FollowersHeader(userId: user.id, postsCount: user.postsAmount, followersCount: user.amountFollowers, followingsCount: user.amountFollowing, friends: user.amountFriends)
-//                    .padding(.horizontal, 20)
-//                    .padding(.bottom, 9)
-//                    .skeleton(isRedacted: isLoading ? true : false)
-
+                //                ProfileInfoHeaderView(user: user, bio: viewModel.fetchedBio, showAvatarPicker: $showAvatarPicker)
+                //                    .padding(.horizontal, 20)
+                //                    .padding(.bottom, 9)
+                //                    .skeleton(isRedacted: isLoading ? true : false)
+                //
+                //                FollowersHeader(userId: user.id, postsCount: user.postsAmount, followersCount: user.amountFollowers, followingsCount: user.amountFollowing, friends: user.amountFriends)
+                //                    .padding(.horizontal, 20)
+                //                    .padding(.bottom, 9)
+                //                    .skeleton(isRedacted: isLoading ? true : false)
+                
                 profileHeader(user: user, isLoading: isLoading)
-
+                
                 FeedTabControllerView(feedPage: $feedPage)
-
+                
                 if isLoading {
                     LazyVStack(alignment: .center, spacing: 20) {
                         ForEach(Post.placeholdersImage(count: 5)) { post in
-//                            PostView(postVM: PostViewModel(post: post))
-//                                .allowsHitTesting(false)
-//                                .skeleton(isRedacted: true)
+                            //                            PostView(postVM: PostViewModel(post: post))
+                            //                                .allowsHitTesting(false)
+                            //                                .skeleton(isRedacted: true)
                         }
                     }
                     .padding(.bottom, 10)
@@ -122,7 +122,7 @@ public struct ProfileView: View {
             (_, _) = await (result1, result2)
         }
     }
-
+    
     private func loadImage() {
         guard let selectedPhotoItem else { return }
         
@@ -136,70 +136,26 @@ public struct ProfileView: View {
                 } catch {
                     showPopup(text: "Failed to update profile picture.")
                 }
-
+                
                 self.selectedPhotoItem = nil
             }
         }
     }
-
+    
     private func profileHeader(user: User, isLoading: Bool) -> some View {
-        VStack(spacing: 10) {
-            ProfileHeader(user: user, bio: viewModel.fetchedBio, showAvatarPicker: $showAvatarPicker)
-
-            if AccountManager.shared.isCurrentUser(id: viewModel.userId) {
-                HStack(spacing: 10) {
-                    inviteFriendsButton
-
-                    settingsButton
-                }
-            }
-        }
-        .padding(.horizontal, 20)
-        .skeleton(isRedacted: isLoading ? true : false)
+        ProfileHeader(user: user, bio: viewModel.fetchedBio, showAvatarPicker: $showAvatarPicker)
+            .padding(.horizontal, 20)
+            .skeleton(isRedacted: isLoading ? true : false)
     }
-
-    private var inviteFriendsButton: some View {
-        Button {
-            router.navigate(to: .referralProgram)
-        } label: {
-            Text("Invite a friend")
-                .font(.customFont(weight: .bold, style: .footnote))
-                .foregroundStyle(Colors.inactiveDark)
-                .frame(height: 40)
-                .frame(maxWidth: .infinity)
-                .background(Colors.whitePrimary)
-                .clipShape(RoundedRectangle(cornerRadius: 25))
-        }
-
-    }
-
-    private var settingsButton: some View {
-        Button {
-            router.navigate(to: .settings)
-        } label: {
-            HStack(spacing: 10) {
-                Text("Settings")
-                    .font(.customFont(weight: .regular, style: .footnote))
-
-                Icons.gear
-                    .iconSize(height: 15)
-            }
-            .foregroundStyle(Colors.whitePrimary)
-            .frame(height: 40)
-            .frame(maxWidth: .infinity)
-            .background(Colors.inactiveDark)
-            .clipShape(RoundedRectangle(cornerRadius: 25))
-        }
-    }
-
+    
     private struct NormalFeedView: View {
         @EnvironmentObject private var apiManager: APIServiceManager
         @StateObject private var normalFeedVM: NormalFeedViewModel
-
+        
         init(userId: String) {
             _normalFeedVM = .init(wrappedValue: .init(userId: userId))
         }
-
+        
         var body: some View {
             LazyVStack(alignment: .center, spacing: 20) {
                 PostsListView(fetcher: normalFeedVM, displayType: .list, showFollowButton: false)
@@ -211,15 +167,15 @@ public struct ProfileView: View {
             .padding(.bottom, 10)
         }
     }
-
+    
     private struct AudioFeedView: View {
         @EnvironmentObject private var apiManager: APIServiceManager
         @StateObject private var audioFeedVM: AudioFeedViewModel
-
+        
         init(userId: String) {
             _audioFeedVM = .init(wrappedValue: .init(userId: userId))
         }
-
+        
         var body: some View {
             LazyVStack(alignment: .center, spacing: 20) {
                 PostsListView(fetcher: audioFeedVM, displayType: .list, showFollowButton: false)

@@ -25,8 +25,6 @@ public struct PostView: View {
     @StateObject private var postVM: PostViewModel
 
     @State private var showAppleTranslation: Bool = false
-    @State private var showReportAlert: Bool = false
-    @State private var showBlockAlert: Bool = false
 
     private let displayType: DisplayType
     private let showFollowButton: Bool
@@ -73,31 +71,6 @@ public struct PostView: View {
                 .presentationDetents([.fraction(0.75), .large])
                 .presentationContentInteraction(.resizes)
         }
-        .alert(
-            isPresented: $showReportAlert,
-            content: {
-                Alert(
-                    title: Text("Confirm"),
-                    message: Text("Are you sure you want to report this post?"),
-                    primaryButton: .destructive(
-                        Text("Report")
-                    ) {
-                        Task {
-                            do {
-                                try await postVM.report()
-                                showPopup(text: "Post was reported.")
-                            } catch let error as PostActionError {
-                                showPopup(
-                                    text: error.displayMessage,
-                                    icon: error.displayIcon
-                                )
-                            }
-                        }
-                    },
-                    secondaryButton: .cancel()
-                )
-            }
-        )
 #if canImport(_Translation_SwiftUI)
         .addTranslateView(
             isPresented: $showAppleTranslation, text: "\(postVM.post.title)\n\n\(postVM.description ?? "")")
@@ -111,7 +84,7 @@ public struct PostView: View {
             TextContent(postVM: postVM)
 
             if !reasons.contains(.placeholder) {
-                PostActionsView(layout: .horizontal, postViewModel: postVM, showAppleTranslation: $showAppleTranslation, showReportAlert: $showReportAlert)
+                PostActionsView(layout: .horizontal, postViewModel: postVM, showAppleTranslation: $showAppleTranslation)
             }
         }
         .padding(10)
@@ -129,16 +102,14 @@ public struct PostView: View {
 
     private func imagePost() -> some View {
         VStack(alignment: .center, spacing: 0) {
-            ZStack(alignment: .top) {
-                ImagesContent(postVM: postVM)
+            PostHeaderView(postVM: postVM, showFollowButton: showFollowButton)
+                .padding(.horizontal, 20)
+                .padding(.vertical, 10)
 
-                PostHeaderView(postVM: postVM, showFollowButton: showFollowButton)
-                    .padding(.horizontal, 20)
-                    .padding(.top, 10)
-            }
+            ImagesContent(postVM: postVM)
 
             if !reasons.contains(.placeholder) {
-                PostActionsView(layout: .horizontal, postViewModel: postVM, showAppleTranslation: $showAppleTranslation, showReportAlert: $showReportAlert)
+                PostActionsView(layout: .horizontal, postViewModel: postVM, showAppleTranslation: $showAppleTranslation)
                     .padding(.horizontal, 20)
             } else {
                 Spacer()
@@ -165,7 +136,7 @@ public struct PostView: View {
             AudioContent(postVM: postVM)
 
             if !reasons.contains(.placeholder) {
-                PostActionsView(layout: .horizontal, postViewModel: postVM, showAppleTranslation: $showAppleTranslation, showReportAlert: $showReportAlert)
+                PostActionsView(layout: .horizontal, postViewModel: postVM, showAppleTranslation: $showAppleTranslation)
                     .padding(10)
             }
         }
@@ -198,7 +169,7 @@ public struct PostView: View {
 
     private func videoPost() -> some View {
         GeometryReader { geo in
-            ReelView(postVM: postVM, size: geo.size, showAppleTranslation: $showAppleTranslation, showReportAlert: $showReportAlert)
+            ReelView(postVM: postVM, size: geo.size, showAppleTranslation: $showAppleTranslation)
         }
         .frame(maxWidth: .infinity)
         .containerRelativeFrame(.vertical)

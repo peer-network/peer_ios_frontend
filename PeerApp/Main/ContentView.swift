@@ -19,6 +19,7 @@ struct ContentView: View {
     @State private var selectedTabEmptyPath: Int = -1
 
     @StateObject private var tabManager = AppTabManager.shared
+    @StateObject private var popupManager = PopupManager.shared
 
     var body: some View {
         VStack(spacing: 0) {
@@ -44,13 +45,39 @@ struct ContentView: View {
                         .animation(.linear, value: audioManager.isInRestrictedView)
                 }
             }
-            
+
             tabBarView
         }
         .withSheetDestinations(sheetDestinations: $appRouter.presentedSheet)
         .environment(\.selectedTabScrollToTop, selectedTabScrollToTop)
         .environment(\.selectedTabEmptyPath, selectedTabEmptyPath)
         .ignoresSafeArea(.keyboard)
+        .overlay {
+            if let popupActionType = popupManager.currentActionFeedbackType {
+                Rectangle()
+                    .fill(.ultraThinMaterial)
+                    .ignoresSafeArea()
+
+                ActionFeedbackPopupView(actionType: popupActionType) {
+                    Task {
+                        do {
+                            try await popupManager.confirmAction?()
+                            popupManager.hideActionFeedbackPopup()
+                        } catch {
+                            showPopup(
+                                text: error.userFriendlyDescription
+                            )
+                        }
+                    }
+                } cancel: {
+                    popupManager.cancelAction?()
+                    popupManager.hideActionFeedbackPopup()
+                }
+                .shadow(color: .black.opacity(0.25), radius: 10, x: 0, y: 4)
+                .transition(.scale.combined(with: .opacity))
+                .padding(.horizontal, 20)
+            }
+        }
     }
 
     private var tabBarView: some View {

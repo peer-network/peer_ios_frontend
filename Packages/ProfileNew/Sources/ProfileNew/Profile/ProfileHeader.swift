@@ -11,6 +11,10 @@ import Environment
 import Models
 
 struct ProfileHeader: View {
+    @Environment(\.redactionReasons) private var redactionReasons
+
+    @EnvironmentObject private var apiManager: APIServiceManager
+
     @EnvironmentObject private var accountManager: AccountManager
     @EnvironmentObject private var quickLook: QuickLook
     @EnvironmentObject private var router: Router
@@ -21,41 +25,43 @@ struct ProfileHeader: View {
     @Binding var showAvatarPicker: Bool
 
     var body: some View {
-        VStack(spacing: 10) {
-            HStack(alignment: .center) {
+        VStack(spacing: 15) {
+            HStack(alignment: .center, spacing: 15) {
                 profileImage
 
-                Spacer()
-                    .frame(width: 15)
+                VStack(alignment: .leading, spacing: 10) {
+                    username
 
-                username
-
-                Spacer()
-
-                FollowersHeader(userId: user.id, postsCount: user.postsAmount, followersCount: user.amountFollowers, followingsCount: user.amountFollowing, friends: user.amountFriends)
+                    FollowersHeader(userId: user.id, postsCount: user.postsAmount, followersCount: user.amountFollowers, followingsCount: user.amountFollowing, friends: user.amountFriends)
+                }
             }
 
-            HStack(spacing: 10) {
+            if !bio.isEmpty {
                 Text(bio)
                     .font(.customFont(weight: .regular, style: .footnote))
-                    .foregroundStyle(Colors.whiteSecondary)
+                    .foregroundStyle(Colors.whitePrimary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .multilineTextAlignment(.leading)
+            }
 
-                Spacer()
-                    .frame(maxWidth: .infinity)
-                    .layoutPriority(-1)
+            if AccountManager.shared.isCurrentUser(id: user.id) {
+                HStack(spacing: 15) {
+                    inviteFriendsButton
 
-                if !AccountManager.shared.isCurrentUser(id: user.id) {
+                    settingsButton
+                }
+            } else {
+                HStack(spacing: 15) {
                     let vm = FollowButtonViewModel(
                         id: user.id,
                         isFollowing: user.isFollowed,
                         isFollowed: user.isFollowing
                     )
-                    FollowButton(viewModel: vm)
-                        .environment(\.isBackgroundWhite, false)
+                    FollowButton2(viewModel: vm)
+
+                    moreButton
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .multilineTextAlignment(.leading)
         }
     }
 
@@ -92,7 +98,7 @@ struct ProfileHeader: View {
     }
 
     private var username: some View {
-        VStack(alignment: .leading, spacing: 5) {
+        HStack(alignment: .center, spacing: 5) {
             Text(user.username)
                 .font(.customFont(weight: .boldItalic, style: .callout))
                 .foregroundStyle(Colors.whitePrimary)
@@ -103,6 +109,76 @@ struct ProfileHeader: View {
             Text("#\(String(user.slug))")
                 .font(.customFont(weight: .regular, size: .footnote))
                 .foregroundStyle(Colors.whiteSecondary)
+        }
+    }
+
+    @ViewBuilder
+    private var inviteFriendsButton: some View {
+        let config = StateButtonConfig(buttonSize: .small, buttonType: .secondary, title: "Invite a friend")
+
+        StateButton(config: config) {
+            router.navigate(to: .referralProgram)
+        }
+    }
+
+    @ViewBuilder
+    private var settingsButton: some View {
+        let config = StateButtonConfig(buttonSize: .small, buttonType: .custom(textColor: Colors.whitePrimary, fillColor: Colors.inactiveDark), title: "Settings", icon: Icons.gear, iconPlacement: .trailing)
+
+        StateButton(config: config) {
+            router.navigate(to: .settings)
+        }
+    }
+
+    private var moreButton: some View {
+        Menu {
+            Section {
+                Button(role: .destructive) {
+                    Task {
+                        let result = await apiManager.apiService.toggleHideUserContent(with: user.id)
+
+                        switch result {
+                            case .success(let isNowBlocked):
+                                if isNowBlocked {
+                                    showPopup(text: "User was blocked.")
+                                } else {
+                                    showPopup(text: "User was unblocked.")
+                                }
+                            case .failure(let error):
+                                showPopup(
+                                    text: error.userFriendlyDescription
+                                )
+                        }
+                    }
+                } label: {
+                    Label("Block User", systemImage: "person.slash.fill")
+                }
+
+                Button(role: .destructive) {
+                    Task {
+                        let result = await apiManager.apiService.reportUser(with: user.id)
+
+                        switch result {
+                            case .success():
+                                showPopup(text: "User was reported.")
+                            case .failure(let error):
+                                showPopup(
+                                    text: error.userFriendlyDescription
+                                )
+                        }
+                    }
+                } label: {
+                    Label("Report User", systemImage: "exclamationmark.circle")
+                }
+            }
+        } label: {
+            Icons.ellipsis
+                .iconSize(width: 16)
+                .rotationEffect(.degrees(90))
+                .foregroundStyle(Colors.whitePrimary)
+                .frame(width: 40, height: 40)
+                .background(Colors.inactiveDark)
+                .clipShape(RoundedRectangle(cornerRadius: 25))
         }
     }
 }

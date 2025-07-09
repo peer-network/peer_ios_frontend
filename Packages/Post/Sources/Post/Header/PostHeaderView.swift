@@ -35,15 +35,11 @@ struct PostHeaderView: View {
                 )
 
                 VStack(alignment: .leading, spacing: 0) {
-                    HStack(alignment: .center, spacing: 5) {
-                        Text(postVM.post.owner.username)
-                            .font(.customFont(weight: .boldItalic, style: .callout))
+                    Text(postVM.post.owner.username)
+                        .font(.customFont(weight: .boldItalic, style: .callout))
 
-                        Text("#\(String(postVM.post.owner.slug))")
-                            .foregroundStyle(Colors.whiteSecondary)
-                    }
-
-                    Text(postVM.post.formattedCreatedAtLong)
+                    Text("#\(String(postVM.post.owner.slug))")
+                        .foregroundStyle(Colors.whiteSecondary)
                 }
                 .font(.customFont(weight: .regular, style: .footnote))
                 .foregroundStyle(Colors.whitePrimary)
@@ -66,6 +62,8 @@ struct PostHeaderView: View {
                     isFollowed: postVM.post.owner.isFollowed
                 )
                 FollowButton(viewModel: vm)
+//                FollowButton2(viewModel: vm)
+//                    .fixedSize(horizontal: true, vertical: false)
             }
         }
     }

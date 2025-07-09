@@ -1,5 +1,6 @@
 query GetFollowings($userid: ID, $offset: Int, $limit: Int) {
 	listFollowRelations(
+        contentFilterBy: MYGRANDMALIKES
         userid: $userid
         offset: $offset
         limit: $limit

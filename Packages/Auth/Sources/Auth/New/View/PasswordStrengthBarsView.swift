@@ -25,9 +25,9 @@ struct PasswordStrengthBarsView: View {
                 .frame(minWidth: 7)
             
             Text(strength.rawValue)
-                .font(.customFont(weight: .regular, size: .footnote))
+                .appFont(.smallLabelRegular)
+                .foregroundStyle(Colors.whiteSecondary)
                 .multilineTextAlignment(.center)
-                .foregroundStyle(Colors.whitePrimary.opacity(0.6))
                 .layoutPriority(1)
         }
     }

@@ -15,6 +15,7 @@ public struct PostCreationMainView: View {
     @EnvironmentObject private var apiManager: APIServiceManager
     @EnvironmentObject private var accountManager: AccountManager
     @EnvironmentObject private var audioManager: AudioSessionManager
+//    @EnvironmentObject private var appState: AppState
 
     @StateObject private var postCreationVM = PostCreationVM()
 
@@ -82,6 +83,7 @@ public struct PostCreationMainView: View {
                                 hashtags: $titleHashtags,
                                 minHeight: 30,
                                 placeholder: "Write a title...",
+//                                maxLength: appState.getConstants()?.data.post.title.maxLength ?? 1,
                                 maxLength: 50,
                                 allowNewLines: false,
                                 focusState: $focusedField,
@@ -121,7 +123,7 @@ public struct PostCreationMainView: View {
                                 }
                             } postAction: {
                                 focusedField = nil
-                                withAnimation {
+                                withAnimation(.easeInOut(duration: 0.2)) {
                                     showConfirmationAlert = true
                                 }
                             }
@@ -137,18 +139,32 @@ public struct PostCreationMainView: View {
             .scrollIndicators(.hidden)
             .overlay {
                 if showConfirmationAlert {
-                    Colors.whitePrimary.opacity(0.2).blur(radius: 10).ignoresSafeArea(edges: .all)
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                        .ignoresSafeArea()
+
                     postConfirmationView(isFreePost: accountManager.dailyFreePosts > 0 ? true : false)
+                        .shadow(color: .black.opacity(0.25), radius: 10, x: 0, y: 4)
+                        .transition(.scale.combined(with: .opacity))
                         .padding(.horizontal, 20)
                 }
                 if postCreationVM.isLoading {
-                    Colors.whitePrimary.opacity(0.2).blur(radius: 10).ignoresSafeArea(edges: .all)
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                        .ignoresSafeArea()
+
                     ProgressView()
                         .controlSize(.extraLarge)
+                        .transition(.scale.combined(with: .opacity))
                 }
                 if showSuccessAlert {
-                    Colors.whitePrimary.opacity(0.2).blur(radius: 10).ignoresSafeArea(edges: .all)
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                        .ignoresSafeArea()
+
                     successView
+                        .shadow(color: .black.opacity(0.25), radius: 10, x: 0, y: 4)
+                        .transition(.scale.combined(with: .opacity))
                         .padding(.horizontal, 20)
                 }
             }
@@ -177,7 +193,7 @@ public struct PostCreationMainView: View {
             let result = await makePost()
 
             if result {
-                withAnimation {
+                withAnimation(.easeInOut(duration: 0.2)) {
                     reset()
                     showSuccessAlert = true
                 }
@@ -249,7 +265,9 @@ public struct PostCreationMainView: View {
         focusedField = nil
         postType = .text
         titleText = ""
+        titleHashtags = []
         descriptionText = ""
+        descriptionHashtags = []
         imageStates = nil
         selectedPhotoItems = []
         videoState = nil

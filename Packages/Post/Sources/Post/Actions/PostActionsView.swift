@@ -26,7 +26,6 @@ struct PostActionsView: View {
     @ObservedObject var postViewModel: PostViewModel
 
     @Binding var showAppleTranslation: Bool
-    @Binding var showReportAlert: Bool
 
     var body: some View {
         actionButtonsView
@@ -53,22 +52,44 @@ struct PostActionsView: View {
 
                                     if !AccountManager.shared.isCurrentUser(id: postViewModel.post.owner.id) {
                                         Button(role: .destructive) {
-                                            showReportAlert = true
+                                            Task {
+                                                do {
+                                                    let isBlocked = try await postViewModel.blockContent()
+                                                    if isBlocked {
+                                                        showPopup(text: "User was blocked.")
+                                                    } else {
+                                                        showPopup(text: "User was unblocked.")
+                                                    }
+                                                } catch {
+                                                    showPopup(
+                                                        text: error.userFriendlyDescription
+                                                    )
+                                                }
+                                            }
                                         } label: {
-                                            Label("Report Post", systemImage: "exclamationmark.bubble")
+                                            Label("Block User", systemImage: "person.slash.fill")
+                                        }
+                                        
+                                        Button(role: .destructive) {
+                                            Task {
+                                                do {
+                                                    try await postViewModel.report()
+                                                    showPopup(text: "Post was reported.")
+                                                } catch let error as PostActionError {
+                                                    showPopup(
+                                                        text: error.displayMessage,
+                                                        icon: error.displayIcon
+                                                    )
+                                                }
+                                            }
+                                        } label: {
+                                            Label("Report Post", systemImage: "exclamationmark.circle")
                                         }
                                     }
-
-                                    //                                    if !AccountManager.shared.isCurrentUser(id: postVM.post.owner.id) {
-                                    //                                        Button(role: .destructive) {
-                                    //                                            showBlockAlert = true
-                                    //                                        } label: {
-                                    //                                            Label("Block User", systemImage: "person.crop.circle.badge.exclamationmark")
-                                    //                                        }
-                                    //                                    }
                                 }
                             } label: {
                                 actionButton(action: action)
+                                    .contentShape(.rect)
                             }
                             .menuStyle(.button)
                             .buttonStyle(PostActionButtonStyle(isOn: action.isOn(viewModel: postViewModel), tintColor: action.tintColor, defaultColor: action.getDefaultColor()))
@@ -76,6 +97,7 @@ struct PostActionsView: View {
                         } else {
                             actionButton(action: action)
                                 .buttonStyle(PostActionButtonStyle(isOn: action.isOn(viewModel: postViewModel), tintColor: action.tintColor, defaultColor: action.getDefaultColor()))
+                                .contentShape(.rect)
                         }
                     }
                 }
@@ -93,9 +115,38 @@ struct PostActionsView: View {
 
                                     if !AccountManager.shared.isCurrentUser(id: postViewModel.post.owner.id) {
                                         Button(role: .destructive) {
-                                            showReportAlert = true
+                                            Task {
+                                                do {
+                                                    let isBlocked = try await postViewModel.blockContent()
+                                                    if isBlocked {
+                                                        showPopup(text: "User was blocked.")
+                                                    } else {
+                                                        showPopup(text: "User was unblocked.")
+                                                    }
+                                                } catch {
+                                                    showPopup(
+                                                        text: error.userFriendlyDescription
+                                                    )
+                                                }
+                                            }
                                         } label: {
-                                            Label("Report Post", systemImage: "exclamationmark.bubble")
+                                            Label("Block User", systemImage: "person.slash.fill")
+                                        }
+
+                                        Button(role: .destructive) {
+                                            Task {
+                                                do {
+                                                    try await postViewModel.report()
+                                                    showPopup(text: "Post was reported.")
+                                                } catch let error as PostActionError {
+                                                    showPopup(
+                                                        text: error.displayMessage,
+                                                        icon: error.displayIcon
+                                                    )
+                                                }
+                                            }
+                                        } label: {
+                                            Label("Report Post", systemImage: "exclamationmark.circle")
                                         }
                                     }
                                 }
@@ -119,11 +170,17 @@ struct PostActionsView: View {
             Task {
                 do {
                     try await handleAction(action: action)
-                } catch let error as PostActionError {
-                    showPopup(
-                        text: error.displayMessage,
-                        icon: error.displayIcon
-                    )
+                } catch {
+                    if let error = error as? PostActionError {
+                        showPopup(
+                            text: error.displayMessage,
+                            icon: error.displayIcon
+                        )
+                    } else {
+                        showPopup(
+                            text: error.userFriendlyDescription
+                        )
+                    }
                 }
             }
         } label: {
@@ -184,11 +241,6 @@ struct PostActionsView: View {
         switch action {
             case .like:
                 try await postViewModel.like()
-                showPopup(
-                    text: "You used 1 like! Free likes left for today: \(AccountManager.shared.dailyFreeLikes)",
-                    icon: Icons.heartFill
-                    //.foregroundStyle(Colors.redAccent)
-                )
             case .dislike:
                 try await postViewModel.dislike()
             case .comment:

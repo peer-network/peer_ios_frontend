@@ -32,7 +32,7 @@ type Mutation {
   register(input: RegistrationInput!): RegisterResponse!
   verifyAccount(userid: ID!): DefaultResponse!
   login(email: String!, password: String!): AuthPayload!
-  requestPasswordReset(email: String!): DefaultResponse!
+  requestPasswordReset(email: String!): ResetPasswordRequestResponse!
   resetPassword(token: String!, password: String!): DefaultResponse
   refreshToken(refreshToken: String!): AuthPayload!
   contactus(name: String!, email: String!, message: String!): ContactusResponse!
@@ -57,6 +57,7 @@ type HelloResponse {
   currentuserid: ID
   currentVersion: String
   wikiLink: String
+  lastMergedPullRequestNumber: String
 }
 
 type RegisterResponse {
@@ -68,6 +69,12 @@ type RegisterResponse {
 type DefaultResponse {
   status: String!
   ResponseCode: String
+}
+
+type ResetPasswordRequestResponse {
+  status: String!
+  ResponseCode: String
+  nextAttemptAt: String
 }
 
 type AuthPayload {

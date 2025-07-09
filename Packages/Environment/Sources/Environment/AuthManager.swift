@@ -25,8 +25,8 @@ public final class AuthManager: ObservableObject {
     private let tokenManager: TokenKeychainManager
     
     public init(
-        accountManager: AccountManager = .shared,
-        tokenManager: TokenKeychainManager = .shared
+        accountManager: AccountManager,
+        tokenManager: TokenKeychainManager
     ) {
         self.accountManager = accountManager
         self.tokenManager = tokenManager

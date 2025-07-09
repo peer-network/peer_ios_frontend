@@ -51,6 +51,7 @@ final class RegularFeedVM: ObservableObject, PostsFetcher {
                 let result = await apiService.fetchPosts(
                     with: .regular,
                     sort: .newest,
+                    showHiddenContent: true,
                     filter: .all,
                     in: .allTime,
                     after: currentOffset,

@@ -44,7 +44,7 @@ struct SingleCommentView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
 
                 Text(commentVM.comment.formattedCreatedAt)
-                    .font(.customFont(weight: .regular, style: .caption1))
+                    .font(.customFont(weight: .regular, size: .footnoteSmall))
                     .foregroundStyle(Colors.whiteSecondary)
             }
 
@@ -54,7 +54,7 @@ struct SingleCommentView: View {
                         do {
                             try await commentVM.likeComment()
                         } catch {
-                            showPopup(text: "Failed to perform the action. Please try again.")
+                            showPopup(text: error.userFriendlyDescription)
                         }
                     }
                 } label: {
@@ -74,11 +74,34 @@ struct SingleCommentView: View {
                 Text("\(commentVM.amountLikes)")
             }
         }
-        .font(.customFont(weight: .regular, style: .footnote))
+        .font(.customFont(weight: .regular, size: .body))
         .multilineTextAlignment(.leading)
         .foregroundStyle(Colors.whitePrimary)
         .onFirstAppear {
             commentVM.apiService = apiManager.apiService
         }
+        .padding(10)
+        .contentShape(Rectangle())
+        .contextMenu {
+            Button(role: .destructive) {
+                Task {
+                    do {
+                        try await commentVM.report()
+                        showPopup(text: "Comment was reported.")
+                    } catch let error as CommentError {
+                        showPopup(
+                            text: error.localizedDescription
+                        )
+                    } catch {
+                        showPopup(
+                            text: error.userFriendlyDescription
+                        )
+                    }
+                }
+            } label: {
+                Label("Report Comment", systemImage: "exclamationmark.circle")
+            }
+        }
+        .padding(-10)
     }
 }

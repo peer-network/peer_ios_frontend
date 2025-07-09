@@ -98,8 +98,20 @@ extension Comment {
             user: ObjectOwner.placeholder()
         )
     }
-
+    
     public static func placeholders(count: Int = 10) -> [Comment] {
-        return Array(repeating: .placeholder(), count: count)
+        return (0..<count).map { _ in
+            Comment(
+                id: UUID().uuidString,
+                userId: UUID().uuidString,
+                postId: UUID().uuidString,
+                parentId: "",
+                content: "This is a placeholder comment.",
+                amountLikes: 10,
+                isLiked: false,
+                createdAt: "2025-04-28 08:14:22.782181",
+                user: ObjectOwner.placeholder()
+            )
+        }
     }
 }

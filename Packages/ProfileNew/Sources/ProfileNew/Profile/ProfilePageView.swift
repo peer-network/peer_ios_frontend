@@ -96,19 +96,9 @@ public struct ProfilePageView: View {
     }
 
     private func profileHeader(user: User, isLoading: Bool) -> some View {
-        VStack(spacing: 10) {
-            ProfileHeader(user: user, bio: viewModel.fetchedBio, showAvatarPicker: $showAvatarPicker)
-
-            if AccountManager.shared.isCurrentUser(id: viewModel.userId) {
-                HStack(spacing: 10) {
-                    inviteFriendsButton
-
-                    settingsButton
-                }
-            }
-        }
-        .padding(.horizontal, 20)
-        .skeleton(isRedacted: isLoading ? true : false)
+        ProfileHeader(user: user, bio: viewModel.fetchedBio, showAvatarPicker: $showAvatarPicker)
+            .padding(.horizontal, 20)
+            .skeleton(isRedacted: isLoading ? true : false)
     }
 
     private func fetchEverything() async {
@@ -117,40 +107,6 @@ public struct ProfilePageView: View {
 
         regularFeedVM.fetchPosts(reset: true)
         audioFeedVM.fetchPosts(reset: true)
-    }
-
-    private var inviteFriendsButton: some View {
-        Button {
-            router.navigate(to: .referralProgram)
-        } label: {
-            Text("Invite a friend")
-                .font(.customFont(weight: .bold, style: .footnote))
-                .foregroundStyle(Colors.inactiveDark)
-                .frame(height: 40)
-                .frame(maxWidth: .infinity)
-                .background(Colors.whitePrimary)
-                .clipShape(RoundedRectangle(cornerRadius: 25))
-        }
-
-    }
-
-    private var settingsButton: some View {
-        Button {
-            router.navigate(to: .settings)
-        } label: {
-            HStack(spacing: 10) {
-                Text("Settings")
-                    .font(.customFont(weight: .regular, style: .footnote))
-
-                Icons.gear
-                    .iconSize(height: 15)
-            }
-            .foregroundStyle(Colors.whitePrimary)
-            .frame(height: 40)
-            .frame(maxWidth: .infinity)
-            .background(Colors.inactiveDark)
-            .clipShape(RoundedRectangle(cornerRadius: 25))
-        }
     }
 
     private func loadImage() {

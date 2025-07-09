@@ -15,6 +15,7 @@ import Analytics
 public struct ExploreView: View {
     @EnvironmentObject private var router: Router
     @EnvironmentObject private var apiManager: APIServiceManager
+    @Environment(\.selectedTabScrollToTop) private var selectedTabScrollToTop
 
     @StateObject private var viewModel = ExploreViewModel()
 
@@ -37,7 +38,6 @@ public struct ExploreView: View {
             GridItem(.fixed(getRect().width / 3 - 2), spacing: 1),
             GridItem(.fixed(getRect().width / 3 - 2), spacing: 1),
             GridItem(.fixed(getRect().width / 3 - 2), spacing: 1)
-            //        GridItem(.adaptive(minimum: 100), spacing: 1)
         ]
     }
 
@@ -55,12 +55,22 @@ public struct ExploreView: View {
                 searchBar
                     .padding(.horizontal, 10)
 
-                ScrollView {
-                    searchResultsView
-                        .padding(.top, 10)
+                ScrollViewReader { proxy in
+                    ScrollView {
+                        ScrollToView()
+                        searchResultsView
+                            .padding(.top, 10)
+                    }
+                    .scrollDismissesKeyboard(.interactively)
+                    .scrollDisabled(viewModel.isLoading)
+                    .onChange(of: selectedTabScrollToTop) {
+                        if selectedTabScrollToTop == 1, router.path.isEmpty {
+                            withAnimation {
+                                proxy.scrollTo(ScrollToView.Constants.scrollToTop, anchor: .top)
+                            }
+                        }
+                    }
                 }
-                .scrollDismissesKeyboard(.interactively)
-                .scrollDisabled(viewModel.isLoading)
             }
             .padding(.top, 10)
         }
@@ -131,13 +141,20 @@ extension ExploreView {
                     defaultSearchBar
                 default:
                     searchTextFieldView(searchType)
+                        .padding(.horizontal, 5)
             }
         }
         .frame(height: 50)
-        .padding(.horizontal, 10)
+        .padding(.horizontal, 5)
         .background {
-            RoundedRectangle(cornerRadius: 24)
-                .strokeBorder(Colors.whitePrimary, lineWidth: 1)
+            switch searchType {
+                case .none:
+                    RoundedRectangle(cornerRadius: 24)
+                        .foregroundStyle(Colors.inactiveDark)
+                default:
+                    RoundedRectangle(cornerRadius: 24)
+                        .strokeBorder(Colors.whitePrimary, lineWidth: 1)
+            }
         }
     }
 
