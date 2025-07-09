@@ -49,20 +49,15 @@ platform :ios do
   latest_build_number = latest_testflight_build_number(
     api_key: api_key,
     version: current_version,
-    app_identifier: APP_IDENTIFIER
+    app_identifier: APP_IDENTIFIER,
+    initial_build_number: 1
   )
 
   new_build_number = latest_build_number + 1
 
   increment_build_number(
-    build_number: new_build_number,
+    build_number: new_build_number.to_s,
     xcodeproj: "#{MAIN_TARGET}.xcodeproj"
-  )
-
-  update_app_project_build_number(
-    xcodeproj: "#{MAIN_TARGET}.xcodeproj",
-    target: EXTENSION_TARGET,
-    build_number: new_build_number
   )
  end
  
