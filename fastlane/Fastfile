@@ -77,8 +77,7 @@ platform :ios do
     # fetches and installs provisioning profiles from ASC
     sigh(
       api_key: api_key,
-      readonly: false,
-      force: true
+      readonly: false
     )
   end
  
