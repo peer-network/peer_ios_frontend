@@ -88,7 +88,7 @@ platform :ios do
  lane :build_release do |options|
   app_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
  
-  profile_name = "App Provisioning Profile" # replace with the name of the profile to use for the build
+  profile_name = "eu.peernetwork.PeerApp AppStore" # replace with the name of the profile to use for the build
   output_name = "PeerApp" # specify the name of the .ipa file to generate
   export_method = "app-store" # specify the export method
  
