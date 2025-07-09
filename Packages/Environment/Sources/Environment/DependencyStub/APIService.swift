@@ -37,6 +37,10 @@ public final class APIServiceStub: APIService {
         .success(())
     }
 
+    public func deleteAccount(password: String) async -> Result<Void, APIError> {
+        .success(())
+    }
+
     //MARK: User & Profile
     public func getMyInviter() async -> Result<RowUser, APIError> {
         .failure(.missingData)
@@ -104,6 +108,10 @@ public final class APIServiceStub: APIService {
 
     public func fetchUsersWithHiddenContent(after offset: Int) async -> Result<[RowUser], APIError> {
         .failure(.missingData)
+    }
+
+    public func reportUser(with id: String) async -> Result<Void, APIError> {
+        .success(())
     }
 
     //MARK: Posts

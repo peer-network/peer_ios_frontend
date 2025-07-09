@@ -35,6 +35,7 @@ public protocol APIService: AnyObject {
     func verifyRegistration(userID: String) async -> Result<Void, APIError>
     func requestPasswordReset(email: String) async -> Result<Void, APIError>
     func resetPassword(token: String, newPassword: String) async -> Result<Void, APIError>
+    func deleteAccount(password: String) async -> Result<Void, APIError>
 
     //MARK: User & Profile
     func getMyInviter() async -> Result<RowUser, APIError>
@@ -54,6 +55,7 @@ public protocol APIService: AnyObject {
     func updateEmail(email: String, currentPassword: String) async -> Result<Void, APIError>
     func toggleHideUserContent(with id: String) async -> Result<Bool, APIError>
     func fetchUsersWithHiddenContent(after offset: Int) async -> Result<[RowUser], APIError>
+    func reportUser(with id: String) async -> Result<Void, APIError>
 
     //MARK: Posts
     func fetchPostsByTitle(_ query: String, after offset: Int) async -> Result<[Post], APIError>

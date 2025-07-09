@@ -130,6 +130,24 @@ public final class APIServiceGraphQL: APIService {
         }
     }
 
+    public func deleteAccount(password: String) async -> Result<Void, APIError> {
+        do {
+            let result = try await qlClient.mutate(mutation: DeleteAccountMutation(password: password))
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            return .success(())
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
     //MARK: User & Profile
     public func getMyInviter() async -> Result<RowUser, APIError> {
         do {
@@ -554,6 +572,24 @@ public final class APIServiceGraphQL: APIService {
             }
 
             return .success(fetchedUsers)
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
+    public func reportUser(with id: String) async -> Result<Void, APIError> {
+        do {
+            let result = try await qlClient.mutate(mutation: ReportUserMutation(userid: id))
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            return .success(())
         } catch {
             return .failure(.unknownError(error: error))
         }

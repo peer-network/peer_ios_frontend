@@ -101,5 +101,12 @@
             "Small UI updates for a cleaner, more polished feel across the app",
             "General improvements and bug fixes to keep things smooth and stable"
         ]
+    },
+    {
+        "version": "1.4.3",
+        "date": "8 Jul 2025",
+        "releaseNotes": [
+            "Overall improvements and fixes"
+        ]
     }
 ]

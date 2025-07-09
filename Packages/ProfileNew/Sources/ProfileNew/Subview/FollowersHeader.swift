@@ -66,13 +66,14 @@ struct FollowersHeader: View {
                 Text(typeCount(type), format: .number.notation(.compactName))
                     .bold()
                     .font(.customFont(weight: .regular, size: .body))
+                    .foregroundStyle(Colors.whitePrimary)
                 Text(type.rawValue.lowercased())
                     .font(.customFont(weight: .regular, size: .footnote))
+                    .foregroundStyle(Colors.whiteSecondary)
             }
             .fixedSize(horizontal: true, vertical: false)
             .contentShape(.rect)
         }
-        .foregroundStyle(Colors.whitePrimary)
     }
 
     private func typeCount(_ type: FollowersHeader.ButtonType) -> Int {

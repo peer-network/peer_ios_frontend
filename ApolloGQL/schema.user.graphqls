@@ -29,14 +29,14 @@ type Subscription {
 
 type Query {
   hello: HelloResponse!
-  searchUser(userid: ID, username: String, offset: Int, limit: Int): UserListResponse!
-  listUsers(offset: Int, limit: Int): UserListResponse!
-  getProfile(userid: ID, postLimit: Int): ProfileInfo!
-  listFollowRelations(userid: ID, offset: Int, limit: Int): FollowRelationsResponse!
-  listFriends(offset: Int, limit: Int): UserFriendsResponse!
+  searchUser(userid: ID, contentFilterBy: ContentFilterType, username: String, offset: Int, limit: Int): UserListResponse!
+  listUsers(contentFilterBy: ContentFilterType, offset: Int, limit: Int): UserListResponse!
+  getProfile(userid: ID, contentFilterBy: ContentFilterType, postLimit: Int): ProfileInfo!
+  listFollowRelations(contentFilterBy: ContentFilterType, userid: ID, offset: Int, limit: Int): FollowRelationsResponse!
+  listFriends(contentFilterBy: ContentFilterType, offset: Int, limit: Int): UserFriendsResponse!
   getUserInfo: UserInfoResponse!
   listBlockedUsers(offset: Int, limit: Int): BlockedUsersResponse!
-  listPosts(filterBy: [PostFilterType!], IgnorList: IgnoreOption, sortBy: PostSortType, userid: ID, postid: ID, title: String, tag: String, from: Date, to: Date, offset: Int, limit: Int, commentOffset: Int, commentLimit: Int): PostListResponse!
+  listPosts(filterBy: [PostFilterType!], contentFilterBy: ContentFilterType, IgnorList: IgnoreOption, sortBy: PostSortType, userid: ID, postid: ID, title: String, tag: String, from: Date, to: Date, offset: Int, limit: Int, commentOffset: Int, commentLimit: Int): PostListResponse!
   getPostInfo(postid: ID!): PostInfoResponse!
   getCommentInfo(commentId: ID!): CommentInfoResponse!
   listChildComments(parent: ID!, offset: Int, limit: Int): CommentResponse!
@@ -52,6 +52,7 @@ type Query {
   getReferralInfo: ReferralInfoResponse!
   referralList(offset: Int, limit: Int): ReferralListResponse!
   listTodaysInteractions: ListTodaysInteractionsResponse!
+  getActionPrices: GetActionPricesResponse!
 }
 
 type Mutation {
@@ -73,6 +74,7 @@ type Mutation {
   createChatFeed(input: FeedInput!): AddPostResponse!
   likeComment(commentid: ID!): DefaultResponse!
   reportComment(commentid: ID!): DefaultResponse!
+  reportUser(userid: ID!): DefaultResponse!
   deletePost(id: ID!): DefaultResponse!
   createPost(action: PostType!, input: PostInput!): PostResponse!
   createComment(action: CommentType!, postid: ID!, parentid: ID, content: String!): CommentResponse!
@@ -99,6 +101,10 @@ enum PostType {
 
 enum CommentType {
   COMMENT
+}
+
+enum ContentFilterType {
+  MYGRANDMALIKES
 }
 
 enum ContentType {
@@ -170,6 +176,7 @@ type HelloResponse {
   currentuserid: ID
   currentVersion: String
   wikiLink: String
+  lastMergedPullRequestNumber: String
 }
 
 type LogWins {
@@ -221,6 +228,7 @@ type UserInfo {
   amountfollower: Int!
   amountfollowed: Int!
   amountfriends: Int!
+  invited: ID!
   updatedat: Date
 }
 
@@ -569,4 +577,17 @@ input FeedInput {
   media: String!
   mediadescription: String
   contenttype: String!
+}
+
+type ActionPriceResult {
+  postPrice: Float!
+  likePrice: Float!
+  dislikePrice: Float!
+  commentPrice: Float!
+}
+
+type GetActionPricesResponse {
+  status: String!
+  ResponseCode: String!
+  affectedRows: ActionPriceResult!
 }

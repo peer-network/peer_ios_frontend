@@ -7,7 +7,7 @@ public class GetPostCommentsQuery: GraphQLQuery {
   public static let operationName: String = "GetPostComments"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetPostComments($postid: ID!, $commentLimit: Int, $commentOffset: Int) { listPosts( postid: $postid commentLimit: $commentLimit commentOffset: $commentOffset ) { __typename status ResponseCode affectedRows { __typename amountcomments comments { __typename commentid userid postid parentid content amountlikes amountreplies isliked createdat user { __typename id username slug img isfollowed isfollowing } } } } }"#
+      #"query GetPostComments($postid: ID!, $commentLimit: Int, $commentOffset: Int) { listPosts( postid: $postid commentLimit: $commentLimit commentOffset: $commentOffset contentFilterBy: MYGRANDMALIKES ) { __typename status ResponseCode affectedRows { __typename amountcomments comments { __typename commentid userid postid parentid content amountlikes amountreplies isliked createdat user { __typename id username slug img isfollowed isfollowing } } } } }"#
     ))
 
   public var postid: ID
@@ -39,7 +39,8 @@ public class GetPostCommentsQuery: GraphQLQuery {
       .field("listPosts", ListPosts.self, arguments: [
         "postid": .variable("postid"),
         "commentLimit": .variable("commentLimit"),
-        "commentOffset": .variable("commentOffset")
+        "commentOffset": .variable("commentOffset"),
+        "contentFilterBy": "MYGRANDMALIKES"
       ]),
     ] }
 

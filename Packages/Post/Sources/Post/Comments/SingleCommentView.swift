@@ -88,6 +88,10 @@ struct SingleCommentView: View {
                     do {
                         try await commentVM.report()
                         showPopup(text: "Comment was reported.")
+                    } catch let error as CommentError {
+                        showPopup(
+                            text: error.localizedDescription
+                        )
                     } catch {
                         showPopup(
                             text: error.userFriendlyDescription
@@ -95,7 +99,7 @@ struct SingleCommentView: View {
                     }
                 }
             } label: {
-                Label("Report Comment", systemImage: "exclamationmark.bubble")
+                Label("Report Comment", systemImage: "exclamationmark.circle")
             }
         }
         .padding(-10)

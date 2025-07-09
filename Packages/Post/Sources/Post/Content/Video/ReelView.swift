@@ -10,6 +10,7 @@ import AVKit
 import DesignSystem
 import Models
 import Environment
+import NukeVideo
 
 private struct ReelLike: Identifiable {
     var id: UUID = .init()

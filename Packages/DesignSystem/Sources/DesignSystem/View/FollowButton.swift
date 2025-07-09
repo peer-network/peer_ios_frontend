@@ -24,14 +24,13 @@ public final class FollowButtonViewModel: ObservableObject {
     }
 
     public func toggleFollow() async {
-        withAnimation {
-            isFollowed.toggle()
-        }
-
         do {
             let result = await apiService.followUser(with: id)
             if case .failure(let error) = result {
                 throw error
+            }
+            withAnimation {
+                isFollowed.toggle()
             }
         } catch {
             isFollowed.toggle()
@@ -80,7 +79,6 @@ public struct FollowButton: View {
                 if viewModel.isFollowing && viewModel.isFollowed {
                     RoundedRectangle(cornerRadius: 20)
                         .foregroundStyle(Gradients.activeButtonBlue)
-//                        .shadow(color: .black.opacity(0.5), radius: 25, x: 0, y: 4)
                 } else if viewModel.isFollowed {
                     RoundedRectangle(cornerRadius: 20)
                         .foregroundStyle(Colors.hashtag)
@@ -90,6 +88,59 @@ public struct FollowButton: View {
                         .foregroundStyle(Colors.whitePrimary)
                 }
             }
+        }
+        .onFirstAppear {
+            viewModel.apiService = apiManager.apiService
+        }
+    }
+}
+
+public struct FollowButton2: View {
+    @EnvironmentObject private var apiManager: APIServiceManager
+
+    @StateObject private var viewModel: FollowButtonViewModel
+
+    var buttonSize = ButtonSize.small
+
+    var buttonType: ButtonType {
+        if viewModel.isFollowing && viewModel.isFollowed {
+            return .primary
+        } else if viewModel.isFollowed {
+            return .primary
+        } else {
+            return .teritary
+        }
+    }
+
+    var buttonText: String {
+        if viewModel.isFollowing && viewModel.isFollowed {
+            return "peer"
+        } else if viewModel.isFollowed {
+            return "Following"
+        } else {
+            return "Follow"
+        }
+    }
+
+    var icon: Image? {
+        if viewModel.isFollowing && viewModel.isFollowed {
+            return nil
+        } else if viewModel.isFollowed {
+            return nil
+        } else {
+            return Icons.plus
+        }
+    }
+
+    public init(viewModel: FollowButtonViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
+
+    public var body: some View {
+        let config = StateButtonConfig(buttonSize: buttonSize, buttonType: buttonType, title: buttonText, icon: icon, iconPlacement: .trailing)
+
+        AsyncStateButton(config: config) {
+            await viewModel.toggleFollow()
         }
         .onFirstAppear {
             viewModel.apiService = apiManager.apiService

@@ -17,7 +17,10 @@ let package = Package(
         .package(name: "DesignSystem", path: "../DesignSystem"),
         .package(name: "Environment", path: "../Environment"),
         .package(name: "Networking", path: "../Networking"),
-        .package(name: "GQLOperationsUser", path: "../GQLOperationsUser")
+        .package(name: "GQLOperationsUser", path: "../GQLOperationsUser"),
+        .package(name: "Analytics", path: "../Analytics"),
+        .package(url: "https://github.com/kean/Nuke.git", .upToNextMajor(from: "12.8.0")),
+        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "11.9.0"))
     ],
     targets: [
         .target(
@@ -26,7 +29,11 @@ let package = Package(
                 .product(name: "DesignSystem", package: "DesignSystem"),
                 .product(name: "Environment", package: "Environment"),
                 .product(name: "Networking", package: "Networking"),
-                .product(name: "GQLOperationsUser", package: "GQLOperationsUser")
+                .product(name: "GQLOperationsUser", package: "GQLOperationsUser"),
+                .product(name: "Analytics", package: "Analytics"),
+                .product(name: "NukeUI", package: "Nuke"),
+                .product(name: "NukeVideo", package: "Nuke"),
+                .product(name: "FirebaseAnalytics", package: "firebase-ios-sdk")
             ]
         ),
     ],

@@ -7,7 +7,7 @@ public class GetProfileQuery: GraphQLQuery {
   public static let operationName: String = "GetProfile"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetProfile($userid: ID!) { getProfile(userid: $userid) { __typename status ResponseCode affectedRows { __typename id username status slug img biography isfollowed isfollowing amountposts amounttrending amountfollowed amountfollower amountfriends amountblocked } } }"#
+      #"query GetProfile($userid: ID!) { getProfile(contentFilterBy: MYGRANDMALIKES, userid: $userid) { __typename status ResponseCode affectedRows { __typename id username status slug img biography isfollowed isfollowing amountposts amounttrending amountfollowed amountfollower amountfriends amountblocked } } }"#
     ))
 
   public var userid: ID
@@ -24,7 +24,10 @@ public class GetProfileQuery: GraphQLQuery {
 
     public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("getProfile", GetProfile.self, arguments: ["userid": .variable("userid")]),
+      .field("getProfile", GetProfile.self, arguments: [
+        "contentFilterBy": "MYGRANDMALIKES",
+        "userid": .variable("userid")
+      ]),
     ] }
 
     public var getProfile: GetProfile { __data["getProfile"] }

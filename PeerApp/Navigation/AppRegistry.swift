@@ -16,6 +16,7 @@ import Explore
 import VersionHistory
 import Wallet
 import Post
+import TokenKeychainManager
 
 extension View {
     func withAppRouter() -> some View {
@@ -77,6 +78,25 @@ extension View {
                         let apiManager = APIServiceManager()
 #endif
                         let result = await apiManager.apiService.updateUsername(username: newUsername, currentPassword: currentPassword)
+                        return result
+                    }
+                    .toolbar(.hidden, for: .navigationBar)
+                case .deleteAccount:
+                    DeleteAccountView { currentPassword in
+#if DEBUG
+                        let testConfig = APIConfiguration(endpoint: .custom)
+                        let apiManager = APIServiceManager(.normal(config: testConfig))
+#else
+                        let apiManager = APIServiceManager()
+#endif
+                        let audioManager = AudioSessionManager.shared
+
+                        let result = await apiManager.apiService.deleteAccount(password: currentPassword)
+                        if case .success = result {
+                            audioManager.stop()
+                            TokenKeychainManager.shared.removeCredentials()
+                            exit(0)
+                        }
                         return result
                     }
                     .toolbar(.hidden, for: .navigationBar)

@@ -8,7 +8,7 @@
 import SwiftUI
 
 @frozen
-public enum Colors {
+public enum Colors: Equatable {
     public static let textActive = Color(red: 0.145, green: 0.145, blue: 0.145)
     public static let textSuggestions = Color(red: 0.145, green: 0.145, blue: 0.145).opacity(0.5)
     public static let redAccent = Color(red: 1, green: 0.231, blue: 0.231)

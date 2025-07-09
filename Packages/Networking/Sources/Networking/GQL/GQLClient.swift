@@ -13,6 +13,7 @@ import Foundation
 public enum GQLError: Error {
     case serverError(error: Error)
     case missingData
+    case graphQLErrors([GraphQLError])
 }
 
 public protocol GQLClientConfigurable {
@@ -55,13 +56,13 @@ public class GQLClient {
                 queryAlreadyCompletedOnce = true
                 switch result {
                     case let .failure(error):
-                        continuation.resume(throwing: GQLError.serverError(error: error))
-                    case let .success(successResult):
-                        guard let data = successResult.data else {
-                            continuation.resume(throwing: GQLError.missingData)
-                            return
+                        continuation.resume(throwing: error)
+                    case let .success(result):
+                        if let data = result.data {
+                            continuation.resume(returning: data)
+                        } else if let errors = result.errors {
+                            continuation.resume(throwing: GQLError.graphQLErrors(errors))
                         }
-                        continuation.resume(returning: data)
                 }
             }
         }
@@ -72,13 +73,13 @@ public class GQLClient {
             apolloClient.perform(mutation: mutation) { result in
                 switch result {
                     case let .failure(error):
-                        continuation.resume(throwing: GQLError.serverError(error: error))
-                    case let .success(successResult):
-                        guard let data = successResult.data else {
-                            continuation.resume(throwing: GQLError.missingData)
-                            return
+                        continuation.resume(throwing: error)
+                    case let .success(result):
+                        if let data = result.data {
+                            continuation.resume(returning: data)
+                        } else if let errors = result.errors {
+                            continuation.resume(throwing: GQLError.graphQLErrors(errors))
                         }
-                        continuation.resume(returning: data)
                 }
             }
         }
@@ -89,13 +90,13 @@ public class GQLClient {
             let cancellable = apolloClient.subscribe(subscription: subscription) { result in
                 switch result {
                     case let .failure(error):
-                        continuation.finish(throwing: GQLError.serverError(error: error))
-                    case let .success(successResult):
-                        guard let data = successResult.data else {
-                            continuation.finish(throwing: GQLError.missingData)
-                            return
+                        continuation.finish(throwing: error)
+                    case let .success(result):
+                        if let data = result.data {
+                            continuation.yield(data)
+                        } else if let errors = result.errors {
+                            continuation.finish(throwing: GQLError.graphQLErrors(errors))
                         }
-                        continuation.yield(data)
                 }
             }
 

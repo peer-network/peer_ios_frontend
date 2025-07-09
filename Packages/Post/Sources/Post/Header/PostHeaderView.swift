@@ -62,6 +62,8 @@ struct PostHeaderView: View {
                     isFollowed: postVM.post.owner.isFollowed
                 )
                 FollowButton(viewModel: vm)
+//                FollowButton2(viewModel: vm)
+//                    .fixedSize(horizontal: true, vertical: false)
             }
         }
     }

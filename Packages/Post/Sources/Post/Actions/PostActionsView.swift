@@ -54,6 +54,25 @@ struct PostActionsView: View {
                                         Button(role: .destructive) {
                                             Task {
                                                 do {
+                                                    let isBlocked = try await postViewModel.blockContent()
+                                                    if isBlocked {
+                                                        showPopup(text: "User was blocked.")
+                                                    } else {
+                                                        showPopup(text: "User was unblocked.")
+                                                    }
+                                                } catch {
+                                                    showPopup(
+                                                        text: error.userFriendlyDescription
+                                                    )
+                                                }
+                                            }
+                                        } label: {
+                                            Label("Block User", systemImage: "person.slash.fill")
+                                        }
+                                        
+                                        Button(role: .destructive) {
+                                            Task {
+                                                do {
                                                     try await postViewModel.report()
                                                     showPopup(text: "Post was reported.")
                                                 } catch let error as PostActionError {
@@ -64,26 +83,7 @@ struct PostActionsView: View {
                                                 }
                                             }
                                         } label: {
-                                            Label("Report Post", systemImage: "exclamationmark.bubble")
-                                        }
-
-                                        Button(role: .destructive) {
-                                            Task {
-                                                do {
-                                                    let isBlocked = try await postViewModel.blockContent()
-                                                    if isBlocked {
-                                                        showPopup(text: "User's content will be hidden.")
-                                                    } else {
-                                                        showPopup(text: "User's content will be visible.")
-                                                    }
-                                                } catch {
-                                                    showPopup(
-                                                        text: error.userFriendlyDescription
-                                                    )
-                                                }
-                                            }
-                                        } label: {
-                                            Label("Hide Content from Feed", systemImage: "person.slash.fill")
+                                            Label("Report Post", systemImage: "exclamationmark.circle")
                                         }
                                     }
                                 }
@@ -117,6 +117,25 @@ struct PostActionsView: View {
                                         Button(role: .destructive) {
                                             Task {
                                                 do {
+                                                    let isBlocked = try await postViewModel.blockContent()
+                                                    if isBlocked {
+                                                        showPopup(text: "User was blocked.")
+                                                    } else {
+                                                        showPopup(text: "User was unblocked.")
+                                                    }
+                                                } catch {
+                                                    showPopup(
+                                                        text: error.userFriendlyDescription
+                                                    )
+                                                }
+                                            }
+                                        } label: {
+                                            Label("Block User", systemImage: "person.slash.fill")
+                                        }
+
+                                        Button(role: .destructive) {
+                                            Task {
+                                                do {
                                                     try await postViewModel.report()
                                                     showPopup(text: "Post was reported.")
                                                 } catch let error as PostActionError {
@@ -127,26 +146,7 @@ struct PostActionsView: View {
                                                 }
                                             }
                                         } label: {
-                                            Label("Report Post", systemImage: "exclamationmark.bubble")
-                                        }
-
-                                        Button(role: .destructive) {
-                                            Task {
-                                                do {
-                                                    let isBlocked = try await postViewModel.blockContent()
-                                                    if isBlocked {
-                                                        showPopup(text: "User's content will be hidden.")
-                                                    } else {
-                                                        showPopup(text: "User's content will be visible.")
-                                                    }
-                                                } catch {
-                                                    showPopup(
-                                                        text: error.userFriendlyDescription
-                                                    )
-                                                }
-                                            }
-                                        } label: {
-                                            Label("Hide Content from Feed", systemImage: "person.slash.fill")
+                                            Label("Report Post", systemImage: "exclamationmark.circle")
                                         }
                                     }
                                 }

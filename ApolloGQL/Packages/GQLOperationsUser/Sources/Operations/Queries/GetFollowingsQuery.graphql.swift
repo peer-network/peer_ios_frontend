@@ -7,7 +7,7 @@ public class GetFollowingsQuery: GraphQLQuery {
   public static let operationName: String = "GetFollowings"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetFollowings($userid: ID, $offset: Int, $limit: Int) { listFollowRelations(userid: $userid, offset: $offset, limit: $limit) { __typename status ResponseCode affectedRows { __typename following { __typename id username slug img isfollowed isfollowing } } } }"#
+      #"query GetFollowings($userid: ID, $offset: Int, $limit: Int) { listFollowRelations( contentFilterBy: MYGRANDMALIKES userid: $userid offset: $offset limit: $limit ) { __typename status ResponseCode affectedRows { __typename following { __typename id username slug img isfollowed isfollowing } } } }"#
     ))
 
   public var userid: GraphQLNullable<ID>
@@ -37,6 +37,7 @@ public class GetFollowingsQuery: GraphQLQuery {
     public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("listFollowRelations", ListFollowRelations.self, arguments: [
+        "contentFilterBy": "MYGRANDMALIKES",
         "userid": .variable("userid"),
         "offset": .variable("offset"),
         "limit": .variable("limit")

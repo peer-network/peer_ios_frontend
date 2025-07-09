@@ -14,7 +14,8 @@ public struct LottieView: View {
         case splashScreenLogo = "SplashScreenLogoAnimation"
         case loading = "LoadingAnimation"
         case confetti = "PartyPopperAnimation"
-        case handshake = "HandShake"
+        case handShake = "HandShakeAnimation"
+        case handWave = "HandWaveAnimation"
     }
 
     private let name: String
@@ -47,6 +48,8 @@ public struct LottieView: View {
         let config = AnimationConfig(autoplay: true, loop: true, speed: speed)
 
         let dotLottieAnimation = DotLottieAnimation(fileName: name, config: config)
+        dotLottieAnimation.setFrameInterpolation(true)
+        dotLottieAnimation.setMode(mode: .bounce)
         let view: DotLottieView = dotLottieAnimation.view()
 
         let observer = CompletionObserver(onLoopComplete: onLoopComplete)
@@ -69,6 +72,10 @@ private class CompletionObserver: Observer {
     }
 
     func onFrame(frameNo: Float) {
+        // Using this instead of onLoop() because it is not being called with .setMode(mode: .bounce)
+        if frameNo == 0 {
+            onLoopComplete?()
+        }
     }
 
     func onLoad() {
@@ -78,7 +85,7 @@ private class CompletionObserver: Observer {
     }
 
     func onLoop(loopCount: UInt32) {
-        onLoopComplete?()
+//        onLoopComplete?()
     }
 
     func onPause() {

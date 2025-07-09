@@ -14,7 +14,29 @@ extension UINavigationController: @retroactive UIGestureRecognizerDelegate {
         interactivePopGestureRecognizer?.delegate = self
     }
 
-    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        return viewControllers.count > 1
+    // Allows swipe back gesture after hiding standard navigation bar with .navigationBarHidden(true).
+
+    public func gestureRecognizerShouldBegin(_: UIGestureRecognizer) -> Bool {
+        guard viewControllers.count > 1 else { return false }
+
+        // Prevent gesture conflicts during sheet presentation
+        // Check if any presented view controller exists
+        if presentedViewController != nil {
+            return false
+        }
+
+        return true
+    }
+
+    // Allows interactivePopGestureRecognizer to work simultaneously with other gestures.
+
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        viewControllers.count > 1
+    }
+
+    // Blocks other gestures when interactivePopGestureRecognizer begins
+
+    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        viewControllers.count > 1
     }
 }

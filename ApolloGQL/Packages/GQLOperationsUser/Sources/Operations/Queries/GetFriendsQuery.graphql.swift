@@ -7,7 +7,7 @@ public class GetFriendsQuery: GraphQLQuery {
   public static let operationName: String = "GetFriends"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetFriends($offset: Int, $limit: Int) { listFriends(offset: $offset, limit: $limit) { __typename status ResponseCode affectedRows { __typename userid img username slug } } }"#
+      #"query GetFriends($offset: Int, $limit: Int) { listFriends(contentFilterBy: MYGRANDMALIKES, offset: $offset, limit: $limit) { __typename status ResponseCode affectedRows { __typename userid img username slug } } }"#
     ))
 
   public var offset: GraphQLNullable<Int>
@@ -33,6 +33,7 @@ public class GetFriendsQuery: GraphQLQuery {
     public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("listFriends", ListFriends.self, arguments: [
+        "contentFilterBy": "MYGRANDMALIKES",
         "offset": .variable("offset"),
         "limit": .variable("limit")
       ]),

@@ -74,13 +74,6 @@ public struct HeaderContainer<Header: View, Content: View>: View {
 
                                 Text("\(accountManager.dailyFreeLikes)")
                             }
-
-                            HStack(alignment: .center, spacing: 5) {
-                                Icons.plustSquare
-                                    .iconSize(height: 13)
-
-                                Text("\(accountManager.dailyFreePosts)")
-                            }
                         case .posts:
                             HStack(alignment: .center, spacing: 5) {
                                 Icons.plustSquare
