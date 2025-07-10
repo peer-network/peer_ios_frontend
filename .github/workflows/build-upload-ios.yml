@@ -53,7 +53,7 @@ jobs:
       if: success()
       uses: appleboy/telegram-action@master
       with:
-        to: ${{ secrets.TELEGRAM_TO }}
+        to: ${{ secrets.TELEGRAM_CHAT_ARTEM }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: |
           ✅ iOS build & upload successful!
@@ -67,7 +67,7 @@ jobs:
       if: failure()
       uses: appleboy/telegram-action@master
       with:
-        to: ${{ secrets.TELEGRAM_TO }}
+        to: ${{ secrets.TELEGRAM_CHAT_ARTEM }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
         message: |
           ❌ iOS build & upload failed!
