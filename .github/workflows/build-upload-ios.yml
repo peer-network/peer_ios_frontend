@@ -48,3 +48,33 @@ jobs:
         path: |
           ${{ github.workspace }}/example-iOS.ipa
           ${{ github.workspace }}/*.app.dSYM.zip
+
+    - name: Notify Telegram on Success
+      if: success()
+      uses: appleboy/telegram-action@master
+      with:
+        to: ${{ secrets.TELEGRAM_TO }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        message: |
+          ✅ iOS build & upload successful!
+          Repository: ${{ github.repository }}
+          Branch: ${{ github.ref }}
+          Commit: ${{ github.sha }}
+          Workflow: ${{ github.workflow }}
+          Triggered by: ${{ github.actor }}
+
+    - name: Notify Telegram on Failure
+      if: failure()
+      uses: appleboy/telegram-action@master
+      with:
+        to: ${{ secrets.TELEGRAM_TO }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        message: |
+          ❌ iOS build & upload failed!
+          Repository: ${{ github.repository }}
+          Branch: ${{ github.ref }}
+          Commit: ${{ github.sha }}
+          Workflow: ${{ github.workflow }}
+          Triggered by: ${{ github.actor }}
+          Failure in step: ${{ steps.build.outcome }}
+
