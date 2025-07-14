@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "BDE843E5-62A4-4C10-83CA-06E40271FBC5",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:PeerApp.xcodeproj",
+        "identifier" : "7ECF06F02D0C6DA300CA7852",
+        "name" : "PeerAppUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

@@ -1,7 +1,11 @@
 name: iOS binary build & upload
  
 on:
- workflow_dispatch:
+ pull_request:
+  types:
+    - closed
+  branches:
+    - main
  
 jobs:
  deploy:
@@ -40,6 +44,8 @@ jobs:
         ASC_PRIVATE_KEY: ${{ secrets.ASC_PRIVATE_KEY }}
         SIGNING_KEY_PASSWORD: ${{ secrets.IOS_DIST_SIGNING_KEY_PASSWORD }}
         SIGNING_KEY_FILE_PATH: signing-cert.p12
+        FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: "120"
+        FASTLANE_XCODEBUILD_SETTINGS_RETRIES: "4"
 
     - name: Upload app-store ipa and dsyms to artifacts
       uses: actions/upload-artifact@v4
@@ -48,33 +54,3 @@ jobs:
         path: |
           ${{ github.workspace }}/example-iOS.ipa
           ${{ github.workspace }}/*.app.dSYM.zip
-
-    - name: Notify Telegram on Success
-      if: success()
-      uses: appleboy/telegram-action@master
-      with:
-        to: ${{ secrets.TELEGRAM_CHAT_ARTEM }}
-        token: ${{ secrets.TELEGRAM_TOKEN }}
-        message: |
-          ✅ iOS build & upload successful!
-          Repository: ${{ github.repository }}
-          Branch: ${{ github.ref }}
-          Commit: ${{ github.sha }}
-          Workflow: ${{ github.workflow }}
-          Triggered by: ${{ github.actor }}
-
-    - name: Notify Telegram on Failure
-      if: failure()
-      uses: appleboy/telegram-action@master
-      with:
-        to: ${{ secrets.TELEGRAM_CHAT_ARTEM }}
-        token: ${{ secrets.TELEGRAM_TOKEN }}
-        message: |
-          ❌ iOS build & upload failed!
-          Repository: ${{ github.repository }}
-          Branch: ${{ github.ref }}
-          Commit: ${{ github.sha }}
-          Workflow: ${{ github.workflow }}
-          Triggered by: ${{ github.actor }}
-          Failure in step: ${{ steps.build.outcome }}
-
