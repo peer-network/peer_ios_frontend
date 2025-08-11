@@ -21,7 +21,7 @@ public final class APIServiceStub: APIService {
         .success(AuthToken(accessToken: "ACCESS_TOKEN", refreshToken: "REFRESH_TOKEN"))
     }
     
-    public func registerUser(email: String, password: String, username: String, referralUuid: String?) async -> Result<String, APIError> {
+    public func registerUser(email: String, password: String, username: String, referralUuid: String) async -> Result<String, APIError> {
         .success("Registered")
     }
     
@@ -52,6 +52,10 @@ public final class APIServiceStub: APIService {
 
     public func getMyReferredUsers(after offset: Int) async -> Result<[RowUser], APIError> {
         .failure(.missingData)
+    }
+
+    public func getMyUserInfo() async -> Result<OffensiveContentFilter, APIError> {
+        .success(.allowed)
     }
 
     public func fetchUser(with userId: String) async -> Result<User, APIError> {
@@ -146,7 +150,11 @@ public final class APIServiceStub: APIService {
     public func reportPost(with id: String) async -> Result<Void, APIError> {
         .success(())
     }
-    
+
+    public func getPostInteractions(with id: String, type: PostInteraction, after offset: Int) async -> Result<[RowUser], APIError> {
+        .failure(.missingData)
+    }
+
     //MARK: Comments
     public func fetchComments(for postID: String, after offset: Int) async -> Result<[Comment], APIError> {
         .failure(.missingData)
@@ -162,6 +170,10 @@ public final class APIServiceStub: APIService {
 
     public func reportComment(with id: String) async -> Result<Void, APIError> {
         .success(())
+    }
+
+    public func getCommentInteractions(with id: String, after offset: Int) async -> Result<[RowUser], APIError> {
+        .failure(.missingData)
     }
 
     //MARK: Tags

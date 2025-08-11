@@ -166,6 +166,25 @@ public struct RowUser: Identifiable, Hashable {
         self.isFollowed = false
         self.isFollowing = false
     }
+
+    public init?(gqlUser: PostInteractionsQuery.Data.PostInteractions.AffectedRow) {
+        guard
+            let username = gqlUser.username,
+            let slug = gqlUser.slug,
+            let image = gqlUser.img,
+            let isFollowed = gqlUser.isfollowed,
+            let isFollowing = gqlUser.isfollowing
+        else {
+            return nil
+        }
+
+        self.id = gqlUser.id
+        self.username = username
+        self.slug = slug
+        self.image = image
+        self.isFollowed = isFollowed
+        self.isFollowing = isFollowing
+    }
 }
 
 extension RowUser {

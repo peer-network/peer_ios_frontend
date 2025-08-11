@@ -7,10 +7,11 @@ public class GetAllPostsQuery: GraphQLQuery {
   public static let operationName: String = "GetAllPosts"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetAllPosts($filterBy: [PostFilterType!], $ignoreOption: IgnoreOption, $sortBy: PostSortType, $title: String, $tag: String, $from: Date, $to: Date, $offset: Int, $limit: Int, $commentOffset: Int, $commentLimit: Int, $postid: ID, $userid: ID) { listPosts( filterBy: $filterBy contentFilterBy: MYGRANDMALIKES IgnorList: $ignoreOption commentLimit: $commentLimit commentOffset: $commentOffset limit: $limit offset: $offset to: $to from: $from tag: $tag title: $title sortBy: $sortBy postid: $postid userid: $userid ) { __typename status ResponseCode affectedRows { __typename id contenttype title media cover mediadescription createdat amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags user { __typename id username slug img isfollowed isfollowing } } } }"#
+      #"query GetAllPosts($filterBy: [PostFilterType!], $contentFilterBy: ContentFilterType, $ignoreOption: IgnoreOption, $sortBy: PostSortType, $title: String, $tag: String, $from: Date, $to: Date, $offset: Int, $limit: Int, $commentOffset: Int, $commentLimit: Int, $postid: ID, $userid: ID) { listPosts( filterBy: $filterBy contentFilterBy: $contentFilterBy IgnorList: $ignoreOption commentLimit: $commentLimit commentOffset: $commentOffset limit: $limit offset: $offset to: $to from: $from tag: $tag title: $title sortBy: $sortBy postid: $postid userid: $userid ) { __typename status ResponseCode affectedRows { __typename id contenttype title media cover mediadescription createdat amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags user { __typename id username slug img isfollowed isfollowing } } } }"#
     ))
 
   public var filterBy: GraphQLNullable<[GraphQLEnum<PostFilterType>]>
+  public var contentFilterBy: GraphQLNullable<GraphQLEnum<ContentFilterType>>
   public var ignoreOption: GraphQLNullable<GraphQLEnum<IgnoreOption>>
   public var sortBy: GraphQLNullable<GraphQLEnum<PostSortType>>
   public var title: GraphQLNullable<String>
@@ -26,6 +27,7 @@ public class GetAllPostsQuery: GraphQLQuery {
 
   public init(
     filterBy: GraphQLNullable<[GraphQLEnum<PostFilterType>]>,
+    contentFilterBy: GraphQLNullable<GraphQLEnum<ContentFilterType>>,
     ignoreOption: GraphQLNullable<GraphQLEnum<IgnoreOption>>,
     sortBy: GraphQLNullable<GraphQLEnum<PostSortType>>,
     title: GraphQLNullable<String>,
@@ -40,6 +42,7 @@ public class GetAllPostsQuery: GraphQLQuery {
     userid: GraphQLNullable<ID>
   ) {
     self.filterBy = filterBy
+    self.contentFilterBy = contentFilterBy
     self.ignoreOption = ignoreOption
     self.sortBy = sortBy
     self.title = title
@@ -56,6 +59,7 @@ public class GetAllPostsQuery: GraphQLQuery {
 
   public var __variables: Variables? { [
     "filterBy": filterBy,
+    "contentFilterBy": contentFilterBy,
     "ignoreOption": ignoreOption,
     "sortBy": sortBy,
     "title": title,
@@ -78,7 +82,7 @@ public class GetAllPostsQuery: GraphQLQuery {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("listPosts", ListPosts.self, arguments: [
         "filterBy": .variable("filterBy"),
-        "contentFilterBy": "MYGRANDMALIKES",
+        "contentFilterBy": .variable("contentFilterBy"),
         "IgnorList": .variable("ignoreOption"),
         "commentLimit": .variable("commentLimit"),
         "commentOffset": .variable("commentOffset"),

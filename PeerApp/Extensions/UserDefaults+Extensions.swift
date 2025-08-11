@@ -7,16 +7,23 @@
 
 import Foundation
 import Environment
+import Models
 
 extension UserDefaults {
     static let extensions = UserDefaults(suiteName: Config.appGroup)!
 
     private enum Keys {
         static let badge = "badge"
+        static let offensiveContentFilter = "offensiveContentFilter"
     }
 
     var badge: Int {
         get { UserDefaults.extensions.integer(forKey: Keys.badge) }
         set { UserDefaults.extensions.set(newValue, forKey: Keys.badge) }
+    }
+
+    var offensiveContentFilter: OffensiveContentFilter {
+        get { UserDefaults.extensions.value(forKey: Keys.offensiveContentFilter) as? OffensiveContentFilter ?? .blocked }
+        set { UserDefaults.extensions.set(newValue, forKey: Keys.offensiveContentFilter) }
     }
 }

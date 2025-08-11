@@ -48,15 +48,21 @@ public struct PostView: View {
                             imageGridPost()
                     }
                 case .video:
-                    videoPost()
+                    switch displayType {
+                        case .list:
+                            videoPost()
+                        case .grid:
+                            videoGridPost()
+                    }
                 case .audio:
                     audioPost()
             }
         }
+        .debugBorder()
         .onFirstAppear {
             postVM.apiService = apiManager.apiService
         }
-        .ifCondition(reasons != .placeholder) {
+        .ifCondition(reasons != .placeholder && displayType == .list) {
             $0.modifier(ViewVisibilityModifier(viewed: postVM.isViewed, viewAction: {
                 Task {
                     try? await postVM.view()
@@ -67,7 +73,15 @@ public struct PostView: View {
             CommentsListView(viewModel: postVM)
                 .presentationDragIndicator(.hidden)
                 .presentationCornerRadius(24)
-                .presentationBackground(.ultraThinMaterial)
+                .presentationBackground(Colors.blackDark)
+                .presentationDetents([.fraction(0.75), .large])
+                .presentationContentInteraction(.resizes)
+        }
+        .sheet(isPresented: $postVM.showInteractionsSheet) {
+            InteractionsView(viewModel: postVM)
+                .presentationDragIndicator(.hidden)
+                .presentationCornerRadius(24)
+                .presentationBackground(Colors.blackDark)
                 .presentationDetents([.fraction(0.75), .large])
                 .presentationContentInteraction(.resizes)
         }
@@ -79,16 +93,16 @@ public struct PostView: View {
 
     private func textPost() -> some View {
         VStack(alignment: .center, spacing: 10) {
-            PostHeaderView(postVM: postVM, showFollowButton: showFollowButton)
+            PostHeaderView(postVM: postVM, showAppleTranslation: $showAppleTranslation, showFollowButton: showFollowButton)
 
             TextContent(postVM: postVM)
 
             if !reasons.contains(.placeholder) {
-                PostActionsView(layout: .horizontal, postViewModel: postVM, showAppleTranslation: $showAppleTranslation)
+                PostActionsView(layout: .horizontal, postViewModel: postVM)
             }
         }
         .padding(10)
-        .background(Colors.textActive)
+        .background(Colors.inactiveDark)
         .cornerRadius(24)
         .shadow(color: .black.opacity(0.25), radius: 10, x: 0, y: 4)
         .overlay(
@@ -102,41 +116,43 @@ public struct PostView: View {
 
     private func imagePost() -> some View {
         VStack(alignment: .center, spacing: 0) {
-            PostHeaderView(postVM: postVM, showFollowButton: showFollowButton)
+            PostHeaderView(postVM: postVM, showAppleTranslation: $showAppleTranslation, showFollowButton: showFollowButton)
                 .padding(.horizontal, 20)
                 .padding(.vertical, 10)
 
             ImagesContent(postVM: postVM)
 
             if !reasons.contains(.placeholder) {
-                PostActionsView(layout: .horizontal, postViewModel: postVM, showAppleTranslation: $showAppleTranslation)
+                PostActionsView(layout: .horizontal, postViewModel: postVM)
                     .padding(.horizontal, 20)
             } else {
                 Spacer()
                     .frame(height: 8)
             }
 
-            Button {
-                postVM.showComments()
-            } label: {
-                PostDescriptionComment(postVM: postVM, isInFeed: true)
-                    .contentShape(Rectangle())
-            }
-            .padding(.horizontal, 20)
+            PostDescriptionComment(postVM: postVM, isInFeed: true)
+                .padding(.horizontal, 20)
         }
         .geometryGroup()
+//        .contextMenu {
+//            Button {
+//                //
+//            } label: {
+//                Text("Report")
+//            }
+//        }
     }
 
     private func audioPost() -> some View {
         VStack(alignment: .center, spacing: 10) {
-            PostHeaderView(postVM: postVM, showFollowButton: showFollowButton)
+            PostHeaderView(postVM: postVM, showAppleTranslation: $showAppleTranslation, showFollowButton: showFollowButton)
 
             TextContent(postVM: postVM)
 
             AudioContent(postVM: postVM)
 
             if !reasons.contains(.placeholder) {
-                PostActionsView(layout: .horizontal, postViewModel: postVM, showAppleTranslation: $showAppleTranslation)
+                PostActionsView(layout: .horizontal, postViewModel: postVM)
                     .padding(10)
             }
         }
@@ -168,11 +184,76 @@ public struct PostView: View {
     }
 
     private func videoPost() -> some View {
+//        GeometryReader { geo in
+//            VideoView(postVM: postVM, size: geo.size, showAppleTranslation: $showAppleTranslation)
+//        }
+        
+//        GeometryReader { geo in
+//            ReelView(postVM: postVM, size: geo.size, showAppleTranslation: $showAppleTranslation)
+//        }
+//        .frame(maxWidth: .infinity)
+
+//        GeometryReader { geo in
+//            ShortVideoView(postVM: postVM, size: geo.size)
+//        }
+
         GeometryReader { geo in
-            ReelView(postVM: postVM, size: geo.size, showAppleTranslation: $showAppleTranslation)
+            ShortVideoView2(postVM: postVM, size: geo.size, showAppleTranslation: $showAppleTranslation)
         }
-        .frame(maxWidth: .infinity)
         .containerRelativeFrame(.vertical)
+    }
+
+    private func videoGridPost() -> some View {
+        GeometryReader { proxy in
+            LazyImage(
+                request: ImageRequest(
+                    url: postVM.post.coverURL,
+                    processors: [.resize(size: CGSize(width: 300, height: 300))])
+            ) { state in
+                if let image = state.image {
+                    image
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: proxy.size.width, height: proxy.size.width)
+                        .clipShape(Rectangle())
+                } else if (state.error) != nil {
+                    Colors.black
+                } else {
+                    Colors.imageLoadingPlaceholder
+                }
+            }
+        }
+        .overlay(alignment: .bottom) {
+            HStack {
+                Text(getVideoDuration(timeInterval: postVM.post.media.first?.duration))
+                    .font(.customFont(weight: .regular, style: .body))
+
+                Spacer()
+                    .frame(maxWidth: .infinity)
+
+                Icons.play
+                    .iconSize(height: 16)
+            }
+            .foregroundStyle(Colors.whitePrimary)
+            .padding(.bottom, 10)
+            .padding(.horizontal, 10)
+        }
+        .clipped()
+        .aspectRatio(1, contentMode: .fit)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            router.navigate(to: .postDetailsWithPost(post: postVM.post))
+        }
+    }
+
+    private func getVideoDuration(timeInterval: TimeInterval?) -> String {
+        guard let timeInterval else {
+            return ""
+        }
+
+        let minutes = Int(timeInterval) / 60
+        let seconds = Int(timeInterval) % 60
+        return String(format: "%01d:%02d", minutes, seconds)
     }
 
     private func imageGridPost() -> some View {

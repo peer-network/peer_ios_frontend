@@ -35,6 +35,9 @@ public final class AuthManager: ObservableObject {
     /// Checks if we have valid tokens and tries to fetch the current user ID.
     public func restoreSessionIfPossible() async -> AuthState {
         if tokenManager.getAccessToken() == nil {
+            if let userId = accountManager.userId {
+                NotificationService.logoutUser(userId: userId)
+            }
             tokenManager.removeCredentials()
             return .unauthenticated
         }
@@ -45,10 +48,16 @@ public final class AuthManager: ObservableObject {
             // Optionally, fetch daily freebies or any user data
             try? await accountManager.fetchDailyFreeLimits()
             try? await accountManager.fetchUserInviter()
+            try? await accountManager.fetchUserInfo()
 
+            await PushNotifications.registerFCMToken(for: userId)
+            
             return .authenticated(userId: userId)
         } catch {
             // If the token call fails, user is unauthenticated
+            if let userId = accountManager.userId {
+                NotificationService.logoutUser(userId: userId)
+            }
             tokenManager.removeCredentials()
             return .unauthenticated
         }
@@ -68,7 +77,9 @@ public final class AuthManager: ObservableObject {
         // Fetch other user info if necessary
         try? await accountManager.fetchDailyFreeLimits()
         try? await accountManager.fetchUserInviter()
+        try? await accountManager.fetchUserInfo()
 
+        await PushNotifications.registerFCMToken(for: userId)
         // Update state
         withAnimation {
             self.state = .authenticated(userId: userId)
@@ -77,6 +88,9 @@ public final class AuthManager: ObservableObject {
     
     /// Logs the user out, clears tokens, sets state to .unauthenticated
     public func logout() {
+        if let userId = accountManager.userId {
+            NotificationService.logoutUser(userId: userId)
+        }
         tokenManager.removeCredentials()
         withAnimation {
             self.state = .unauthenticated

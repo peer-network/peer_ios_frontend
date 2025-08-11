@@ -510,7 +510,9 @@ struct VideoTrimmerView: View {
                 session.timeRange = trimRange
 
                 let timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
-                    exportProgres = CGFloat(session.progress)
+                    Task { @MainActor in
+                        exportProgres = CGFloat(session.progress)
+                    }
                 }
 
                 timer.fire()
@@ -518,16 +520,20 @@ struct VideoTrimmerView: View {
                 session.exportAsynchronously {
                     timer.invalidate()
 
-                    if session.status == .completed {
-                        let asset = AVAsset(url: outputURL)
-                        let duration = asset.duration.seconds
-                        onComplete(outputURL, duration, nil)
-                    } else {
-                        onComplete(nil, nil, session.error)
+                    Task { @MainActor in
+                        if session.status == .completed {
+                            let asset = AVAsset(url: outputURL)
+                            let duration = asset.duration.seconds
+                            onComplete(outputURL, duration, nil)
+                        } else {
+                            onComplete(nil, nil, session.error)
+                        }
                     }
                 }
 
-                showExportScreen = true
+                Task { @MainActor in
+                    showExportScreen = true
+                }
             } else {
                 onComplete(nil, nil, nil)
             }
@@ -565,6 +571,7 @@ struct VideoTrimmerView: View {
             case .high: return AVAssetExportPresetHighestQuality
             case .medium: return AVAssetExportPresetMediumQuality
             case .low: return AVAssetExportPresetLowQuality
+//            case .custom: return AVAssetExportPreset1920x1080
             case .custom: return AVAssetExportPresetPassthrough
             }
         }

@@ -120,15 +120,17 @@ struct RecipientPickerSheet: View {
             Spacer()
                 .frame(width: 10)
 
-            Button {
-                withAnimation {
-                    searchText = ""
-                    viewModel.clearResults()
+            if !searchText.isEmpty {
+                Button {
+                    withAnimation {
+                        searchText = ""
+                        viewModel.clearResults()
+                    }
+                } label: {
+                    Icons.arrowsBackRounded
+                        .iconSize(height: 21)
+                        .foregroundStyle(Colors.whitePrimary)
                 }
-            } label: {
-                Icons.arrowsBackRounded
-                    .iconSize(height: 21)
-                    .foregroundStyle(Colors.whitePrimary)
             }
         }
         .font(.customFont(weight: .regular, style: .footnote))

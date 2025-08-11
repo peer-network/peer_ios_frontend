@@ -61,7 +61,7 @@ public class GQLClient {
                         if let data = result.data {
                             continuation.resume(returning: data)
                         } else if let errors = result.errors {
-                            continuation.resume(throwing: GQLError.graphQLErrors(errors))
+                            continuation.resume(throwing: errors.first ?? GQLError.graphQLErrors(errors))
                         }
                 }
             }
@@ -78,7 +78,7 @@ public class GQLClient {
                         if let data = result.data {
                             continuation.resume(returning: data)
                         } else if let errors = result.errors {
-                            continuation.resume(throwing: GQLError.graphQLErrors(errors))
+                            continuation.resume(throwing: errors.first ?? GQLError.graphQLErrors(errors))
                         }
                 }
             }

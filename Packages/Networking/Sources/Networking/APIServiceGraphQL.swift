@@ -56,14 +56,9 @@ public final class APIServiceGraphQL: APIService {
         }
     }
     
-    public func registerUser(email: String, password: String, username: String, referralUuid: String?) async -> Result<String, APIError> {
+    public func registerUser(email: String, password: String, username: String, referralUuid: String) async -> Result<String, APIError> {
         do {
-            let referralParameter: GraphQLNullable<String>? = if let referralUuid, !referralUuid.isEmpty {
-                GraphQLNullable(stringLiteral: referralUuid)
-            } else {
-                nil
-            }
-            let result = try await qlClient.mutate(mutation: RegisterMutation(email: email, password: password, username: username, referralUuid: referralParameter ?? nil))
+            let result = try await qlClient.mutate(mutation: RegisterMutation(email: email, password: password, username: username, referralUuid: referralUuid))
 
             guard result.isResponseCodeSuccess else {
                 if let errorCode = result.getResponseCode {
@@ -221,9 +216,40 @@ public final class APIServiceGraphQL: APIService {
         }
     }
 
+    public func getMyUserInfo() async -> Result<OffensiveContentFilter, APIError> {
+        do {
+            let result = try await qlClient.fetch(query: GetUserInfoQuery(), cachePolicy: .fetchIgnoringCacheCompletely)
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            guard
+                let filterValue = result.getUserInfo.affectedRows?.userPreferences?.contentFilteringSeverityLevel
+            else {
+                return .failure(.missingData)
+            }
+
+            switch filterValue {
+                case .case(let filter):
+                    return .success(OffensiveContentFilter.normalizedValue(from: filter))
+                case .unknown(_):
+                    return .failure(.missingData)
+            }
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
     public func fetchUser(with userId: String) async -> Result<User, APIError> {
         do {
-            let result = try await qlClient.fetch(query: GetProfileQuery(userid: userId), cachePolicy: .fetchIgnoringCacheCompletely)
+            let offensiveContentFilter =  UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")?.string(forKey: "offensiveContentFilter").flatMap(OffensiveContentFilter.init(rawValue:)) ?? .blocked
+
+            let result = try await qlClient.fetch(query: GetProfileQuery(contentFilterBy: offensiveContentFilter.apiValue, userid: userId), cachePolicy: .fetchIgnoringCacheCompletely)
 
             guard result.isResponseCodeSuccess else {
                 if let errorCode = result.getResponseCode {
@@ -248,7 +274,10 @@ public final class APIServiceGraphQL: APIService {
     
     public func fetchUserFollowers(for userID: String, after offset: Int) async -> Result<[RowUser], APIError> {
         do {
+            let offensiveContentFilter =  UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")?.string(forKey: "offensiveContentFilter").flatMap(OffensiveContentFilter.init(rawValue:)) ?? .blocked
+
             let operation = GetFollowersQuery(
+                contentFilterBy: offensiveContentFilter.apiValue,
                 userid: GraphQLNullable(stringLiteral: userID),
                 offset: GraphQLNullable<Int>(integerLiteral: offset),
                 limit: 20
@@ -280,7 +309,10 @@ public final class APIServiceGraphQL: APIService {
     
     public func fetchUserFollowings(for userID: String, after offset: Int) async -> Result<[RowUser], APIError> {
         do {
+            let offensiveContentFilter =  UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")?.string(forKey: "offensiveContentFilter").flatMap(OffensiveContentFilter.init(rawValue:)) ?? .blocked
+
             let operation = GetFollowingsQuery(
+                contentFilterBy: offensiveContentFilter.apiValue,
                 userid: GraphQLNullable(stringLiteral: userID),
                 offset: GraphQLNullable<Int>(integerLiteral: offset),
                 limit: 20
@@ -312,7 +344,10 @@ public final class APIServiceGraphQL: APIService {
 
     public func fetchUserFriends(after offset: Int) async -> Result<[RowUser], APIError> {
         do {
+            let offensiveContentFilter =  UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")?.string(forKey: "offensiveContentFilter").flatMap(OffensiveContentFilter.init(rawValue:)) ?? .blocked
+
             let operation = GetFriendsQuery(
+                contentFilterBy: offensiveContentFilter.apiValue,
                 offset: GraphQLNullable<Int>(integerLiteral: offset),
                 limit: 20
             )
@@ -343,7 +378,10 @@ public final class APIServiceGraphQL: APIService {
 
     public func fetchUsers(by query: String, after offset: Int) async -> Result<[RowUser], APIError> {
         do {
+            let offensiveContentFilter =  UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")?.string(forKey: "offensiveContentFilter").flatMap(OffensiveContentFilter.init(rawValue:)) ?? .blocked
+
             let operation = SearchUserQuery(
+                contentFilterBy: offensiveContentFilter.apiValue,
                 userid: nil,
                 username: GraphQLNullable(stringLiteral: query.lowercased()),
                 offset: GraphQLNullable<Int>(integerLiteral: offset),
@@ -598,8 +636,11 @@ public final class APIServiceGraphQL: APIService {
     //MARK: Posts
     public func fetchPostsByTitle(_ query: String, after offset: Int) async -> Result<[Post], APIError> {
         do {
+            let offensiveContentFilter =  UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")?.string(forKey: "offensiveContentFilter").flatMap(OffensiveContentFilter.init(rawValue:)) ?? .blocked
+
             let operation = GetAllPostsQuery(
                 filterBy: [.case(.image), .case(.text), .case(.video), .case(.audio)],
+                contentFilterBy: offensiveContentFilter.apiValue,
                 ignoreOption: .init(.no),
                 sortBy: .some(.case(.newest)),
                 title: GraphQLNullable(stringLiteral: query.lowercased()),
@@ -639,8 +680,11 @@ public final class APIServiceGraphQL: APIService {
     
     public func fetchPostsByTag(_ tag: String, after offset: Int) async -> Result<[Post], APIError> {
         do {
+            let offensiveContentFilter =  UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")?.string(forKey: "offensiveContentFilter").flatMap(OffensiveContentFilter.init(rawValue:)) ?? .blocked
+
             let operation = GetAllPostsQuery(
                 filterBy: [.case(.image), .case(.text), .case(.video), .case(.audio)],
+                contentFilterBy: offensiveContentFilter.apiValue,
                 ignoreOption: .init(.no),
                 sortBy: .some(.case(.newest)),
                 title: nil,
@@ -737,8 +781,11 @@ public final class APIServiceGraphQL: APIService {
         let timeFrom = timeframe.apiValue.0
         let timeTo = timeframe.apiValue.1
 
+        let offensiveContentFilter =  UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")?.string(forKey: "offensiveContentFilter").flatMap(OffensiveContentFilter.init(rawValue:)) ?? .blocked
+
         let operation = GetAllPostsQuery(
             filterBy: GraphQLNullable<[GraphQLEnum<PostFilterType>]>.some(filterBy),
+            contentFilterBy: offensiveContentFilter.apiValue,
             ignoreOption: .init(showHiddenContent ? .no : .yes),
             sortBy: sortBy,
             title: nil,
@@ -849,11 +896,40 @@ public final class APIServiceGraphQL: APIService {
             return .failure(.unknownError(error: error))
         }
     }
-    
+
+    public func getPostInteractions(with id: String, type: PostInteraction, after offset: Int) async -> Result<[RowUser], APIError> {
+        do {
+            let result = try await qlClient.fetch(query: PostInteractionsQuery(getOnly: type.apiValue, postOrCommentId: id, offset: GraphQLNullable<Int>(integerLiteral: offset), limit: GraphQLNullable<Int>(integerLiteral: 20)), cachePolicy: .fetchIgnoringCacheCompletely)
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            guard let data = result.postInteractions?.affectedRows else {
+                return .failure(.missingData)
+            }
+
+            let fetchedUsers = data.compactMap { value in
+                RowUser(gqlUser: value)
+            }
+
+            return .success(fetchedUsers)
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
     //MARK: Comments
     public func fetchComments(for postID: String, after offset: Int) async -> Result<[Comment], APIError> {
         do {
+            let offensiveContentFilter =  UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")?.string(forKey: "offensiveContentFilter").flatMap(OffensiveContentFilter.init(rawValue:)) ?? .blocked
+
             let operation =  GetPostCommentsQuery(
+                contentFilterBy: offensiveContentFilter.apiValue,
                 postid: postID,
                 commentLimit: GraphQLNullable<Int>(integerLiteral: 20),
                 commentOffset: GraphQLNullable<Int>(integerLiteral: offset)
@@ -938,6 +1014,32 @@ public final class APIServiceGraphQL: APIService {
             }
 
             return .success(())
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
+    public func getCommentInteractions(with id: String, after offset: Int) async -> Result<[RowUser], APIError> {
+        do {
+            let result = try await qlClient.fetch(query: PostInteractionsQuery(getOnly: .case(.commentlike), postOrCommentId: id, offset: GraphQLNullable<Int>(integerLiteral: offset), limit: GraphQLNullable<Int>(integerLiteral: 20)), cachePolicy: .fetchIgnoringCacheCompletely)
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            guard let data = result.postInteractions?.affectedRows else {
+                return .failure(.missingData)
+            }
+
+            let fetchedUsers = data.compactMap { value in
+                RowUser(gqlUser: value)
+            }
+
+            return .success(fetchedUsers)
         } catch {
             return .failure(.unknownError(error: error))
         }

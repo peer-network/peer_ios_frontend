@@ -7,20 +7,23 @@ public class SearchUserQuery: GraphQLQuery {
   public static let operationName: String = "SearchUser"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query SearchUser($userid: ID, $username: String, $offset: Int, $limit: Int) { searchUser( contentFilterBy: MYGRANDMALIKES userid: $userid username: $username offset: $offset limit: $limit ) { __typename status counter ResponseCode affectedRows { __typename id username status slug img biography } } }"#
+      #"query SearchUser($contentFilterBy: ContentFilterType, $userid: ID, $username: String, $offset: Int, $limit: Int) { searchUser( contentFilterBy: $contentFilterBy userid: $userid username: $username offset: $offset limit: $limit ) { __typename status counter ResponseCode affectedRows { __typename id username status slug img biography } } }"#
     ))
 
+  public var contentFilterBy: GraphQLNullable<GraphQLEnum<ContentFilterType>>
   public var userid: GraphQLNullable<ID>
   public var username: GraphQLNullable<String>
   public var offset: GraphQLNullable<Int>
   public var limit: GraphQLNullable<Int>
 
   public init(
+    contentFilterBy: GraphQLNullable<GraphQLEnum<ContentFilterType>>,
     userid: GraphQLNullable<ID>,
     username: GraphQLNullable<String>,
     offset: GraphQLNullable<Int>,
     limit: GraphQLNullable<Int>
   ) {
+    self.contentFilterBy = contentFilterBy
     self.userid = userid
     self.username = username
     self.offset = offset
@@ -28,6 +31,7 @@ public class SearchUserQuery: GraphQLQuery {
   }
 
   public var __variables: Variables? { [
+    "contentFilterBy": contentFilterBy,
     "userid": userid,
     "username": username,
     "offset": offset,
@@ -41,7 +45,7 @@ public class SearchUserQuery: GraphQLQuery {
     public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("searchUser", SearchUser.self, arguments: [
-        "contentFilterBy": "MYGRANDMALIKES",
+        "contentFilterBy": .variable("contentFilterBy"),
         "userid": .variable("userid"),
         "username": .variable("username"),
         "offset": .variable("offset"),

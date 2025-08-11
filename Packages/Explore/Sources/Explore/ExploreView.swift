@@ -35,9 +35,9 @@ public struct ExploreView: View {
 
     private var columns: [GridItem] {
         [
-            GridItem(.fixed(getRect().width / 3 - 2), spacing: 1),
-            GridItem(.fixed(getRect().width / 3 - 2), spacing: 1),
-            GridItem(.fixed(getRect().width / 3 - 2), spacing: 1)
+            GridItem(.fixed(getRect().width / 3 - 2 / 3), spacing: 1),
+            GridItem(.fixed(getRect().width / 3 - 2 / 3), spacing: 1),
+            GridItem(.fixed(getRect().width / 3 - 2 / 3), spacing: 1)
         ]
     }
 
@@ -59,7 +59,6 @@ public struct ExploreView: View {
                     ScrollView {
                         ScrollToView()
                         searchResultsView
-                            .padding(.top, 10)
                     }
                     .scrollDismissesKeyboard(.interactively)
                     .scrollDisabled(viewModel.isLoading)
@@ -283,7 +282,7 @@ extension ExploreView {
     private var searchResultsView: some View {
         switch searchType {
             case .none:
-                switch viewModel.state {
+                switch viewModel.state2 {
                     case .loading:
                         postsGridView(Post.placeholdersImage(count: 30))
                             .allowsHitTesting(false)
@@ -298,7 +297,7 @@ extension ExploreView {
                         }
                 }
             case .username:
-                switch viewModel.state {
+                switch viewModel.state2 {
                     case .loading:
                         usersListView(RowUser.placeholders(count: 10))
                             .allowsHitTesting(false)
@@ -313,7 +312,7 @@ extension ExploreView {
                         }
                 }
             case .tag:
-                switch viewModel.state {
+                switch viewModel.state2 {
                     case .loading:
                         postsGridView(Post.placeholdersImage(count: 30))
                             .allowsHitTesting(false)
@@ -335,7 +334,7 @@ extension ExploreView {
                         }
                 }
             case .title:
-                switch viewModel.state {
+                switch viewModel.state2 {
                     case .loading:
                         postsGridView(Post.placeholdersImage(count: 30))
                             .allowsHitTesting(false)
@@ -429,6 +428,47 @@ extension ExploreView {
                         .clipped()
                         .aspectRatio(1, contentMode: .fit)
                         .contentShape(Rectangle())
+                    } else if post.contentType == .video {
+                        GeometryReader { proxy in
+                            LazyImage(
+                                request: ImageRequest(
+                                    url: post.coverURL,
+                                    processors: [.resize(size: CGSize(width: 300, height: 300))])
+                            ) { state in
+                                if let image = state.image {
+                                    image
+                                        .resizable()
+                                        .scaledToFill()
+                                        .frame(width: proxy.size.width, height: proxy.size.width)
+                                        .clipShape(Rectangle())
+                                } else if (state.error) != nil {
+                                    Colors.black
+                                } else {
+                                    Colors.imageLoadingPlaceholder
+                                }
+                            }
+                        }
+                        .overlay(alignment: .bottom) {
+                            HStack {
+                                Text(getVideoDuration(timeInterval: post.media.first?.duration))
+                                    .font(.customFont(weight: .regular, style: .body))
+
+                                Spacer()
+                                    .frame(maxWidth: .infinity)
+
+                                Icons.play
+                                    .iconSize(height: 16)
+                            }
+                            .foregroundStyle(Colors.whitePrimary)
+                            .padding(.bottom, 10)
+                            .padding(.horizontal, 10)
+                        }
+                        .clipped()
+                        .aspectRatio(1, contentMode: .fit)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            router.navigate(to: .postDetailsWithPost(post: post))
+                        }
                     }
                 }
             }
@@ -456,6 +496,16 @@ extension ExploreView {
                 }
             }
         }
+    }
+
+    private func getVideoDuration(timeInterval: TimeInterval?) -> String {
+        guard let timeInterval else {
+            return ""
+        }
+
+        let minutes = Int(timeInterval) / 60
+        let seconds = Int(timeInterval) % 60
+        return String(format: "%01d:%02d", minutes, seconds)
     }
 
     private var nothingFoundView: some View {

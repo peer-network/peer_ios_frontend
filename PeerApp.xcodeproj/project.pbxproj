@@ -20,6 +20,8 @@
 		7EEBA9C22D4CF2BF001B6E76 /* FeedNew in Frameworks */ = {isa = PBXBuildFile; productRef = 7EEBA9C12D4CF2BF001B6E76 /* FeedNew */; };
 		AC104D652DB7A864005F07F0 /* Analytics in Frameworks */ = {isa = PBXBuildFile; productRef = AC104D642DB7A864005F07F0 /* Analytics */; };
 		AC10E9882D9C2D0800A72988 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = AC10E9872D9C2D0800A72988 /* SFSafeSymbols */; };
+		AC3AEC6C2E2FC07A00CAA9C4 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = AC3AEC6B2E2FC07A00CAA9C4 /* FirebaseFirestore */; };
+		AC3AEC6E2E2FC6E100CAA9C4 /* FirebaseFunctions in Frameworks */ = {isa = PBXBuildFile; productRef = AC3AEC6D2E2FC6E100CAA9C4 /* FirebaseFunctions */; };
 		AC655A862DDCBB0F0050FEBA /* Post in Frameworks */ = {isa = PBXBuildFile; productRef = AC655A852DDCBB0F0050FEBA /* Post */; };
 		AC6614E52D71F02000069AB5 /* Wallet in Frameworks */ = {isa = PBXBuildFile; productRef = AC6614E42D71F02000069AB5 /* Wallet */; };
 		AC79340F2DCE4E350069CAEF /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = AC79340E2DCE4E350069CAEF /* Swinject */; };
@@ -30,6 +32,8 @@
 		AC7BD8C22DEDCEEE0094BC9A /* FirebasePerformance in Frameworks */ = {isa = PBXBuildFile; productRef = AC7BD8C12DEDCEEE0094BC9A /* FirebasePerformance */; };
 		AC7BD8C42DEDCEEE0094BC9A /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = AC7BD8C32DEDCEEE0094BC9A /* FirebaseRemoteConfig */; };
 		AC8295F32D876DD700C554D1 /* Explore in Frameworks */ = {isa = PBXBuildFile; productRef = AC8295F22D876DD700C554D1 /* Explore */; };
+		ACB4D4F42E40BEEA00851E1B /* VLCKitSPM in Frameworks */ = {isa = PBXBuildFile; productRef = ACB4D4F32E40BEEA00851E1B /* VLCKitSPM */; };
+		ACC373742E3A02580005E5F2 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = ACC373732E3A02580005E5F2 /* FirebaseFirestore */; };
 		ACCAB48D2D81E500001C1041 /* RemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = ACCAB48C2D81E500001C1041 /* RemoteConfig */; };
 		ACE05B192DA90C7900DD6E79 /* VersionHistory in Frameworks */ = {isa = PBXBuildFile; productRef = ACE05B182DA90C7900DD6E79 /* VersionHistory */; };
 		ACF9156D2D9A85D800338BC4 /* ProfileNew in Frameworks */ = {isa = PBXBuildFile; productRef = ACF9156C2D9A85D800338BC4 /* ProfileNew */; };
@@ -174,16 +178,19 @@
 				AC6614E52D71F02000069AB5 /* Wallet in Frameworks */,
 				ACF9156F2D9A85DD00338BC4 /* PostCreation in Frameworks */,
 				AC655A862DDCBB0F0050FEBA /* Post in Frameworks */,
+				ACC373742E3A02580005E5F2 /* FirebaseFirestore in Frameworks */,
 				AC7BD8C22DEDCEEE0094BC9A /* FirebasePerformance in Frameworks */,
 				ACCAB48D2D81E500001C1041 /* RemoteConfig in Frameworks */,
 				7ED27FE62D4BCF3100A6EFE0 /* TokenKeychainManager in Frameworks */,
 				AC10E9882D9C2D0800A72988 /* SFSafeSymbols in Frameworks */,
 				AC8295F32D876DD700C554D1 /* Explore in Frameworks */,
 				AC7BD8C42DEDCEEE0094BC9A /* FirebaseRemoteConfig in Frameworks */,
+				AC3AEC6E2E2FC6E100CAA9C4 /* FirebaseFunctions in Frameworks */,
 				7EEBA9C22D4CF2BF001B6E76 /* FeedNew in Frameworks */,
 				AC104D652DB7A864005F07F0 /* Analytics in Frameworks */,
 				7EE144D32D1454AB0054FBB2 /* Environment in Frameworks */,
 				AC7BD8BA2DEDCEEE0094BC9A /* FirebaseAnalytics in Frameworks */,
+				ACB4D4F42E40BEEA00851E1B /* VLCKitSPM in Frameworks */,
 				7E3C09872D130AEF001D8227 /* Networking in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -207,6 +214,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7ECFE78A2D1577AB002D98DD /* Environment in Frameworks */,
+				AC3AEC6C2E2FC07A00CAA9C4 /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -311,6 +319,9 @@
 				AC7BD8BF2DEDCEEE0094BC9A /* FirebaseMessaging */,
 				AC7BD8C12DEDCEEE0094BC9A /* FirebasePerformance */,
 				AC7BD8C32DEDCEEE0094BC9A /* FirebaseRemoteConfig */,
+				AC3AEC6D2E2FC6E100CAA9C4 /* FirebaseFunctions */,
+				ACC373732E3A02580005E5F2 /* FirebaseFirestore */,
+				ACB4D4F32E40BEEA00851E1B /* VLCKitSPM */,
 			);
 			productName = PeerApp;
 			productReference = 7ECF06D72D0C6DA200CA7852 /* PeerApp.app */;
@@ -380,6 +391,7 @@
 			name = PayloadModification;
 			packageProductDependencies = (
 				7ECFE7892D1577AB002D98DD /* Environment */,
+				AC3AEC6B2E2FC07A00CAA9C4 /* FirebaseFirestore */,
 			);
 			productName = PayloadModification;
 			productReference = 7ED0F7A02D0DD8410027A49B /* PayloadModification.appex */;
@@ -425,6 +437,7 @@
 				AC10E9862D9C2D0800A72988 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */,
 				AC79340D2DCE4E350069CAEF /* XCRemoteSwiftPackageReference "Swinject" */,
 				AC7BD8B82DEDCEEE0094BC9A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				ACB4D4F22E40BEEA00851E1B /* XCRemoteSwiftPackageReference "vlckit-spm" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7ECF06D82D0C6DA200CA7852 /* Products */;
@@ -982,6 +995,14 @@
 				minimumVersion = 11.9.0;
 			};
 		};
+		ACB4D4F22E40BEEA00851E1B /* XCRemoteSwiftPackageReference "vlckit-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/tylerjonesio/vlckit-spm";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.6.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1034,6 +1055,16 @@
 			package = AC10E9862D9C2D0800A72988 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
 			productName = SFSafeSymbols;
 		};
+		AC3AEC6B2E2FC07A00CAA9C4 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AC7BD8B82DEDCEEE0094BC9A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		AC3AEC6D2E2FC6E100CAA9C4 /* FirebaseFunctions */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AC7BD8B82DEDCEEE0094BC9A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFunctions;
+		};
 		AC655A852DDCBB0F0050FEBA /* Post */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Post;
@@ -1080,6 +1111,16 @@
 		AC8295F22D876DD700C554D1 /* Explore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Explore;
+		};
+		ACB4D4F32E40BEEA00851E1B /* VLCKitSPM */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = ACB4D4F22E40BEEA00851E1B /* XCRemoteSwiftPackageReference "vlckit-spm" */;
+			productName = VLCKitSPM;
+		};
+		ACC373732E3A02580005E5F2 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AC7BD8B82DEDCEEE0094BC9A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
 		};
 		ACCAB48C2D81E500001C1041 /* RemoteConfig */ = {
 			isa = XCSwiftPackageProductDependency;

@@ -10,6 +10,7 @@ public enum FeedContentType: String, CaseIterable {
     case audio
     case video
     case image
+    case imageAndVideo
 }
 
 public enum FeedContentSortingByTime: String, CaseIterable {
@@ -20,6 +21,7 @@ public enum FeedContentSortingByTime: String, CaseIterable {
 }
 
 public enum FeedContentSortingByPopularity: String, CaseIterable {
+    case forYou = "For You"
     case newest = "Newest"
     case trending = "Trending"
     case mostLiked = "Most Liked"
@@ -32,4 +34,9 @@ public enum FeedFilterByRelationship: String, CaseIterable {
     case all = "All"
     case myFollowers = "Followers"
     case whoIAmFollowing = "Following"
+}
+
+public enum OffensiveContentFilter: String, RawRepresentable, Codable {
+    case allowed
+    case blocked
 }

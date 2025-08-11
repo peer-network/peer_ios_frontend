@@ -12,8 +12,9 @@ import DesignSystem
 struct ContentView: View {
     @EnvironmentObject private var audioManager: AudioSessionManager
 
-    @Binding var selectedTab: AppTab
     @ObservedObject var appRouter: Router
+
+    @State private var selectedTab: AppTab = .feed
 
     @State private var selectedTabScrollToTop: Int = -1
     @State private var selectedTabEmptyPath: Int = -1
@@ -45,6 +46,7 @@ struct ContentView: View {
                         .animation(.linear, value: audioManager.isInRestrictedView)
                 }
             }
+            .zIndex(1)
 
             tabBarView
         }

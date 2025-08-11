@@ -7,6 +7,7 @@
 
 import Combine
 import Models
+//import FeedList
 
 @MainActor
 final class ExploreViewModel: ObservableObject {
@@ -18,9 +19,9 @@ final class ExploreViewModel: ObservableObject {
         case error(Error)
     }
 
-    @Published private(set) var state: State = .loading
+    @Published private(set) var state2: State = .loading
     var isLoading: Bool {
-        if case .loading = state { return true }
+        if case .loading = state2 { return true }
         return false
     }
 
@@ -41,7 +42,7 @@ final class ExploreViewModel: ObservableObject {
         users = []
         currentOffset = 0
         hasMore = true
-        state = .display
+        state2 = .display
     }
 
     func fetchTrendingPosts(reset: Bool) async {
@@ -53,10 +54,10 @@ final class ExploreViewModel: ObservableObject {
             }
 
             if trendindPosts.isEmpty {
-                state = .loading
+                state2 = .loading
             }
 
-            let result = await apiService.fetchPosts(with: .image, sort: .trending, showHiddenContent: false, filter: .all, in: .week, after: currentOffsetTrendind, for: nil, amount: 18)
+            let result = await apiService.fetchPosts(with: .imageAndVideo, sort: .trending, showHiddenContent: false, filter: .all, in: .week, after: currentOffsetTrendind, for: nil, amount: 18)
 
             try Task.checkCancellation()
 
@@ -70,13 +71,13 @@ final class ExploreViewModel: ObservableObject {
                         currentOffsetTrendind += 18
                         hasMoreTrendind = true
                     }
-                    state = .display
+                    state2 = .display
                 case .failure(let apiError):
                     throw apiError
             }
         } catch is CancellationError {
         } catch {
-            state = .error(error)
+            state2 = .error(error)
         }
     }
 
@@ -108,7 +109,7 @@ final class ExploreViewModel: ObservableObject {
             }
 
             if posts.isEmpty {
-                state = .loading
+                state2 = .loading
             }
 
             let result = await apiService.fetchPostsByTag(tag, after: currentOffset)
@@ -125,13 +126,13 @@ final class ExploreViewModel: ObservableObject {
                         currentOffset += 20
                         hasMore = true
                     }
-                    state = .display
+                    state2 = .display
                 case .failure(let apiError):
                     throw apiError
             }
         } catch is CancellationError {
         } catch {
-            state = .error(error)
+            state2 = .error(error)
         }
     }
 
@@ -144,7 +145,7 @@ final class ExploreViewModel: ObservableObject {
             }
 
             if posts.isEmpty {
-                state = .loading
+                state2 = .loading
             }
 
             let result = await apiService.fetchPostsByTitle(title, after: currentOffset)
@@ -161,13 +162,13 @@ final class ExploreViewModel: ObservableObject {
                         currentOffset += 20
                         hasMore = true
                     }
-                    state = .display
+                    state2 = .display
                 case .failure(let apiError):
                     throw apiError
             }
         } catch is CancellationError {
         } catch {
-            state = .error(error)
+            state2 = .error(error)
         }
     }
 
@@ -180,7 +181,7 @@ final class ExploreViewModel: ObservableObject {
             }
 
             if users.isEmpty {
-                state = .loading
+                state2 = .loading
             }
 
             let result = await apiService.fetchUsers(by: username, after: currentOffset)
@@ -197,13 +198,53 @@ final class ExploreViewModel: ObservableObject {
                         currentOffset += 20
                         hasMore = true
                     }
-                    state = .display
+                    state2 = .display
                 case .failure(let apiError):
                     throw apiError
             }
         } catch is CancellationError {
         } catch {
-            state = .error(error)
+            state2 = .error(error)
         }
     }
+
+//    // PostsFetcher WOrkaround
+//
+//    var state: FeedList.PostsState = .loading
+//
+//    func fetchPosts(reset: Bool) async {
+//        do {
+//            if reset {
+//                trendindPosts.removeAll()
+//                currentOffsetTrendind = 0
+//                hasMoreTrendind = true
+//            }
+//
+//            if trendindPosts.isEmpty {
+//                state = .loading
+//            }
+//
+//            let result = await apiService.fetchPosts(with: .image, sort: .trending, showHiddenContent: false, filter: .all, in: .week, after: currentOffsetTrendind, for: nil, amount: 18)
+//
+//            try Task.checkCancellation()
+//
+//            switch result {
+//                case .success(let fetchedPosts):
+//                    trendindPosts.append(contentsOf: fetchedPosts)
+//
+//                    if fetchedPosts.count != 18 {
+//                        hasMoreTrendind = false
+//                    } else {
+//                        currentOffsetTrendind += 18
+//                        hasMoreTrendind = true
+//                    }
+//                    state = .display(posts: trendindPosts, hasMore: hasMoreTrendind ? .hasMore : .none)
+//                case .failure(let apiError):
+//                    throw apiError
+//            }
+//        } catch is CancellationError {
+//        } catch {
+//            state = .error(error: error)
+//        }
+//    }
 }

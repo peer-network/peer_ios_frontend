@@ -142,7 +142,7 @@ public struct HeaderPageScrollView<Header: View, Pages: View>: View {
                     collection[index]
                         /// Let's make it to be scrollable to the top even if the view does not have enough content
                         /// 40 - Tab Bar Size, -5 is given so that it will not reset scrollviews when it's bounces!
-                        .frame(minHeight: size.height - 35, alignment: .top)
+                        .frame(minHeight: size.height - 29, alignment: .top)
                 } header: {
                     /// Doing the same behaviour as the header view!
                     ZStack {
@@ -156,7 +156,7 @@ public struct HeaderPageScrollView<Header: View, Pages: View>: View {
                         } else {
                             Rectangle()
                                 .foregroundStyle(.clear)
-                                .frame(height: 40)
+                                .frame(height: 34)
                                 .transition(.identity)
                         }
                     }
@@ -174,6 +174,13 @@ public struct HeaderPageScrollView<Header: View, Pages: View>: View {
             }
         })
         .scrollPosition($scrollPositions[index])
+        .onReceive(NotificationCenter.default.publisher(for: .scrollToTop)) { _ in
+            if activeTab == label.title {
+                withAnimation {
+                    scrollPositions[index].scrollTo(y: 0)
+                }
+            }
+          }
         .onScrollPhaseChange { oldPhase, newPhase in
             let geometry = scrollGeometries[index]
             let maxOffset = min(geometry.offsetY, headerHeight)
@@ -210,6 +217,7 @@ public struct HeaderPageScrollView<Header: View, Pages: View>: View {
                     } label: {
                         label.icon
                             .iconSize(height: 16)
+                            .padding(.vertical, 9)
                             .frame(maxWidth: .infinity)
                             .foregroundStyle(activeTab == label.title ? Colors.whitePrimary : Colors.whiteSecondary)
                             .contentShape(.rect)
@@ -235,7 +243,7 @@ public struct HeaderPageScrollView<Header: View, Pages: View>: View {
                 }
 
         }
-        .frame(height: 40)
+        .frame(height: 34)
         .background(Colors.textActive)
     }
 

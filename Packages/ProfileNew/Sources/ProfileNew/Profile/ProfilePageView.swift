@@ -14,6 +14,7 @@ import Models
 
 @available(iOS 18.0, *)
 public struct ProfilePageView: View {
+    @Environment(\.selectedTabScrollToTop) private var selectedTabScrollToTop
     @EnvironmentObject private var router: Router
     @EnvironmentObject private var apiManager: APIServiceManager
 
@@ -26,11 +27,13 @@ public struct ProfilePageView: View {
 
     @StateObject private var regularFeedVM: RegularFeedVM
     @StateObject private var audioFeedVM: AudioFeedViewModel
+    @StateObject private var videoFeedVM: VideoFeedViewModel
 
     public init(userId: String) {
         _viewModel = .init(wrappedValue: .init(userId: userId))
         _regularFeedVM = .init(wrappedValue: .init(userId: userId))
         _audioFeedVM = .init(wrappedValue: .init(userId: userId))
+        _videoFeedVM = .init(wrappedValue: .init(userId: userId))
     }
 
     public var body: some View {
@@ -78,6 +81,7 @@ public struct ProfilePageView: View {
     private func contentView(user: User, isLoading: Bool) -> some View {
         HeaderPageScrollView {
             profileHeader(user: user, isLoading: isLoading)
+                .padding(.bottom, 15)
         } labels: {
             PageLabel(title: "Regular", icon: Icons.smile)
             PageLabel(title: "Video", icon: Icons.playRectangle)
@@ -85,13 +89,18 @@ public struct ProfilePageView: View {
         } pages: {
             RegularFeedView(viewModel: regularFeedVM)
 
-            Text("Work in progress...")
-                .padding(20)
+            VideoFeedView(viewModel: videoFeedVM)
 
             AudioFeedView(viewModel: audioFeedVM)
         } onRefresh: {
             HapticManager.shared.fireHaptic(.dataRefresh(intensity: 0.3))
             await fetchEverything()
+        }
+        .onChange(of: selectedTabScrollToTop) {
+            if selectedTabScrollToTop == 4, router.path.isEmpty {
+                    print("➡️ scrollToTop tapped")
+                    NotificationCenter.default.post(name: .scrollToTop, object: nil)
+            }
         }
     }
 
@@ -107,6 +116,7 @@ public struct ProfilePageView: View {
 
         regularFeedVM.fetchPosts(reset: true)
         audioFeedVM.fetchPosts(reset: true)
+        videoFeedVM.fetchPosts(reset: true)
     }
 
     private func loadImage() {

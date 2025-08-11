@@ -123,13 +123,20 @@ struct TransferTileView: View {
             }
             .presentationDragIndicator(.hidden)
             .presentationCornerRadius(24)
-            .presentationBackground(.ultraThinMaterial)
+            .presentationBackground(Colors.blackDark)
             .presentationDetents([.large])
             .presentationContentInteraction(.resizes)
         }
     }
 
+    @ViewBuilder
     private var chooseRecipientButton: some View {
+//        let config = StateButtonConfig(buttonSize: .large, buttonType: .custom(textColor: Colors.blackDark, fillColor: Colors.textActive), title: "Choose recipient", icon: Icons.plus, iconPlacement: .trailing)
+//
+//        StateButton(config: config) {
+//            showRecipientPicker = true
+//        }
+
         Button {
             showRecipientPicker = true
         } label: {

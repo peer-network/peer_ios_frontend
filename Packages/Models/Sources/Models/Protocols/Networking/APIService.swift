@@ -31,7 +31,7 @@ public protocol APIService: AnyObject {
     //MARK: Auth/Reg
     func fetchAuthorizedUserID() async -> Result<String, APIError>
     func loginWithCredentials(email: String, password: String) async -> Result<AuthToken, APIError>
-    func registerUser(email: String, password: String, username: String, referralUuid: String?) async -> Result<String, APIError>
+    func registerUser(email: String, password: String, username: String, referralUuid: String) async -> Result<String, APIError>
     func verifyRegistration(userID: String) async -> Result<Void, APIError>
     func requestPasswordReset(email: String) async -> Result<Void, APIError>
     func resetPassword(token: String, newPassword: String) async -> Result<Void, APIError>
@@ -41,6 +41,7 @@ public protocol APIService: AnyObject {
     func getMyInviter() async -> Result<RowUser, APIError>
     func getMyReferralInfo() async -> Result<ReferralInfo, APIError>
     func getMyReferredUsers(after offset: Int) async -> Result<[RowUser], APIError>
+    func getMyUserInfo() async -> Result<OffensiveContentFilter, APIError>
     func fetchUser(with userId: String) async -> Result<User, APIError>
     func fetchUserFollowers(for userID: String, after offset: Int) async -> Result<[RowUser], APIError>
     func fetchUserFollowings(for userID: String, after offset: Int) async -> Result<[RowUser], APIError>
@@ -82,12 +83,14 @@ public protocol APIService: AnyObject {
     func dislikePost(with id: String) async -> Result<Void, APIError>
     func markPostViewed(with id: String) async -> Result<Void, APIError>
     func reportPost(with id: String) async -> Result<Void, APIError>
-    
+    func getPostInteractions(with id: String, type: PostInteraction, after offset: Int) async -> Result<[RowUser], APIError>
+
     //MARK: Comments
     func fetchComments(for postID: String, after offset: Int) async -> Result<[Comment], APIError>
     func sendComment(for postID: String, with content: String) async -> Result<Comment, APIError>
     func likeComment(with id: String) async -> Result<Void, APIError>
     func reportComment(with id: String) async -> Result<Void, APIError>
+    func getCommentInteractions(with id: String, after offset: Int) async -> Result<[RowUser], APIError>
 
     //MARK: Tags
     func fetchTags(with query: String) async -> Result<[String], APIError>

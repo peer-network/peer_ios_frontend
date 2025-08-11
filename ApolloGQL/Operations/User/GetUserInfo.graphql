@@ -1,0 +1,20 @@
+query GetUserInfo {
+    getUserInfo {
+        status
+        ResponseCode
+        affectedRows {
+            userid
+            liquidity
+            amountposts
+            amountblocked
+            amountfollower
+            amountfollowed
+            amountfriends
+            invited
+            updatedat
+            userPreferences {
+                contentFilteringSeverityLevel
+            }
+        }
+    }
+}

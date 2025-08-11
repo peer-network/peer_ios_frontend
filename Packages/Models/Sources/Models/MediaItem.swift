@@ -31,9 +31,13 @@ public struct MediaItem: Codable, Hashable {
 
     public var duration: TimeInterval? {
         switch options {
-            case .audio(let audioOptions): return timeInterval(from: audioOptions.duration)
-            case .video(let videoOptions): return timeInterval(from: videoOptions.duration)
-            default: return nil
+            case .audio(let audioOptions):
+                return timeInterval(from: audioOptions.duration)
+            case .video(let videoOptions):
+                guard let duration = videoOptions.duration else { return nil }
+                return timeInterval(from: duration)
+            default:
+                return nil
         }
     }
 
@@ -64,12 +68,29 @@ extension MediaItem {
         let components = resolution.components(separatedBy: "x")
         guard components.count == 2,
               let width = Double(components[0]),
-              let height = Double(components[1]) else {
+              let height = Double(components[1])
+        else {
             return 1.0 // Default to square if resolution format is invalid
         }
 
         // If height is greater than width, use 4:3 ratio (1.333)
         return height > width ? 4/3 : 1.0
+    }
+
+    public var videoAspectRatio: CGFloat {
+        // Default to square if no resolution
+        guard let resolution = self.ratio else { return 1.0 }
+
+        let components = resolution.components(separatedBy: ":")
+        guard components.count == 2,
+              let width = Double(components[0]),
+              let height = Double(components[1]),
+              height != 0 // Prevent division by zero
+        else {
+            return 1.0 // Default to square if resolution format is invalid
+        }
+
+        return width / height
     }
 }
 
@@ -92,7 +113,7 @@ public enum MediaOptions: Codable {
             if let ratio = try? container.decode(String.self, forKey: .ratio) {
                 self = .video(VideoOptions(
                     size: try container.decode(String.self, forKey: .size),
-                    duration: try container.decode(String.self, forKey: .duration),
+                    duration: try? container.decode(String.self, forKey: .duration),
                     ratio: ratio,
                     resolution: resolution
                 ))
@@ -127,7 +148,7 @@ public enum MediaOptions: Codable {
                 try container.encode(options.duration, forKey: .duration)
             case .video(let options):
                 try container.encode(options.size, forKey: .size)
-                try container.encode(options.duration, forKey: .duration)
+                try container.encodeIfPresent(options.duration, forKey: .duration)
                 try container.encode(options.ratio, forKey: .ratio)
                 try container.encode(options.resolution, forKey: .resolution)
         }
@@ -168,7 +189,7 @@ public struct AudioOptions: Codable, Hashable {
 
 public struct VideoOptions: Codable, Hashable {
     public let size: String
-    public let duration: String
+    public let duration: String?
     public let ratio: String
     public let resolution: String
 }

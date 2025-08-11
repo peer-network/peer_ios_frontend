@@ -9,6 +9,7 @@ import SwiftUI
 import GQLOperationsUser
 import Environment
 import Models
+import AVFoundation
 
 @MainActor
 final class PostCreationVM: ObservableObject {
@@ -120,10 +121,17 @@ final class PostCreationVM: ObservableObject {
         let isFreePost = takeFreePost()
 
         do {
+            guard let downsizedURL = try await createDownsizedVideo(url: videoURL) else {
+                if isFreePost {
+                    returnFreePost()
+                }
+                return false
+            }
+
             let fixedTitle = trimWhitespaces(from: title)
             let fixedDescription = trimWhitespaces(from: description)
 
-            let videoData = try Data(contentsOf: videoURL)
+            let videoData = try Data(contentsOf: downsizedURL)
             var base64VideoData = videoData.base64EncodedString()
             addBase64Prefix(to: &base64VideoData, ofType: .video)
 
@@ -236,5 +244,27 @@ final class PostCreationVM: ObservableObject {
         }()
 
         content.insert(contentsOf: prefix, at: content.startIndex)
+    }
+
+    private func createDownsizedVideo(url: URL) async throws -> URL? {
+        let outputURL = URL(filePath: NSTemporaryDirectory()).appending(path: "uploading_video_\(UUID().uuidString).\("mp4")")
+
+        /// Removing Existing Item
+        if FileManager.default.fileExists(atPath: outputURL.path()) {
+            try FileManager.default.removeItem(at: outputURL)
+        }
+
+        /// Export Session
+        let asset = AVAsset(url: url)
+        if let session = AVAssetExportSession(asset: asset, presetName: AVAssetExportPreset1920x1080) {
+            session.outputURL = outputURL
+            session.outputFileType = .mp4
+
+            await session.export()
+
+            return outputURL
+        } else {
+            return nil
+        }
     }
 }

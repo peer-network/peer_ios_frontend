@@ -1,6 +1,6 @@
-query SearchUser($userid: ID, $username: String, $offset: Int, $limit: Int) {
+query SearchUser($contentFilterBy: ContentFilterType, $userid: ID, $username: String, $offset: Int, $limit: Int) {
 	searchUser(
-        contentFilterBy: MYGRANDMALIKES
+        contentFilterBy: $contentFilterBy
         userid: $userid
         username: $username
         offset: $offset

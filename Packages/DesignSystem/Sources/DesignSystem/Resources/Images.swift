@@ -24,6 +24,7 @@ public enum Icons {
     public static let bubbleFill = Image(.iconBubbleFill)
     public static let ellipsis = Image(.iconEllipsis)
     public static let eyeCircled = Image(.iconEyeCircled)
+    public static let eyeCircledFill = Image(.iconEyeCircledFill)
     public static let heart = Image(.iconHeart)
     public static let heartBroke = Image(.iconHeartBroke)
     public static let heartBrokeFill = Image(.iconHeartBrokeFill)

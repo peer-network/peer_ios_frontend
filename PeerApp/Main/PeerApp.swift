@@ -34,7 +34,6 @@ struct PeerApp: App {
 
     @StateObject private var remoteConfigViewModel: RemoteConfigViewModel
 
-    @State private var selectedTab: AppTab = .feed
     @StateObject private var appRouter = Router()
 
     @StateObject private var authRouter = Router()
@@ -176,7 +175,7 @@ struct PeerApp: App {
                     .analyticsService(analyticsService)
 
             case .authenticated(let userId):
-                ContentView(selectedTab: $selectedTab, appRouter: appRouter)
+                ContentView(appRouter: appRouter)
                     .environmentObject(apiManager)
                     .environmentObject(accountManager)
                     .environmentObject(quickLook)

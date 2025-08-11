@@ -8,6 +8,8 @@
 enum Constants {
     static let postCommentsLimit = 20
 
+    static let postInteractionsLimit = 20
+
     /// Post length determining if the post should be collapsed
     static let collapseThresholdLength = 500
 

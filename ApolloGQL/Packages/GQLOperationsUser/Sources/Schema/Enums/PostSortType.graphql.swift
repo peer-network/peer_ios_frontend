@@ -10,4 +10,5 @@ public enum PostSortType: String, EnumType {
   case dislikes = "DISLIKES"
   case views = "VIEWS"
   case comments = "COMMENTS"
+  case forMe = "FOR_ME"
 }

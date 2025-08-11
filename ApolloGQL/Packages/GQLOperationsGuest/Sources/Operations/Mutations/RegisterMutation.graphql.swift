@@ -7,19 +7,19 @@ public class RegisterMutation: GraphQLMutation {
   public static let operationName: String = "Register"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"mutation Register($email: String!, $password: String!, $username: String!, $referralUuid: ID) { register( input: { email: $email password: $password username: $username referralUuid: $referralUuid } ) { __typename status ResponseCode userid } }"#
+      #"mutation Register($email: String!, $password: String!, $username: String!, $referralUuid: ID!) { register( input: { email: $email password: $password username: $username referralUuid: $referralUuid } ) { __typename status ResponseCode userid } }"#
     ))
 
   public var email: String
   public var password: String
   public var username: String
-  public var referralUuid: GraphQLNullable<ID>
+  public var referralUuid: ID
 
   public init(
     email: String,
     password: String,
     username: String,
-    referralUuid: GraphQLNullable<ID>
+    referralUuid: ID
   ) {
     self.email = email
     self.password = password

@@ -66,6 +66,8 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                                     .iconSize(height: 10)
 
                                 Text("\(accountManager.dailyFreeComments)")
+                                    .contentTransition(.numericText())
+                                    .animation(.snappy, value: accountManager.dailyFreeComments)
                             }
 
                             HStack(alignment: .center, spacing: 5) {
@@ -73,6 +75,8 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                                     .iconSize(height: 10)
 
                                 Text("\(accountManager.dailyFreeLikes)")
+                                    .contentTransition(.numericText())
+                                    .animation(.snappy, value: accountManager.dailyFreeLikes)
                             }
                         case .posts:
                             HStack(alignment: .center, spacing: 5) {
@@ -80,6 +84,8 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                                     .iconSize(height: 13)
 
                                 Text("\(accountManager.dailyFreePosts)")
+                                    .contentTransition(.numericText())
+                                    .animation(.snappy, value: accountManager.dailyFreePosts)
                             }
                     }
                 }
@@ -96,7 +102,7 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                     Text("Your daily free actions")
                         .font(.customFont(weight: .regular, style: .footnote))
                         .padding()
-                        .presentationBackground(.ultraThinMaterial)
+                        .presentationBackground(Colors.blackDark)
                         .presentationCompactAdaptation(.popover)
                 }
 
@@ -106,20 +112,18 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                             router.navigate(to: .versionHistory)
                         }
                     } label: {
-                        Text("v. \(Text(version).font(.customFont(weight: .semiBold, size: .body)))")
+                        Text("v \(version)")
                             .font(.customFont(weight: .regular, size: .body))
-                            .padding(.horizontal, 10)
+                            .foregroundStyle(Colors.version)
                             .padding(.vertical, 5)
-                            .background(Colors.inactiveDark)
-                            .clipShape(RoundedRectangle(cornerRadius: 34))
                             .contentShape(.rect)
                     }
                     .padding(.leading, 10)
                 }
             }
             .foregroundStyle(Colors.whitePrimary)
-            .padding(.vertical, 10)
             .padding(.trailing, 20)
+            .frame(height: 44)
 
             content()
         }

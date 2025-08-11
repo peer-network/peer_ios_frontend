@@ -32,22 +32,33 @@ public struct PostsListView<Fetcher>: View where Fetcher: PostsFetcher {
                 }
             case .display(let posts, let hasMore):
                 if posts.isEmpty {
-                    Text("No posts yet...")
-                        .padding(20)
+                    if displayType != .grid {
+                        Text("No posts yet...")
+                            .padding(20)
+                    }
                 } else {
                     ForEach(posts) { post in
                         PostView(postVM: PostViewModel(post: post), displayType: displayType, showFollowButton: showFollowButton)
                             .id(post.refreshID)
+                            .onFirstAppear {
+                                if post.id == posts.last?.id, hasMore == .hasMore {
+                                    Task {
+                                        await fetcher.fetchPosts(reset: false)
+                                    }
+                                }
+                            }
                     }
 
-                    switch hasMore {
-                        case .hasMore:
-                            NextPageView {
-                                await fetcher.fetchPosts(reset: false)
-                            }
-                            .padding(.horizontal, 20)
-                        case .none:
-                            EmptyView()
+                    if displayType == .list {
+                        switch hasMore {
+                            case .hasMore:
+                                NextPageView {
+                                    //                                await fetcher.fetchPosts(reset: false)
+                                }
+                                .padding(.horizontal, 20)
+                            case .none:
+                                EmptyView()
+                        }
                     }
                 }
             case .error(let error):

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import NukeUI
+import Nuke
 import DesignSystem
 import Environment
 import Models
@@ -59,6 +60,9 @@ struct ImagesContent: View {
 //                                    .skeleton(isRedacted: true)
                             }
                         }
+//                        .processors([
+//                            ImageProcessors.Resize(size: CGSize(width: UIScreen.main.scale * UIScreen.main.bounds.width, height: UIScreen.main.scale *imageHeight))
+//                        ])
                     }
                 }
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .automatic))

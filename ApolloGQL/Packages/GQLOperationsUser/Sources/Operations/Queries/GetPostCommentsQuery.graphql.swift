@@ -7,24 +7,28 @@ public class GetPostCommentsQuery: GraphQLQuery {
   public static let operationName: String = "GetPostComments"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetPostComments($postid: ID!, $commentLimit: Int, $commentOffset: Int) { listPosts( postid: $postid commentLimit: $commentLimit commentOffset: $commentOffset contentFilterBy: MYGRANDMALIKES ) { __typename status ResponseCode affectedRows { __typename amountcomments comments { __typename commentid userid postid parentid content amountlikes amountreplies isliked createdat user { __typename id username slug img isfollowed isfollowing } } } } }"#
+      #"query GetPostComments($contentFilterBy: ContentFilterType, $postid: ID!, $commentLimit: Int, $commentOffset: Int) { listPosts( postid: $postid commentLimit: $commentLimit commentOffset: $commentOffset contentFilterBy: $contentFilterBy ) { __typename status ResponseCode affectedRows { __typename amountcomments comments { __typename commentid userid postid parentid content amountlikes amountreplies isliked createdat user { __typename id username slug img isfollowed isfollowing } } } } }"#
     ))
 
+  public var contentFilterBy: GraphQLNullable<GraphQLEnum<ContentFilterType>>
   public var postid: ID
   public var commentLimit: GraphQLNullable<Int>
   public var commentOffset: GraphQLNullable<Int>
 
   public init(
+    contentFilterBy: GraphQLNullable<GraphQLEnum<ContentFilterType>>,
     postid: ID,
     commentLimit: GraphQLNullable<Int>,
     commentOffset: GraphQLNullable<Int>
   ) {
+    self.contentFilterBy = contentFilterBy
     self.postid = postid
     self.commentLimit = commentLimit
     self.commentOffset = commentOffset
   }
 
   public var __variables: Variables? { [
+    "contentFilterBy": contentFilterBy,
     "postid": postid,
     "commentLimit": commentLimit,
     "commentOffset": commentOffset
@@ -40,7 +44,7 @@ public class GetPostCommentsQuery: GraphQLQuery {
         "postid": .variable("postid"),
         "commentLimit": .variable("commentLimit"),
         "commentOffset": .variable("commentOffset"),
-        "contentFilterBy": "MYGRANDMALIKES"
+        "contentFilterBy": .variable("contentFilterBy")
       ]),
     ] }
 

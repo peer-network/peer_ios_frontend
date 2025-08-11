@@ -41,8 +41,8 @@ public struct ProfileAvatarView: View {
             self.cornerRadius = cornerRadius
         }
         
-        public static let post = FrameConfig(width: 35, height: 35, cornerRadius: 91)
-        public static let rowUser = FrameConfig(width: 35, height: 35, cornerRadius: 91)
+        public static let post = FrameConfig(width: 40, height: 40, cornerRadius: 91)
+        public static let rowUser = FrameConfig(width: 40, height: 40, cornerRadius: 91)
         public static let audioPlayer = FrameConfig(width: 35, height: 35, cornerRadius: 91)
         public static let profile = FrameConfig(width: 68, height: 68, cornerRadius: 91)
         public static let comment = FrameConfig(width: 35, height: 35, cornerRadius: 91)
@@ -69,7 +69,8 @@ public struct ProfileAvatarView: View {
                 ) :
                 ImageRequest(
                     url: url,
-                    processors: [.resize(size: config.size)]
+                    processors: [.resize(size: config.size)],
+                    options: [.reloadIgnoringCachedData]
                 )
 
                 LazyImage(request: request) { state in

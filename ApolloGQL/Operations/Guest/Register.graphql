@@ -1,4 +1,4 @@
-mutation Register($email: String!, $password: String!, $username: String!, $referralUuid: ID) {
+mutation Register($email: String!, $password: String!, $username: String!, $referralUuid: ID!) {
     register(
         input: { email: $email, password: $password, username: $username, referralUuid: $referralUuid }
     ) {

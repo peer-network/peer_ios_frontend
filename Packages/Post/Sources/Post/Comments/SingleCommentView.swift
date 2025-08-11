@@ -83,23 +83,25 @@ struct SingleCommentView: View {
         .padding(10)
         .contentShape(Rectangle())
         .contextMenu {
-            Button(role: .destructive) {
-                Task {
-                    do {
-                        try await commentVM.report()
-                        showPopup(text: "Comment was reported.")
-                    } catch let error as CommentError {
-                        showPopup(
-                            text: error.localizedDescription
-                        )
-                    } catch {
-                        showPopup(
-                            text: error.userFriendlyDescription
-                        )
+            if !AccountManager.shared.isCurrentUser(id: commentVM.comment.user.id) {
+                Button(role: .destructive) {
+                    Task {
+                        do {
+                            try await commentVM.report()
+                            showPopup(text: "Comment was reported.")
+                        } catch let error as CommentError {
+                            showPopup(
+                                text: error.localizedDescription
+                            )
+                        } catch {
+                            showPopup(
+                                text: error.userFriendlyDescription
+                            )
+                        }
                     }
+                } label: {
+                    Label("Report Comment", systemImage: "exclamationmark.circle")
                 }
-            } label: {
-                Label("Report Comment", systemImage: "exclamationmark.circle")
             }
         }
         .padding(-10)

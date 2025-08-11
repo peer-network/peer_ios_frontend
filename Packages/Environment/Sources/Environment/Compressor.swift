@@ -18,7 +18,7 @@ public final class Compressor {
     
     public func compressImageForUpload(
         _ image: UIImage,
-        maxSize: Int = 5 * 1024 * 1024,
+        maxSize: Int = 1 * 1024 * 1024,
         maxHeight: CGFloat = 3000,
         maxWidth: CGFloat = 3000
     ) async throws -> Data {

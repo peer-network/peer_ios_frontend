@@ -61,6 +61,24 @@ public final class PostViewModel: ObservableObject {
     @Published var showCommentsSheet: Bool = false
     @Published var commentText = ""
 
+    // MARK: Interactions sheet properties
+    @frozen
+    public enum InteractionsState {
+        case loading
+        case display
+        case error(Error)
+    }
+
+    @Published private(set) var interactionsState = InteractionsState.loading
+    private var currentInteractionsOffset: Int = 0
+    private(set) var hasMoreInteractions: Bool = true
+
+    @Published private(set) var interactions: [RowUser] = []
+    private var interactionsFetchTask: Task<Void, Never>?
+
+    @Published var showInteractionsSheet: Bool = false
+    @Published var interactionsTypeForSheet: InteractionType = .likes
+
     public init(post: Post) {
         self.post = post
 
@@ -180,10 +198,28 @@ extension PostViewModel {
             let result = await apiService.likePost(with: post.id)
 
             switch result {
-            case .success:
-                break
-            case .failure(let apiError):
-                throw apiError
+                case .success:
+                    if let username = AccountManager.shared.user?.username {
+                        let postTitle = post.title
+                        let targetUid = post.owner.id
+
+                        NotificationService.sendLikeNotification(
+                            username:  username,
+                            postTitle: postTitle,
+                            targetUid: targetUid
+                        ) { result in
+                            switch result {
+                                case .success():
+                                    print("✅ Like notification requested")
+                                case .failure(let error):
+                                    print("❌ Error sending notification:", error)
+                                    dump(error)
+                            }
+                        }
+                    }
+                    break
+                case .failure(let apiError):
+                    throw apiError
             }
         } catch {
             await MainActor.run {
@@ -467,6 +503,71 @@ extension PostViewModel {
                     AccountManager.shared.increaseFreeComments()
                 }
                 throw apiError
+        }
+    }
+}
+
+// MARK: - Interactions
+
+extension PostViewModel {
+    func showInteractions(_ type: InteractionType) {
+        interactionsTypeForSheet = type
+        showInteractionsSheet = true
+    }
+
+    public func fetchInteractions(reset: Bool) {
+        if let existingTask = interactionsFetchTask, !existingTask.isCancelled {
+            return
+        }
+
+        if reset {
+            interactions.removeAll()
+            currentInteractionsOffset = 0
+            hasMoreInteractions = true
+        }
+
+        if interactions.isEmpty {
+            interactionsState = .loading
+        }
+
+        interactionsFetchTask = Task {
+            do {
+                let apiInteractions: PostInteraction = {
+                    switch interactionsTypeForSheet {
+                        case .likes: return .likes
+                        case .dislikes: return .dislikes
+                        case .views: return .views
+                    }
+                }()
+                
+                let result = await apiService.getPostInteractions(with: post.id, type: apiInteractions, after: currentInteractionsOffset)
+
+                try Task.checkCancellation()
+
+                switch result {
+                    case .success(let fetchedUsers):
+                        await MainActor.run {
+                            interactions.append(contentsOf: fetchedUsers)
+
+                            if fetchedUsers.count != Constants.postInteractionsLimit {
+                                hasMoreInteractions = false
+                            } else {
+                                currentInteractionsOffset += Constants.postInteractionsLimit
+                            }
+                            interactionsState = .display
+                        }
+                    case .failure(let apiError):
+                        throw apiError
+                }
+            } catch is CancellationError {
+                //                state = .display(posts: posts, hasMore: .hasMore)
+            } catch {
+                await MainActor.run {
+                    interactionsState = .error(error)
+                }
+            }
+
+            interactionsFetchTask = nil
         }
     }
 }

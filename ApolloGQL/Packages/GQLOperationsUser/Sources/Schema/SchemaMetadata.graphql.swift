@@ -20,6 +20,7 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
 
   public static func objectType(forTypename typename: String) -> ApolloAPI.Object? {
     switch typename {
+    case "BasicUserInfo": return GQLOperationsUser.Objects.BasicUserInfo
     case "BlockedUser": return GQLOperationsUser.Objects.BlockedUser
     case "BlockedUsers": return GQLOperationsUser.Objects.BlockedUsers
     case "BlockedUsersResponse": return GQLOperationsUser.Objects.BlockedUsersResponse
@@ -35,6 +36,7 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "HelloResponse": return GQLOperationsUser.Objects.HelloResponse
     case "Mutation": return GQLOperationsUser.Objects.Mutation
     case "Post": return GQLOperationsUser.Objects.Post
+    case "PostInteractionResponse": return GQLOperationsUser.Objects.PostInteractionResponse
     case "PostListResponse": return GQLOperationsUser.Objects.PostListResponse
     case "PostResponse": return GQLOperationsUser.Objects.PostResponse
     case "Profile": return GQLOperationsUser.Objects.Profile
@@ -48,8 +50,10 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "TagSearchResponse": return GQLOperationsUser.Objects.TagSearchResponse
     case "User": return GQLOperationsUser.Objects.User
     case "UserFriendsResponse": return GQLOperationsUser.Objects.UserFriendsResponse
+    case "UserInfo": return GQLOperationsUser.Objects.UserInfo
+    case "UserInfoResponse": return GQLOperationsUser.Objects.UserInfoResponse
     case "UserListResponse": return GQLOperationsUser.Objects.UserListResponse
-    case "Userinfo": return GQLOperationsUser.Objects.Userinfo
+    case "UserPreferences": return GQLOperationsUser.Objects.UserPreferences
     default: return nil
     }
   }

@@ -20,7 +20,10 @@ let package = Package(
         .package(name: "GQLOperationsUser", path: "../GQLOperationsUser"),
         .package(name: "Analytics", path: "../Analytics"),
         .package(url: "https://github.com/kean/Nuke.git", .upToNextMajor(from: "12.8.0")),
-        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "11.9.0"))
+        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "11.9.0")),
+        .package(url: "https://github.com/wxxsw/VideoPlayer.git", .upToNextMajor(from: "1.2.5")),
+        .package(url: "https://github.com/tylerjonesio/vlckit-spm/", .upToNextMajor(from: "3.5.1")),
+        .package(url: "https://github.com/LePips/VLCUI.git", .upToNextMajor(from: "0.7.3"))
     ],
     targets: [
         .target(
@@ -33,7 +36,10 @@ let package = Package(
                 .product(name: "Analytics", package: "Analytics"),
                 .product(name: "NukeUI", package: "Nuke"),
                 .product(name: "NukeVideo", package: "Nuke"),
-                .product(name: "FirebaseAnalytics", package: "firebase-ios-sdk")
+                .product(name: "FirebaseAnalytics", package: "firebase-ios-sdk"),
+                .product(name: "VideoPlayer", package: "VideoPlayer"),
+                .product(name: "VLCKitSPM", package: "vlckit-spm"),
+                .product(name: "VLCUI", package: "VLCUI")
             ]
         ),
     ],

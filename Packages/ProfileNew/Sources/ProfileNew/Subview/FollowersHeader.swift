@@ -64,6 +64,8 @@ struct FollowersHeader: View {
         } label: {
             VStack(spacing: 0) {
                 Text(typeCount(type), format: .number.notation(.compactName))
+                    .contentTransition(.numericText())
+                    .animation(.snappy, value: typeCount(type))
                     .bold()
                     .font(.customFont(weight: .regular, size: .body))
                     .foregroundStyle(Colors.whitePrimary)

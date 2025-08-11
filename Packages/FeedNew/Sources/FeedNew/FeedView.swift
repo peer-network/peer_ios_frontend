@@ -9,6 +9,7 @@ import SwiftUI
 import Environment
 import DesignSystem
 import Analytics
+import AVFAudio
 
 public struct FeedView: View {
     @EnvironmentObject private var audioManager: AudioSessionManager
@@ -18,6 +19,8 @@ public struct FeedView: View {
     // Filters view properties
     @State private var showFilters = false
     @State private var filtersPosition: CGRect = .zero
+
+//    @State private var displayLogoInHeader = true
 
     public init() {}
 
@@ -106,6 +109,15 @@ public struct FeedView: View {
                         audioManager.isInRestrictedView = false
                     }
                     .trackScreen(AppScreen.videoFeed)
+                    .onAppear {
+                        let session = AVAudioSession.sharedInstance()
+                        try? session.setCategory(.playback, mode: .moviePlayback, options: [.duckOthers])
+                        try? session.setActive(true)
+                    }
+                    .onDisappear {
+                        let session = AVAudioSession.sharedInstance()
+                        try? session.setActive(false, options: [.notifyOthersOnDeactivation])
+                    }
 
                 AudioFeedView()
                     .tag(FeedPage.audioFeed)
@@ -116,26 +128,42 @@ public struct FeedView: View {
     }
 
     private var headerView: some View {
-        Button {
-            withAnimation(.smooth(duration: 0.3, extraBounce: 0)) {
-                showFilters.toggle()
-            }
-        } label: {
-            HStack(alignment: .center, spacing: 10) {
-                Text("Feed")
+//        Group {
+//            if displayLogoInHeader {
+//                Images.logoText
+//                    .frame(height: 30)
+//                    .transition(.opacity)
+//            } else {
+                Button {
+                    withAnimation(.smooth(duration: 0.3, extraBounce: 0)) {
+                        showFilters.toggle()
+                    }
+                } label: {
+                    HStack(alignment: .center, spacing: 10) {
+                        Text("Feed")
 
-                Icons.arrowDown
-                    .iconSize(height: 7)
-                    .rotationEffect(.degrees(showFilters ? 180 : 0))
-                    .animation(.default, value: showFilters)
-            }
-            .contentShape(Rectangle())
-            .onGeometryChange(for: CGRect.self) {
-                $0.frame(in: .global)
-            } action: { newValue in
-                filtersPosition = newValue
-            }
-        }
+                        Icons.arrowDown
+                            .iconSize(height: 7)
+                            .rotationEffect(.degrees(showFilters ? 180 : 0))
+                            .animation(.default, value: showFilters)
+                    }
+                    .contentShape(Rectangle())
+                    .onGeometryChange(for: CGRect.self) {
+                        $0.frame(in: .global)
+                    } action: { newValue in
+                        filtersPosition = newValue
+                    }
+                }
+//            }
+//        }
+//        .onFirstAppear {
+//            Task {
+//                try? await Task.sleep(for: .seconds(3))
+//                withAnimation {
+//                    displayLogoInHeader = false
+//                }
+//            }
+//        }
     }
 }
 

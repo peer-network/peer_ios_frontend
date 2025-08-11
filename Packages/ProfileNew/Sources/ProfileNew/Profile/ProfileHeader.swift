@@ -103,7 +103,7 @@ struct ProfileHeader: View {
                 .font(.customFont(weight: .boldItalic, style: .callout))
                 .foregroundStyle(Colors.whitePrimary)
                 .multilineTextAlignment(.leading)
-                .lineLimit(2)
+                .lineLimit(1)
                 .fixedSize(horizontal: false, vertical: true)
 
             Text("#\(String(user.slug))")
@@ -151,7 +151,7 @@ struct ProfileHeader: View {
                         }
                     }
                 } label: {
-                    Label("Block User", systemImage: "person.slash.fill")
+                    Label("Toggle User Block", systemImage: "person.slash.fill")
                 }
 
                 Button(role: .destructive) {

@@ -112,14 +112,8 @@ public struct AsyncStateButton: View {
                 isLoading = false
             }
         } label: {
-            HStack(spacing: 10) {
-                if isLoading {
-//                    Text("Loading...")
-
-                    Spinner(tint: config.buttonType.textColor, lineWidth: 4)
-                        .frame(width: 20, height: 20)
-                        .transition(.blurReplace)
-                } else {
+            ZStack {
+                HStack(spacing: 10) {
                     if let icon = config.icon, case .leading = config.iconPlacement {
                         icon
                             .iconSize(width: iconSize, height: iconSize)
@@ -132,12 +126,18 @@ public struct AsyncStateButton: View {
                             .iconSize(width: iconSize, height: iconSize)
                     }
                 }
+                .opacity(isLoading ? 0 : 1)
+
+                if isLoading {
+                    Spinner(tint: config.buttonType.textColor, lineWidth: 4)
+                        .frame(width: 20, height: 20)
+                }
             }
         }
         .disabled(isLoading)
         .buttonStyle(config.buttonStyle)
-        .animation(animation, value: config)
         .animation(animation, value: isLoading)
+        .animation(animation, value: config)
     }
 }
 
@@ -255,7 +255,7 @@ struct StrokeStyle<S: ShapeStyle>: ButtonStyle {
                 .frame(height: height)
                 .frame(maxWidth: .infinity)
                 .background {
-                    Colors.blackDark
+//                    Colors.blackDark
 
                     RoundedRectangle(cornerRadius: 30)
                         .strokeBorder(strokeStyle, lineWidth: 1)

@@ -33,7 +33,7 @@ public final class FollowButtonViewModel: ObservableObject {
                 isFollowed.toggle()
             }
         } catch {
-            isFollowed.toggle()
+            //            isFollowed.toggle()
         }
     }
 }
@@ -137,7 +137,7 @@ public struct FollowButton2: View {
     }
 
     public var body: some View {
-        let config = StateButtonConfig(buttonSize: buttonSize, buttonType: buttonType, title: buttonText, icon: icon, iconPlacement: .trailing)
+        let config = StateButtonConfig(buttonSize: buttonSize, buttonType: buttonType, title: buttonText)
 
         AsyncStateButton(config: config) {
             await viewModel.toggleFollow()

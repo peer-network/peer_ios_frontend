@@ -42,15 +42,18 @@ struct GemsMainView: View {
                         .iconSize(height: 27)
 
                     Text("\(balance.amount)")
+                        .contentTransition(.numericText())
+                        .animation(.snappy, value: balance.amount)
                         .font(.customFont(weight: .semiBold, style: .largeTitle))
                         .skeleton(isRedacted: isLoading ? true : false)
                 }
 
-                balanceExplanationView(balance: balance)
-                    .font(.customFont(weight: .regular, style: .headline))
-                    .skeleton(isRedacted: isLoading ? true : false)
+//                balanceExplanationView(balance: balance)
+//                    .font(.customFont(weight: .regular, style: .headline))
+//                    .skeleton(isRedacted: isLoading ? true : false)
             }
             .multilineTextAlignment(.center)
+            .padding(.bottom, 32)
         }
         .foregroundStyle(Colors.whitePrimary)
         .background {
@@ -79,6 +82,8 @@ struct GemsMainView: View {
             Text("Each token is \(Text(balance.tokenPrice, format: .number.rounded(rule: .up, increment: 0.01)).bold()) €")
 
             Text("Now you own \(Text(balance.balanceEUR, format: .number.rounded(rule: .up, increment: 0.01)).bold()) €")
+                .contentTransition(.numericText())
+                .animation(.snappy, value: balance.balanceEUR)
         }
     }
 }

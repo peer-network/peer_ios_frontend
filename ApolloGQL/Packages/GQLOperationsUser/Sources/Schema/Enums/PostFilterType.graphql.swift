@@ -10,4 +10,5 @@ public enum PostFilterType: String, EnumType {
   case text = "TEXT"
   case followed = "FOLLOWED"
   case follower = "FOLLOWER"
+  case viewed = "VIEWED"
 }

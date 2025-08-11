@@ -7,16 +7,24 @@ public class GetProfileQuery: GraphQLQuery {
   public static let operationName: String = "GetProfile"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetProfile($userid: ID!) { getProfile(contentFilterBy: MYGRANDMALIKES, userid: $userid) { __typename status ResponseCode affectedRows { __typename id username status slug img biography isfollowed isfollowing amountposts amounttrending amountfollowed amountfollower amountfriends amountblocked } } }"#
+      #"query GetProfile($contentFilterBy: ContentFilterType, $userid: ID!) { getProfile(contentFilterBy: $contentFilterBy, userid: $userid) { __typename status ResponseCode affectedRows { __typename id username status slug img biography isfollowed isfollowing amountposts amounttrending amountfollowed amountfollower amountfriends amountblocked } } }"#
     ))
 
+  public var contentFilterBy: GraphQLNullable<GraphQLEnum<ContentFilterType>>
   public var userid: ID
 
-  public init(userid: ID) {
+  public init(
+    contentFilterBy: GraphQLNullable<GraphQLEnum<ContentFilterType>>,
+    userid: ID
+  ) {
+    self.contentFilterBy = contentFilterBy
     self.userid = userid
   }
 
-  public var __variables: Variables? { ["userid": userid] }
+  public var __variables: Variables? { [
+    "contentFilterBy": contentFilterBy,
+    "userid": userid
+  ] }
 
   public struct Data: GQLOperationsUser.SelectionSet {
     public let __data: DataDict
@@ -25,7 +33,7 @@ public class GetProfileQuery: GraphQLQuery {
     public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("getProfile", GetProfile.self, arguments: [
-        "contentFilterBy": "MYGRANDMALIKES",
+        "contentFilterBy": .variable("contentFilterBy"),
         "userid": .variable("userid")
       ]),
     ] }

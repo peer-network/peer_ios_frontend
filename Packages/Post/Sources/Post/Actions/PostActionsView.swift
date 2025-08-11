@@ -18,14 +18,12 @@ struct PostActionsView: View {
     }
 
     private var actions: [PostAction] {
-        [.like, .dislike, .comment, .views, .menu]
+        [.like, .dislike, .comment, .views]
     }
 
     let layout: ActionsLayout
 
     @ObservedObject var postViewModel: PostViewModel
-
-    @Binding var showAppleTranslation: Bool
 
     var body: some View {
         actionButtonsView
@@ -35,137 +33,164 @@ struct PostActionsView: View {
     private var actionButtonsView: some View {
         switch layout {
             case .horizontal:
-                HStack(alignment: .center, spacing: 20) {
+                HStack(alignment: .center, spacing: 0) {
                     ForEach(actions, id: \.self) { action in
-                        if action == .menu {
-                            Spacer()
-                                .frame(maxWidth: .infinity)
-                                .layoutPriority(-1)
+                        actionButton(action: action)
+                            .buttonStyle(PostActionButtonStyle(isOn: action.isOn(viewModel: postViewModel), tintColor: action.tintColor, defaultColor: action.getDefaultColor()))
+                            .contentShape(.rect)
+                    }
 
-                            Menu {
-                                Section {
-                                    Button {
-                                        showAppleTranslation = true
-                                    } label: {
-                                        Label("Translate", systemImage: "captions.bubble")
-                                    }
+                    Spacer()
+                        .frame(maxWidth: .infinity)
+                        .layoutPriority(-1)
+                }
+            case .vertical:
+                VStack(alignment: .center, spacing: 0) {
+                    ForEach(actions, id: \.self) { action in
+                        actionButton(action: action)
+                            .buttonStyle(PostActionButtonStyle(isOn: action.isOn(viewModel: postViewModel), tintColor: action.tintColor, defaultColor: action.getDefaultColor()))
+                    }
+                }
+        }
+    }
 
-                                    if !AccountManager.shared.isCurrentUser(id: postViewModel.post.owner.id) {
-                                        Button(role: .destructive) {
-                                            Task {
-                                                do {
-                                                    let isBlocked = try await postViewModel.blockContent()
-                                                    if isBlocked {
-                                                        showPopup(text: "User was blocked.")
-                                                    } else {
-                                                        showPopup(text: "User was unblocked.")
-                                                    }
-                                                } catch {
-                                                    showPopup(
-                                                        text: error.userFriendlyDescription
-                                                    )
-                                                }
-                                            }
-                                        } label: {
-                                            Label("Block User", systemImage: "person.slash.fill")
-                                        }
-                                        
-                                        Button(role: .destructive) {
-                                            Task {
-                                                do {
-                                                    try await postViewModel.report()
-                                                    showPopup(text: "Post was reported.")
-                                                } catch let error as PostActionError {
-                                                    showPopup(
-                                                        text: error.displayMessage,
-                                                        icon: error.displayIcon
-                                                    )
-                                                }
-                                            }
-                                        } label: {
-                                            Label("Report Post", systemImage: "exclamationmark.circle")
+    @ViewBuilder
+    private func actionButton(action: PostAction) -> some View {
+        switch layout {
+            case .horizontal:
+                HStack(alignment: .center, spacing: 5) {
+                    Button {
+                        Task {
+                            do {
+                                try await handleAction(action: action)
+                            } catch {
+                                if let error = error as? PostActionError {
+                                    showPopup(
+                                        text: error.displayMessage,
+                                        icon: error.displayIcon
+                                    )
+                                } else {
+                                    showPopup(
+                                        text: error.userFriendlyDescription
+                                    )
+                                }
+                            }
+                        }
+                    } label: {
+                        action.getIcon(viewModel: postViewModel)
+                            .iconSize(height: 19)
+                            .frame(height: 32)
+                            .contentShape(.rect)
+                    }
+
+                    if let amount = action.getAmount(viewModel: postViewModel) {
+                        Button {
+                            if let interaction = action.postInteraction {
+                                postViewModel.showInteractions(interaction)
+                            } else {
+                                Task {
+                                    do {
+                                        try await handleAction(action: action)
+                                    } catch {
+                                        if let error = error as? PostActionError {
+                                            showPopup(
+                                                text: error.displayMessage,
+                                                icon: error.displayIcon
+                                            )
+                                        } else {
+                                            showPopup(
+                                                text: error.userFriendlyDescription
+                                            )
                                         }
                                     }
                                 }
-                            } label: {
-                                actionButton(action: action)
-                                    .contentShape(.rect)
                             }
-                            .menuStyle(.button)
-                            .buttonStyle(PostActionButtonStyle(isOn: action.isOn(viewModel: postViewModel), tintColor: action.tintColor, defaultColor: action.getDefaultColor()))
-                            .contentShape(Rectangle())
-                        } else {
-                            actionButton(action: action)
-                                .buttonStyle(PostActionButtonStyle(isOn: action.isOn(viewModel: postViewModel), tintColor: action.tintColor, defaultColor: action.getDefaultColor()))
+                        } label: {
+                            Text(amount, format: .number.notation(.compactName))
+                                .contentTransition(.numericText())
+                                .animation(.snappy, value: amount)
+                                .font(.customFont(weight: .regular, size: .body))
+                                .lineLimit(1)
+                                .contentTransition(.numericText(value: Double(amount)))
+                                .foregroundStyle(action.getDefaultColor())
+                                .monospacedDigit()
+                                .frame(height: 32)
+                                .padding(.trailing, 20)
                                 .contentShape(.rect)
                         }
                     }
                 }
             case .vertical:
-                VStack(alignment: .center, spacing: 10) {
-                    ForEach(actions, id: \.self) { action in
-                        if action == .menu {
-                            Menu {
-                                Section {
-                                    Button {
-                                        showAppleTranslation = true
-                                    } label: {
-                                        Label("Translate", systemImage: "captions.bubble")
-                                    }
+                VStack(alignment: .center, spacing: 0) {
+                    Button {
+                        Task {
+                            do {
+                                try await handleAction(action: action)
+                            } catch {
+                                if let error = error as? PostActionError {
+                                    showPopup(
+                                        text: error.displayMessage,
+                                        icon: error.displayIcon
+                                    )
+                                } else {
+                                    showPopup(
+                                        text: error.userFriendlyDescription
+                                    )
+                                }
+                            }
+                        }
+                    } label: {
+                        action.getIcon(viewModel: postViewModel)
+                            .iconSize(height: 19)
+                            .padding(2.5)
+                            .padding(.horizontal, 2.5)
+                            .contentShape(.rect)
+                            .fixedSize(horizontal: true, vertical: true)
+                    }
 
-                                    if !AccountManager.shared.isCurrentUser(id: postViewModel.post.owner.id) {
-                                        Button(role: .destructive) {
-                                            Task {
-                                                do {
-                                                    let isBlocked = try await postViewModel.blockContent()
-                                                    if isBlocked {
-                                                        showPopup(text: "User was blocked.")
-                                                    } else {
-                                                        showPopup(text: "User was unblocked.")
-                                                    }
-                                                } catch {
-                                                    showPopup(
-                                                        text: error.userFriendlyDescription
-                                                    )
-                                                }
-                                            }
-                                        } label: {
-                                            Label("Block User", systemImage: "person.slash.fill")
-                                        }
-
-                                        Button(role: .destructive) {
-                                            Task {
-                                                do {
-                                                    try await postViewModel.report()
-                                                    showPopup(text: "Post was reported.")
-                                                } catch let error as PostActionError {
-                                                    showPopup(
-                                                        text: error.displayMessage,
-                                                        icon: error.displayIcon
-                                                    )
-                                                }
-                                            }
-                                        } label: {
-                                            Label("Report Post", systemImage: "exclamationmark.circle")
+                    if let amount = action.getAmount(viewModel: postViewModel) {
+                        Button {
+                            if let interaction = action.postInteraction {
+                                postViewModel.showInteractions(interaction)
+                            } else {
+                                Task {
+                                    do {
+                                        try await handleAction(action: action)
+                                    } catch {
+                                        if let error = error as? PostActionError {
+                                            showPopup(
+                                                text: error.displayMessage,
+                                                icon: error.displayIcon
+                                            )
+                                        } else {
+                                            showPopup(
+                                                text: error.userFriendlyDescription
+                                            )
                                         }
                                     }
                                 }
-                            } label: {
-                                actionButton(action: action)
                             }
-                            .menuStyle(.button)
-                            .buttonStyle(PostActionButtonStyle(isOn: action.isOn(viewModel: postViewModel), tintColor: action.tintColor, defaultColor: action.getDefaultColor()))
-                            .contentShape(Rectangle())
-                        } else {
-                            actionButton(action: action)
-                                .buttonStyle(PostActionButtonStyle(isOn: action.isOn(viewModel: postViewModel), tintColor: action.tintColor, defaultColor: action.getDefaultColor()))
+                        } label: {
+                            Text(amount, format: .number.notation(.compactName))
+                                .contentTransition(.numericText())
+                                .animation(.snappy, value: amount)
+                                .font(.customFont(weight: .regular, size: .body))
+                                .lineLimit(1)
+                                .contentTransition(.numericText(value: Double(amount)))
+                                .foregroundStyle(action.getDefaultColor())
+                                .monospacedDigit()
+                                .padding(2.5)
+                                .padding(.horizontal, 2.5)
+                                .padding(.bottom, 10)
+                                .contentShape(.rect)
+                                .fixedSize(horizontal: true, vertical: true)
                         }
                     }
                 }
         }
     }
 
-    private func actionButton(action: PostAction) -> some View {
+    private func actionButton2(action: PostAction) -> some View {
         Button {
             Task {
                 do {
@@ -187,16 +212,13 @@ struct PostActionsView: View {
             switch layout {
                 case .horizontal:
                     HStack(alignment: .center, spacing: 5) {
-                        if action == .menu {
-                            action.getIcon(viewModel: postViewModel)
-                                .iconSize(width: 16)
-                        } else {
-                            action.getIcon(viewModel: postViewModel)
-                                .iconSize(height: 19)
-                        }
+                        action.getIcon(viewModel: postViewModel)
+                            .iconSize(height: 19)
 
                         if let amount = action.getAmount(viewModel: postViewModel) {
                             Text(amount, format: .number.notation(.compactName))
+                                .contentTransition(.numericText())
+                                .animation(.snappy, value: amount)
                                 .font(.customFont(weight: .regular, size: .body))
                                 .lineLimit(1)
                                 .contentTransition(.numericText(value: Double(amount)))
@@ -205,19 +227,16 @@ struct PostActionsView: View {
                         }
                     }
                     .frame(height: 32)
-                    .contentShape(Rectangle())
+                    .contentShape(.rect)
                 case .vertical:
                     VStack(alignment: .center, spacing: 5) {
-                        if action == .menu {
-                            action.getIcon(viewModel: postViewModel)
-                                .iconSize(width: 16)
-                        } else {
-                            action.getIcon(viewModel: postViewModel)
-                                .iconSize(height: 19)
-                        }
+                        action.getIcon(viewModel: postViewModel)
+                            .iconSize(height: 19)
 
                         if let amount = action.getAmount(viewModel: postViewModel) {
                             Text(amount, format: .number.notation(.compactName))
+                                .contentTransition(.numericText())
+                                .animation(.snappy, value: amount)
                                 .font(.customFont(weight: .regular, size: .body))
                                 .lineLimit(1)
                                 .contentTransition(.numericText(value: Double(amount)))
@@ -225,13 +244,9 @@ struct PostActionsView: View {
                                 .monospacedDigit()
                         }
                     }
-                    .ifCondition(action == .menu) {
-                        $0.frame(height: 20)
-                    }
-                    .ifCondition(action != .menu) {
-                        $0.frame(height: 40)
-                    }
-                    .contentShape(Rectangle())
+                    .padding(5)
+                    .contentShape(.rect)
+                    .fixedSize(horizontal: true, vertical: true)
             }
         }
     }
@@ -245,8 +260,8 @@ struct PostActionsView: View {
                 try await postViewModel.dislike()
             case .comment:
                 postViewModel.showComments()
-            case .views, .menu:
-                break
+            case .views:
+                postViewModel.showInteractions(.views)
         }
     }
 }

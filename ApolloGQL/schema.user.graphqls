@@ -53,9 +53,12 @@ type Query {
   referralList(offset: Int, limit: Int): ReferralListResponse!
   listTodaysInteractions: ListTodaysInteractionsResponse!
   getActionPrices: GetActionPricesResponse!
+  getTransactionHistory(type: TokenMovementFilterType, direction: DirectionFilterType, start_date: String, end_date: String, limit: Int, offset: Int, sort: SortFilterType): TransactionResponse!
+  postInteractions(getOnly: GetOnly!, postOrCommentId: ID!, offset: Int, limit: Int): PostInteractionResponse
 }
 
 type Mutation {
+  updateUserPreferences(userPreferences: UserPreferencesInput): UserPreferencesResponse!
   updateUsername(username: String!, password: String!): DefaultResponse!
   updateEmail(email: String!, password: String!): DefaultResponse!
   updatePassword(password: String!, expassword: String!): DefaultResponse!
@@ -86,6 +89,31 @@ scalar Decimal
 
 scalar Date
 
+enum TokenMovementFilterType {
+  TRANSACTION
+  AIRDROP
+  MINT
+  PAYMENT
+  BURN
+}
+
+enum GetOnly {
+  VIEW
+  LIKE
+  DISLIKE
+  COMMENTLIKE
+}
+
+enum DirectionFilterType {
+  INCOME
+  DEDUCTION
+}
+
+enum SortFilterType {
+  NEWEST
+  OLDEST
+}
+
 enum PostActionType {
   LIKE
   DISLIKE
@@ -105,6 +133,7 @@ enum CommentType {
 
 enum ContentFilterType {
   MYGRANDMALIKES
+  MYGRANDMAHATES
 }
 
 enum ContentType {
@@ -121,6 +150,7 @@ enum PostFilterType {
   TEXT
   FOLLOWED
   FOLLOWER
+  VIEWED
 }
 
 enum IgnoreOption {
@@ -135,6 +165,7 @@ enum PostSortType {
   DISLIKES
   VIEWS
   COMMENTS
+  FOR_ME
 }
 
 enum DayFilterType {
@@ -149,6 +180,32 @@ enum DayFilterType {
   Y0
 }
 
+input UserPreferencesInput {
+  contentFilteringSeverityLevel: ContentFilterType
+}
+
+type Transaction {
+  transactionid: String!
+  transuniqueid: String!
+  transactiontype: String!
+  senderid: String!
+  recipientid: String!
+  tokenamount: Decimal!
+  transferaction: String!
+  message: String!
+  createdat: String!
+}
+
+type TransactionResponse {
+  status: String!
+  responseCode: Int!
+  affectedRows: [Transaction!]
+}
+
+type UserPreferences {
+  contentFilteringSeverityLevel: ContentFilterType
+}
+
 type ListTodaysInteractionsResponse {
   status: String!
   ResponseCode: String
@@ -159,6 +216,12 @@ type TodaysInteractionsData {
   totalInteractions: Decimal
   totalScore: Decimal
   totalDetails: TodaysInteractionsDetailsData
+}
+
+type PostInteractionResponse {
+  status: String!
+  ResponseCode: String
+  affectedRows: [ProfileUser!]
 }
 
 type TodaysInteractionsDetailsData {
@@ -177,6 +240,7 @@ type HelloResponse {
   currentVersion: String
   wikiLink: String
   lastMergedPullRequestNumber: String
+  companyAccountId: ID
 }
 
 type LogWins {
@@ -230,6 +294,7 @@ type UserInfo {
   amountfriends: Int!
   invited: ID!
   updatedat: Date
+  userPreferences: UserPreferences
 }
 
 type PostInfoResponse {
@@ -312,6 +377,12 @@ type DefaultResponse {
   ResponseCode: String
 }
 
+type UserPreferencesResponse {
+  status: String!
+  ResponseCode: String
+  affectedRows: UserPreferences
+}
+
 type AddPostResponse {
   status: String!
   ResponseCode: String
@@ -352,13 +423,13 @@ type ChatMessageInfo {
   createdat: Date
 }
 
-type Userinforesponse {
+type BasicUserInfoResponse {
   status: String!
   ResponseCode: String
-  affectedRows: Userinfo
+  affectedRows: BasicUserInfo
 }
 
-type Userinfo {
+type BasicUserInfo {
   userid: ID
   img: String
   username: String
@@ -371,7 +442,7 @@ type UserFriendsResponse {
   status: String!
   counter: Int!
   ResponseCode: String
-  affectedRows: [Userinfo]
+  affectedRows: [BasicUserInfo]
 }
 
 type User {

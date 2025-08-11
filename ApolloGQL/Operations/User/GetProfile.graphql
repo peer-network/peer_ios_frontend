@@ -1,6 +1,6 @@
-query GetProfile($userid: ID!) {
+query GetProfile($contentFilterBy: ContentFilterType, $userid: ID!) {
 	getProfile(
-        contentFilterBy: MYGRANDMALIKES
+        contentFilterBy: $contentFilterBy
         userid: $userid
     ) {
         status

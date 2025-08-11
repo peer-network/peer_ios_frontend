@@ -17,7 +17,6 @@ extension PushNotificationCenter: UNUserNotificationCenterDelegate {
         _ center: UNUserNotificationCenter,
         willPresent notification: UNNotification
     ) async -> UNNotificationPresentationOptions {
-        
         return [.banner]
     }
     
@@ -39,13 +38,13 @@ extension PushNotificationCenter: UNUserNotificationCenterDelegate {
 
 extension PushNotificationCenter: MessagingDelegate {
 
-//    public func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-//            Messaging.messaging().token { token, error in
-//              if let error = error {
-//                print("Error fetching FCM registration token: \(error)")
-//              } else if let token = token {
-//                print("FCM registration token: \(token)")
-//              }
-//            }
-//        }
+    public func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+            Messaging.messaging().token { token, error in
+              if let error = error {
+                print("Error fetching FCM registration token: \(error)")
+              } else if let token = token {
+                print("FCM registration token: \(token)")
+              }
+            }
+        }
 }

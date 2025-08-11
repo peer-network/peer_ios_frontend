@@ -108,5 +108,19 @@
         "releaseNotes": [
             "Overall improvements and fixes"
         ]
+    },
+    {
+      "version": "1.5.0",
+      "date": "11 Aug 2025",
+      "releaseNotes": [
+        "See who liked, disliked, and viewed each post — tap the “eye” under the post to view details",
+        "Get notifications when someone likes your post (test mode)",
+        "Videos now appear in Explore and on profiles",
+        "Video feed rebuilt for faster loading and smoother scrolling, long-press any video to play at 2x speed",
+        "New “For you” filter in Feed (rolling out in test mode)",
+        "Long descriptions now collapse with a “more” button",
+        "UI updates across the app for a cleaner, more polished look",
+        "Overall improvements and fixes"
+      ]
     }
 ]

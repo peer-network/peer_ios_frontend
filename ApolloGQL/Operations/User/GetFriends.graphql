@@ -1,6 +1,6 @@
-query GetFriends($offset: Int, $limit: Int) {
+query GetFriends($contentFilterBy: ContentFilterType, $offset: Int, $limit: Int) {
 	listFriends(
-        contentFilterBy: MYGRANDMALIKES
+        contentFilterBy: $contentFilterBy
         offset: $offset
         limit: $limit
     ) {

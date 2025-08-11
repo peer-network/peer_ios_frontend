@@ -10,7 +10,7 @@ import DesignSystem
 
 @MainActor
 enum PostAction {
-    case like, dislike, comment, views, menu
+    case like, dislike, comment, views
 
     func getIcon(viewModel: PostViewModel) -> Image {
         switch self {
@@ -22,8 +22,6 @@ enum PostAction {
                 Icons.bubble
             case .views:
                 Icons.eyeCircled
-            case .menu:
-                Icons.ellipsis
         }
     }
 
@@ -37,14 +35,12 @@ enum PostAction {
                 return viewModel.amountComments
             case .views:
                 return viewModel.amountViews
-            case .menu:
-                return nil
         }
     }
 
     func getDefaultColor() -> Color {
         switch self {
-            case .like, .dislike, .comment, .menu:
+            case .like, .dislike, .comment:
                 return Colors.whitePrimary
             case .views:
                 return Colors.whiteSecondary
@@ -57,7 +53,7 @@ enum PostAction {
                 Colors.redAccent
             case .dislike:
                 Colors.redAccent
-            case .comment, .views, .menu:
+            case .comment, .views:
                 nil
         }
     }
@@ -68,8 +64,21 @@ enum PostAction {
                 viewModel.isLiked
             case .dislike:
                 viewModel.isDisliked
-            case .menu, .comment, .views:
+            case .comment, .views:
                 false
+        }
+    }
+
+    var postInteraction: InteractionType? {
+        switch self {
+            case .like:
+                return .likes
+            case .dislike:
+                return .dislikes
+            case .comment:
+                return nil
+            case .views:
+                return .views
         }
     }
 }

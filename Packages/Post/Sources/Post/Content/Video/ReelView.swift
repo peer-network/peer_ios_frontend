@@ -24,7 +24,7 @@ private struct CustomVideoPlayer: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> AVPlayerViewController {
         let controller = AVPlayerViewController()
         controller.player = player
-        controller.videoGravity = .resizeAspectFill
+        controller.videoGravity = .resizeAspect
         controller.showsPlaybackControls = false
         controller.allowsVideoFrameAnalysis = false
         controller.allowsPictureInPicturePlayback = false
@@ -44,10 +44,11 @@ struct ReelView: View {
     @ObservedObject var postVM: PostViewModel
 
     let size: CGSize
+    @Binding var showAppleTranslation: Bool
 
+    // Player states
     @State private var player: AVPlayer?
     @State private var looper: AVPlayerLooper?
-
     @State private var pausedByUser = false
 
     // Video Seeker Properties
@@ -63,8 +64,7 @@ struct ReelView: View {
     @State private var playerStatusObserver: NSKeyValueObservation?
     @State private var thumbnailGenerationTask: Task<(), Never>? = nil
 
-    @Binding var showAppleTranslation: Bool
-
+    // Like animation
     @State private var likedCounter: [ReelLike] = []
 
     var body: some View {
@@ -78,9 +78,10 @@ struct ReelView: View {
                     playPause(value)
                 }
                 .overlay(alignment: .top) {
-                    PostHeaderView(postVM: postVM, showFollowButton: true)
+                    PostHeaderView(postVM: postVM, showAppleTranslation: $showAppleTranslation, showFollowButton: true)
                         .padding(.top, 10)
                         .padding(.horizontal, 20)
+                        .shadow(color: .black, radius: 40, x: 0, y: 0)
                 }
                 .overlay(alignment: .bottom) {
                     if !isSeeking {
@@ -98,11 +99,15 @@ struct ReelView: View {
                     }
                 }
                 .overlay(alignment: .bottomLeading) {
-                    SeekerThumbnailView()
-                        .offset(y: -60)
+                    if isDragging {
+                        SeekerThumbnailView()
+                            .offset(y: -60)
+                    }
                 }
                 .overlay(alignment: .bottom) {
-                    VideoSeekerView()
+                    if postVM.post.media.first?.duration != nil {
+                        VideoSeekerView()
+                    }
                 }
             // Double Tap for Like
                 .onTapGesture(count: 2) { position in
@@ -253,22 +258,46 @@ struct ReelView: View {
 
         looper = nil
         player = nil
+
+        try? AVAudioSession.sharedInstance().setActive(false)
     }
 
     // MARK: - Play/Pause Logic Based on Offset
+//
+//    private func playPause(_ rect: CGRect) {
+//        if !pausedByUser {
+//            if -rect.minY < (rect.height * 0.5) && rect.minY < (rect.height * 0.5) {
+//                player?.play()
+//            } else {
+//                player?.pause()
+//            }
+//        }
+//
+//        if rect.minY >= size.height || -rect.minY >= size.height {
+//            pausedByUser = false
+//            player?.seek(to: .zero)
+//        }
+//    }
 
     private func playPause(_ rect: CGRect) {
+        // Calculate visible area (0 = fully visible, 1 = fully hidden)
+        let visibleRatio = min(1.0, max(0.0, abs(rect.midY - size.height / 2) / (size.height / 2)))
+
         if !pausedByUser {
-            if -rect.minY < (rect.height * 0.5) && rect.minY < (rect.height * 0.5) {
-                player?.play()
+            if visibleRatio < 0.5 { // More than 50% visible
+                if player?.rate == 0 {
+                    player?.play()
+                }
             } else {
                 player?.pause()
             }
         }
 
-        if rect.minY >= size.height || -rect.minY >= size.height {
+        // Reset if completely offscreen
+        if visibleRatio >= 1.0 {
             pausedByUser = false
             player?.seek(to: .zero)
+            player?.pause()
         }
     }
 
@@ -279,11 +308,12 @@ struct ReelView: View {
         HStack(alignment: .bottom, spacing: 10) {
             PostDescriptionComment(postVM: postVM, isInFeed: false)
 
-            PostActionsView(layout: .vertical, postViewModel: postVM, showAppleTranslation: $showAppleTranslation)
+            PostActionsView(layout: .vertical, postViewModel: postVM)
         }
         .padding(.leading, 20)
         .padding(.trailing, 20)
         .padding(.bottom, 20)
+        .shadow(color: .black, radius: 40, x: 0, y: 0)
     }
 
     // MARK: - Video Seeker View
@@ -347,6 +377,7 @@ struct ReelView: View {
                 )
                 .offset(x: progress * size.width > 15 ? (progress * -15) : 0)
                 .frame(width: 15, height: 15)
+                .ignoresSafeArea(.container, edges: .bottom)
         }
     }
 

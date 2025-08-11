@@ -30,7 +30,8 @@ let package = Package(
                 .product(name: "GQLOperationsGuest", package: "GQLOperationsGuest"),
                 .product(name: "Models", package: "Models"),
                 .product(name: "TokenKeychainManager", package: "TokenKeychainManager"),
-                .product(name: "FirebaseMessaging", package: "firebase-ios-sdk")
+                .product(name: "FirebaseMessaging", package: "firebase-ios-sdk"),
+                .product(name: "FirebaseFunctions", package: "firebase-ios-sdk")
             ]
         ),
     ],

@@ -7,24 +7,28 @@ public class GetFollowersQuery: GraphQLQuery {
   public static let operationName: String = "GetFollowers"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetFollowers($userid: ID, $offset: Int, $limit: Int) { listFollowRelations( contentFilterBy: MYGRANDMALIKES userid: $userid offset: $offset limit: $limit ) { __typename status ResponseCode affectedRows { __typename followers { __typename id username slug img isfollowed isfollowing } } } }"#
+      #"query GetFollowers($contentFilterBy: ContentFilterType, $userid: ID, $offset: Int, $limit: Int) { listFollowRelations( contentFilterBy: $contentFilterBy userid: $userid offset: $offset limit: $limit ) { __typename status ResponseCode affectedRows { __typename followers { __typename id username slug img isfollowed isfollowing } } } }"#
     ))
 
+  public var contentFilterBy: GraphQLNullable<GraphQLEnum<ContentFilterType>>
   public var userid: GraphQLNullable<ID>
   public var offset: GraphQLNullable<Int>
   public var limit: GraphQLNullable<Int>
 
   public init(
+    contentFilterBy: GraphQLNullable<GraphQLEnum<ContentFilterType>>,
     userid: GraphQLNullable<ID>,
     offset: GraphQLNullable<Int>,
     limit: GraphQLNullable<Int>
   ) {
+    self.contentFilterBy = contentFilterBy
     self.userid = userid
     self.offset = offset
     self.limit = limit
   }
 
   public var __variables: Variables? { [
+    "contentFilterBy": contentFilterBy,
     "userid": userid,
     "offset": offset,
     "limit": limit
@@ -37,7 +41,7 @@ public class GetFollowersQuery: GraphQLQuery {
     public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("listFollowRelations", ListFollowRelations.self, arguments: [
-        "contentFilterBy": "MYGRANDMALIKES",
+        "contentFilterBy": .variable("contentFilterBy"),
         "userid": .variable("userid"),
         "offset": .variable("offset"),
         "limit": .variable("limit")

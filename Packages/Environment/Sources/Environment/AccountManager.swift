@@ -28,6 +28,7 @@ public final class AccountManager: ObservableObject {
     public private(set) var userId: String?
     public private(set) var user: User?
     public private(set) var inviter: RowUser?
+    @AppStorage("offensiveContentFilter", store: UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")) private var offensiveContentFilter: OffensiveContentFilter = .blocked
 
     private var apiService: APIService
     private var currentConfiguration: APIConfiguration
@@ -121,6 +122,17 @@ public final class AccountManager: ObservableObject {
                 self.inviter = inviter
             case .failure(let apiError):
                 self.inviter = nil
+                throw apiError
+        }
+    }
+
+    public func fetchUserInfo() async throws {
+        let result = await apiService.getMyUserInfo()
+
+        switch result {
+            case .success(let filter):
+                self.offensiveContentFilter = filter
+            case .failure(let apiError):
                 throw apiError
         }
     }

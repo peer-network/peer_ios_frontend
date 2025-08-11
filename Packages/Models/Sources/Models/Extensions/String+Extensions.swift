@@ -12,6 +12,7 @@ extension String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSSSS"
         dateFormatter.timeZone = TimeZone(abbreviation: "UTC") // Server time is in UTC
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
 
         guard let serverDate = dateFormatter.date(from: self) else {
             return ""

@@ -16,6 +16,9 @@ struct PostHeaderView: View {
     @EnvironmentObject private var accountManager: AccountManager
 
     @ObservedObject var postVM: PostViewModel
+    
+    @Binding var showAppleTranslation: Bool
+
     let showFollowButton: Bool
 
     var profileImageIgnoreCache: Bool {
@@ -42,14 +45,13 @@ struct PostHeaderView: View {
                         .foregroundStyle(Colors.whiteSecondary)
                 }
                 .font(.customFont(weight: .regular, style: .footnote))
+                .lineLimit(1)
+//                .minimumScaleFactor(0.5)
                 .foregroundStyle(Colors.whitePrimary)
                 .contentShape(.rect)
-                .shadow(color: .black, radius: 40, x: 0, y: 0)
             }
 
-            Spacer()
-                .frame(maxWidth: .infinity)
-                .layoutPriority(-1)
+            Spacer(minLength: 20)
 
             if showFollowButton,
                !redactionReasons.contains(.placeholder),
@@ -61,10 +63,66 @@ struct PostHeaderView: View {
                     isFollowing: postVM.post.owner.isFollowing,
                     isFollowed: postVM.post.owner.isFollowed
                 )
-                FollowButton(viewModel: vm)
-//                FollowButton2(viewModel: vm)
-//                    .fixedSize(horizontal: true, vertical: false)
+//                FollowButton(viewModel: vm)
+                FollowButton2(viewModel: vm)
+                    .fixedSize(horizontal: true, vertical: false)
             }
+
+            Menu {
+                Section {
+                    Button {
+                        showAppleTranslation = true
+                    } label: {
+                        Label("Translate", systemImage: "captions.bubble")
+                    }
+
+                    if !AccountManager.shared.isCurrentUser(id: postVM.post.owner.id) {
+                        Button(role: .destructive) {
+                            Task {
+                                do {
+                                    let isBlocked = try await postVM.blockContent()
+                                    if isBlocked {
+                                        showPopup(text: "User was blocked.")
+                                    } else {
+                                        showPopup(text: "User was unblocked.")
+                                    }
+                                } catch {
+                                    showPopup(
+                                        text: error.userFriendlyDescription
+                                    )
+                                }
+                            }
+                        } label: {
+                            Label("Toggle User Block", systemImage: "person.slash.fill")
+                        }
+
+                        Button(role: .destructive) {
+                            Task {
+                                do {
+                                    try await postVM.report()
+                                    showPopup(text: "Post was reported.")
+                                } catch let error as PostActionError {
+                                    showPopup(
+                                        text: error.displayMessage,
+                                        icon: error.displayIcon
+                                    )
+                                }
+                            }
+                        } label: {
+                            Label("Report Post", systemImage: "exclamationmark.circle")
+                        }
+                    }
+                }
+            } label: {
+                Icons.ellipsis
+                    .iconSize(width: 16)
+                    .padding(.horizontal, 10)
+                    .frame(height: 40)
+                    .contentShape(.rect)
+            }
+            .menuStyle(.button)
+            .buttonStyle(PostActionButtonStyle(isOn: false, tintColor: nil, defaultColor: Colors.whitePrimary))
+            .contentShape(.rect)
         }
     }
 }

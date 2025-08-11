@@ -12,14 +12,16 @@ import Foundation
 extension FeedContentType {
     var apiValue: [GraphQLEnum<PostFilterType>] {
         switch self {
-        case .regular:
-            [.case(.text), .case(.image)]
-        case .audio:
-            [.case(.audio)]
-        case .video:
-            [.case(.video)]
-        case .image:
-            [.case(.image)]
+            case .regular:
+                [.case(.text), .case(.image)]
+            case .audio:
+                [.case(.audio)]
+            case .video:
+                [.case(.video)]
+            case .image:
+                [.case(.image)]
+            case .imageAndVideo:
+                [.case(.image), .case(.video)]
         }
     }
 }
@@ -37,6 +39,7 @@ extension FeedFilterByRelationship {
 extension FeedContentSortingByPopularity {
     var apiValue: GraphQLNullable<GraphQLEnum<PostSortType>> {
         switch self {
+            case .forYou: return .some(.case(.forMe))
             case .newest: return .some(.case(.newest))
             case .trending: return .some(.case(.trending))
             case .mostLiked: return .some(.case(.likes))
@@ -78,6 +81,36 @@ extension FeedContentSortingByTime {
                 let nextDayString = formatter.string(from: nextDay)
                 let thirtyDaysAgoString = formatter.string(from: thirtyDaysAgo)
                 return (thirtyDaysAgoString, nextDayString)
+        }
+    }
+}
+
+extension OffensiveContentFilter {
+    public var apiValue: GraphQLNullable<GraphQLEnum<ContentFilterType>> {
+        switch self {
+            case .allowed:
+                return .some(.case(.mygrandmahates))
+            case .blocked:
+                return .some(.case(.mygrandmalikes))
+        }
+    }
+
+    public static func normalizedValue(from apiValue: ContentFilterType) -> OffensiveContentFilter {
+        switch apiValue {
+            case .mygrandmahates:
+                return .allowed
+            case .mygrandmalikes:
+                return .blocked
+        }
+    }
+}
+
+extension PostInteraction {
+    public var apiValue: GraphQLEnum<GetOnly> {
+        switch self {
+            case .likes: return .case(.like)
+            case .dislikes: return .case(.dislike)
+            case .views: return .case(.view)
         }
     }
 }
