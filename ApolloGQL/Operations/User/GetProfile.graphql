@@ -1,0 +1,25 @@
+query GetProfile($contentFilterBy: ContentFilterType, $userid: ID!) {
+	getProfile(
+        contentFilterBy: $contentFilterBy
+        userid: $userid
+    ) {
+        status
+        ResponseCode
+        affectedRows {
+            id
+            username
+            status
+            slug
+            img
+            biography
+            isfollowed
+            isfollowing
+            amountposts
+            amounttrending
+            amountfollowed
+            amountfollower
+            amountfriends
+            amountblocked
+        }
+    }
+}

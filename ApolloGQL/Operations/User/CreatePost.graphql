@@ -1,0 +1,37 @@
+mutation CreatePost($contentType: ContentType!, $title: String!, $media: [String!], $mediadescription: String, $tags: [String!], $cover: [String!]) {
+    createPost(
+        action: POST
+        input: { contenttype: $contentType, title: $title, media: $media, mediadescription: $mediadescription, tags: $tags, cover: $cover }
+    ) {
+        status
+        ResponseCode
+        affectedRows {
+            id
+            contenttype
+            title
+            media
+            cover
+            mediadescription
+            createdat
+            amountlikes
+            amountviews
+            amountcomments
+            amountdislikes
+            amounttrending
+            isliked
+            isviewed
+            isreported
+            isdisliked
+            issaved
+            tags
+            user {
+                id
+                username
+                slug
+                img
+                isfollowed
+                isfollowing
+            }
+        }
+    }
+}

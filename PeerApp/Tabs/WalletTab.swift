@@ -6,27 +6,32 @@
 //
 
 import SwiftUI
-import DesignSystem
 import Environment
-//import Wallet
+import Wallet
 
 struct WalletTab: View {
-    @EnvironmentObject private var theme: Theme
-    
+    @Environment(\.selectedTabEmptyPath) private var selectedTabEmptyPath
+
     @StateObject private var router = Router()
     
     var body: some View {
         NavigationStack(path: $router.path) {
-//            WalletView()
-            EmptyView()
+            WalletView()
+                .toolbar(.hidden, for: .navigationBar)
                 .withAppRouter()
                 .withSheetDestinations(sheetDestinations: $router.presentedSheet)
+                .onChange(of: selectedTabEmptyPath) {
+                    if selectedTabEmptyPath == 3, !router.path.isEmpty {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                            router.emptyPath()
+                        }
+                    }
+                }
+                .onAppear {
+//                    analytics.track(event: .tabSelected(.wallet))
+                }
         }
         .withSafariRouter()
         .environmentObject(router)
     }
-}
-
-#Preview {
-    ProfileTab()
 }

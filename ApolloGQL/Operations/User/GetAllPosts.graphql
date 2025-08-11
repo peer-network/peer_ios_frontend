@@ -1,18 +1,21 @@
-query GetAllPosts($filterBy: [FilterType], $sortBy: SortType, $title: String, $tag: String, $from: Date, $to: Date, $postOffset: Int, $postLimit: Int, $commentOffset: Int, $commentLimit: Int) {
-	getallposts(
+query GetAllPosts($filterBy: [PostFilterType!], $contentFilterBy: ContentFilterType, $ignoreOption: IgnoreOption, $sortBy: PostSortType, $title: String, $tag: String, $from: Date, $to: Date, $offset: Int, $limit: Int, $commentOffset: Int, $commentLimit: Int, $postid: ID, $userid: ID) {
+	listPosts(
         filterBy: $filterBy
+        contentFilterBy: $contentFilterBy
+        IgnorList: $ignoreOption
         commentLimit: $commentLimit
         commentOffset: $commentOffset
-        postLimit: $postLimit
-        postOffset: $postOffset
+        limit: $limit
+        offset: $offset
         to: $to
         from: $from
         tag: $tag
         title: $title
         sortBy: $sortBy
+        postid: $postid
+        userid: $userid
     ) {
         status
-        counter
         ResponseCode
         affectedRows {
             id
@@ -36,6 +39,7 @@ query GetAllPosts($filterBy: [FilterType], $sortBy: SortType, $title: String, $t
             user {
                 id
                 username
+                slug
                 img
                 isfollowed
                 isfollowing

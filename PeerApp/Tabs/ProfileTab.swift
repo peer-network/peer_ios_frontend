@@ -7,31 +7,46 @@
 
 import SwiftUI
 import Environment
-import DesignSystem
-//import Profile
+import ProfileNew
 
 struct ProfileTab: View {
-    @EnvironmentObject private var theme: Theme
+    @Environment(\.selectedTabEmptyPath) private var selectedTabEmptyPath
+
     @EnvironmentObject private var accountManager: AccountManager
-    
+
     @StateObject private var router = Router()
-    
+
     var body: some View {
         NavigationStack(path: $router.path) {
-            if let userId = accountManager.userId {
-//                ProfileView(userId: userId, isCurrentUser: true)
-                EmptyView()
-                    .withAppRouter()
-                    .withSheetDestinations(sheetDestinations: $router.presentedSheet)
-                    .toolbarBackground(theme.primaryBackgroundColor.opacity(0.30), for: .navigationBar)
-                    .id(userId)
-            } else {
-                EmptyView()
-//                ProfileView(user: .placeholder(), isCurrentUser: true)
-                    .redacted(reason: .placeholder)
-                    .allowsHitTesting(false)
+            Group {
+                if let userId = accountManager.userId {
+                    if #available(iOS 18, *) {
+                        ProfilePageView(userId: userId)
+                            .toolbar(.hidden, for: .navigationBar)
+                            .withAppRouter()
+                            .withSheetDestinations(sheetDestinations: $router.presentedSheet)
+                            .id(userId)
+                    } else {
+                        ProfileView(userId: userId)
+                            .toolbar(.hidden, for: .navigationBar)
+                            .withAppRouter()
+                            .withSheetDestinations(sheetDestinations: $router.presentedSheet)
+                            .id(userId)
+                    }
+                } else {
+                    ProfileView(userId: "")
+                        .toolbar(.hidden, for: .navigationBar)
+                        .redacted(reason: .placeholder)
+                        .allowsHitTesting(false)
+                }
             }
-            
+            .onChange(of: selectedTabEmptyPath) {
+                if selectedTabEmptyPath == 4, !router.path.isEmpty {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        router.emptyPath()
+                    }
+                }
+            }
         }
         .withSafariRouter()
         .environmentObject(router)

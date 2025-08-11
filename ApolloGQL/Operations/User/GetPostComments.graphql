@@ -1,7 +1,6 @@
-query GetPostComments($postid: ID!) {
-    searchpost(postid: $postid) {
+query GetPostComments($contentFilterBy: ContentFilterType, $postid: ID!, $commentLimit: Int, $commentOffset: Int) {
+    listPosts(postid: $postid, commentLimit: $commentLimit, commentOffset: $commentOffset, contentFilterBy: $contentFilterBy) {
         status
-        counter
         ResponseCode
         affectedRows {
             amountcomments
@@ -12,11 +11,13 @@ query GetPostComments($postid: ID!) {
                 parentid
                 content
                 amountlikes
+                amountreplies
                 isliked
                 createdat
                 user {
                     id
                     username
+                    slug
                     img
                     isfollowed
                     isfollowing

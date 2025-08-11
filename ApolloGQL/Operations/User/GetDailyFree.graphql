@@ -1,7 +1,11 @@
-query Dailyfree {
-    dailyfreestatus {
+query GetDailyFree {
+    getDailyFreeStatus {
         status
         ResponseCode
-        affectedRows
+        affectedRows {
+            name
+            used
+            available
+        }
     }
 }

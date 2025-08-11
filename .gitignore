@@ -130,6 +130,9 @@ iOSInjectionProject/
 
 
 
-Packages/
+
 ApolloGQL/apolloconfig.user.json
 ApolloGQL/apolloconfig.guest.json
+
+PeerApp/GoogleService-Info.plist
+Scripts/*.sh

@@ -1,0 +1,21 @@
+query SearchUser($contentFilterBy: ContentFilterType, $userid: ID, $username: String, $offset: Int, $limit: Int) {
+	searchUser(
+        contentFilterBy: $contentFilterBy
+        userid: $userid
+        username: $username
+        offset: $offset
+        limit: $limit
+    ) {
+        status
+        counter
+        ResponseCode
+        affectedRows {
+            id
+            username
+            status
+            slug
+            img
+            biography
+        }
+    }
+}

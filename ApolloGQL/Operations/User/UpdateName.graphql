@@ -1,0 +1,6 @@
+mutation UpdateName($username: String!, $password: String!) {
+    updateUsername(username: $username, password: $password) {
+        status
+        ResponseCode
+    }
+}

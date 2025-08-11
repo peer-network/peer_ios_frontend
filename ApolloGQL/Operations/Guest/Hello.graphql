@@ -1,5 +1,7 @@
 query Hello {
     hello {
         currentuserid
+        currentVersion
+        wikiLink
     }
 }

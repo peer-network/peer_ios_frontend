@@ -1,0 +1,17 @@
+query GetMyReferredUsers($offset: Int, $limit: Int) {
+    referralList(offset: $offset, limit: $limit) {
+        status
+        counter
+        ResponseCode
+        affectedRows {
+            iInvited {
+                id
+                username
+                slug
+                img
+                isfollowed
+                isfollowing
+            }
+        }
+    }
+}

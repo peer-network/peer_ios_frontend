@@ -1,0 +1,21 @@
+query GetFollowings($contentFilterBy: ContentFilterType, $userid: ID, $offset: Int, $limit: Int) {
+	listFollowRelations(
+        contentFilterBy: $contentFilterBy
+        userid: $userid
+        offset: $offset
+        limit: $limit
+    ) {
+        status
+        ResponseCode
+        affectedRows {
+            following {
+                id
+                username
+                slug
+                img
+                isfollowed
+                isfollowing
+            }
+        }
+    }
+}

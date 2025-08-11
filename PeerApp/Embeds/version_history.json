@@ -1,0 +1,126 @@
+[
+    {
+        "version": "1.1.0",
+        "date": "15 Apr 2025",
+        "releaseNotes": [
+            "Animated splash screen",
+            "New placeholder views",
+            "Version history screen",
+            "Overall improvements and fixes"
+        ]
+    },
+    {
+        "version": "1.2.0",
+        "date": "29 Apr 2025",
+        "releaseNotes": [
+            "Links in post descriptions and comments are now highlighted and clickable",
+            "Refreshing posts stats in Feed does not require closing the app anymore, just pull to refresh it",
+            "Now you can swipe through short videos with no limit",
+            "Text posts length limit increased, obtaining a collapse button in Feed",
+            "Loading skeleton views were added everywhere in the app",
+            "Overall improvements and fixes"
+        ]
+    },
+    {
+        "version": "1.3.0",
+        "date": "19 May 2025",
+        "releaseNotes": [
+            "Send Peer Tokens directly to other users with the new transfer feature",
+            "Invite friends with your personal referral code and earn 1% of their transactions",
+            "Discover what's hot – the Explore tab now features trending posts",
+            "Click on any hashtag to view all related posts in one place",
+            "Update your username, email, or password anytime in your settings",
+            "General improvements and bug fixes for a smoother experience"
+        ]
+    },
+    {
+        "version": "1.3.1",
+        "date": "2 Jun 2025",
+        "releaseNotes": [
+            "Full post creation screen redesigned for a cleaner and more intuitive experience",
+            "Forgot password feature is now available for easy account recovery",
+            "Referrals page added – manage and share your referral links with ease",
+            "Scroll through trending posts in Explore with no limit",
+            "Profile page updated with a new header design",
+            "Overall improvements and fixes"
+        ]
+    },
+    {
+        "version": "1.3.2",
+        "date": "3 Jun 2025",
+        "releaseNotes": [
+            "Overall improvements and fixes"
+        ]
+    },
+    {
+        "version": "1.3.3",
+        "date": "11 Jun 2025",
+        "releaseNotes": [
+            "Audio posts creation is back",
+            "Overall improvements and fixes"
+        ]
+    },
+    {
+        "version": "1.3.4",
+        "date": "12 Jun 2025",
+        "releaseNotes": [
+            "Overall improvements and fixes"
+        ]
+    },
+    {
+        "version": "1.3.5",
+        "date": "17 Jun 2025",
+        "releaseNotes": [
+            "Small UI tweaks for a cleaner, more polished look throughout the app",
+            "Fixed an issue where you couldn’t scroll beyond 40 comments or profile entries",
+            "Added helpful confirmation popups for post-related actions",
+            "Various improvements and bug fixes to keep everything running smoothly"
+        ]
+    },
+    {
+        "version": "1.4.0",
+        "date": "18 Jun 2025",
+        "releaseNotes": [
+            "Report comments easily by long-pressing any comment – let us know if something's not right",
+            "You can now hide posts from specific users directly from the 3-dots menu under any post. You’ll find a list of blocked users in your Settings",
+            "As always, we've made some improvements and bug fixes to enhance your overall experience and app performance"
+        ]
+    },
+    {
+        "version": "1.4.1",
+        "date": "19 Jun 2025",
+        "releaseNotes": [
+            "Overall improvements and fixes"
+        ]
+    },
+    {
+        "version": "1.4.2",
+        "date": "19 Jun 2025",
+        "releaseNotes": [
+            "Smarter image display in Feed – Images now appear in either 4:3 or 1:1 ratio depending on their resolution, so your feed looks even better",
+            "Small UI updates for a cleaner, more polished feel across the app",
+            "General improvements and bug fixes to keep things smooth and stable"
+        ]
+    },
+    {
+        "version": "1.4.3",
+        "date": "8 Jul 2025",
+        "releaseNotes": [
+            "Overall improvements and fixes"
+        ]
+    },
+    {
+      "version": "1.5.0",
+      "date": "11 Aug 2025",
+      "releaseNotes": [
+        "See who liked, disliked, and viewed each post — tap the “eye” under the post to view details",
+        "Get notifications when someone likes your post (test mode)",
+        "Videos now appear in Explore and on profiles",
+        "Video feed rebuilt for faster loading and smoother scrolling, long-press any video to play at 2x speed",
+        "New “For you” filter in Feed (rolling out in test mode)",
+        "Long descriptions now collapse with a “more” button",
+        "UI updates across the app for a cleaner, more polished look",
+        "Overall improvements and fixes"
+      ]
+    }
+]

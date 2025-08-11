@@ -1,0 +1,16 @@
+query GetMyInviter {
+    referralList {
+        status
+        ResponseCode
+        affectedRows {
+            invitedBy {
+                id
+                username
+                slug
+                img
+                isfollowed
+                isfollowing
+            }
+        }
+    }
+}

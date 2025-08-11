@@ -1,0 +1,16 @@
+query GetFriends($contentFilterBy: ContentFilterType, $offset: Int, $limit: Int) {
+	listFriends(
+        contentFilterBy: $contentFilterBy
+        offset: $offset
+        limit: $limit
+    ) {
+        status
+        ResponseCode
+        affectedRows {
+            userid
+            img
+            username
+            slug
+        }
+    }
+}
