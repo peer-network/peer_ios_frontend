@@ -36,7 +36,8 @@ public struct RowProfileView<TrailingContent: View>: View {
     public var body: some View {
         HStack(spacing: 0) {
             Button {
-                dismiss()
+//                dismiss() // TODO: FIX THIS ONE
+                router.presentedSheet = nil
                 router.navigate(to: .accountDetail(id: user.id))
             } label: {
                 HStack(spacing: 0) {

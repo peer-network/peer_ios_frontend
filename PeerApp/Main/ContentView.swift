@@ -23,32 +23,27 @@ struct ContentView: View {
     @StateObject private var popupManager = PopupManager.shared
 
     var body: some View {
-        VStack(spacing: 0) {
-            ZStack(alignment: .bottom) {
-                TabView(selection: $selectedTab) {
-                    ForEach(tabManager.tabs, id: \.self) { tab in
-                        tab.makeContentView()
-                            .apply {
-                                if #available(iOS 18.0, *) {
-                                    $0.toolbarVisibility(.hidden, for: .tabBar)
-                                } else {
-                                    $0.toolbar(.hidden, for: .tabBar)
-                                }
-                            }
+        ZoomContainer {
+            VStack(spacing: 0) {
+                ZStack(alignment: .bottom) {
+                    TabView(selection: $selectedTab) {
+                        ForEach(tabManager.tabs, id: \.self) { tab in
+                            tab.makeContentView()
+                                .tag(tab)
+                        }
+                    }
+
+                    if audioManager.currentPlayerObject != nil, !audioManager.isInRestrictedView {
+                        FloatingAudioPanelView()
+                            .padding(.horizontal, 10)
+                            .padding(.bottom, 4)
+                            .transition(.move(edge: .bottom).animation(.linear))
+                            .animation(.linear, value: audioManager.isInRestrictedView)
                     }
                 }
 
-                if audioManager.currentPlayerObject != nil, !audioManager.isInRestrictedView {
-                    FloatingAudioPanelView()
-                        .padding(.horizontal, 10)
-                        .padding(.bottom, 4)
-                        .transition(.move(edge: .bottom).animation(.linear))
-                        .animation(.linear, value: audioManager.isInRestrictedView)
-                }
+                tabBarView
             }
-            .zIndex(1)
-
-            tabBarView
         }
         .withSheetDestinations(sheetDestinations: $appRouter.presentedSheet)
         .environment(\.selectedTabScrollToTop, selectedTabScrollToTop)
@@ -79,6 +74,14 @@ struct ContentView: View {
                 .transition(.scale.combined(with: .opacity))
                 .padding(.horizontal, 20)
             }
+        }
+        .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
+            if activity.webpageURL != nil {
+                selectedTab = .feed
+            }
+        }
+        .onOpenURL { url in
+            selectedTab = .feed
         }
     }
 
@@ -111,7 +114,7 @@ struct ContentView: View {
 
     private func updateTab(with newTab: AppTab) {
         HapticManager.shared.fireHaptic(.tabSelection)
-        
+
         if selectedTab == newTab {
             selectedTabScrollToTop = newTab.rawValue
             selectedTabEmptyPath = newTab.rawValue
@@ -123,7 +126,7 @@ struct ContentView: View {
             selectedTabScrollToTop = -1
             selectedTabEmptyPath = -1
         }
-        
+
         selectedTab = newTab
     }
 }

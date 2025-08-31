@@ -58,7 +58,7 @@ struct PostActionsView: View {
     private func actionButton(action: PostAction) -> some View {
         switch layout {
             case .horizontal:
-                HStack(alignment: .center, spacing: 5) {
+                HStack(alignment: .center, spacing: 0) {
                     Button {
                         Task {
                             do {
@@ -111,11 +111,11 @@ struct PostActionsView: View {
                                 .animation(.snappy, value: amount)
                                 .font(.customFont(weight: .regular, size: .body))
                                 .lineLimit(1)
-                                .contentTransition(.numericText(value: Double(amount)))
                                 .foregroundStyle(action.getDefaultColor())
                                 .monospacedDigit()
                                 .frame(height: 32)
                                 .padding(.trailing, 20)
+                                .padding(.leading, 5)
                                 .contentShape(.rect)
                         }
                     }
@@ -176,7 +176,6 @@ struct PostActionsView: View {
                                 .animation(.snappy, value: amount)
                                 .font(.customFont(weight: .regular, size: .body))
                                 .lineLimit(1)
-                                .contentTransition(.numericText(value: Double(amount)))
                                 .foregroundStyle(action.getDefaultColor())
                                 .monospacedDigit()
                                 .padding(2.5)
@@ -187,67 +186,6 @@ struct PostActionsView: View {
                         }
                     }
                 }
-        }
-    }
-
-    private func actionButton2(action: PostAction) -> some View {
-        Button {
-            Task {
-                do {
-                    try await handleAction(action: action)
-                } catch {
-                    if let error = error as? PostActionError {
-                        showPopup(
-                            text: error.displayMessage,
-                            icon: error.displayIcon
-                        )
-                    } else {
-                        showPopup(
-                            text: error.userFriendlyDescription
-                        )
-                    }
-                }
-            }
-        } label: {
-            switch layout {
-                case .horizontal:
-                    HStack(alignment: .center, spacing: 5) {
-                        action.getIcon(viewModel: postViewModel)
-                            .iconSize(height: 19)
-
-                        if let amount = action.getAmount(viewModel: postViewModel) {
-                            Text(amount, format: .number.notation(.compactName))
-                                .contentTransition(.numericText())
-                                .animation(.snappy, value: amount)
-                                .font(.customFont(weight: .regular, size: .body))
-                                .lineLimit(1)
-                                .contentTransition(.numericText(value: Double(amount)))
-                                .foregroundStyle(action.getDefaultColor())
-                                .monospacedDigit()
-                        }
-                    }
-                    .frame(height: 32)
-                    .contentShape(.rect)
-                case .vertical:
-                    VStack(alignment: .center, spacing: 5) {
-                        action.getIcon(viewModel: postViewModel)
-                            .iconSize(height: 19)
-
-                        if let amount = action.getAmount(viewModel: postViewModel) {
-                            Text(amount, format: .number.notation(.compactName))
-                                .contentTransition(.numericText())
-                                .animation(.snappy, value: amount)
-                                .font(.customFont(weight: .regular, size: .body))
-                                .lineLimit(1)
-                                .contentTransition(.numericText(value: Double(amount)))
-                                .foregroundStyle(action.getDefaultColor())
-                                .monospacedDigit()
-                        }
-                    }
-                    .padding(5)
-                    .contentShape(.rect)
-                    .fixedSize(horizontal: true, vertical: true)
-            }
         }
     }
 

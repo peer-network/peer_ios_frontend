@@ -36,6 +36,9 @@ extension View {
                 case .postDetailsWithPost(let post):
                     FullScreenPostView(postVM: PostViewModel(post: post))
                         .toolbar(.hidden, for: .navigationBar)
+                case .postDetailsWithPostId(let id):
+                    FullScreenPostView(postId: id)
+                        .toolbar(.hidden, for: .navigationBar)
                 case .settings:
                     SettingsView()
                         .toolbar(.hidden, for: .navigationBar)

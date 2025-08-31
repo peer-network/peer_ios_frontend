@@ -29,14 +29,6 @@ public enum PushNotifications {
             request.httpBody = details.encoded()
 
             _ = try await URLSession.shared.data(for: request)
-
-            //            try await Messaging.messaging().subscribe(toTopic: "user_4cca9cfe-762b-416f-8e15-571f4d6798c9") { error in
-            //                if let e = error {
-            //                  print("🔴 topic subscribe failed:", e)
-            //                } else {
-            //                  print("🟢 subscribed to topic user_4cca9cfe-762b-416f-8e15-571f4d6798c9")
-            //                }
-            //              }
         }
     }
 
@@ -124,12 +116,12 @@ public class NotificationService {
 
     private static func unregisterForPushNotifications(uid: String, completion: @escaping (Error?) -> Void) {
         Messaging.messaging().token { token, error in
-            if let err = error {
-                print("⚠️ Couldn't fetch FCM token:", err)
-                completion(err)
+            if let error {
+                print("⚠️ Couldn't fetch FCM token:", error)
+                completion(error)
                 return
             }
-            guard let token = token else {
+            guard let token else {
                 print("⚠️ No FCM token to delete")
                 completion(nil)
                 return

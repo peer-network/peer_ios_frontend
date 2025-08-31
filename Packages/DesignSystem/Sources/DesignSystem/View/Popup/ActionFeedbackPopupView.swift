@@ -113,8 +113,8 @@ public struct ActionFeedbackPopupView: View {
                 }
                 .padding(.horizontal, 20)
                 .foregroundStyle(enablePostActionsConfirmation ? Colors.whiteSecondary : Colors.whitePrimary)
+                .contentShape(.rect)
             }
-            .contentShape(.rect)
         }
         .font(.customFont(weight: .regular, style: .footnote))
         .multilineTextAlignment(.leading)

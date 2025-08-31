@@ -1,21 +1,10 @@
-query GetAllPosts($filterBy: [PostFilterType!], $contentFilterBy: ContentFilterType, $ignoreOption: IgnoreOption, $sortBy: PostSortType, $title: String, $tag: String, $from: Date, $to: Date, $offset: Int, $limit: Int, $commentOffset: Int, $commentLimit: Int, $postid: ID, $userid: ID) {
+query GetPostById($postid: ID!) {
 	listPosts(
-        filterBy: $filterBy
-        contentFilterBy: $contentFilterBy
-        IgnorList: $ignoreOption
-        commentLimit: $commentLimit
-        commentOffset: $commentOffset
-        limit: $limit
-        offset: $offset
-        to: $to
-        from: $from
-        tag: $tag
-        title: $title
-        sortBy: $sortBy
         postid: $postid
-        userid: $userid
+        contentFilterBy: MYGRANDMAHATES
     ) {
         status
+        counter
         ResponseCode
         affectedRows {
             id

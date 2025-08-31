@@ -12,41 +12,121 @@ import PhotosUI
 struct SelectedImagesView: View {
     @Binding var imageStates: [ImageState]?
     @Binding var pickerItems: [PhotosPickerItem]
+    @Binding var showCroppingView: Bool
+
+    @State private var imagesAspectRatio: PostImagesAspectRatio = .square
+
+    @State private var editingImageIndex: Int? = nil
+    @State private var currentPageID: String? = nil
+
+    private var screenWidth: CGFloat {
+        getRect().width
+    }
 
     var body: some View {
-        pageContentView(states: imageStates ?? [])
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding(.top, 7)
+        VStack(spacing: 20) {
+            if !showCroppingView {
+                pageContentView(states: imageStates ?? [])
+                    .frame(maxWidth: .infinity)
+
+                aspectRatioButtons()
+            } else {
+                if case .loaded(let image) = imageStates?[editingImageIndex ?? 0].state {
+                    InlineCropView(
+                        image: image,
+                        aspectRatio: imagesAspectRatio,
+                        onCrop: { croppedImage in
+                            imageStates?[editingImageIndex ?? 0].state = .loaded(croppedImage)
+                            editingImageIndex = nil
+                            showCroppingView = false
+                        },
+                        onCancel: {
+                            editingImageIndex = nil
+                            showCroppingView = false
+                        }
+                    )
+                }
+            }
+        }
+        .padding(.top, 7)
     }
 
     @ViewBuilder
     private func pageContentView(states: [ImageState]) -> some View {
         ScrollView(.horizontal) {
             LazyHStack(spacing: 0) {
-                ForEach(states, id: \.id) { imageState in
+                ForEach(states.indices, id: \.self) { index in
+                    let imageState = states[index]
                     Group {
                         switch imageState.state {
                             case .loading:
                                 loadingPlaceholder
                             case .loaded(let image):
-                                imageView(image)
+                                if editingImageIndex == index {
+                                    // Show cropping interface
+                                    InlineCropView(
+                                        image: image,
+                                        aspectRatio: imagesAspectRatio,
+                                        onCrop: { croppedImage in
+                                            if let i = editingImageIndex, let id = imageStates?[i].id {
+                                                currentPageID = id
+                                                imageStates?[i].state = .loaded(croppedImage)
+                                            }
+                                            editingImageIndex = nil
+                                            showCroppingView = false
+                                        },
+                                        onCancel: {
+                                            if let i = editingImageIndex, let id = imageStates?[i].id {
+                                                currentPageID = id
+                                            }
+                                            editingImageIndex = nil
+                                            showCroppingView = false
+                                        }
+                                    )
+                                } else {
+                                    imageView(image)
+                                }
                             case .failed(let error):
                                 imageErrorView(error)
                         }
                     }
+                    .id(imageState.id)
                     .overlay(alignment: .top) {
-                        Button {
-                            withAnimation {
-                                pickerItems.removeAll(where: { $0.itemIdentifier == imageState.pickerItem?.itemIdentifier })
-                                imageStates?.removeAll(where: { $0.id == imageState.id })
+                        if editingImageIndex != index {
+                            HStack {
+                                // Edit button
+                                if case .loaded(_) = imageState.state {
+                                    Button {
+                                        editImage(at: index)
+                                    } label: {
+                                        Image(systemName: "crop")
+                                            .font(.footnote)
+                                            .foregroundStyle(Colors.whitePrimary)
+                                            .padding(8)
+                                            .background(Color.black.opacity(0.6))
+                                            .clipShape(Circle())
+                                    }
+                                }
+
+                                Spacer()
+
+                                // Remove button
+                                Button {
+                                    withAnimation {
+                                        pickerItems.removeAll(where: { $0.itemIdentifier == imageState.pickerItem?.itemIdentifier })
+                                        imageStates?.removeAll(where: { $0.id == imageState.id })
+                                    }
+                                } label: {
+                                    Image(systemName: "xmark")
+                                        .font(.footnote)
+                                        .foregroundStyle(Colors.whitePrimary)
+                                        .padding(8)
+                                        .background(Color.black.opacity(0.6))
+                                        .clipShape(Circle())
+                                }
                             }
-                        } label: {
-                            Text("remove")
-                                .font(.customFont(style: .footnote))
-                                .foregroundStyle(Colors.whitePrimary)
-                                .padding(10)
-                                .contentShape(.rect)
-                                .shadow(color: .black.opacity(0.5), radius: 15, x: 0, y: 4)
+                            .padding(8)
+                            .shadow(color: .black.opacity(0.5), radius: 15, x: 0, y: 4)
                         }
                     }
                     .shadow(color: .black.opacity(0.5), radius: 15, x: 0, y: 4)
@@ -54,7 +134,7 @@ struct SelectedImagesView: View {
                     .containerRelativeFrame(.horizontal)
                 }
 
-                if states.count < 5 {
+                if states.count < 20 {
                     PostPhotoPicker(imageStates: $imageStates, selectedItems: $pickerItems) {
                         addPhotoButton
                     }
@@ -77,13 +157,36 @@ struct SelectedImagesView: View {
         .scrollTargetBehavior(.viewAligned)
         .scrollIndicators(.hidden)
         .scrollClipDisabled()
+        .scrollPosition(id: $currentPageID)
         .safeAreaPadding(.horizontal, 20)
+    }
+
+    @ViewBuilder
+    private func aspectRatioButtons() -> some View {
+        HStack(spacing: 10) {
+            let configSquareButton = StateButtonConfig(buttonSize: .small, buttonType: imagesAspectRatio == .square ? .secondary : .teritary, title: "1:1 Square")
+            StateButton(config: configSquareButton) {
+                withAnimation {
+                    imagesAspectRatio = .square
+                }
+            }
+            .frame(width: screenWidth / 3)
+
+            let configVerticalButton = StateButtonConfig(buttonSize: .small, buttonType: imagesAspectRatio == .vertical ? .secondary : .teritary, title: "4:5 Vertical")
+            StateButton(config: configVerticalButton) {
+                withAnimation {
+                    imagesAspectRatio = .vertical
+                }
+            }
+            .frame(width: screenWidth / 3)
+        }
+        .geometryGroup()
     }
 
     private var loadingPlaceholder: some View {
         ProgressView()
             .controlSize(.large)
-            .frame(width: getRect().width - 60, height: getRect().width - 60)
+            .frame(width: imagesAspectRatio.imageFrameWidth(for: screenWidth), height: imagesAspectRatio.imageFrameHeight(for: screenWidth))
             .background(Colors.inactiveDark)
             .clipShape(RoundedRectangle(cornerRadius: 24))
     }
@@ -92,13 +195,13 @@ struct SelectedImagesView: View {
         Image(uiImage: image)
             .resizable()
             .scaledToFill()
-            .frame(width: getRect().width - 60, height: getRect().width - 60)
+            .frame(width: imagesAspectRatio.imageFrameWidth(for: screenWidth), height: imagesAspectRatio.imageFrameHeight(for: screenWidth))
             .clipShape(RoundedRectangle(cornerRadius: 24))
     }
 
     private func imageErrorView(_ error: Error) -> some View {
         Text("Error: \(error.localizedDescription)")
-            .frame(width: getRect().width - 60, height: getRect().width - 60)
+            .frame(width: imagesAspectRatio.imageFrameWidth(for: screenWidth), height: imagesAspectRatio.imageFrameHeight(for: screenWidth))
             .background(Colors.inactiveDark)
             .clipShape(RoundedRectangle(cornerRadius: 24))
     }
@@ -107,9 +210,15 @@ struct SelectedImagesView: View {
         Text("Choose photo")
             .font(.customFont(style: .callout))
             .foregroundStyle(Colors.whiteSecondary)
-            .frame(width: getRect().width - 60, height: getRect().width - 60)
+            .frame(width: imagesAspectRatio.imageFrameWidth(for: screenWidth), height: imagesAspectRatio.imageFrameHeight(for: screenWidth))
             .background(Colors.inactiveDark)
             .clipShape(RoundedRectangle(cornerRadius: 24))
+    }
+
+    private func editImage(at index: Int) {
+        currentPageID = imageStates?[index].id
+        editingImageIndex = index
+        showCroppingView = true
     }
 }
 

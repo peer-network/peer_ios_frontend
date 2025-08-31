@@ -55,7 +55,8 @@ struct PostHeaderView: View {
 
             if showFollowButton,
                !redactionReasons.contains(.placeholder),
-               !accountManager.isCurrentUser(id: postVM.post.owner.id)
+               !accountManager.isCurrentUser(id: postVM.post.owner.id),
+               !postVM.post.owner.isFollowed
             {
                 //TODO: exclude logic from Button(just pass correct colors)
                 let vm = FollowButtonViewModel(
@@ -63,20 +64,25 @@ struct PostHeaderView: View {
                     isFollowing: postVM.post.owner.isFollowing,
                     isFollowed: postVM.post.owner.isFollowed
                 )
-//                FollowButton(viewModel: vm)
                 FollowButton2(viewModel: vm)
                     .fixedSize(horizontal: true, vertical: false)
             }
 
             Menu {
                 Section {
+                    PostShareLinkView(post: postVM.post) {
+                        Label("Share", systemImage: "square.and.arrow.up")
+                    }
+
                     Button {
                         showAppleTranslation = true
                     } label: {
                         Label("Translate", systemImage: "captions.bubble")
                     }
+                }
 
-                    if !AccountManager.shared.isCurrentUser(id: postVM.post.owner.id) {
+                if !AccountManager.shared.isCurrentUser(id: postVM.post.owner.id) {
+                    Section {
                         Button(role: .destructive) {
                             Task {
                                 do {

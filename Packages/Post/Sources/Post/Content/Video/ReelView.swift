@@ -180,6 +180,7 @@ struct ReelView: View {
                         .iconSize(height: 80)
                         .foregroundStyle(Colors.redAccent)
                         .frame(width: 100, height: 100)
+                        .shadow(color: .black.opacity(0.5), radius: 20, x: 0, y: 0)
                     /// Adding Some Implicit Rotation & Scaling Animation
                         .animation(.smooth, body: { view in
                             view
@@ -188,9 +189,10 @@ struct ReelView: View {
                         })
                         .offset(x: like.tappedRect.x - 40, y: like.tappedRect.y - 40)
                     /// Let's Animate
-                        .offset(y: like.isAnimated ? -(like.tappedRect.y + 50) : 0)
+//                        .offset(y: like.isAnimated ? -(like.tappedRect.y + 50) : 0)
                 }
             }
+            .allowsHitTesting(false)
         }
     }
 

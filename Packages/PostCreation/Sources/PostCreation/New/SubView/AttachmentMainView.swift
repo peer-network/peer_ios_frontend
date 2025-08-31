@@ -25,7 +25,7 @@ struct AttachmentMainView: View {
     var body: some View {
         Group {
             if let imageStates, !imageStates.isEmpty {
-                SelectedImagesView(imageStates: $imageStates, pickerItems: $selectedPhotoItems)
+                SelectedImagesView(imageStates: $imageStates, pickerItems: $selectedPhotoItems, showCroppingView: $focusOnEditing)
                     .padding(.horizontal, -20)
                     .onAppear {
                         postType = .photo

@@ -38,6 +38,7 @@ public class TransferTokensMutation: GraphQLMutation {
       ]),
     ] }
 
+    @available(*, deprecated, message: "Use `resolveTransferV2`.")
     public var resolveTransfer: ResolveTransfer { __data["resolveTransfer"] }
 
     /// ResolveTransfer

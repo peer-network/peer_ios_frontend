@@ -15,7 +15,7 @@ public struct PostCreationMainView: View {
     @EnvironmentObject private var apiManager: APIServiceManager
     @EnvironmentObject private var accountManager: AccountManager
     @EnvironmentObject private var audioManager: AudioSessionManager
-//    @EnvironmentObject private var appState: AppState
+    //    @EnvironmentObject private var appState: AppState
 
     @StateObject private var postCreationVM = PostCreationVM()
 
@@ -66,77 +66,95 @@ public struct PostCreationMainView: View {
         HeaderContainer(actionsToDisplay: .posts) {
             Text("New Post")
         } content: {
-            ScrollView {
-                VStack(spacing: 20) {
-                    AttachmentMainView(focusOnEditing: $focusOnEditing, postType: $postType, imageStates: $imageStates, selectedPhotoItems: $selectedPhotoItems, videoState: $videoState, audioState: $audioState)
+            ZStack(alignment: .bottom) {
+                ScrollView {
+                    VStack(spacing: 20) {
+                        AttachmentMainView(focusOnEditing: $focusOnEditing, postType: $postType, imageStates: $imageStates, selectedPhotoItems: $selectedPhotoItems, videoState: $videoState, audioState: $audioState)
 
-                    if !focusOnEditing {
-                        VStack(spacing: 20) {
-                            Text("Title")
-                                .font(.customFont(style: .callout))
-                                .foregroundStyle(Colors.whiteSecondary)
-                                .padding(.bottom, -10)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                        if !focusOnEditing {
+                            VStack(spacing: 20) {
+                                Text("Title")
+                                    .font(.customFont(style: .callout))
+                                    .foregroundStyle(Colors.whiteSecondary)
+                                    .padding(.bottom, -10)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
 
-                            BorderedTextFieldCharsCount(
-                                text: $titleText,
-                                hashtags: $titleHashtags,
-                                minHeight: 30,
-                                placeholder: "Write a title...",
-//                                maxLength: appState.getConstants()?.data.post.title.maxLength ?? 1,
-                                maxLength: 50,
-                                allowNewLines: false,
-                                focusState: $focusedField,
-                                focusEquals: .title
-                            )
+                                BorderedTextFieldCharsCount(
+                                    text: $titleText,
+                                    hashtags: $titleHashtags,
+                                    minHeight: 30,
+                                    placeholder: "Write a title...",
+                                    //                                maxLength: appState.getConstants()?.data.post.title.maxLength ?? 1,
+                                    maxLength: 50,
+                                    allowNewLines: false,
+                                    focusState: $focusedField,
+                                    focusEquals: .title
+                                )
 
-                            let descrtiptionText = postType == .text ? "Description" : "Description (optional)"
-                            Text(descrtiptionText)
-                                .font(.customFont(style: .callout))
-                                .foregroundStyle(Colors.whiteSecondary)
-                                .padding(.bottom, -10)
-                                .frame(maxWidth: .infinity, alignment: .leading)
+                                let descrtiptionText = postType == .text ? "Description" : "Description (optional)"
+                                Text(descrtiptionText)
+                                    .font(.customFont(style: .callout))
+                                    .foregroundStyle(Colors.whiteSecondary)
+                                    .padding(.bottom, -10)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
 
-                            BorderedTextFieldCharsCount(
-                                text: $descriptionText,
-                                hashtags: $descriptionHashtags,
-                                minHeight: 90,
-                                placeholder: "Write a description...",
-                                maxLength: postType == .text ? 20000 : 500,
-                                allowNewLines: true,
-                                focusState: $focusedField,
-                                focusEquals: .description
-                            )
+                                BorderedTextFieldCharsCount(
+                                    text: $descriptionText,
+                                    hashtags: $descriptionHashtags,
+                                    minHeight: 90,
+                                    placeholder: "Write a description...",
+                                    maxLength: postType == .text ? 20000 : 500,
+                                    allowNewLines: true,
+                                    focusState: $focusedField,
+                                    focusEquals: .description
+                                )
 
-                            if !postCreationVM.error.isEmpty {
-                                Text(postCreationVM.error)
-                                    .font(.customFont(weight: .regular, size: .footnote))
-                                    .multilineTextAlignment(.center)
-                                    .foregroundStyle(Colors.warning)
-                                    .fixedSize(horizontal: false, vertical: true)
-                            }
-
-                            FloatingNavigationButtons {
-                                focusedField = nil
-                                withAnimation {
-                                    reset()
-                                }
-                            } postAction: {
-                                focusedField = nil
-                                withAnimation(.easeInOut(duration: 0.2)) {
-                                    showConfirmationAlert = true
+                                if !postCreationVM.error.isEmpty {
+                                    Text(postCreationVM.error)
+                                        .font(.customFont(weight: .regular, size: .footnote))
+                                        .multilineTextAlignment(.center)
+                                        .foregroundStyle(Colors.warning)
+                                        .fixedSize(horizontal: false, vertical: true)
                                 }
                             }
+                            .transition(.blurReplace)
                         }
-                        .transition(.blurReplace)
                     }
+                    .padding(.top, 7)
+                    .padding(.horizontal, 20)
+                    .padding(.bottom, 80)
                 }
-                .padding(.top, 7)
-                .padding(.horizontal, 20)
-                .padding(.bottom, 14)
+                .scrollDismissesKeyboard(.interactively)
+                .scrollIndicators(.hidden)
+
+                if !focusOnEditing {
+                    FloatingNavigationButtons {
+                        focusedField = nil
+                        withAnimation {
+                            reset()
+                        }
+                    } postAction: {
+                        focusedField = nil
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            showConfirmationAlert = true
+                        }
+                    }
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 20)
+                    .background(
+                        LinearGradient(
+                            stops: [
+                                Gradient.Stop(color: Color(red: 0.15, green: 0.15, blue: 0.15).opacity(0), location: 0.00),
+                                Gradient.Stop(color: Color(red: 0.15, green: 0.15, blue: 0.15), location: 1.00),
+                            ],
+                            startPoint: UnitPoint(x: 0.5, y: 0),
+                            endPoint: UnitPoint(x: 0.5, y: 1)
+                        )
+                    )
+                    .frame(maxHeight: .infinity, alignment: .bottom)
+                    .ignoresSafeArea(.keyboard)
+                }
             }
-            .scrollDismissesKeyboard(.interactively)
-            .scrollIndicators(.hidden)
             .overlay {
                 if showConfirmationAlert {
                     Rectangle()

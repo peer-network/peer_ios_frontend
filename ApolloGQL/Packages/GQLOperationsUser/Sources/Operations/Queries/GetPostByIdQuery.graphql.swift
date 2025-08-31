@@ -3,89 +3,60 @@
 
 @_exported import ApolloAPI
 
-public class CreatePostMutation: GraphQLMutation {
-  public static let operationName: String = "CreatePost"
+public class GetPostByIdQuery: GraphQLQuery {
+  public static let operationName: String = "GetPostById"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"mutation CreatePost($contentType: ContentType!, $title: String!, $media: [String!], $mediadescription: String, $tags: [String!], $cover: [String!]) { createPost( action: POST input: { contenttype: $contentType title: $title media: $media mediadescription: $mediadescription tags: $tags cover: $cover } ) { __typename status ResponseCode affectedRows { __typename id contenttype title media cover mediadescription createdat amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags url user { __typename id username slug img isfollowed isfollowing } } } }"#
+      #"query GetPostById($postid: ID!) { listPosts(postid: $postid, contentFilterBy: MYGRANDMAHATES) { __typename status counter ResponseCode affectedRows { __typename id contenttype title media cover mediadescription createdat amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags url user { __typename id username slug img isfollowed isfollowing } } } }"#
     ))
 
-  public var contentType: GraphQLEnum<ContentType>
-  public var title: String
-  public var media: GraphQLNullable<[String]>
-  public var mediadescription: GraphQLNullable<String>
-  public var tags: GraphQLNullable<[String]>
-  public var cover: GraphQLNullable<[String]>
+  public var postid: ID
 
-  public init(
-    contentType: GraphQLEnum<ContentType>,
-    title: String,
-    media: GraphQLNullable<[String]>,
-    mediadescription: GraphQLNullable<String>,
-    tags: GraphQLNullable<[String]>,
-    cover: GraphQLNullable<[String]>
-  ) {
-    self.contentType = contentType
-    self.title = title
-    self.media = media
-    self.mediadescription = mediadescription
-    self.tags = tags
-    self.cover = cover
+  public init(postid: ID) {
+    self.postid = postid
   }
 
-  public var __variables: Variables? { [
-    "contentType": contentType,
-    "title": title,
-    "media": media,
-    "mediadescription": mediadescription,
-    "tags": tags,
-    "cover": cover
-  ] }
+  public var __variables: Variables? { ["postid": postid] }
 
   public struct Data: GQLOperationsUser.SelectionSet {
     public let __data: DataDict
     public init(_dataDict: DataDict) { __data = _dataDict }
 
-    public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.Mutation }
+    public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
-      .field("createPost", CreatePost.self, arguments: [
-        "action": "POST",
-        "input": [
-          "contenttype": .variable("contentType"),
-          "title": .variable("title"),
-          "media": .variable("media"),
-          "mediadescription": .variable("mediadescription"),
-          "tags": .variable("tags"),
-          "cover": .variable("cover")
-        ]
+      .field("listPosts", ListPosts.self, arguments: [
+        "postid": .variable("postid"),
+        "contentFilterBy": "MYGRANDMAHATES"
       ]),
     ] }
 
-    public var createPost: CreatePost { __data["createPost"] }
+    public var listPosts: ListPosts { __data["listPosts"] }
 
-    /// CreatePost
+    /// ListPosts
     ///
-    /// Parent Type: `PostResponse`
-    public struct CreatePost: GQLOperationsUser.SelectionSet {
+    /// Parent Type: `PostListResponse`
+    public struct ListPosts: GQLOperationsUser.SelectionSet {
       public let __data: DataDict
       public init(_dataDict: DataDict) { __data = _dataDict }
 
-      public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.PostResponse }
+      public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.PostListResponse }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("status", String.self),
+        .field("counter", Int.self),
         .field("ResponseCode", String?.self),
-        .field("affectedRows", AffectedRows?.self),
+        .field("affectedRows", [AffectedRow]?.self),
       ] }
 
       public var status: String { __data["status"] }
+      public var counter: Int { __data["counter"] }
       public var responseCode: String? { __data["ResponseCode"] }
-      public var affectedRows: AffectedRows? { __data["affectedRows"] }
+      public var affectedRows: [AffectedRow]? { __data["affectedRows"] }
 
-      /// CreatePost.AffectedRows
+      /// ListPosts.AffectedRow
       ///
       /// Parent Type: `Post`
-      public struct AffectedRows: GQLOperationsUser.SelectionSet {
+      public struct AffectedRow: GQLOperationsUser.SelectionSet {
         public let __data: DataDict
         public init(_dataDict: DataDict) { __data = _dataDict }
 
@@ -135,7 +106,7 @@ public class CreatePostMutation: GraphQLMutation {
         public var url: String { __data["url"] }
         public var user: User { __data["user"] }
 
-        /// CreatePost.AffectedRows.User
+        /// ListPosts.AffectedRow.User
         ///
         /// Parent Type: `ProfileUser`
         public struct User: GQLOperationsUser.SelectionSet {

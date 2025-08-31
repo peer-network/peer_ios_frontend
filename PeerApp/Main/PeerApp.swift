@@ -68,6 +68,8 @@ struct PeerApp: App {
         analyticsService.track(AppEvent.launch)
 
         _remoteConfigViewModel = .init(wrappedValue: RemoteConfigViewModel(configService: remoteConfigService))
+
+        UITabBar.appearance().isHidden = true
     }
 
     var body: some Scene {

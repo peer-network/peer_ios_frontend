@@ -27,52 +27,52 @@ enum PostActionError: Error {
         switch self {
             case .alreadyLiked:
                 return NSLocalizedString(
-                    "The post is already liked.",
+                    "The post is already liked",
                     comment: "Already liked"
                 )
             case .alreadyDisliked:
                 return NSLocalizedString(
-                    "The post is already disliked.",
+                    "The post is already disliked",
                     comment: "Already disliked"
                 )
             case .alreadyReported:
                 return NSLocalizedString(
-                    "The post is already reported.",
+                    "The post is already reported",
                     comment: "Already reported"
                 )
             case .ownPostLike:
                 return NSLocalizedString(
-                    "You can not like your own post.",
+                    "You can not like your own post",
                     comment: "Own post like"
                 )
             case .ownPostDislike:
                 return NSLocalizedString(
-                    "You can not dislike your own post.",
+                    "You can not dislike your own post",
                     comment: "Own post dislike"
                 )
             case .ownPostReport:
                 return NSLocalizedString(
-                    "You can not report your own post.",
+                    "You can not report your own post",
                     comment: "Own post report"
                 )
             case .freeLikesLimitReached:
                 return NSLocalizedString(
-                    "You have reached your daily free likes limit.",
+                    "You have reached your daily free likes limit",
                     comment: "Daily free likes limit reached"
                 )
             case .alreadyViewed:
                 return NSLocalizedString(
-                    "The post is already viewed.",
+                    "The post is already viewed",
                     comment: "The post is already viewed"
                 )
             case .serverError:
                 return NSLocalizedString(
-                    "Failed to perform the action. Please try again.",
+                    "Failed to perform the action. Please try again",
                     comment: "Unknown server error"
                 )
             case .ownPostView:
                 return NSLocalizedString(
-                    "You can not view your own post.",
+                    "You can not view your own post",
                     comment: "Own post view"
                 )
         }

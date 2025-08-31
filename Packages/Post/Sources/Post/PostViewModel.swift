@@ -588,3 +588,28 @@ extension PostViewModel {
         }
     }
 }
+
+extension PostViewModel {
+    public convenience init?(id: String, apiService: APIService) async {
+        do {
+            let post = try await PostViewModel.fetchPost(id: id, service: apiService)
+
+            self.init(post: post)
+        } catch {
+            return nil
+        }
+    }
+
+    private static func fetchPost(id: String, service: APIService) async throws -> Post {
+        let result = await service.fetchPostById(id)
+
+        try Task.checkCancellation()
+
+        switch result {
+            case .success(let fetchedPost):
+                return fetchedPost
+            case .failure(let apiError):
+                throw apiError
+        }
+    }
+}
