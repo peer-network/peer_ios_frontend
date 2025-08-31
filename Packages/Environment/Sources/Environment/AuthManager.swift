@@ -91,6 +91,7 @@ public final class AuthManager: ObservableObject {
         if let userId = accountManager.userId {
             NotificationService.logoutUser(userId: userId)
         }
+        FeedContentSortingAndFiltering.shared.reset()
         tokenManager.removeCredentials()
         withAnimation {
             self.state = .unauthenticated

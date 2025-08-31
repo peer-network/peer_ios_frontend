@@ -7,7 +7,7 @@ public class GetAllPostsQuery: GraphQLQuery {
   public static let operationName: String = "GetAllPosts"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetAllPosts($filterBy: [PostFilterType!], $contentFilterBy: ContentFilterType, $ignoreOption: IgnoreOption, $sortBy: PostSortType, $title: String, $tag: String, $from: Date, $to: Date, $offset: Int, $limit: Int, $commentOffset: Int, $commentLimit: Int, $postid: ID, $userid: ID) { listPosts( filterBy: $filterBy contentFilterBy: $contentFilterBy IgnorList: $ignoreOption commentLimit: $commentLimit commentOffset: $commentOffset limit: $limit offset: $offset to: $to from: $from tag: $tag title: $title sortBy: $sortBy postid: $postid userid: $userid ) { __typename status ResponseCode affectedRows { __typename id contenttype title media cover mediadescription createdat amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags user { __typename id username slug img isfollowed isfollowing } } } }"#
+      #"query GetAllPosts($filterBy: [PostFilterType!], $contentFilterBy: ContentFilterType, $ignoreOption: IgnoreOption, $sortBy: PostSortType, $title: String, $tag: String, $from: Date, $to: Date, $offset: Int, $limit: Int, $commentOffset: Int, $commentLimit: Int, $postid: ID, $userid: ID) { listPosts( filterBy: $filterBy contentFilterBy: $contentFilterBy IgnorList: $ignoreOption commentLimit: $commentLimit commentOffset: $commentOffset limit: $limit offset: $offset to: $to from: $from tag: $tag title: $title sortBy: $sortBy postid: $postid userid: $userid ) { __typename status ResponseCode affectedRows { __typename id contenttype title media cover mediadescription createdat amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags url user { __typename id username slug img isfollowed isfollowing } } } }"#
     ))
 
   public var filterBy: GraphQLNullable<[GraphQLEnum<PostFilterType>]>
@@ -147,6 +147,7 @@ public class GetAllPostsQuery: GraphQLQuery {
           .field("isdisliked", Bool.self),
           .field("issaved", Bool.self),
           .field("tags", [String?].self),
+          .field("url", String.self),
           .field("user", User.self),
         ] }
 
@@ -168,6 +169,7 @@ public class GetAllPostsQuery: GraphQLQuery {
         public var isdisliked: Bool { __data["isdisliked"] }
         public var issaved: Bool { __data["issaved"] }
         public var tags: [String?] { __data["tags"] }
+        public var url: String { __data["url"] }
         public var user: User { __data["user"] }
 
         /// ListPosts.AffectedRow.User

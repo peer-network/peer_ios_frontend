@@ -46,8 +46,8 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                             .rotationEffect(.degrees(90))
                             .padding(.leading, 20)
                             .padding(.trailing, 10)
+                            .contentShape(.rect)
                     }
-                    .contentShape(.rect)
                 } else {
                     Spacer()
                         .frame(width: 20)

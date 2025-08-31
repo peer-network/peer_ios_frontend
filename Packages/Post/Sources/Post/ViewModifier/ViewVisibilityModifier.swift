@@ -42,9 +42,9 @@ struct ViewVisibilityModifier: ViewModifier {
         let visibleHeight = max(0, min(frame.maxY, screenHeight) - max(frame.minY, 0))
         let percentageVisible = visibleHeight / frame.height
 
-        if percentageVisible >= 0.7 {
+        if percentageVisible >= 0.5 {
             if visibilityTimer == nil {
-                visibilityTimer = Timer.scheduledTimer(withTimeInterval: 1.5, repeats: false) { _ in
+                visibilityTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
                     visibilityTimer = nil
                     viewAction()
                 }

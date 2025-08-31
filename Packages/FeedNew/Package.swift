@@ -21,7 +21,7 @@ let package = Package(
         .package(name: "Post", path: "../Post"),
         .package(name: "FeedList", path: "../FeedList"),
         .package(name: "Analytics", path: "../Analytics"),
-        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "11.9.0")),
+        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "12.1.0")),
         .package(url: "https://github.com/kean/Nuke.git", .upToNextMajor(from: "12.8.0"))
     ],
     targets: [

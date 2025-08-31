@@ -25,6 +25,7 @@ public struct PostView: View {
     @StateObject private var postVM: PostViewModel
 
     @State private var showAppleTranslation: Bool = false
+    @State private var shareSheetHeight: Double = 20
 
     private let displayType: DisplayType
     private let showFollowButton: Bool
@@ -85,10 +86,21 @@ public struct PostView: View {
                 .presentationDetents([.fraction(0.75), .large])
                 .presentationContentInteraction(.resizes)
         }
-#if canImport(_Translation_SwiftUI)
+        .sheet(isPresented: $postVM.showShareSheet) {
+            PostShareBottomSheet(viewModel: postVM)
+                .onGeometryChange(for: CGFloat.self, of: \.size.height) { height in
+                    withAnimation {
+                        self.shareSheetHeight = height + 20
+                    }
+                }
+                .presentationDragIndicator(.hidden)
+                .presentationCornerRadius(24)
+                .presentationBackground(Colors.blackDark)
+                .presentationDetents([.height(shareSheetHeight)])
+        }
         .addTranslateView(
-            isPresented: $showAppleTranslation, text: "\(postVM.post.title)\n\n\(postVM.description ?? "")")
-#endif
+            isPresented: $showAppleTranslation, text: "\(postVM.post.title)\n\n\(postVM.description ?? "")"
+        )
     }
 
     private func textPost() -> some View {
@@ -99,17 +111,21 @@ public struct PostView: View {
 
             if !reasons.contains(.placeholder) {
                 PostActionsView(layout: .horizontal, postViewModel: postVM)
+                    .background {
+                        Ellipse()
+                            .fill(Color(red: 0, green: 0.412, blue: 1).opacity(0.2))
+                            .frame(width: 195, height: 106)
+                            .offset(x: 195 / 3, y: -20)
+                            .blur(radius: 50)
+                            .frame(maxWidth: .infinity, alignment: .trailing)
+                            .ignoresSafeArea()
+                    }
             }
         }
         .padding(10)
         .background(Colors.inactiveDark)
         .cornerRadius(24)
         .shadow(color: .black.opacity(0.25), radius: 10, x: 0, y: 4)
-        .overlay(
-            RoundedRectangle(cornerRadius: 24)
-                .inset(by: 1)
-                .stroke(.white.opacity(0.11), lineWidth: 2)
-        )
         .padding(.horizontal, 10)
         .geometryGroup()
     }
@@ -121,6 +137,20 @@ public struct PostView: View {
                 .padding(.vertical, 10)
 
             ImagesContent(postVM: postVM)
+                .doubleTapToLike {
+                    try await postVM.like()
+                } onError: { error in
+                    if let error = error as? PostActionError {
+                        showPopup(
+                            text: error.displayMessage,
+                            icon: error.displayIcon
+                        )
+                    } else {
+                        showPopup(
+                            text: error.userFriendlyDescription
+                        )
+                    }
+                }
 
             if !reasons.contains(.placeholder) {
                 PostActionsView(layout: .horizontal, postViewModel: postVM)
@@ -184,19 +214,6 @@ public struct PostView: View {
     }
 
     private func videoPost() -> some View {
-//        GeometryReader { geo in
-//            VideoView(postVM: postVM, size: geo.size, showAppleTranslation: $showAppleTranslation)
-//        }
-        
-//        GeometryReader { geo in
-//            ReelView(postVM: postVM, size: geo.size, showAppleTranslation: $showAppleTranslation)
-//        }
-//        .frame(maxWidth: .infinity)
-
-//        GeometryReader { geo in
-//            ShortVideoView(postVM: postVM, size: geo.size)
-//        }
-
         GeometryReader { geo in
             ShortVideoView2(postVM: postVM, size: geo.size, showAppleTranslation: $showAppleTranslation)
         }

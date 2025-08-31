@@ -17,6 +17,7 @@ struct AttachmentMainView: View {
     @Binding var selectedPhotoItems: [PhotosPickerItem]
     @Binding var videoState: VideoState?
     @Binding var audioState: AudioState?
+    @Binding var aspectRatio: PostImagesAspectRatio
 
     @State private var isExpanded: Bool = false
 
@@ -25,7 +26,7 @@ struct AttachmentMainView: View {
     var body: some View {
         Group {
             if let imageStates, !imageStates.isEmpty {
-                SelectedImagesView(imageStates: $imageStates, pickerItems: $selectedPhotoItems)
+                SelectedImagesView(imageStates: $imageStates, pickerItems: $selectedPhotoItems, showCroppingView: $focusOnEditing, imagesAspectRatio: $aspectRatio)
                     .padding(.horizontal, -20)
                     .onAppear {
                         postType = .photo

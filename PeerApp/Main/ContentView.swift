@@ -10,6 +10,8 @@ import Environment
 import DesignSystem
 
 struct ContentView: View {
+    @Environment(\.openURL) private var openURL
+
     @EnvironmentObject private var audioManager: AudioSessionManager
 
     @ObservedObject var appRouter: Router
@@ -23,32 +25,27 @@ struct ContentView: View {
     @StateObject private var popupManager = PopupManager.shared
 
     var body: some View {
-        VStack(spacing: 0) {
-            ZStack(alignment: .bottom) {
-                TabView(selection: $selectedTab) {
-                    ForEach(tabManager.tabs, id: \.self) { tab in
-                        tab.makeContentView()
-                            .apply {
-                                if #available(iOS 18.0, *) {
-                                    $0.toolbarVisibility(.hidden, for: .tabBar)
-                                } else {
-                                    $0.toolbar(.hidden, for: .tabBar)
-                                }
-                            }
+        ZoomContainer {
+            VStack(spacing: 0) {
+                ZStack(alignment: .bottom) {
+                    TabView(selection: $selectedTab) {
+                        ForEach(tabManager.tabs, id: \.self) { tab in
+                            tab.makeContentView()
+                                .tag(tab)
+                        }
+                    }
+
+                    if audioManager.currentPlayerObject != nil, !audioManager.isInRestrictedView {
+                        FloatingAudioPanelView()
+                            .padding(.horizontal, 10)
+                            .padding(.bottom, 4)
+                            .transition(.move(edge: .bottom).animation(.linear))
+                            .animation(.linear, value: audioManager.isInRestrictedView)
                     }
                 }
 
-                if audioManager.currentPlayerObject != nil, !audioManager.isInRestrictedView {
-                    FloatingAudioPanelView()
-                        .padding(.horizontal, 10)
-                        .padding(.bottom, 4)
-                        .transition(.move(edge: .bottom).animation(.linear))
-                        .animation(.linear, value: audioManager.isInRestrictedView)
-                }
+                tabBarView
             }
-            .zIndex(1)
-
-            tabBarView
         }
         .withSheetDestinations(sheetDestinations: $appRouter.presentedSheet)
         .environment(\.selectedTabScrollToTop, selectedTabScrollToTop)
@@ -79,6 +76,40 @@ struct ContentView: View {
                 .transition(.scale.combined(with: .opacity))
                 .padding(.horizontal, 20)
             }
+        }
+        .overlay {
+            if popupManager.isShowingFeedbackPrompt {
+                Rectangle()
+                    .fill(.ultraThinMaterial)
+                    .ignoresSafeArea()
+
+                AppFeedbackPopupView { dontShowAgain in
+                    popupManager.setFeedbackDontShowAgain(dontShowAgain)
+                } onShareTapped: {
+                    openURL(popupManager.feedbackFormURL)
+                    popupManager.hideFeedbackPrompt()
+                } onDismiss: {
+                    popupManager.hideFeedbackPrompt()
+                }
+                .shadow(color: .black.opacity(0.25), radius: 10, x: 0, y: 4)
+                .transition(.scale.combined(with: .opacity))
+                .padding(.horizontal, 20)
+            }
+        }
+        .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
+            if activity.webpageURL != nil {
+                selectedTab = .feed
+            }
+        }
+        .onOpenURL { url in
+            selectedTab = .feed
+        }
+        .onFirstAppear {
+            // Needed to test feedback popups
+//            popupManager._resetFeedbackPromptState()
+
+            popupManager.beginFeedbackSession()
+            popupManager.scheduleFeedbackPromptIfEligible()
         }
     }
 
@@ -111,7 +142,7 @@ struct ContentView: View {
 
     private func updateTab(with newTab: AppTab) {
         HapticManager.shared.fireHaptic(.tabSelection)
-        
+
         if selectedTab == newTab {
             selectedTabScrollToTop = newTab.rawValue
             selectedTabEmptyPath = newTab.rawValue
@@ -123,7 +154,7 @@ struct ContentView: View {
             selectedTabScrollToTop = -1
             selectedTabEmptyPath = -1
         }
-        
+
         selectedTab = newTab
     }
 }

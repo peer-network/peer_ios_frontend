@@ -49,6 +49,7 @@ struct ImagesContent: View {
                                         height: imageHeight
                                     )
                                     .clipShape(Rectangle())
+                                    .pinchZoom()
                                     .onTapGesture {
                                         tapAction(for: index)
                                     }
@@ -72,6 +73,7 @@ struct ImagesContent: View {
                     height: imageHeight
                 )
                 .clipped()
+                .background(Colors.imageLoadingPlaceholder)
                 .contentShape(Rectangle())
             }
         }

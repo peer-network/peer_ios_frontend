@@ -59,6 +59,7 @@ public protocol APIService: AnyObject {
     func reportUser(with id: String) async -> Result<Void, APIError>
 
     //MARK: Posts
+    func fetchPostById(_ id: String) async -> Result<Post, APIError>
     func fetchPostsByTitle(_ query: String, after offset: Int) async -> Result<[Post], APIError>
     func fetchPostsByTag(_ tag: String, after offset: Int) async -> Result<[Post], APIError>
     func makePost(

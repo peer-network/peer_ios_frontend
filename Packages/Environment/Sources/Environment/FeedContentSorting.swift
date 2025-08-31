@@ -26,15 +26,23 @@ public final class FeedContentSortingAndFiltering: ObservableObject {
             storage.sortByTime = sortByTime
         }
     }
+
     @Published public var sortByPopularity: FeedContentSortingByPopularity {
         didSet {
             storage.sortByPopularity = sortByPopularity
         }
     }
+
     @Published public var filterByRelationship: FeedFilterByRelationship {
         didSet {
             storage.filterByRelationship = filterByRelationship
         }
+    }
+
+    public func reset() {
+        sortByTime = .allTime
+        sortByPopularity = .newest
+        filterByRelationship = .all
     }
 
     private init() {

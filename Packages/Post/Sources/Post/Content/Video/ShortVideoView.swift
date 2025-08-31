@@ -92,6 +92,7 @@ struct ShortVideoView2: View {
                         offsetKeyValue = value
                         playPause(offsetKeyValue)
                     }
+                    .pinchZoom()
                     .overlay(alignment: .center) {
                         if showLoadingIndicator {
                             ProgressView()
@@ -156,6 +157,20 @@ struct ShortVideoView2: View {
                                 player?.rate = 1
                                 show2xSpeedIndicator = false
                             }
+                        }
+                    }
+                    .doubleTapToLike {
+                        try await postVM.like()
+                    } onError: { error in
+                        if let error = error as? PostActionError {
+                            showPopup(
+                                text: error.displayMessage,
+                                icon: error.displayIcon
+                            )
+                        } else {
+                            showPopup(
+                                text: error.userFriendlyDescription
+                            )
                         }
                     }
             }
@@ -245,7 +260,7 @@ struct ShortVideoView2: View {
     private func addPeriodicTimeObserver() {
         guard let player, totalDuration > 0 else { return }
 
-        let interval = CMTime(seconds: 0.05, preferredTimescale: 600)
+        let interval = CMTime(seconds: 0.01, preferredTimescale: 600)
 
         playerTimeObserver = player.addPeriodicTimeObserver(
             forInterval: interval,
@@ -418,9 +433,9 @@ struct ShortVideoView2: View {
                 //                    .offset(y: thumbSize.height)
             }
         }
-        .offset(y: -60)
+//        .offset(y: -60)
         .shadow(color: .black, radius: 40, x: 0, y: 0)
-        //        .frame(width: thumbSize.width, height: thumbSize.height)
+        .frame(width: thumbSize.width, height: thumbSize.height)
         .opacity(isDragging ? 1 : 0)
         // Moving Along side with Gesture
         // Adding Some Padding at Start and End
@@ -560,10 +575,5 @@ struct ShortVideoView2: View {
         let coversToEnd    = abs(end   - totalDuration) < eps
 
         showBottomSeekerView = (coversFromZero && coversToEnd)
-
-        // Debug: print what the server actually advertised
-        print("seekableTimeRanges:", ranges.map {
-          String(format: "%.3f→%.3f", $0.start.seconds, ($0.start + $0.duration).seconds)
-        })
     }
 }

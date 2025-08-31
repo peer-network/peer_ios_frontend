@@ -12,6 +12,7 @@ import Analytics
 import AVFAudio
 
 public struct FeedView: View {
+    @EnvironmentObject private var router: Router
     @EnvironmentObject private var audioManager: AudioSessionManager
 
     @State private var feedPage: FeedPage = .normalFeed
@@ -57,6 +58,14 @@ public struct FeedView: View {
             .ignoresSafeArea()
         }
         .trackScreen(AppScreen.feed)
+        .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
+            if let url = activity.webpageURL {
+                router.handle(url: url)
+            }
+        }
+        .onOpenURL { url in
+            router.handle(url: url)
+        }
     }
 
     @available(iOS 18.0, *)

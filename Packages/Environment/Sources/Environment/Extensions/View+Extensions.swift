@@ -6,8 +6,6 @@
 //
 
 import SwiftUI
-
-#if canImport(_Translation_SwiftUI)
 import Translation
 
 extension View {
@@ -19,4 +17,3 @@ extension View {
         }
     }
 }
-#endif

@@ -7,7 +7,7 @@ public class CreatePostMutation: GraphQLMutation {
   public static let operationName: String = "CreatePost"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"mutation CreatePost($contentType: ContentType!, $title: String!, $media: [String!], $mediadescription: String, $tags: [String!], $cover: [String!]) { createPost( action: POST input: { contenttype: $contentType title: $title media: $media mediadescription: $mediadescription tags: $tags cover: $cover } ) { __typename status ResponseCode affectedRows { __typename id contenttype title media cover mediadescription createdat amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags user { __typename id username slug img isfollowed isfollowing } } } }"#
+      #"mutation CreatePost($contentType: ContentType!, $title: String!, $media: [String!], $mediadescription: String, $tags: [String!], $cover: [String!]) { createPost( action: POST input: { contenttype: $contentType title: $title media: $media mediadescription: $mediadescription tags: $tags cover: $cover } ) { __typename status ResponseCode affectedRows { __typename id contenttype title media cover mediadescription createdat amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags url user { __typename id username slug img isfollowed isfollowing } } } }"#
     ))
 
   public var contentType: GraphQLEnum<ContentType>
@@ -110,6 +110,7 @@ public class CreatePostMutation: GraphQLMutation {
           .field("isdisliked", Bool.self),
           .field("issaved", Bool.self),
           .field("tags", [String?].self),
+          .field("url", String.self),
           .field("user", User.self),
         ] }
 
@@ -131,6 +132,7 @@ public class CreatePostMutation: GraphQLMutation {
         public var isdisliked: Bool { __data["isdisliked"] }
         public var issaved: Bool { __data["issaved"] }
         public var tags: [String?] { __data["tags"] }
+        public var url: String { __data["url"] }
         public var user: User { __data["user"] }
 
         /// CreatePost.AffectedRows.User
