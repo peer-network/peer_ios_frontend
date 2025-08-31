@@ -74,13 +74,13 @@ public struct BlockedUsersPageView: View {
                     .foregroundStyle(Colors.whitePrimary)
 
                 ForEach(users) { user in
-                    RowProfileView(user: user) {
+                    RowProfileView(user: user, trailingContent: {
                         UnblockUserXButton(userId: user.id) {
                             withAnimation {
                                 viewModel.removeBlockedUser(with: user.id)
                             }
                         }
-                    }
+                    }, dismissAction: nil)
                 }
 
                 if viewModel.hasMoreBlockedUsers {

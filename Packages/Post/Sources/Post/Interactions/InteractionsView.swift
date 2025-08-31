@@ -76,7 +76,7 @@ struct InteractionsView: View {
                                     .padding(.top, 20)
                             } else {
                                 ForEach(viewModel.interactions) { user in
-                                    RowProfileView(user: user) {
+                                    RowProfileView(user: user, trailingContent: {
                                         let vm = FollowButtonViewModel(
                                             id: user.id,
                                             isFollowing: user.isFollowing,
@@ -84,7 +84,9 @@ struct InteractionsView: View {
                                         )
                                         FollowButton2(viewModel: vm)
                                             .fixedSize(horizontal: true, vertical: false)
-                                    }
+                                    }, dismissAction: {
+                                        viewModel.showInteractionsSheet = false
+                                    })
                                 }
 
                                 if viewModel.hasMoreInteractions {
@@ -97,7 +99,7 @@ struct InteractionsView: View {
                             }
                         case .loading:
                             ForEach(RowUser.placeholders(count: 10)) { user in
-                                RowProfileView(user: user) {
+                                RowProfileView(user: user, trailingContent: {
                                     let vm = FollowButtonViewModel(
                                         id: user.id,
                                         isFollowing: user.isFollowing,
@@ -105,7 +107,7 @@ struct InteractionsView: View {
                                     )
                                     FollowButton2(viewModel: vm)
                                         .fixedSize(horizontal: true, vertical: false)
-                                }
+                                }, dismissAction: nil)
                                 .allowsHitTesting(false)
                                 .skeleton(isRedacted: true)
                             }

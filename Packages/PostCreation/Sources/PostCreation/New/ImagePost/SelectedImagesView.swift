@@ -58,48 +58,29 @@ struct SelectedImagesView: View {
 
     @ViewBuilder
     private func pageContentView(states: [ImageState]) -> some View {
-        ScrollViewReader { proxy in
-            ScrollView(.horizontal) {
-                LazyHStack(spacing: 0) {
-                    ForEach(Array(states.enumerated()), id: \.element.id) { (index, imageState) in
-                        Group {
-                            switch imageState.state {
-                                case .loading:
-                                    loadingPlaceholder
-                                case .loaded(let image):
-                                    imageView(image)
-                                case .failed(let error):
-                                    imageErrorView(error)
-                            }
+        ScrollView(.horizontal) {
+            LazyHStack(spacing: 0) {
+                ForEach(Array(states.enumerated()), id: \.element.id) { (index, imageState) in
+                    Group {
+                        switch imageState.state {
+                            case .loading:
+                                loadingPlaceholder
+                            case .loaded(let image):
+                                imageView(image)
+                            case .failed(let error):
+                                imageErrorView(error)
                         }
-                        .id(imageState.id)
-                        .overlay(alignment: .top) {
-                            if editingImageIndex != index {
-                                HStack {
-                                    // Edit button
-                                    if case .loaded(_) = imageState.state {
-                                        Button {
-                                            editImage(at: index)
-                                        } label: {
-                                            Image(systemName: "crop")
-                                                .font(.footnote)
-                                                .foregroundStyle(Colors.whitePrimary)
-                                                .padding(8)
-                                                .background(Color.black.opacity(0.6))
-                                                .clipShape(Circle())
-                                        }
-                                    }
-
-                                    Spacer()
-
-                                    // Remove button
+                    }
+                    .id(imageState.id)
+                    .overlay(alignment: .top) {
+                        if editingImageIndex != index {
+                            HStack {
+                                // Edit button
+                                if case .loaded(_) = imageState.state {
                                     Button {
-                                        withAnimation {
-                                            pickerItems.removeAll(where: { $0.itemIdentifier == imageState.pickerItem?.itemIdentifier })
-                                            imageStates?.removeAll(where: { $0.id == imageState.id })
-                                        }
+                                        editImage(at: index)
                                     } label: {
-                                        Image(systemName: "xmark")
+                                        Image(systemName: "crop")
                                             .font(.footnote)
                                             .foregroundStyle(Colors.whitePrimary)
                                             .padding(8)
@@ -107,45 +88,58 @@ struct SelectedImagesView: View {
                                             .clipShape(Circle())
                                     }
                                 }
-                                .padding(8)
-                                .shadow(color: .black.opacity(0.5), radius: 15, x: 0, y: 4)
-                            }
-                        }
-                        .shadow(color: .black.opacity(0.5), radius: 15, x: 0, y: 4)
-                        .padding(.horizontal, 10)
-                        .containerRelativeFrame(.horizontal)
-                    }
 
-                    if states.count < 20 {
-                        PostPhotoPicker(imageStates: $imageStates, selectedItems: $pickerItems) {
-                            addPhotoButton
+                                Spacer()
+
+                                // Remove button
+                                Button {
+                                    withAnimation {
+                                        pickerItems.removeAll(where: { $0.itemIdentifier == imageState.pickerItem?.itemIdentifier })
+                                        imageStates?.removeAll(where: { $0.id == imageState.id })
+                                    }
+                                } label: {
+                                    Image(systemName: "xmark")
+                                        .font(.footnote)
+                                        .foregroundStyle(Colors.whitePrimary)
+                                        .padding(8)
+                                        .background(Color.black.opacity(0.6))
+                                        .clipShape(Circle())
+                                }
+                            }
+                            .padding(8)
+                            .shadow(color: .black.opacity(0.5), radius: 15, x: 0, y: 4)
                         }
-                        .buttonStyle(ScaleButtonStyle())
-                        .shadow(color: .black.opacity(0.5), radius: 15, x: 0, y: 4)
-                        .padding(.horizontal, 10)
-                        .containerRelativeFrame(.horizontal)
                     }
+                    .shadow(color: .black.opacity(0.5), radius: 15, x: 0, y: 4)
+                    .padding(.horizontal, 10)
+                    .containerRelativeFrame(.horizontal)
                 }
-                .scrollTargetLayout()
-                .overlay(alignment: .bottom) {
-                    PagingIndicator(
-                        activeTint: Colors.whitePrimary,
-                        inActiveTint: Colors.whiteSecondary,
-                        opacityEffect: true,
-                        clipEdges: true
-                    )
+
+                if states.count < 20 {
+                    PostPhotoPicker(imageStates: $imageStates, selectedItems: $pickerItems) {
+                        addPhotoButton
+                    }
+                    .buttonStyle(ScaleButtonStyle())
+                    .shadow(color: .black.opacity(0.5), radius: 15, x: 0, y: 4)
+                    .padding(.horizontal, 10)
+                    .containerRelativeFrame(.horizontal)
                 }
             }
-            .scrollTargetBehavior(.viewAligned)
-            .scrollIndicators(.hidden)
-            .scrollClipDisabled()
-//            .scrollPosition(id: $currentPageID)
-            .safeAreaPadding(.horizontal, 20)
-            .onAppear {
-                guard !showCroppingView, let id = currentPageID else { return }
-                proxy.scrollTo(id, anchor: .center)
+            .scrollTargetLayout()
+            .overlay(alignment: .bottom) {
+                PagingIndicator(
+                    activeTint: Colors.whitePrimary,
+                    inActiveTint: Colors.whiteSecondary,
+                    opacityEffect: true,
+                    clipEdges: true
+                )
             }
         }
+        .scrollTargetBehavior(.viewAligned)
+        .scrollIndicators(.hidden)
+        .scrollClipDisabled()
+        .scrollPosition(id: $currentPageID)
+        .safeAreaPadding(.horizontal, 20)
     }
 
     @ViewBuilder
