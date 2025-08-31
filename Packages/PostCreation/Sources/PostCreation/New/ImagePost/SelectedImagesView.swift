@@ -13,8 +13,7 @@ struct SelectedImagesView: View {
     @Binding var imageStates: [ImageState]?
     @Binding var pickerItems: [PhotosPickerItem]
     @Binding var showCroppingView: Bool
-
-    @State private var imagesAspectRatio: PostImagesAspectRatio = .square
+    @Binding var imagesAspectRatio: PostImagesAspectRatio
 
     @State private var editingImageIndex: Int? = nil
     @State private var currentPageID: String? = nil
@@ -36,11 +35,17 @@ struct SelectedImagesView: View {
                         image: image,
                         aspectRatio: imagesAspectRatio,
                         onCrop: { croppedImage in
-                            imageStates?[editingImageIndex ?? 0].state = .loaded(croppedImage)
+                            if let i = editingImageIndex, let id = imageStates?[i].id {
+                                currentPageID = id
+                                imageStates?[i].state = .loaded(croppedImage)
+                            }
                             editingImageIndex = nil
                             showCroppingView = false
                         },
                         onCancel: {
+                            if let i = editingImageIndex, let id = imageStates?[i].id {
+                                currentPageID = id
+                            }
                             editingImageIndex = nil
                             showCroppingView = false
                         }
@@ -53,53 +58,48 @@ struct SelectedImagesView: View {
 
     @ViewBuilder
     private func pageContentView(states: [ImageState]) -> some View {
-        ScrollView(.horizontal) {
-            LazyHStack(spacing: 0) {
-                ForEach(states.indices, id: \.self) { index in
-                    let imageState = states[index]
-                    Group {
-                        switch imageState.state {
-                            case .loading:
-                                loadingPlaceholder
-                            case .loaded(let image):
-                                if editingImageIndex == index {
-                                    // Show cropping interface
-                                    InlineCropView(
-                                        image: image,
-                                        aspectRatio: imagesAspectRatio,
-                                        onCrop: { croppedImage in
-                                            if let i = editingImageIndex, let id = imageStates?[i].id {
-                                                currentPageID = id
-                                                imageStates?[i].state = .loaded(croppedImage)
-                                            }
-                                            editingImageIndex = nil
-                                            showCroppingView = false
-                                        },
-                                        onCancel: {
-                                            if let i = editingImageIndex, let id = imageStates?[i].id {
-                                                currentPageID = id
-                                            }
-                                            editingImageIndex = nil
-                                            showCroppingView = false
-                                        }
-                                    )
-                                } else {
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal) {
+                LazyHStack(spacing: 0) {
+                    ForEach(Array(states.enumerated()), id: \.element.id) { (index, imageState) in
+                        Group {
+                            switch imageState.state {
+                                case .loading:
+                                    loadingPlaceholder
+                                case .loaded(let image):
                                     imageView(image)
-                                }
-                            case .failed(let error):
-                                imageErrorView(error)
+                                case .failed(let error):
+                                    imageErrorView(error)
+                            }
                         }
-                    }
-                    .id(imageState.id)
-                    .overlay(alignment: .top) {
-                        if editingImageIndex != index {
-                            HStack {
-                                // Edit button
-                                if case .loaded(_) = imageState.state {
+                        .id(imageState.id)
+                        .overlay(alignment: .top) {
+                            if editingImageIndex != index {
+                                HStack {
+                                    // Edit button
+                                    if case .loaded(_) = imageState.state {
+                                        Button {
+                                            editImage(at: index)
+                                        } label: {
+                                            Image(systemName: "crop")
+                                                .font(.footnote)
+                                                .foregroundStyle(Colors.whitePrimary)
+                                                .padding(8)
+                                                .background(Color.black.opacity(0.6))
+                                                .clipShape(Circle())
+                                        }
+                                    }
+
+                                    Spacer()
+
+                                    // Remove button
                                     Button {
-                                        editImage(at: index)
+                                        withAnimation {
+                                            pickerItems.removeAll(where: { $0.itemIdentifier == imageState.pickerItem?.itemIdentifier })
+                                            imageStates?.removeAll(where: { $0.id == imageState.id })
+                                        }
                                     } label: {
-                                        Image(systemName: "crop")
+                                        Image(systemName: "xmark")
                                             .font(.footnote)
                                             .foregroundStyle(Colors.whitePrimary)
                                             .padding(8)
@@ -107,58 +107,45 @@ struct SelectedImagesView: View {
                                             .clipShape(Circle())
                                     }
                                 }
-
-                                Spacer()
-
-                                // Remove button
-                                Button {
-                                    withAnimation {
-                                        pickerItems.removeAll(where: { $0.itemIdentifier == imageState.pickerItem?.itemIdentifier })
-                                        imageStates?.removeAll(where: { $0.id == imageState.id })
-                                    }
-                                } label: {
-                                    Image(systemName: "xmark")
-                                        .font(.footnote)
-                                        .foregroundStyle(Colors.whitePrimary)
-                                        .padding(8)
-                                        .background(Color.black.opacity(0.6))
-                                        .clipShape(Circle())
-                                }
+                                .padding(8)
+                                .shadow(color: .black.opacity(0.5), radius: 15, x: 0, y: 4)
                             }
-                            .padding(8)
-                            .shadow(color: .black.opacity(0.5), radius: 15, x: 0, y: 4)
                         }
+                        .shadow(color: .black.opacity(0.5), radius: 15, x: 0, y: 4)
+                        .padding(.horizontal, 10)
+                        .containerRelativeFrame(.horizontal)
                     }
-                    .shadow(color: .black.opacity(0.5), radius: 15, x: 0, y: 4)
-                    .padding(.horizontal, 10)
-                    .containerRelativeFrame(.horizontal)
-                }
 
-                if states.count < 20 {
-                    PostPhotoPicker(imageStates: $imageStates, selectedItems: $pickerItems) {
-                        addPhotoButton
+                    if states.count < 20 {
+                        PostPhotoPicker(imageStates: $imageStates, selectedItems: $pickerItems) {
+                            addPhotoButton
+                        }
+                        .buttonStyle(ScaleButtonStyle())
+                        .shadow(color: .black.opacity(0.5), radius: 15, x: 0, y: 4)
+                        .padding(.horizontal, 10)
+                        .containerRelativeFrame(.horizontal)
                     }
-                    .buttonStyle(ScaleButtonStyle())
-                    .shadow(color: .black.opacity(0.5), radius: 15, x: 0, y: 4)
-                    .padding(.horizontal, 10)
-                    .containerRelativeFrame(.horizontal)
+                }
+                .scrollTargetLayout()
+                .overlay(alignment: .bottom) {
+                    PagingIndicator(
+                        activeTint: Colors.whitePrimary,
+                        inActiveTint: Colors.whiteSecondary,
+                        opacityEffect: true,
+                        clipEdges: true
+                    )
                 }
             }
-            .scrollTargetLayout()
-            .overlay(alignment: .bottom) {
-                PagingIndicator(
-                    activeTint: Colors.whitePrimary,
-                    inActiveTint: Colors.whiteSecondary,
-                    opacityEffect: true,
-                    clipEdges: true
-                )
+            .scrollTargetBehavior(.viewAligned)
+            .scrollIndicators(.hidden)
+            .scrollClipDisabled()
+//            .scrollPosition(id: $currentPageID)
+            .safeAreaPadding(.horizontal, 20)
+            .onAppear {
+                guard !showCroppingView, let id = currentPageID else { return }
+                proxy.scrollTo(id, anchor: .center)
             }
         }
-        .scrollTargetBehavior(.viewAligned)
-        .scrollIndicators(.hidden)
-        .scrollClipDisabled()
-        .scrollPosition(id: $currentPageID)
-        .safeAreaPadding(.horizontal, 20)
     }
 
     @ViewBuilder

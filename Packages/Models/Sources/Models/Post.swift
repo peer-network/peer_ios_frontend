@@ -33,7 +33,7 @@ public struct Post: Identifiable, Hashable {
     public var isDisliked: Bool
     public var isSaved: Bool
     public var tags: [String]
-    private var url: String
+    public let url: String
     public var owner: ObjectOwner
 
     public var mediaURLs: [URL] {

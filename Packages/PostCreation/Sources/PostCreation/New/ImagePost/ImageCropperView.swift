@@ -3,28 +3,11 @@
 //  PostCreation
 //
 //  Created by Artem Vasin on 26.08.25.
-//  Revised: exact 1:1 / 4:5 pixels + solid gestures inside ScrollView
 //
 
 import SwiftUI
 import DesignSystem
 import UIKit
-
-// MARK: - Helpers
-
-private extension UIImage {
-    /// Returns an image with orientation `.up` so pixel space matches what you see.
-    func normalizedUp() -> UIImage {
-        guard imageOrientation != .up else { return self }
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = scale
-        format.opaque = false
-        let renderer = UIGraphicsImageRenderer(size: size, format: format)
-        return renderer.image { _ in
-            self.draw(in: CGRect(origin: .zero, size: size))
-        }
-    }
-}
 
 /// A transparent UIView that relays UIPinch (incremental) + 2-finger UIPan (delta).
 private struct PinchPanRelay: UIViewRepresentable {

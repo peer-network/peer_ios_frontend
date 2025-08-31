@@ -19,6 +19,7 @@ public struct SettingsView: View {
         case username
     }
 
+    @Environment(\.openURL) private var openURL
     @Environment(\.analytics) private var analytics
 
     @EnvironmentObject private var apiManager: APIServiceManager
@@ -164,6 +165,8 @@ public struct SettingsView: View {
                             
                             logoutButton
                         }
+
+                        shareFeedbackButton
                     }
                     .padding(.horizontal, 20)
                 }
@@ -249,6 +252,15 @@ public struct SettingsView: View {
             analytics.track(AuthEvent.logout)
             analytics.resetUserID()
             authManager.logout()
+        }
+    }
+
+    @ViewBuilder
+    private var shareFeedbackButton: some View {
+        let config = StateButtonConfig(buttonSize: .large, buttonType: .teritary, title: "Share feedback", icon: Icons.bubbleDots, iconPlacement: .trailing)
+
+        StateButton(config: config) {
+            openURL(URL(string: "https://docs.google.com/forms/d/e/1FAIpQLSeTRecbfUTKmpYHSaE7bSawEagUpkOPagJtLqZdsec659HaGw/viewform")!)
         }
     }
 }

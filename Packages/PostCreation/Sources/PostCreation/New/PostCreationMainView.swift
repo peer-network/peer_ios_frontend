@@ -48,6 +48,7 @@ public struct PostCreationMainView: View {
     // Attachments
     @State private var imageStates: [ImageState]?
     @State private var selectedPhotoItems: [PhotosPickerItem] = []
+    @State private var selectedAspect: PostImagesAspectRatio = .square
 
     @State private var videoState: VideoState?
 
@@ -69,7 +70,7 @@ public struct PostCreationMainView: View {
             ZStack(alignment: .bottom) {
                 ScrollView {
                     VStack(spacing: 20) {
-                        AttachmentMainView(focusOnEditing: $focusOnEditing, postType: $postType, imageStates: $imageStates, selectedPhotoItems: $selectedPhotoItems, videoState: $videoState, audioState: $audioState)
+                        AttachmentMainView(focusOnEditing: $focusOnEditing, postType: $postType, imageStates: $imageStates, selectedPhotoItems: $selectedPhotoItems, videoState: $videoState, audioState: $audioState, aspectRatio: $selectedAspect)
 
                         if !focusOnEditing {
                             VStack(spacing: 20) {
@@ -85,7 +86,7 @@ public struct PostCreationMainView: View {
                                     minHeight: 30,
                                     placeholder: "Write a title...",
                                     //                                maxLength: appState.getConstants()?.data.post.title.maxLength ?? 1,
-                                    maxLength: 50,
+                                    maxLength: 63,
                                     allowNewLines: false,
                                     focusState: $focusedField,
                                     focusEquals: .title
@@ -246,7 +247,8 @@ public struct PostCreationMainView: View {
 
         return imageStates.compactMap { state in
             if case .loaded(let image) = state.state {
-                return image
+                // If user already cropped to this ratio, this no-ops.
+                return image.centerCroppedIfNeeded(to: selectedAspect)
             }
             return nil
         }

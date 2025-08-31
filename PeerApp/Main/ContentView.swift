@@ -10,6 +10,8 @@ import Environment
 import DesignSystem
 
 struct ContentView: View {
+    @Environment(\.openURL) private var openURL
+
     @EnvironmentObject private var audioManager: AudioSessionManager
 
     @ObservedObject var appRouter: Router
@@ -75,6 +77,25 @@ struct ContentView: View {
                 .padding(.horizontal, 20)
             }
         }
+        .overlay {
+            if popupManager.isShowingFeedbackPrompt {
+                Rectangle()
+                    .fill(.ultraThinMaterial)
+                    .ignoresSafeArea()
+
+                AppFeedbackPopupView { dontShowAgain in
+                    popupManager.setFeedbackDontShowAgain(dontShowAgain)
+                } onShareTapped: {
+                    openURL(popupManager.feedbackFormURL)
+                    popupManager.hideFeedbackPrompt()
+                } onDismiss: {
+                    popupManager.hideFeedbackPrompt()
+                }
+                .shadow(color: .black.opacity(0.25), radius: 10, x: 0, y: 4)
+                .transition(.scale.combined(with: .opacity))
+                .padding(.horizontal, 20)
+            }
+        }
         .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
             if activity.webpageURL != nil {
                 selectedTab = .feed
@@ -82,6 +103,13 @@ struct ContentView: View {
         }
         .onOpenURL { url in
             selectedTab = .feed
+        }
+        .onFirstAppear {
+            // Needed to test feedback popups
+//            popupManager._resetFeedbackPromptState()
+
+            popupManager.beginFeedbackSession()
+            popupManager.scheduleFeedbackPromptIfEligible()
         }
     }
 

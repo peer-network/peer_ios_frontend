@@ -44,11 +44,11 @@ struct PostShareLinkView<ButtonView: View>: View {
     var body: some View {
         if let shareURL = post.shareURL {
             if case let .image(p)? = sharePreview {
-                ShareLink(item: shareURL, preview: p) { buttonView }
+                ShareLink(item: shareURL, preview: p) { buttonView.allowsHitTesting(false) }
             } else if case let .text(p)? = sharePreview {
-                ShareLink(item: shareURL, preview: p) { buttonView }
+                ShareLink(item: shareURL, preview: p) { buttonView.allowsHitTesting(false) }
             } else {
-                ShareLink(item: shareURL) { buttonView }
+                ShareLink(item: shareURL) { buttonView.allowsHitTesting(false) }
             }
         }
     }

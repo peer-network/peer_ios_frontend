@@ -73,8 +73,8 @@ extension MediaItem {
             return 1.0 // Default to square if resolution format is invalid
         }
 
-        // If height is greater than width, use 4:3 ratio (1.333)
-        return height > width ? 4/3 : 1.0
+        // If height is greater than width, use 5:4 ratio
+        return height > width ? 5/4 : 1.0
     }
 
     public var videoAspectRatio: CGFloat {

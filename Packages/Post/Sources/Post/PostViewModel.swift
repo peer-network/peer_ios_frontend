@@ -79,6 +79,8 @@ public final class PostViewModel: ObservableObject {
     @Published var showInteractionsSheet: Bool = false
     @Published var interactionsTypeForSheet: InteractionType = .likes
 
+    @Published var showShareSheet = false
+
     public init(post: Post) {
         self.post = post
 
@@ -517,7 +519,7 @@ extension PostViewModel {
 
     public func fetchInteractions(reset: Bool) {
         if let existingTask = interactionsFetchTask, !existingTask.isCancelled {
-            return
+            existingTask.cancel()
         }
 
         if reset {

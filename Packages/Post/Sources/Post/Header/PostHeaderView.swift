@@ -18,7 +18,6 @@ struct PostHeaderView: View {
     @ObservedObject var postVM: PostViewModel
     
     @Binding var showAppleTranslation: Bool
-
     let showFollowButton: Bool
 
     var profileImageIgnoreCache: Bool {
@@ -70,7 +69,9 @@ struct PostHeaderView: View {
 
             Menu {
                 Section {
-                    PostShareLinkView(post: postVM.post) {
+                    Button {
+                        postVM.showShareSheet = true
+                    } label: {
                         Label("Share", systemImage: "square.and.arrow.up")
                     }
 

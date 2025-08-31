@@ -25,6 +25,7 @@ public struct PostView: View {
     @StateObject private var postVM: PostViewModel
 
     @State private var showAppleTranslation: Bool = false
+    @State private var shareSheetHeight: Double = 20
 
     private let displayType: DisplayType
     private let showFollowButton: Bool
@@ -84,6 +85,18 @@ public struct PostView: View {
                 .presentationBackground(Colors.blackDark)
                 .presentationDetents([.fraction(0.75), .large])
                 .presentationContentInteraction(.resizes)
+        }
+        .sheet(isPresented: $postVM.showShareSheet) {
+            PostShareBottomSheet(viewModel: postVM)
+                .onGeometryChange(for: CGFloat.self, of: \.size.height) { height in
+                    withAnimation {
+                        self.shareSheetHeight = height + 20
+                    }
+                }
+                .presentationDragIndicator(.hidden)
+                .presentationCornerRadius(24)
+                .presentationBackground(Colors.blackDark)
+                .presentationDetents([.height(shareSheetHeight)])
         }
         .addTranslateView(
             isPresented: $showAppleTranslation, text: "\(postVM.post.title)\n\n\(postVM.description ?? "")"
