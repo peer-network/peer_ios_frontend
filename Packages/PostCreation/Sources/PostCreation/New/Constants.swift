@@ -6,6 +6,6 @@
 //
 
 enum Constants {
-    static let imageAmountLimit = 5
+    static let imageAmountLimit = 20
     static let imageMaxSize: Int = 1024 * 1024 * 5 // 5 MB
 }

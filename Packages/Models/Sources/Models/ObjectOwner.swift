@@ -74,6 +74,25 @@ public struct ObjectOwner: Identifiable, Hashable {
         self.isFollowing = isFollowing
     }
 
+    public init?(gqlUser: GetPostByIdQuery.Data.ListPosts.AffectedRow.User) {
+        guard
+            let username = gqlUser.username,
+            let slug = gqlUser.slug,
+            let image = gqlUser.img,
+            let isFollowed = gqlUser.isfollowed,
+            let isFollowing = gqlUser.isfollowing
+        else {
+            return nil
+        }
+
+        self.id = gqlUser.id
+        self.username = username
+        self.slug = slug
+        self.image = image
+        self.isFollowed = isFollowed
+        self.isFollowing = isFollowing
+    }
+
     public init?(gqlUser: CreateCommentMutation.Data.CreateComment.AffectedRow.User) {
         guard
             let username = gqlUser.username,

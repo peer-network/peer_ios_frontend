@@ -22,6 +22,7 @@ public enum Icons {
     public static let eyeSlash = Image(.iconEyeSlash)
     public static let bubble = Image(.iconBubble)
     public static let bubbleFill = Image(.iconBubbleFill)
+    public static let bubbleDots = Image(.iconBubbleDots)
     public static let ellipsis = Image(.iconEllipsis)
     public static let eyeCircled = Image(.iconEyeCircled)
     public static let eyeCircledFill = Image(.iconEyeCircledFill)
@@ -73,7 +74,9 @@ public enum Icons {
     public static let camera = Image(.iconCamera)
     public static let bookmark = Image(.iconBookmark)
     public static let arrowShare = Image(.iconArrowShare)
+    public static let shareVia = Image(.iconShareVia)
     public static let copy = Image(.iconCopy)
+    public static let copyDone = Image(.iconCopyDone)
     public static let checkMarkSqareEnable = Image(.iconCheckmarkSquareEnable)
     public static let checkMarkSqareDisable = Image(.iconCheckmarkSquareDisable)
 }

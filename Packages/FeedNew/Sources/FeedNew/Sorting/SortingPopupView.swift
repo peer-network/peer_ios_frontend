@@ -8,6 +8,7 @@
 import SwiftUI
 import DesignSystem
 import Models
+import Environment
 
 struct SortingPopupView: View {
     @StateObject private var feedContentSortingAndFiltering = FeedContentSortingAndFiltering.shared

@@ -634,6 +634,34 @@ public final class APIServiceGraphQL: APIService {
     }
 
     //MARK: Posts
+    public func fetchPostById(_ id: String) async -> Result<Post, APIError> {
+        do {
+            let operation = GetPostByIdQuery(postid: id)
+
+            let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            guard result.listPosts.counter == 1, let data = result.listPosts.affectedRows?.first else {
+                return .failure(.missingData)
+            }
+
+            guard let fetchedPost = Post(gqlPost: data) else {
+                return .failure(.missingData)
+            }
+
+            return .success(fetchedPost)
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
     public func fetchPostsByTitle(_ query: String, after offset: Int) async -> Result<[Post], APIError> {
         do {
             let offensiveContentFilter =  UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")?.string(forKey: "offensiveContentFilter").flatMap(OffensiveContentFilter.init(rawValue:)) ?? .blocked

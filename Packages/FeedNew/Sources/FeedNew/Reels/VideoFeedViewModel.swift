@@ -8,6 +8,7 @@
 import SwiftUI
 import Models
 import FeedList
+import Environment
 
 @MainActor
 final class VideoFeedViewModel: ObservableObject, PostsFetcher {

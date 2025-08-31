@@ -18,6 +18,7 @@ public struct RowProfileView<TrailingContent: View>: View {
 
     private let user: RowUser
     private let trailingContent: () -> TrailingContent
+    private let dismissAction: (() -> Void)?
 
     private var profileImageIgnoreCache: Bool {
         AccountManager.shared.isCurrentUser(id: user.id)
@@ -28,15 +29,17 @@ public struct RowProfileView<TrailingContent: View>: View {
         case followButton
     }
 
-    public init(user: RowUser, @ViewBuilder trailingContent: @escaping () -> TrailingContent = { EmptyView() }) {
+    public init(user: RowUser, @ViewBuilder trailingContent: @escaping () -> TrailingContent = { EmptyView() }, dismissAction: (() -> Void)? = nil) {
         self.user = user
         self.trailingContent = trailingContent
+        self.dismissAction = dismissAction
     }
 
     public var body: some View {
         HStack(spacing: 0) {
             Button {
-                dismiss()
+                dismissAction?()
+                router.presentedSheet = nil
                 router.navigate(to: .accountDetail(id: user.id))
             } label: {
                 HStack(spacing: 0) {

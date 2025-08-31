@@ -16,15 +16,11 @@ public extension View {
 private struct SkeletonModifier: ViewModifier {
     var isRedacted: Bool
 
-    var rotation: Double {
-        return 0
-    }
+    private let rotation: Double = 0
+    private let animation = Animation.linear(duration: 1.5).repeatForever(autoreverses: false)
 
-    var animation: Animation {
-        .easeInOut(duration: 1.5).repeatForever(autoreverses: false)
-    }
-
-    @State private var isAnimating: Bool = false
+    @State private var startTime: Date?
+    @State private var animationID = UUID()
     @Environment(\.colorScheme) private var scheme
 
     func body(content: Content) -> some View {
@@ -32,43 +28,50 @@ private struct SkeletonModifier: ViewModifier {
             .redacted(reason: isRedacted ? .placeholder : [])
             .overlay {
                 if isRedacted {
-                    GeometryReader {
-                        let size = $0.size
-                        let skeletonWidth = size.width / 2
-                        let blurRadius = max(skeletonWidth / 2, 30)
-                        let blurDiameter = blurRadius * 2
-                        let minX = -(skeletonWidth + blurDiameter)
-                        let maxX = size.width + skeletonWidth + blurDiameter
+                    TimelineView(.animation) { timeline in
+                        GeometryReader { geometry in
+                            let size = geometry.size
+                            let skeletonWidth = size.width / 2
+                            let blurRadius = max(skeletonWidth / 2, 30)
+                            let totalTravel = size.width + skeletonWidth * 2 + blurRadius * 4
+                            let progress = calculateProgress(at: timeline.date)
 
-                        Rectangle()
-                            .fill(scheme == .dark ? .white : .black)
-                            .frame(width: skeletonWidth, height: size.height * 2)
-                            .frame(height: size.height)
-                            .blur(radius: blurRadius)
-                            .rotationEffect(.init(degrees: rotation))
-                            .offset(x: isAnimating ? maxX : minX)
-                    }
-                    .mask {
-                        content
-                            .redacted(reason: .placeholder)
-                    }
-                    .blendMode(.softLight)
-                    .task { @MainActor in
-                        guard !isAnimating else { return }
-                        withAnimation(animation) {
-                            isAnimating = true
+                            Rectangle()
+                                .fill(scheme == .dark ? .white : .black)
+                                .frame(width: skeletonWidth, height: size.height * 2)
+                                .frame(height: size.height)
+                                .blur(radius: blurRadius)
+                                .rotationEffect(.init(degrees: rotation))
+                                .offset(x: -skeletonWidth + progress * totalTravel)
                         }
-                    }
-                    .onDisappear {
-                        isAnimating = false
-                    }
-                    .transaction {
-                        if $0.animation != animation {
-                            $0.animation = .none
+                        .mask {
+                            content.redacted(reason: .placeholder)
                         }
+                        .blendMode(.softLight)
+                    }
+                    .onAppear { startAnimation() }
+                    .onDisappear { resetAnimation() }
+                    .onChange(of: isRedacted) { newValue in
+                        newValue ? startAnimation() : resetAnimation()
                     }
                 }
             }
+    }
+
+    private func calculateProgress(at currentTime: Date) -> CGFloat {
+        guard let startTime else { return 0 }
+        let elapsed = currentTime.timeIntervalSince(startTime)
+        let linearProgress = CGFloat(elapsed / 1.5)
+        return linearProgress - floor(linearProgress) // Loop between 0-1
+    }
+
+    private func startAnimation() {
+        animationID = UUID()
+        startTime = Date()
+    }
+
+    private func resetAnimation() {
+        startTime = nil
     }
 }
 

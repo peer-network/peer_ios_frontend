@@ -36,6 +36,7 @@ query GetAllPosts($filterBy: [PostFilterType!], $contentFilterBy: ContentFilterT
             isdisliked
             issaved
             tags
+            url
             user {
                 id
                 username

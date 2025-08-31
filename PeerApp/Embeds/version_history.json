@@ -122,5 +122,18 @@
         "UI updates across the app for a cleaner, more polished look",
         "Overall improvements and fixes"
       ]
+    },
+    {
+      "version": "1.5.1",
+      "date": "1 Sep 2025",
+      "releaseNotes": [
+        "Double-tap any image or video to quickly like a post",
+        "Pinch to zoom images directly in your Feed — no need to open them in full screen",
+        "Image posts now support 1:1 and 4:5 ratios for a more consistent look",
+        "New cropping tool – crop and scale images or trim videos when creating a post",
+        "Easily share posts with friends using the new Share option in the 3-dots menu",
+        "Leave your thoughts with new in-app feedback popups",
+        "Overall improvements and fixes for a smoother experience"
+      ]
     }
 ]

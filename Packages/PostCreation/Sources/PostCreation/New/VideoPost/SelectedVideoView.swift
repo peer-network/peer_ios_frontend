@@ -23,24 +23,44 @@ struct SelectedVideoView: View {
     @State private var editedVideoDuration: Double?
 
     var body: some View {
-//        contentView()
         pageContentView
             .shadow(color: .black.opacity(0.5), radius: 15, x: 0, y: 4)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding(.top, 7)
-            .overlay(alignment: .topTrailing) {
-                Button {
-                    cleanUpPlayer()
-                    onDismiss()
-                    withAnimation {
-                        showTrimmingView = false
+            .overlay(alignment: .top) {
+                if !showTrimmingView {
+                    HStack {
+                        Button {
+                            showThumbnail = false
+                            showTrimmingView = true
+                        } label: {
+                            Image(systemName: "crop")
+                                .font(.footnote)
+                                .foregroundStyle(Colors.whitePrimary)
+                                .padding(8)
+                                .background(Color.black.opacity(0.6))
+                                .clipShape(Circle())
+                        }
+                        
+                        Spacer()
+                        
+                        Button {
+                            cleanUpPlayer()
+                            onDismiss()
+                            withAnimation {
+                                showTrimmingView = false
+                            }
+                        } label: {
+                            Image(systemName: "xmark")
+                                .font(.footnote)
+                                .foregroundStyle(Colors.whitePrimary)
+                                .padding(8)
+                                .background(Color.black.opacity(0.6))
+                                .clipShape(Circle())
+                        }
                     }
-                } label: {
-                    Icons.xBold
-                        .iconSize(height: 15)
-                        .foregroundStyle(Colors.whitePrimary)
-                        .padding(12)
-                        .contentShape(.rect)
+                    .padding(8)
+                    .shadow(color: .black.opacity(0.5), radius: 15, x: 0, y: 4)
                 }
             }
             .onDisappear {
@@ -99,13 +119,6 @@ struct SelectedVideoView: View {
                                 .stroke(Colors.whitePrimary, style: .init(lineWidth: 3, lineCap: .round, dash: [6, 10]))
                         }
                     }
-                    .onTapGesture {
-                        if !showTrimmingView {
-                            withAnimation {
-                                showTrimmingView = true
-                            }
-                        }
-                    }
                     .overlay(alignment: .bottom) {
                         HStack(spacing: 0) {
                             VideoDurationView(duration: duration)
@@ -154,17 +167,11 @@ struct SelectedVideoView: View {
                             }
                         }
                     }
-                } else {
-                    thumbnailView(thumbnail: thumbnail, videoURL: videoURL, duration: duration)
-                        .frame(width: getRect().width * 0.654, height: getRect().height * 0.425)
-                        .clipShape(RoundedRectangle(cornerRadius: 24))
-                        .onTapGesture {
-                            showThumbnail = false
-                            withAnimation {
-                                showTrimmingView = true
-                            }
-                        }
-                }
+            } else {
+                thumbnailView(thumbnail: thumbnail, videoURL: videoURL, duration: duration)
+                    .frame(width: getRect().width * 0.654, height: getRect().height * 0.425)
+                    .clipShape(RoundedRectangle(cornerRadius: 24))
+            }
 
             if showTrimmingView {
                 VideoTrimmerView(player: $player, isPlaying: $isPlaying, videoDuration: duration ?? 0, url: videoURL, minimumDurationInSeconds: 5, maximumDurationInSeconds: nil, seekerTint: Colors.whitePrimary, indicatorTint: Colors.whitePrimary, quality: .custom, outputFileType: .mp4) { url, duration, error in
@@ -177,13 +184,9 @@ struct SelectedVideoView: View {
                         editedVideoURL = url
                         self.videoWithState = .init(id: UUID().uuidString, state: .loaded(thumbnail: thumbnail, videoURL: url, duration: duration))
                     }
-                    withAnimation {
-                        showTrimmingView = false
-                    }
+                    showTrimmingView = false
                 } onClose: {
-                    withAnimation {
-                        showTrimmingView = false
-                    }
+                    showTrimmingView = false
                 }
             }
         }
@@ -271,7 +274,7 @@ fileprivate struct CustomVideoPlayer: UIViewControllerRepresentable {
 
 fileprivate struct VideoDurationView: View {
     private let durationString: String
-    
+
     init(duration: Double?) {
         let seconds = duration ?? 0
         self.durationString = VideoDurationView.formatDuration(seconds)

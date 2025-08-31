@@ -24,6 +24,7 @@ mutation CreatePost($contentType: ContentType!, $title: String!, $media: [String
             isdisliked
             issaved
             tags
+            url
             user {
                 id
                 username

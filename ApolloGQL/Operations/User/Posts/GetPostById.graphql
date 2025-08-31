@@ -1,0 +1,39 @@
+query GetPostById($postid: ID!) {
+	listPosts(
+        postid: $postid
+        contentFilterBy: MYGRANDMAHATES
+    ) {
+        status
+        counter
+        ResponseCode
+        affectedRows {
+            id
+            contenttype
+            title
+            media
+            cover
+            mediadescription
+            createdat
+            amountlikes
+            amountviews
+            amountcomments
+            amountdislikes
+            amounttrending
+            isliked
+            isviewed
+            isreported
+            isdisliked
+            issaved
+            tags
+            url
+            user {
+                id
+                username
+                slug
+                img
+                isfollowed
+                isfollowing
+            }
+        }
+    }
+}

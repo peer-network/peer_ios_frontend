@@ -119,6 +119,10 @@ public final class APIServiceStub: APIService {
     }
 
     //MARK: Posts
+    public func fetchPostById(_ id: String) async -> Result<Post, APIError> {
+        .failure(.missingData)
+    }
+
     public func fetchPostsByTitle(_ query: String, after offset: Int) async -> Result<[Post], APIError> {
         .failure(.missingData)
     }

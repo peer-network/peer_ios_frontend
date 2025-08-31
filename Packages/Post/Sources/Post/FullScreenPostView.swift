@@ -7,22 +7,43 @@
 
 import SwiftUI
 import DesignSystem
+import Environment
 
 public struct FullScreenPostView: View {
-    private let postVM: PostViewModel
+    @EnvironmentObject private var apiManager: APIServiceManager
+
+    @State private var postVM: PostViewModel?
+    private let postId: String?
 
     public init(postVM: PostViewModel) {
         self.postVM = postVM
+        self.postId = nil
+    }
+
+    public init(postId: String) {
+        self.postId = postId
     }
 
     public var body: some View {
         HeaderContainer(actionsToDisplay: .commentsAndLikes) {
             Text("Post")
         } content: {
-            ScrollView {
-                PostView(postVM: postVM, displayType: .list, showFollowButton: true)
+            if let postVM {
+                ScrollView {
+                    PostView(postVM: postVM, displayType: .list, showFollowButton: true)
+                }
+            } else {
+                ProgressView()
+                    .controlSize(.large)
+                    .padding(.top, 100)
             }
         }
-        .background(Colors.textActive)
+        .onFirstAppear {
+            if let postId {
+                Task {
+                    postVM = await PostViewModel(id: postId, apiService: apiManager.apiService)
+                }
+            }
+        }
     }
 }

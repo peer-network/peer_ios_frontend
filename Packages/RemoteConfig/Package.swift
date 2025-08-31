@@ -14,7 +14,7 @@ let package = Package(
             targets: ["RemoteConfig"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "11.9.0"))
+        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "12.1.0"))
     ],
     targets: [
         .target(

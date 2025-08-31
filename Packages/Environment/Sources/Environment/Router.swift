@@ -11,6 +11,7 @@ import Models
 public enum RouterDestination: Hashable {
     case accountDetail(id: String)
     case postDetailsWithPost(post: Post)
+    case postDetailsWithPostId(id: String)
     case settings
     case hashTag(tag: String)
     case versionHistory
@@ -21,6 +22,17 @@ public enum RouterDestination: Hashable {
     case referralProgram
     case blockedUsers
     case deleteAccount
+}
+
+public enum FullScreenCoverDestination: Hashable, Identifiable {
+    case postDetailsWithPostId(id: String)
+
+    public var id: String {
+        switch self {
+            case .postDetailsWithPostId:
+                return "postDetailsWithPostId"
+        }
+    }
 }
 
 public enum SheetDestination: Identifiable, Hashable {
@@ -54,7 +66,7 @@ public enum SheetDestination: Identifiable, Hashable {
 public final class Router: ObservableObject {
     @Published public var path: [RouterDestination] = []
     @Published public var presentedSheet: SheetDestination?
-    
+
     public var urlHandler: ((URL) -> OpenURLAction.Result)?
     
     public init() {}
@@ -70,7 +82,22 @@ public final class Router: ObservableObject {
             navigate(to: .hashTag(tag: tag))
             return .handled
         }
-        
+
+        if url.scheme == "peer" && url.host == "post",
+           let postId = url.pathComponents.last {
+            navigate(to: .postDetailsWithPostId(id: postId))
+            return .handled
+        }
+
+//        if url.scheme == "https",
+//           url.host?.lowercased() == "peernetwork.eu" || url.host?.lowercased() == "www.peernetwork.eu" {
+//            let comps = url.pathComponents  // ["/", "post", "<id>"]
+//            if comps.count >= 3, comps[1] == "post" {
+//                let id = comps[2]
+//                path.append(.postDetailsWithPostId(id: id))
+//            }
+//        }
+
         return urlHandler?(url) ?? .systemAction
     }
 
