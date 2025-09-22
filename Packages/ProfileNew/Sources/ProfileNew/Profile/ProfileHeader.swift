@@ -38,7 +38,7 @@ struct ProfileHeader: View {
 
             if !bio.isEmpty {
                 Text(bio)
-                    .font(.customFont(weight: .regular, style: .footnote))
+                    .font(.custom(.smallLabelRegular))
                     .foregroundStyle(Colors.whitePrimary)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .multilineTextAlignment(.leading)
@@ -100,14 +100,14 @@ struct ProfileHeader: View {
     private var username: some View {
         HStack(alignment: .center, spacing: 5) {
             Text(user.username)
-                .font(.customFont(weight: .boldItalic, style: .callout))
+                .font(.custom(.bodyBoldItalic))
                 .foregroundStyle(Colors.whitePrimary)
                 .multilineTextAlignment(.leading)
                 .lineLimit(1)
                 .fixedSize(horizontal: false, vertical: true)
 
             Text("#\(String(user.slug))")
-                .font(.customFont(weight: .regular, size: .footnote))
+                .font(.custom(.smallLabelRegular))
                 .foregroundStyle(Colors.whiteSecondary)
         }
     }

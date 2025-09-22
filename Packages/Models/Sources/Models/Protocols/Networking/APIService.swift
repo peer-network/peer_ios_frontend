@@ -41,7 +41,8 @@ public protocol APIService: AnyObject {
     func getMyInviter() async -> Result<RowUser, APIError>
     func getMyReferralInfo() async -> Result<ReferralInfo, APIError>
     func getMyReferredUsers(after offset: Int) async -> Result<[RowUser], APIError>
-    func getMyUserInfo() async -> Result<OffensiveContentFilter, APIError>
+    func getMyUserInfo() async -> Result<(contentFilter: OffensiveContentFilter, shownOnboardings: [Onboarding]), APIError>
+    func updateShownOnboardings(_ onboarding: Onboarding) async -> Result<Void, APIError>
     func fetchUser(with userId: String) async -> Result<User, APIError>
     func fetchUserFollowers(for userID: String, after offset: Int) async -> Result<[RowUser], APIError>
     func fetchUserFollowings(for userID: String, after offset: Int) async -> Result<[RowUser], APIError>

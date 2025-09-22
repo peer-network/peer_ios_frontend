@@ -7,7 +7,7 @@ public class GetUserInfoQuery: GraphQLQuery {
   public static let operationName: String = "GetUserInfo"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetUserInfo { getUserInfo { __typename status ResponseCode affectedRows { __typename userid liquidity amountposts amountblocked amountfollower amountfollowed amountfriends invited updatedat userPreferences { __typename contentFilteringSeverityLevel } } } }"#
+      #"query GetUserInfo { getUserInfo { __typename status ResponseCode affectedRows { __typename userid liquidity amountposts amountblocked amountfollower amountfollowed amountfriends invited updatedat userPreferences { __typename contentFilteringSeverityLevel onboardingsWereShown } } } }"#
     ))
 
   public init() {}
@@ -86,9 +86,11 @@ public class GetUserInfoQuery: GraphQLQuery {
           public static var __selections: [ApolloAPI.Selection] { [
             .field("__typename", String.self),
             .field("contentFilteringSeverityLevel", GraphQLEnum<GQLOperationsUser.ContentFilterType>?.self),
+            .field("onboardingsWereShown", [GraphQLEnum<GQLOperationsUser.OnboardingType>].self),
           ] }
 
           public var contentFilteringSeverityLevel: GraphQLEnum<GQLOperationsUser.ContentFilterType>? { __data["contentFilteringSeverityLevel"] }
+          public var onboardingsWereShown: [GraphQLEnum<GQLOperationsUser.OnboardingType>] { __data["onboardingsWereShown"] }
         }
       }
     }

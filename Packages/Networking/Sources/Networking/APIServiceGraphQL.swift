@@ -216,7 +216,7 @@ public final class APIServiceGraphQL: APIService {
         }
     }
 
-    public func getMyUserInfo() async -> Result<OffensiveContentFilter, APIError> {
+    public func getMyUserInfo() async -> Result<(contentFilter: OffensiveContentFilter, shownOnboardings: [Onboarding]), APIError> {
         do {
             let result = try await qlClient.fetch(query: GetUserInfoQuery(), cachePolicy: .fetchIgnoringCacheCompletely)
 
@@ -229,17 +229,41 @@ public final class APIServiceGraphQL: APIService {
             }
 
             guard
-                let filterValue = result.getUserInfo.affectedRows?.userPreferences?.contentFilteringSeverityLevel
+                let filterValue = result.getUserInfo.affectedRows?.userPreferences?.contentFilteringSeverityLevel,
+                let shownOnboardings = result.getUserInfo.affectedRows?.userPreferences?.onboardingsWereShown
             else {
                 return .failure(.missingData)
             }
 
+            let normalizedOnboardings = Onboarding.normalizedValue(from: shownOnboardings)
+
             switch filterValue {
                 case .case(let filter):
-                    return .success(OffensiveContentFilter.normalizedValue(from: filter))
+                    return .success((
+                        contentFilter: OffensiveContentFilter.normalizedValue(from: filter),
+                        shownOnboardings: normalizedOnboardings
+                    ))
                 case .unknown(_):
                     return .failure(.missingData)
             }
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
+    public func updateShownOnboardings(_ onboarding: Onboarding) async -> Result<Void, APIError> {
+        do {
+            let result = try await qlClient.mutate(mutation: UpdateShownOnboardingsMutation(shownOnboardings: [onboarding.apiValue]))
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            return .success(())
         } catch {
             return .failure(.unknownError(error: error))
         }

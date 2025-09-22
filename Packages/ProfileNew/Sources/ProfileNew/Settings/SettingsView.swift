@@ -169,12 +169,16 @@ public struct SettingsView: View {
                         shareFeedbackButton
                     }
                     .padding(.horizontal, 20)
+                    .padding(.bottom, 41)
                 }
             }
             .scrollIndicators(.hidden)
             .scrollDismissesKeyboard(.interactively)
             .font(.customFont(weight: .regular, style: .footnote))
             .foregroundStyle(Colors.whitePrimary)
+            .overlay(alignment: .bottom) {
+                howPeerWorksButton
+            }
         }
         .background {
             Colors.textActive
@@ -261,6 +265,37 @@ public struct SettingsView: View {
 
         StateButton(config: config) {
             openURL(URL(string: "https://docs.google.com/forms/d/e/1FAIpQLSeTRecbfUTKmpYHSaE7bSawEagUpkOPagJtLqZdsec659HaGw/viewform")!)
+        }
+    }
+
+    private var howPeerWorksButton: some View {
+        Button {
+            PopupManager.shared.isShowingOnboarding = true
+        } label: {
+            HStack(spacing: 20) {
+                Text("How **_peer_** works")
+
+                Text("?")
+                    .overlay {
+                        Circle()
+                            .strokeBorder(Colors.whitePrimary, lineWidth: 1)
+                            .frame(width: 24, height: 24)
+                    }
+            }
+            .font(.custom(.bodyRegular))
+            .foregroundStyle(Colors.whitePrimary)
+            .padding(.vertical, 10)
+            .padding(.horizontal, 20)
+            .background {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 50)
+                        .foregroundStyle(Colors.blackDark)
+                    
+                    RoundedRectangle(cornerRadius: 50)
+                        .strokeBorder(Colors.whitePrimary, lineWidth: 1)
+                }
+            }
+            .contentShape(.rect)
         }
     }
 }

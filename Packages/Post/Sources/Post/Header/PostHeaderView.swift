@@ -38,19 +38,22 @@ struct PostHeaderView: View {
 
                 VStack(alignment: .leading, spacing: 0) {
                     Text(postVM.post.owner.username)
-                        .font(.customFont(weight: .boldItalic, style: .callout))
+                        .font(.custom(.bodyBold))
 
                     Text("#\(String(postVM.post.owner.slug))")
+                        .font(.custom(.smallLabelRegular))
                         .foregroundStyle(Colors.whiteSecondary)
                 }
-                .font(.customFont(weight: .regular, style: .footnote))
                 .lineLimit(1)
 //                .minimumScaleFactor(0.5)
                 .foregroundStyle(Colors.whitePrimary)
                 .contentShape(.rect)
             }
 
-            Spacer(minLength: 20)
+            Spacer()
+                .frame(minWidth: 10)
+                .frame(maxWidth: .infinity)
+                .layoutPriority(-1)
 
             if showFollowButton,
                !redactionReasons.contains(.placeholder),
@@ -79,6 +82,14 @@ struct PostHeaderView: View {
                         showAppleTranslation = true
                     } label: {
                         Label("Translate", systemImage: "captions.bubble")
+                    }
+
+                    if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id) {
+                        Button {
+                            // TODO: Add action to promote post
+                        } label: {
+                            Label("Boost Post", systemImage: "megaphone")
+                        }
                     }
                 }
 

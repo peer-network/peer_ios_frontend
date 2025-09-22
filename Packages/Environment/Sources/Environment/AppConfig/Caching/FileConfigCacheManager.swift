@@ -8,57 +8,45 @@
 import Foundation
 
 class FileConfigCacheManager: ConfigCacheManager {
-    private let fileManager: FileManager
-    private let cacheDirectory: URL
+    private let fm: FileManager
+    private let dir: URL
 
     init(fileManager: FileManager = .default) throws {
-        self.fileManager = fileManager
-        let documentsDirectory = try fileManager.url(
-            for: .cachesDirectory,
-            in: .userDomainMask,
-            appropriateFor: nil,
-            create: true
-        )
-        self.cacheDirectory = documentsDirectory.appendingPathComponent("ConfigCache")
-
-        try createCacheDirectoryIfNeeded()
-    }
-
-    private func createCacheDirectoryIfNeeded() throws {
-        if !fileManager.fileExists(atPath: cacheDirectory.path) {
-            try fileManager.createDirectory(
-                at: cacheDirectory,
-                withIntermediateDirectories: true
-            )
+        self.fm = fileManager
+        let base = try fm.url(for: .cachesDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+        self.dir = base.appendingPathComponent("ConfigCache", isDirectory: true)
+        if !fm.fileExists(atPath: dir.path) {
+            try fm.createDirectory(at: dir, withIntermediateDirectories: true)
         }
     }
 
-    private func fileURL(forKey key: String) -> URL {
-        return cacheDirectory.appendingPathComponent("\(key).json")
+    private func url(forKey key: String) -> URL {
+        dir.appendingPathComponent("\(key).json")
     }
 
-    func save<T: Codable>(_ config: T, forKey key: String, hash: String) throws {
-        let cached = CachedConfig(data: config, lastUpdated: Date(), hash: hash)
-        let data = try JSONEncoder().encode(cached)
-        try data.write(to: fileURL(forKey: key))
+    func saveRaw(_ data: Data, forKey key: String, hash: String) throws {
+        let env = CachedConfig(hash: hash, lastUpdated: Date(), payload: data)
+        let bytes = try JSONEncoder().encode(env)
+        try bytes.write(to: url(forKey: key), options: .atomic)
     }
 
-    func load<T: Codable>(forKey key: String, expectedHash: String?) throws -> T? {
-        let fileURL = fileURL(forKey: key)
-        guard fileManager.fileExists(atPath: fileURL.path) else { return nil }
-
-        let data = try Data(contentsOf: fileURL)
-        let cached = try JSONDecoder().decode(CachedConfig<T>.self, from: data)
-
-        if let expectedHash = expectedHash, cached.hash != expectedHash {
+    func loadRaw(forKey key: String, expectedHash: String?) throws -> Data? {
+        let f = url(forKey: key)
+        guard fm.fileExists(atPath: f.path) else { return nil }
+        do {
+            let bytes = try Data(contentsOf: f)
+            let env = try JSONDecoder().decode(CachedConfig.self, from: bytes)
+            if let expectedHash, env.hash != expectedHash { return nil }
+            return env.payload
+        } catch {
+            // Corrupt/legacy cache: drop it and return nil
+            try? fm.removeItem(at: f)
             return nil
         }
-
-        return cached.data
     }
 
     func clearCache() {
-        try? fileManager.removeItem(at: cacheDirectory)
-        try? createCacheDirectoryIfNeeded()
+        try? fm.removeItem(at: dir)
+        try? fm.createDirectory(at: dir, withIntermediateDirectories: true)
     }
 }

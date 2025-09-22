@@ -21,7 +21,7 @@ public struct FeedView: View {
     @State private var showFilters = false
     @State private var filtersPosition: CGRect = .zero
 
-//    @State private var displayLogoInHeader = true
+    @State private var displayLogoInHeader = true
 
     public init() {}
 
@@ -137,12 +137,12 @@ public struct FeedView: View {
     }
 
     private var headerView: some View {
-//        Group {
-//            if displayLogoInHeader {
-//                Images.logoText
-//                    .frame(height: 30)
-//                    .transition(.opacity)
-//            } else {
+        Group {
+            if displayLogoInHeader {
+                Images.logoText
+                    .iconSize(height: 33.5)
+                    .transition(.opacity)
+            } else {
                 Button {
                     withAnimation(.smooth(duration: 0.3, extraBounce: 0)) {
                         showFilters.toggle()
@@ -163,16 +163,16 @@ public struct FeedView: View {
                         filtersPosition = newValue
                     }
                 }
-//            }
-//        }
-//        .onFirstAppear {
-//            Task {
-//                try? await Task.sleep(for: .seconds(3))
-//                withAnimation {
-//                    displayLogoInHeader = false
-//                }
-//            }
-//        }
+            }
+        }
+        .onFirstAppear {
+            Task {
+                try? await Task.sleep(for: .seconds(3))
+                withAnimation {
+                    displayLogoInHeader = false
+                }
+            }
+        }
     }
 }
 

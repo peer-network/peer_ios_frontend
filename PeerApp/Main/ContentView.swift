@@ -8,11 +8,15 @@
 import SwiftUI
 import Environment
 import DesignSystem
+import Models
+import Analytics
 
 struct ContentView: View {
     @Environment(\.openURL) private var openURL
+    @Environment(\.analytics) private var analytics
 
     @EnvironmentObject private var audioManager: AudioSessionManager
+    @EnvironmentObject private var appState: AppState
 
     @ObservedObject var appRouter: Router
 
@@ -23,6 +27,29 @@ struct ContentView: View {
 
     @StateObject private var tabManager = AppTabManager.shared
     @StateObject private var popupManager = PopupManager.shared
+    @StateObject private var accountManager = AccountManager.shared
+
+    private var showIntroBinding: Binding<Bool> {
+        Binding(
+            get: { !accountManager.shownOnboardings.contains(.intro) },
+            set: { isPresented in
+                if !isPresented {
+                    accountManager.markOnboardingShown(.intro)
+                }
+            }
+        )
+    }
+
+    private var showIntroByUserBinding: Binding<Bool> {
+        Binding(
+            get: { popupManager.isShowingOnboarding },
+            set: { isPresented in
+                if !isPresented {
+                    popupManager.isShowingOnboarding = false
+                }
+            }
+        )
+    }
 
     var body: some View {
         ZoomContainer {
@@ -104,6 +131,32 @@ struct ContentView: View {
         .onOpenURL { url in
             selectedTab = .feed
         }
+        .ifCondition(appState.getConstants() != nil) {
+            $0.fullScreenCover(isPresented: showIntroBinding) {
+                OnboardingView(viewModel: OnboardingViewModel(closeButtonType: .skip, tokenomics: appState.getConstants()!.data.tokenomics, dailyFree: appState.getConstants()!.data.dailyFree, minting: appState.getConstants()!.data.minting, dismissAction: { isSkipped in
+                    accountManager.markOnboardingShown(.intro)
+                    analytics.track(OnboardingEvent(skipped: isSkipped))
+                }))
+            }
+        }
+//        .fullScreenCover(isPresented: showIntroBinding) {
+//            OnboardingView(viewModel: OnboardingViewModel(closeButtonType: .skip, tokenomics: appState.getConstants()!.data.tokenomics, dailyFree: appState.getConstants()!.data.dailyFree, minting: appState.getConstants()!.data.minting, dismissAction: { isSkipped in
+//                accountManager.markOnboardingShown(.intro)
+//                analytics.track(OnboardingEvent(skipped: isSkipped))
+//            }))
+//        }
+        .ifCondition(appState.getConstants() != nil) {
+            $0.fullScreenCover(isPresented: showIntroByUserBinding) {
+                OnboardingView(viewModel: OnboardingViewModel(closeButtonType: .close, tokenomics: appState.getConstants()!.data.tokenomics, dailyFree: appState.getConstants()!.data.dailyFree, minting: appState.getConstants()!.data.minting, dismissAction: { _ in
+                    popupManager.isShowingOnboarding = false
+                }))
+            }
+        }
+//        .fullScreenCover(isPresented: showIntroByUserBinding) {
+//            OnboardingView(viewModel: OnboardingViewModel(closeButtonType: .close, tokenomics: appState.getConstants()!.data.tokenomics, dailyFree: appState.getConstants()!.data.dailyFree, minting: appState.getConstants()!.data.minting, dismissAction: { _ in
+//                popupManager.isShowingOnboarding = false
+//            }))
+//        }
         .onFirstAppear {
             // Needed to test feedback popups
 //            popupManager._resetFeedbackPromptState()

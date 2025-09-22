@@ -182,17 +182,17 @@ extension ExploreView {
             Text(type.rawValue)
                 .ifCondition(type == .username) {
                     $0
-                        .font(.customFont(weight: .boldItalic, style: .footnote))
+                        .font(.custom(.bodyBoldItalic))
                         .foregroundColor(.black)
                 }
                 .ifCondition(type == .tag) {
                     $0
-                        .font(.customFont(weight: .regular, style: .footnote))
+                        .font(.custom(.bodyRegular))
                         .foregroundColor(Colors.hashtag)
                 }
                 .ifCondition(type == .title) {
                     $0
-                        .font(.customFont(weight: .regular, style: .footnote))
+                        .font(.custom(.bodyRegular))
                         .foregroundColor(Color.black)
                 }
                 .padding(.vertical, 10)
@@ -209,12 +209,12 @@ extension ExploreView {
             Text(type.prefix)
                 .ifCondition(type == .username) {
                     $0
-                        .font(.customFont(weight: .boldItalic, style: .footnote))
+                        .font(.custom(.bodyBoldItalic))
                         .foregroundColor(.white.opacity(0.5))
                 }
                 .ifCondition(type == .tag) {
                     $0
-                        .font(.customFont(weight: .regular, style: .footnote))
+                        .font(.custom(.bodyRegular))
                         .foregroundColor(Colors.hashtag)
                 }
 
@@ -239,7 +239,7 @@ extension ExploreView {
             .lineLimit(1)
             .ifCondition(type == .username) {
                 $0
-                    .font(.customFont(weight: .boldItalic, style: .footnote))
+                    .font(.custom(.bodyBoldItalic))
                     .foregroundColor(.white)
             }
             .ifCondition(type == .title) {
@@ -270,7 +270,7 @@ extension ExploreView {
                     .foregroundStyle(Colors.whitePrimary)
             }
         }
-        .font(.customFont(weight: .regular, style: .footnote))
+        .font(.custom(.bodyRegular))
         .background(Colors.textActive)
     }
 }
@@ -382,7 +382,7 @@ extension ExploreView {
     private func tagsView(_ tags: [String]) -> some View {
         TagsView(tags: tags) { tag in
             Text("#\(tag)")
-                .font(.customFont(weight: .regular, style: .footnote))
+                .font(.custom(.bodyRegular))
                 .foregroundStyle(Colors.hashtag)
                 .padding(.horizontal, 20)
                 .padding(.vertical, 10)
@@ -451,7 +451,7 @@ extension ExploreView {
                         .overlay(alignment: .bottom) {
                             HStack {
                                 Text(getVideoDuration(timeInterval: post.media.first?.duration))
-                                    .font(.customFont(weight: .regular, style: .body))
+                                    .font(.custom(.bodyRegular))
 
                                 Spacer()
                                     .frame(maxWidth: .infinity)

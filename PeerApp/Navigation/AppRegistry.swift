@@ -109,6 +109,9 @@ extension View {
                 case .blockedUsers:
                     BlockedUsersPageView()
                         .toolbar(.hidden, for: .navigationBar)
+                case .commentLikes(let comment):
+                    CommentLikesListView(comment: comment)
+                        .toolbar(.hidden, for: .navigationBar)
             }
         }
     }

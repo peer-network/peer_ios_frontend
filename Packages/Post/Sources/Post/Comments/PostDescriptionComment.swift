@@ -26,20 +26,19 @@ struct PostDescriptionComment: View {
                 router.navigate(to: .accountDetail(id: postVM.post.owner.id))
             } label: {
                 Text(postVM.post.owner.username)
-                    .bold()
-                    .italic()
+                    .font(.custom(.bodyBoldItalic))
                     .frame(width: (getRect().width - 20) * 0.2, alignment: .topLeading)
             }
 
             VStack(alignment: .leading, spacing: 0) {
                 HStack(alignment: .top, spacing: 0) {
                     titleTextView
-                        .bold()
+                        .font(.custom(.bodyBold))
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .layoutPriority(-1)
 
                     Text(postVM.post.formattedCreatedAtShort)
-                        .font(.customFont(weight: .regular, size: .footnoteSmall))
+                        .font(.custom(.smallLabelRegular))
                         .foregroundStyle(Colors.whiteSecondary)
                 }
 
@@ -58,7 +57,7 @@ struct PostDescriptionComment: View {
                 }
             }
         }
-        .font(.customFont(weight: .regular, size: .body))
+        .font(.custom(.bodyRegular))
         .multilineTextAlignment(.leading)
         .foregroundStyle(Colors.whitePrimary)
         .geometryGroup()

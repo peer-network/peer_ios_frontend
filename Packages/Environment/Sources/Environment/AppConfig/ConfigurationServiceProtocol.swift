@@ -6,14 +6,11 @@
 //
 
 public protocol ConfigurationServiceProtocol {
-    // Primary methods
     func loadAllConfigurations() async throws
     func getConstants() -> ConstantsConfig?
-
-    // Cache methods
-    func loadCachedConstants() throws -> ConstantsConfig?
+    func loadCachedConstants() -> ConstantsConfig?
     var isUsingCachedData: Bool { get }
 
-    // For testing/mocking
+    /// For testing/mocking
     func forceUseCachedData()
 }

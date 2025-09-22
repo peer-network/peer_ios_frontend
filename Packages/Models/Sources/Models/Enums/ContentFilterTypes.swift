@@ -11,6 +11,7 @@ public enum FeedContentType: String, CaseIterable {
     case video
     case image
     case imageAndVideo
+    case all
 }
 
 public enum FeedContentSortingByTime: String, CaseIterable {
@@ -39,4 +40,8 @@ public enum FeedFilterByRelationship: String, CaseIterable {
 public enum OffensiveContentFilter: String, RawRepresentable, Codable {
     case allowed
     case blocked
+}
+
+public enum Onboarding {
+    case intro
 }

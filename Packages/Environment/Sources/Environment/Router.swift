@@ -22,6 +22,7 @@ public enum RouterDestination: Hashable {
     case referralProgram
     case blockedUsers
     case deleteAccount
+    case commentLikes(comment: Comment)
 }
 
 public enum FullScreenCoverDestination: Hashable, Identifiable {
@@ -104,4 +105,21 @@ public final class Router: ObservableObject {
     public func emptyPath() {
         path.removeAll()
     }
+}
+
+
+// MARK: - Comment Likes Things
+
+@frozen
+public enum CommentLikesState {
+    case loading
+    case display
+    case error(Error)
+}
+
+public protocol CommentLikesProviding {
+    var stateLikes: CommentLikesState { get }
+    var likedBy: [RowUser] { get }
+    var hasMoreLikes: Bool { get }
+    func fetchLikes(reset: Bool)
 }

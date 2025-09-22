@@ -1,0 +1,9 @@
+mutation UpdateShownOnboardings($shownOnboardings: [OnboardingType!]!) {
+    updateUserPreferences(userPreferences: { shownOnboardings: $shownOnboardings }) {
+        status
+        ResponseCode
+        affectedRows {
+            onboardingsWereShown
+        }
+    }
+}

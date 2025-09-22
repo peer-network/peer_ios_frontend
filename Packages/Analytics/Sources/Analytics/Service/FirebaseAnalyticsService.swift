@@ -22,23 +22,46 @@ public final class FirebaseAnalyticsService: AnalyticsServiceProtocol {
     }
 
     public func track(_ event: AnalyticsEvent) {
-        Task(priority: .background) {
-            await trackEvent(event)
+        Task.detached(priority: .background) { [weak self] in
+            await self?.trackEvent(event)
         }
     }
 
     private func trackEvent(_ event: AnalyticsEvent) async {
-        let bundleVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
-        let buildVersion = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
-
         var parameters = event.eventParameters ?? [:]
 
-        parameters["appVersion"] = bundleVersion
-        parameters["appBuild"] = buildVersion
-        parameters["iOSVersion"] = await UIDevice.current.systemVersion
-        parameters["localeId"] = Locale.current.identifier
+        // Enrich with common context (keep names short to save your 25-param budget)
+        parameters["app_version"] = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+        parameters["app_build"]   = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
+        parameters["ios_version"] = await UIDevice.current.systemVersion
+        parameters["locale_id"]   = Locale.current.identifier
 
-        Analytics.logEvent(event.eventType, parameters: parameters)
+        // Coerce values to GA4-friendly types
+        let coerced = Self.coerceParameters(parameters)
+
+        Analytics.logEvent(event.eventType, parameters: coerced)
+    }
+
+    private static func coerceParameters(_ params: [String: Any]) -> [String: Any] {
+        var result: [String: Any] = [:]
+        for (k, v) in params {
+            switch v {
+                case let b as Bool:
+                    result[k] = NSNumber(value: b)   // true->1, false->0
+                case let i as Int:
+                    result[k] = i
+                case let d as Double:
+                    result[k] = d
+                case let s as String:
+                    result[k] = s
+                case let n as NSNumber:
+                    result[k] = n
+                default:
+                    // Last resort: stringify to avoid dropping data
+                    result[k] = String(describing: v)
+            }
+        }
+        return result
     }
 
     public func trackScreenView(_ screen: ScreenTrackable) {

@@ -54,6 +54,7 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "UserInfoResponse": return GQLOperationsUser.Objects.UserInfoResponse
     case "UserListResponse": return GQLOperationsUser.Objects.UserListResponse
     case "UserPreferences": return GQLOperationsUser.Objects.UserPreferences
+    case "UserPreferencesResponse": return GQLOperationsUser.Objects.UserPreferencesResponse
     default: return nil
     }
   }

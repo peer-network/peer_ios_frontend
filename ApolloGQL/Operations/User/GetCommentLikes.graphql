@@ -1,0 +1,19 @@
+query CommentLikes($commentId: ID!, $offset: Int, $limit: Int) {
+	postInteractions(
+        getOnly: COMMENTLIKE
+        postOrCommentId: $commentId
+        offset: $offset
+        limit: $limit
+    ) {
+        status
+        ResponseCode
+        affectedRows {
+            id
+            username
+            slug
+            img
+            isfollowed
+            isfollowing
+        }
+    }
+}

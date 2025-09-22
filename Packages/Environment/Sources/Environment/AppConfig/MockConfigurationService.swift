@@ -8,72 +8,82 @@
 import Foundation
 
 class MockConfigurationService: ConfigurationServiceProtocol {
-    // Configuration storage
-    var constantsConfig: ConstantsConfig?
-
-    // Mock control properties
-    var shouldThrowError = false
-    var shouldReturnStaleCache = false
-    var mockIsUsingCachedData = false
-
-    // Protocol requirements
-    var isUsingCachedData: Bool {
-        return mockIsUsingCachedData
-    }
-
+    // Inputs to simulate scenarios
+    var simulateNetworkFailure = false
+    var simulateCacheHasGoodHash = false
+    var simulateCacheCorrupt = false
+    
+    // Output state
+    private(set) var constants: ConstantsConfig?
+    private(set) var usingCache = false
+    
+    var isUsingCachedData: Bool { usingCache }
+    
     func loadAllConfigurations() async throws {
-        if shouldThrowError {
-            throw URLError(.cannotConnectToHost)
-        }
-
-        if shouldReturnStaleCache {
-            // Return cached data with old hash
-            constantsConfig = ConstantsConfig(
-                createdAt: Date().timeIntervalSince1970 - 10000,
-                hash: "old-hash",
-                name: "constants",
-                data: ConstantsConfig.ConstantsData(
-                    post: ConstantsConfig.PostConstants(
-                        title: ConstantsConfig.LengthConstraints(minLength: 2, maxLength: 63),
-                        mediaDescription: ConstantsConfig.LengthConstraints(minLength: 3, maxLength: 500)
-                    ),
-                    comment: ConstantsConfig.CommentConstants(
-                        content: ConstantsConfig.LengthConstraints(minLength: 2, maxLength: 200)
-                    )
-                )
-            )
-            mockIsUsingCachedData = true
+        // Simulate bootstrap fetch
+        if simulateNetworkFailure && !simulateCacheHasGoodHash {
+            // No network and no valid cache → throw
+            if loadCachedConstants() == nil { throw URLError(.cannotConnectToHost) }
+            usingCache = true
             return
         }
-
-        // Return fresh data
-        constantsConfig = ConstantsConfig(
+        
+        // Pretend we fetched the bootstrap AppConfig successfully:
+        let remoteHash = "remote-hash-123"
+        let remoteURL = "https://example.com/constants.json"
+        
+        // Cache path
+        if simulateCacheHasGoodHash {
+            if simulateCacheCorrupt {
+                // Corrupt cache → should refetch and overwrite
+                // We'll just ignore and proceed to "network fetch"
+            } else {
+                usingCache = true
+                constants = Self.sampleConstants(hash: remoteHash)
+                return
+            }
+        }
+        
+        // Network fetch result (unless network is down)
+        if simulateNetworkFailure {
+            // No network; if we still got here, it's because cache hash mismatched or was corrupt
+            if let cached = loadCachedConstants() { constants = cached; usingCache = true; return }
+            throw URLError(.cannotConnectToHost)
+        }
+        
+        // Success path: fetch and decode, then cache
+        // (We don't implement actual caching here; just pretend network gives us this:)
+        constants = Self.sampleConstants(hash: remoteHash)
+        usingCache = false
+    }
+    
+    func getConstants() -> ConstantsConfig? { constants }
+    
+    func loadCachedConstants() -> ConstantsConfig? {
+        // If you want, return an old model here to test consumers vs. schema changes.
+        nil
+    }
+    
+    func forceUseCachedData() { usingCache = true }
+    
+    private static func sampleConstants(hash: String) -> ConstantsConfig {
+        ConstantsConfig(
             createdAt: Date().timeIntervalSince1970,
-            hash: "mock-hash",
+            hash: hash,
             name: "constants",
-            data: ConstantsConfig.ConstantsData(
-                post: ConstantsConfig.PostConstants(
-                    title: ConstantsConfig.LengthConstraints(minLength: 2, maxLength: 63),
-                    mediaDescription: ConstantsConfig.LengthConstraints(minLength: 3, maxLength: 500)
+            data: .init(
+                post: .init(
+                    title: .init(minLength: 2, maxLength: 63),
+                    mediaDescription: .init(minLength: 3, maxLength: 500)
                 ),
-                comment: ConstantsConfig.CommentConstants(
-                    content: ConstantsConfig.LengthConstraints(minLength: 2, maxLength: 200)
-                )
+                comment: .init(content: .init(minLength: 2, maxLength: 200)),
+                dailyFree: .init(dailyFreeActions: .init(post: 1, like: 3, comment: 4, dislike: 0)),
+                tokenomics: .init(
+                    actionTokenPrices: .init(post: 20, like: 3, comment: 3, dislike: 1),
+                    actionGemsReturn: .init(view: 0.25, like: 5, comment: -3, dislike: 2)
+                ),
+                minting: .init(dailyNumberTokens: 5000)
             )
         )
-        mockIsUsingCachedData = false
-    }
-
-    func getConstants() -> ConstantsConfig? {
-        return constantsConfig
-    }
-
-    func loadCachedConstants() throws -> ConstantsConfig? {
-        // For testing cache loading behavior
-        return constantsConfig
-    }
-
-    func forceUseCachedData() {
-        mockIsUsingCachedData = true
     }
 }

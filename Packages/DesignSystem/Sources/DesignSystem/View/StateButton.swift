@@ -18,15 +18,15 @@ public struct StateButtonConfig: Equatable {
         let style: any ButtonStyle
         switch buttonType {
             case .primary:
-                style = TargetStyle(backgroundStyle: buttonType.fillStyle, textColor: buttonType.textColor, height: buttonSize.height, font: buttonSize.font)
+                style = TargetStyle(backgroundStyle: buttonType.fillStyle, textColor: buttonType.textColor, height: buttonSize.height, font: buttonSize.font, isTextEmpty: title.isEmpty)
             case .secondary:
-                style = TargetStyle(backgroundStyle: buttonType.fillStyle, textColor: buttonType.textColor, height: buttonSize.height, font: buttonSize.font)
+                style = TargetStyle(backgroundStyle: buttonType.fillStyle, textColor: buttonType.textColor, height: buttonSize.height, font: buttonSize.font, isTextEmpty: title.isEmpty)
             case .teritary:
-                style = StrokeStyle(strokeStyle: buttonType.fillStyle, textColor: buttonType.textColor, height: buttonSize.height, font: buttonSize.font)
+                style = StrokeStyle(strokeStyle: buttonType.fillStyle, textColor: buttonType.textColor, height: buttonSize.height, font: buttonSize.font, isTextEmpty: title.isEmpty)
             case .alert:
-                style = StrokeStyle(strokeStyle: buttonType.fillStyle, textColor: buttonType.textColor, height: buttonSize.height, font: buttonSize.font)
+                style = StrokeStyle(strokeStyle: buttonType.fillStyle, textColor: buttonType.textColor, height: buttonSize.height, font: buttonSize.font, isTextEmpty: title.isEmpty)
             case .custom:
-                style = TargetStyle(backgroundStyle: buttonType.fillStyle, textColor: buttonType.textColor, height: buttonSize.height, font: buttonSize.font)
+                style = TargetStyle(backgroundStyle: buttonType.fillStyle, textColor: buttonType.textColor, height: buttonSize.height, font: buttonSize.font, isTextEmpty: title.isEmpty)
         }
         return AnyButtonStyle(style)
     }
@@ -74,7 +74,9 @@ public struct StateButton: View {
                         .iconSize(width: iconSize, height: iconSize)
                 }
 
-                Text(config.title)
+                if !config.title.isEmpty {
+                    Text(config.title)
+                }
 
                 if let icon = config.icon, case .trailing = config.iconPlacement {
                     icon
@@ -119,7 +121,9 @@ public struct AsyncStateButton: View {
                             .iconSize(width: iconSize, height: iconSize)
                     }
 
-                    Text(config.title)
+                    if !config.title.isEmpty {
+                        Text(config.title)
+                    }
 
                     if let icon = config.icon, case .trailing = config.iconPlacement {
                         icon
@@ -149,7 +153,7 @@ public enum ButtonSize {
 
     var height: CGFloat {
         switch self {
-            case .small: return 40
+            case .small: return 45
             case .large: return 60
         }
     }
@@ -245,19 +249,20 @@ struct StrokeStyle<S: ShapeStyle>: ButtonStyle {
     let textColor: Color
     let height: CGFloat
     let font: AppFont
+    let isTextEmpty: Bool
 
     func makeBody(configuration: Configuration) -> some View {
         ButtonStyleContent { isEnabled in
             configuration.label
                 .appFont(font)
                 .foregroundStyle(textColor)
-                .padding(.horizontal, 20)
+                .padding(.horizontal, isTextEmpty ? 10 : 20)
                 .frame(height: height)
                 .frame(maxWidth: .infinity)
                 .background {
 //                    Colors.blackDark
 
-                    RoundedRectangle(cornerRadius: 30)
+                    RoundedRectangle(cornerRadius: 24)
                         .strokeBorder(strokeStyle, lineWidth: 1)
                 }
                 .overlay {
@@ -265,7 +270,7 @@ struct StrokeStyle<S: ShapeStyle>: ButtonStyle {
                         Color.black.opacity(0.3)
                     }
                 }
-                .clipShape(RoundedRectangle(cornerRadius: 30))
+                .clipShape(RoundedRectangle(cornerRadius: 24))
                 .contentShape(Rectangle())
                 .animation(.linear(duration: 0.2)) {
                     $0.scaleEffect(configuration.isPressed ? 0.9 : 1)
@@ -279,6 +284,7 @@ struct TargetStyle<S: ShapeStyle>: ButtonStyle {
     let textColor: Color
     let height: CGFloat
     let font: AppFont
+    let isTextEmpty: Bool
 
     func makeBody(configuration: Configuration) -> some View {
         ButtonStyleContent { isEnabled in
@@ -286,7 +292,7 @@ struct TargetStyle<S: ShapeStyle>: ButtonStyle {
                 .appFont(font)
                 .bold()
                 .foregroundStyle(textColor)
-                .padding(.horizontal, 20)
+                .padding(.horizontal, isTextEmpty ? 10 : 20)
                 .frame(height: height)
                 .frame(maxWidth: .infinity)
                 .background(backgroundStyle)
@@ -295,7 +301,7 @@ struct TargetStyle<S: ShapeStyle>: ButtonStyle {
                         Color.black.opacity(0.3)
                     }
                 }
-                .clipShape(RoundedRectangle(cornerRadius: 30))
+                .clipShape(RoundedRectangle(cornerRadius: 24))
                 .contentShape(Rectangle())
                 .animation(.linear(duration: 0.2)) {
                     $0.scaleEffect(configuration.isPressed ? 0.9 : 1)

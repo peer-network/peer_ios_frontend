@@ -10,7 +10,7 @@ import Models
 import Environment
 
 @MainActor
-final class SingleCommentViewModel: ObservableObject {
+public final class SingleCommentViewModel: ObservableObject {
     unowned var apiService: APIService!
 
     let comment: Comment
@@ -19,7 +19,20 @@ final class SingleCommentViewModel: ObservableObject {
     @Published public private(set) var amountLikes: Int
     @Published public private(set) var attributedContent: AttributedString?
 
-    init(comment: Comment) {
+    // Comment likes properties
+    @frozen
+    public enum LikesState {
+        case loading
+        case display
+        case error(Error)
+    }
+    @Published private(set) var likesState = LikesState.loading
+    @Published private(set) var likedBy: [RowUser] = []
+    private var likesFetchTask: Task<Void, Never>?
+    private var currentLikesOffset: Int = 0
+    private(set) var hasMoreLikes: Bool = true
+
+    public init(comment: Comment) {
         self.comment = comment
 
         isLiked = comment.isLiked
@@ -90,6 +103,58 @@ final class SingleCommentViewModel: ObservableObject {
 //                isReported = false
 //            }
             throw error
+        }
+    }
+}
+
+// MARK: - Comment Likes
+
+extension SingleCommentViewModel {
+    public func fetchLikes(reset: Bool) {
+        if let existingTask = likesFetchTask, !existingTask.isCancelled {
+            existingTask.cancel()
+        }
+
+        if reset {
+            likedBy.removeAll()
+            currentLikesOffset = 0
+            hasMoreLikes = true
+        }
+
+        if likedBy.isEmpty {
+            likesState = .loading
+        }
+
+        likesFetchTask = Task {
+            do {
+                let result = await apiService.getCommentInteractions(with: comment.id, after: currentLikesOffset)
+
+                try Task.checkCancellation()
+
+                switch result {
+                    case .success(let fetchedUsers):
+                        await MainActor.run {
+                            likedBy.append(contentsOf: fetchedUsers)
+
+                            if fetchedUsers.count != Constants.postInteractionsLimit {
+                                hasMoreLikes = false
+                            } else {
+                                currentLikesOffset += Constants.postInteractionsLimit
+                            }
+                            likesState = .display
+                        }
+                    case .failure(let apiError):
+                        throw apiError
+                }
+            } catch is CancellationError {
+                //                state = .display(posts: posts, hasMore: .hasMore)
+            } catch {
+                await MainActor.run {
+                    likesState = .error(error)
+                }
+            }
+
+            likesFetchTask = nil
         }
     }
 }

@@ -54,8 +54,12 @@ public final class APIServiceStub: APIService {
         .failure(.missingData)
     }
 
-    public func getMyUserInfo() async -> Result<OffensiveContentFilter, APIError> {
-        .success(.allowed)
+    public func getMyUserInfo() async -> Result<(contentFilter: OffensiveContentFilter, shownOnboardings: [Onboarding]), APIError> {
+        .failure(.missingData)
+    }
+
+    public func updateShownOnboardings(_ onboarding: Onboarding) async -> Result<Void, APIError> {
+        .success(())
     }
 
     public func fetchUser(with userId: String) async -> Result<User, APIError> {

@@ -10,12 +10,12 @@ import Foundation
 struct AppConfig: Codable {
     let createdAt: TimeInterval
     let name: String
-    let data: ConfigData
+    let data: DataSection
 
-    struct ConfigData: Codable {
-        let constants: ConfigItem
-        let responseCodes: ConfigItem
-        let endpoints: ConfigItem
+    struct DataSection: Codable {
+        let constants: Item
+        let responseCodes: Item
+        let endpoints: Item
 
         enum CodingKeys: String, CodingKey {
             case constants
@@ -23,10 +23,10 @@ struct AppConfig: Codable {
             case endpoints
         }
     }
-}
 
-struct ConfigItem: Codable {
-    let createdAt: TimeInterval
-    let hash: String
-    let url: String
+    struct Item: Codable {
+        let createdAt: TimeInterval
+        let hash: String
+        let url: String
+    }
 }
