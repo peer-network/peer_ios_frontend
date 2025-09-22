@@ -28,8 +28,7 @@ struct SingleCommentView: View {
                 router.navigate(to: .accountDetail(id: commentVM.comment.user.id))
             } label: {
                 Text(commentVM.comment.user.username)
-                    .bold()
-                    .italic()
+                    .font(.custom(.bodyBoldItalic))
                     .frame(width: (getRect().width - 20) * 0.2, alignment: .topLeading)
             }
 
@@ -44,7 +43,7 @@ struct SingleCommentView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
 
                 Text(commentVM.comment.formattedCreatedAt)
-                    .font(.customFont(weight: .regular, size: .footnoteSmall))
+                    .font(.custom(.smallLabelRegular))
                     .foregroundStyle(Colors.whiteSecondary)
             }
 
@@ -69,12 +68,19 @@ struct SingleCommentView: View {
                         }
                     }
                     .clipShape(Rectangle())
+                    .contentShape(.rect)
                 }
 
-                Text("\(commentVM.amountLikes)")
+                Button {
+                    dismiss()
+                    router.navigate(to: .commentLikes(comment: commentVM.comment))
+                } label: {
+                    Text("\(commentVM.amountLikes)")
+                        .contentShape(.rect)
+                }
             }
         }
-        .font(.customFont(weight: .regular, size: .body))
+        .font(.custom(.bodyRegular))
         .multilineTextAlignment(.leading)
         .foregroundStyle(Colors.whitePrimary)
         .onFirstAppear {

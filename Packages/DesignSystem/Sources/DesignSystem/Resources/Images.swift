@@ -10,6 +10,7 @@ import SwiftUI
 @frozen
 public enum Images {
     public static let logoText = Image(.logoText)
+    public static let onboarding1 = Image(.onboarding1)
 }
 
 @frozen
@@ -21,13 +22,16 @@ public enum Icons {
     public static let eye = Image(.iconEye)
     public static let eyeSlash = Image(.iconEyeSlash)
     public static let bubble = Image(.iconBubble)
+    public static let bubbleBold = Image(.iconBubbleBold)
     public static let bubbleFill = Image(.iconBubbleFill)
     public static let bubbleDots = Image(.iconBubbleDots)
     public static let ellipsis = Image(.iconEllipsis)
     public static let eyeCircled = Image(.iconEyeCircled)
     public static let eyeCircledFill = Image(.iconEyeCircledFill)
     public static let heart = Image(.iconHeart)
+    public static let heartBold = Image(.iconHeartBold)
     public static let heartBroke = Image(.iconHeartBroke)
+    public static let heartBrokeBold = Image(.iconHeartBrokeBold)
     public static let heartBrokeFill = Image(.iconHeartBrokeFill)
     public static let heartFill = Image(.iconHeartFill)
     public static let house = Image(.iconHouse)
@@ -58,6 +62,7 @@ public enum Icons {
     public static let block = Image(.iconBlock)
     public static let longArrowRight = Image(.iconLongArrowRight)
     public static let logoCircleWhite = Image(.iconLogoCircleWhite)
+    public static let logoCircleBlue = Image(.iconLogoCircleBlue)
     public static let a = Image(.iconA)
     public static let folder = Image(.iconFolder)
     public static let folderMusic = Image(.iconFolderMusic)
@@ -79,6 +84,11 @@ public enum Icons {
     public static let copyDone = Image(.iconCopyDone)
     public static let checkMarkSqareEnable = Image(.iconCheckmarkSquareEnable)
     public static let checkMarkSqareDisable = Image(.iconCheckmarkSquareDisable)
+    public static let lock = Image(.iconLock)
+    public static let ad = Image(.iconAd)
+    public static let shop = Image(.iconShop)
+    public static let btcExchange = Image(.iconBtcExchange)
+    public static let pin = Image(.iconPin)
 }
 
 @frozen
@@ -95,9 +105,4 @@ public enum IconsNew {
     public static let lock = Image(.icLock)
     public static let person = Image(.icPerson)
     public static let referral = Image(.icReferral)
-}
-
-@frozen
-public enum Backgrounds {
-    public static let walletGems = Image(.backgroundWalletGems)
 }

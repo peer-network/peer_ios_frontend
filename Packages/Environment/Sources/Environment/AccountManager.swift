@@ -29,6 +29,7 @@ public final class AccountManager: ObservableObject {
     public private(set) var user: User?
     public private(set) var inviter: RowUser?
     @AppStorage("offensiveContentFilter", store: UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")) private var offensiveContentFilter: OffensiveContentFilter = .blocked
+    @Published public private(set) var shownOnboardings: [Onboarding] = []
 
     private var apiService: APIService
     private var currentConfiguration: APIConfiguration
@@ -130,10 +131,19 @@ public final class AccountManager: ObservableObject {
         let result = await apiService.getMyUserInfo()
 
         switch result {
-            case .success(let filter):
-                self.offensiveContentFilter = filter
+            case .success(let result):
+                self.offensiveContentFilter = result.contentFilter
+                self.shownOnboardings = result.shownOnboardings
             case .failure(let apiError):
                 throw apiError
+        }
+    }
+
+    public func markOnboardingShown(_ onboarding: Onboarding) {
+        guard !shownOnboardings.contains(onboarding) else { return }
+        shownOnboardings.append(onboarding)
+        Task {
+            try await apiService.updateShownOnboardings(onboarding)
         }
     }
 

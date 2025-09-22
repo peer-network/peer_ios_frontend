@@ -109,7 +109,7 @@ struct PostActionsView: View {
                             Text(amount, format: .number.notation(.compactName))
                                 .contentTransition(.numericText())
                                 .animation(.snappy, value: amount)
-                                .font(.customFont(weight: .regular, size: .body))
+                                .font(.custom(.bodyRegular))
                                 .lineLimit(1)
                                 .foregroundStyle(action.getDefaultColor())
                                 .monospacedDigit()

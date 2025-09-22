@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct CachedConfig<T: Codable>: Codable {
-    let data: T
-    let lastUpdated: Date
+struct CachedConfig: Codable {
     let hash: String
+    let lastUpdated: Date
+    let payload: Data
 }

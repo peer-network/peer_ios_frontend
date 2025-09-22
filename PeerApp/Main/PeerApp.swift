@@ -24,7 +24,7 @@ struct PeerApp: App {
 
     @Environment(\.scenePhase) private var scenePhase
 
-//    @StateObject private var appState: AppState
+    @StateObject private var appState: AppState
 
     @StateObject private var apiManager = APIServiceManager()
     @StateObject private var authManager: AuthManager
@@ -45,7 +45,7 @@ struct PeerApp: App {
     init() {
         FirebaseApp.configure()
 
-//        _appState = .init(wrappedValue: AppState())
+        _appState = .init(wrappedValue: AppState())
 #if DEBUG
         let testConfig = APIConfiguration(endpoint: .custom)
         let testServiceManager = APIServiceManager(.normal(config: testConfig))
@@ -106,10 +106,10 @@ struct PeerApp: App {
             .task {
                 try? await ErrorCodeManager.shared.loadErrorCodes()
             }
-//            .task {
-//                await appState.initializeApp()
+            .task {
+                await appState.initializeApp()
 //                dump(appState.getConstants())
-//            }
+            }
             .preferredColorScheme(.dark)
         }
         .onChange(of: scenePhase) {
@@ -126,7 +126,9 @@ struct PeerApp: App {
                         .ignoresSafeArea()
 
                     LottieView(animation: .splashScreenLogo, speed: 1.3) {
-                        authManager.state = restoreSessionResult
+                        if !appState.isLoading && (appState.error == nil) {
+                            authManager.state = restoreSessionResult
+                        }
                     }
                     .frame(width: UIScreen.main.bounds.width * 0.6)
                 }
@@ -183,7 +185,7 @@ struct PeerApp: App {
                     .environmentObject(quickLook)
                     .environmentObject(authManager)
                     .environmentObject(audioManager)
-//                    .environmentObject(appState)
+                    .environmentObject(appState)
                     .sheet(item: $quickLook.selectedMediaAttachment) { selectedMediaAttachment in
                         MediaUIView(data: quickLook.mediaAttachments, initialItem: selectedMediaAttachment)
                             .presentationBackground(.ultraThinMaterial)
@@ -214,6 +216,7 @@ struct PeerApp: App {
     private func clearBadgeCount() {
         UserDefaults.extensions.badge = 0
         UNUserNotificationCenter.current().setBadgeCount(0)
+        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
     }
 }
 

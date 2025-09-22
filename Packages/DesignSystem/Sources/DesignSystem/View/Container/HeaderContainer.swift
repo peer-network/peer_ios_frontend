@@ -54,7 +54,7 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                 }
 
                 header()
-                    .font(.customFont(weight: .regular, size: .title))
+                    .font(.custom(.bodyRegular))
 
                 Spacer()
 
@@ -89,7 +89,7 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                             }
                     }
                 }
-                .font(.customFont(weight: .regular, size: .body))
+                .font(.custom(.bodyRegular))
                 .padding(.horizontal, 10)
                 .padding(.vertical, 5)
                 .background(Colors.inactiveDark)
@@ -113,7 +113,7 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                         }
                     } label: {
                         Text("v \(version)")
-                            .font(.customFont(weight: .regular, size: .body))
+                            .font(.custom(.bodyRegular))
                             .foregroundStyle(Colors.version)
                             .padding(.vertical, 5)
                             .contentShape(.rect)

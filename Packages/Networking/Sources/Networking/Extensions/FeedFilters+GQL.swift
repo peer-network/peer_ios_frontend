@@ -22,6 +22,8 @@ extension FeedContentType {
                 [.case(.image)]
             case .imageAndVideo:
                 [.case(.image), .case(.video)]
+            case .all:
+                [.case(.audio), .case(.video), .case(.image), .case(.text)]
         }
     }
 }
@@ -112,5 +114,29 @@ extension PostInteraction {
             case .dislikes: return .case(.dislike)
             case .views: return .case(.view)
         }
+    }
+}
+
+extension Onboarding {
+    public var apiValue: GraphQLEnum<OnboardingType> {
+        switch self {
+            case .intro:
+                return .case(.introonboarding)
+        }
+    }
+
+    public static func normalizedValue(from apiValue: [GraphQLEnum<OnboardingType>]) -> [Onboarding] {
+        let onboardings = apiValue.compactMap { apiOnboarding in
+            switch apiOnboarding {
+                case .case(let apiOnboarding):
+                    switch apiOnboarding {
+                        case .introonboarding:
+                            return Onboarding.intro
+                    }
+                case .unknown(_):
+                    return nil
+            }
+        }
+        return onboardings
     }
 }

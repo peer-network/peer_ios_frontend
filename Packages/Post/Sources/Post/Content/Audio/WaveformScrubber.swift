@@ -223,7 +223,7 @@ extension WaveformScrubber {
                 let audioInfo = extractAudioInfo(audioFile)
                 let samples = try extractAudioSamples(audioFile)
 
-                let downSampleCount = Int(Float(size.width) / (config.spacing + config.shapeWidth))
+                let downSampleCount = await Int(Float(size.width) / (config.spacing + config.shapeWidth))
                 let downSamples = downSampleAudioSamples(samples, downSampleCount)
 
                 await MainActor.run {

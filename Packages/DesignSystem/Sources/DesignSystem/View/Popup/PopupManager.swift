@@ -25,6 +25,9 @@ public final class PopupManager: ObservableObject {
     // Session anchor (time when we consider the session started)
     private var sessionStart: Date?
 
+    // MARK: - Onboarding (user-initiated)
+    @Published public var isShowingOnboarding: Bool = false
+
     private init() {}
 
     // MARK: - Existing action feedback API

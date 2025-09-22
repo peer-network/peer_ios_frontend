@@ -93,6 +93,7 @@ public struct PostView: View {
                         self.shareSheetHeight = height + 20
                     }
                 }
+                .frame(maxHeight: .infinity, alignment: .top)
                 .presentationDragIndicator(.hidden)
                 .presentationCornerRadius(24)
                 .presentationBackground(Colors.blackDark)
@@ -194,7 +195,6 @@ public struct PostView: View {
                         image
                             .resizable()
                             .scaledToFill()
-                            .clipShape(RoundedRectangle(cornerRadius: 24))
                             .overlay {
                                 Gradients.blackHover
                             }
@@ -206,10 +206,9 @@ public struct PostView: View {
                 Colors.textActive
             }
         }
-        .cornerRadius(24)
+        .clipShape(RoundedRectangle(cornerRadius: 24))
         .shadow(color: .black.opacity(0.25), radius: 10, x: 0, y: 4)
         .padding(.horizontal, 10)
-        .contentShape(.rect)
         .geometryGroup()
     }
 

@@ -66,11 +66,10 @@ struct FollowersHeader: View {
                 Text(typeCount(type), format: .number.notation(.compactName))
                     .contentTransition(.numericText())
                     .animation(.snappy, value: typeCount(type))
-                    .bold()
-                    .font(.customFont(weight: .regular, size: .body))
+                    .font(.custom(.bodyBold))
                     .foregroundStyle(Colors.whitePrimary)
                 Text(type.rawValue.lowercased())
-                    .font(.customFont(weight: .regular, size: .footnote))
+                    .font(.custom(.smallLabelRegular))
                     .foregroundStyle(Colors.whiteSecondary)
             }
             .fixedSize(horizontal: true, vertical: false)
