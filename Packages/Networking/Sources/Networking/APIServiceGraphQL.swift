@@ -773,7 +773,27 @@ public final class APIServiceGraphQL: APIService {
             return .failure(.unknownError(error: error))
         }
     }
-    
+
+    public func getMediaUploadToken() async -> Result<String, APIError> {
+        do {
+            let operation = GetMediaUploadTokenQuery()
+
+            let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+            
+            return .success(result.postEligibility.eligibilityToken)
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
     public func makePost(
         of type: ContentType,
         with title: String,
@@ -812,7 +832,39 @@ public final class APIServiceGraphQL: APIService {
             return .failure(.unknownError(error: error))
         }
     }
-    
+
+    public func makePostMultipart(of type: ContentType, with title: String, content: String, contentDescitpion: String, tags: [String], cover: String?) async -> Result<Void, APIError> {
+        do {
+            var coverString: GraphQLNullable<[String]> = nil
+            if let cover, !cover.isEmpty {
+                coverString = GraphQLNullable<[String]>.some([cover])
+            }
+
+            let operation = CreatePostMultipartMutation(
+                contentType: .case(type),
+                title: title,
+                uploadedFiles: content,
+                mediadescription: GraphQLNullable(stringLiteral: contentDescitpion),
+                tags: GraphQLNullable<[String]>.some(tags),
+                cover: coverString
+            )
+
+            let result = try await qlClient.mutate(mutation: operation)
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            return .success(())
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
     public func fetchPosts(
         with contentType: FeedContentType,
         sort byPopularity: FeedContentSortingByPopularity,

@@ -36,6 +36,7 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "HelloResponse": return GQLOperationsUser.Objects.HelloResponse
     case "Mutation": return GQLOperationsUser.Objects.Mutation
     case "Post": return GQLOperationsUser.Objects.Post
+    case "PostEligibilityResponse": return GQLOperationsUser.Objects.PostEligibilityResponse
     case "PostInteractionResponse": return GQLOperationsUser.Objects.PostInteractionResponse
     case "PostListResponse": return GQLOperationsUser.Objects.PostListResponse
     case "PostResponse": return GQLOperationsUser.Objects.PostResponse

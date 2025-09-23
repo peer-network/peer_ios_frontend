@@ -134,11 +134,19 @@ public final class APIServiceStub: APIService {
     public func fetchPostsByTag(_ tag: String, after offset: Int) async -> Result<[Post], APIError> {
         .failure(.missingData)
     }
-    
+
+    public func getMediaUploadToken() async -> Result<String, APIError> {
+        .success("123")
+    }
+
     public func makePost(of type: ContentType, with title: String, content: [String], contentDescitpion: String, tags: [String], cover: String?) async -> Result<Void, APIError> {
         .success(())
     }
-    
+
+    public func makePostMultipart(of type: ContentType, with title: String, content: String, contentDescitpion: String, tags: [String], cover: String?) async -> Result<Void, APIError> {
+        .success(())
+    }
+
     public func fetchPosts(with contentType: FeedContentType, sort byPopularity: FeedContentSortingByPopularity, showHiddenContent: Bool, filter byRelationship: FeedFilterByRelationship, in timeframe: FeedContentSortingByTime, after offset: Int, for userID: String?, amount: Int) async -> Result<[Post], APIError> {
         .failure(.missingData)
     }

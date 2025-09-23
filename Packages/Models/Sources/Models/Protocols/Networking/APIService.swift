@@ -63,10 +63,19 @@ public protocol APIService: AnyObject {
     func fetchPostById(_ id: String) async -> Result<Post, APIError>
     func fetchPostsByTitle(_ query: String, after offset: Int) async -> Result<[Post], APIError>
     func fetchPostsByTag(_ tag: String, after offset: Int) async -> Result<[Post], APIError>
+    func getMediaUploadToken() async -> Result<String, APIError>
     func makePost(
         of type: ContentType,
         with title: String,
         content: [String],
+        contentDescitpion: String,
+        tags: [String],
+        cover: String?
+    ) async -> Result<Void, APIError>
+    func makePostMultipart(
+        of type: ContentType,
+        with title: String,
+        content: String,
         contentDescitpion: String,
         tags: [String],
         cover: String?
