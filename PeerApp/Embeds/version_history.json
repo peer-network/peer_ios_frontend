@@ -110,30 +110,39 @@
         ]
     },
     {
-      "version": "1.5.0",
-      "date": "11 Aug 2025",
-      "releaseNotes": [
-        "See who liked, disliked, and viewed each post — tap the “eye” under the post to view details",
-        "Get notifications when someone likes your post (test mode)",
-        "Videos now appear in Explore and on profiles",
-        "Video feed rebuilt for faster loading and smoother scrolling, long-press any video to play at 2x speed",
-        "New “For you” filter in Feed (rolling out in test mode)",
-        "Long descriptions now collapse with a “more” button",
-        "UI updates across the app for a cleaner, more polished look",
-        "Overall improvements and fixes"
-      ]
+        "version": "1.5.0",
+        "date": "11 Aug 2025",
+        "releaseNotes": [
+            "See who liked, disliked, and viewed each post — tap the “eye” under the post to view details",
+            "Get notifications when someone likes your post (test mode)",
+            "Videos now appear in Explore and on profiles",
+            "Video feed rebuilt for faster loading and smoother scrolling, long-press any video to play at 2x speed",
+            "New “For you” filter in Feed (rolling out in test mode)",
+            "Long descriptions now collapse with a “more” button",
+            "UI updates across the app for a cleaner, more polished look",
+            "Overall improvements and fixes"
+        ]
     },
     {
-      "version": "1.5.1",
-      "date": "1 Sep 2025",
-      "releaseNotes": [
-        "Double-tap any image or video to quickly like a post",
-        "Pinch to zoom images directly in your Feed — no need to open them in full screen",
-        "Image posts now support 1:1 and 4:5 ratios for a more consistent look",
-        "New cropping tool – crop and scale images or trim videos when creating a post",
-        "Easily share posts with friends using the new Share option in the 3-dots menu",
-        "Leave your thoughts with new in-app feedback popups",
-        "Overall improvements and fixes for a smoother experience"
-      ]
+        "version": "1.5.1",
+        "date": "1 Sep 2025",
+        "releaseNotes": [
+            "Double-tap any image or video to quickly like a post",
+            "Pinch to zoom images directly in your Feed — no need to open them in full screen",
+            "Image posts now support 1:1 and 4:5 ratios for a more consistent look",
+            "New cropping tool – crop and scale images or trim videos when creating a post",
+            "Easily share posts with friends using the new Share option in the 3-dots menu",
+            "Leave your thoughts with new in-app feedback popups",
+            "Overall improvements and fixes for a smoother experience"
+        ]
+    },
+    {
+        "version": "1.8.0",
+        "date": "24 Sep 2025",
+        "releaseNotes": [
+            "See who liked each comment — just tap the number below the like icon to view the list",
+            "A brand-new onboarding tutorial to help you discover how Peer works — available anytime from Settings",
+            "General improvements and bug fixes to keep things running seamlessly"
+        ]
     }
 ]
