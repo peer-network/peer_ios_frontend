@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 public enum UploadMedia {
-    case data(Foundation.Data, filename: String, mime: String)
+    case data(Data, filename: String, mime: String)
     case fileURL(URL, filename: String, mime: String)
 }
 
@@ -70,13 +70,13 @@ public final class DefaultPostMediaUploader: PostMediaUploader {
                 return MultipartPart(name: "file[]", filename: filename, mimeType: mime, data: d)
 
             case .fileURL(let url, let filename, let mime):
-                let fileData = try Foundation.Data(contentsOf: url)
+                let fileData = try Data(contentsOf: url)
                 return MultipartPart(name: "file[]", filename: filename, mimeType: mime, data: fileData)
             }
         }
 
         let data = try await RestClient.shared.uploadMultipart(
-            path: "/upload-post", // <-- adjust to your REST path
+            path: "/upload-post",
             fields: ["eligibilityToken": eligibilityToken],
             parts: parts,
             authorized: true
@@ -87,9 +87,9 @@ public final class DefaultPostMediaUploader: PostMediaUploader {
         // Try to decode JSON: { "status": "success", "ResponseCode": 11515, "uploadedFiles": "id1.jpg,id2.jpg" }
         let decoder = JSONDecoder()
         if let resp = try? decoder.decode(UploadResponse.self, from: data) {
-            // Check status (treat "success" / "ok" as OK)
+            // Check status
             let ok = resp.status?.lowercased()
-            if ok != "success" && ok != "ok" {
+            if ok != "success" {
                 throw UploadParseError.backendRejected(status: resp.status, code: resp.responseCodeString)
             }
             guard let files = resp.uploadedFiles, !files.isEmpty else {

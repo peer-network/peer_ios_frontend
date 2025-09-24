@@ -34,21 +34,19 @@ extension RestError: LocalizedError {
     }
 }
 
-// MARK: - Token provider mirroring Apollo interceptor
+// MARK: - Token provider like Apollo interceptor
 
 public protocol AccessTokenProvider {
     func validAccessToken() async throws -> String?
 }
 
-/// Reuses TokenKeychainManager + RefreshTokenMutation, same logic as your AuthorizationInterceptor.
+/// Reuses TokenKeychainManager + RefreshTokenMutation, mirroring your AuthorizationInterceptor.
 public final class DefaultAccessTokenProvider: AccessTokenProvider {
     public init() {}
 
     public func validAccessToken() async throws -> String? {
-        // No token
         guard let access = TokenKeychainManager.shared.getAccessToken() else { return nil }
 
-        // Not expired
         if !TokenKeychainManager.shared.isAccessTokenExpired {
             return access
         }
@@ -109,7 +107,7 @@ public final class RestClient {
     private let session: URLSession
     private let tokenProvider: AccessTokenProvider
 
-    /// Set this at app start: `RestClient.shared.baseURL = URL(string: "...")!`
+    /// Set this at app start: `RestClient.shared.baseURL = URL(string: "https://getpeer.eu")!`
     public var baseURL: URL?
 
     public init(
