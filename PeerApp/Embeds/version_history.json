@@ -140,10 +140,9 @@
         "version": "1.8.0",
         "date": "24 Sep 2025",
         "releaseNotes": [
-            "See who liked each comment — just tap the number below the like icon to view the list",
-            "A brand-new onboarding tutorial to help you discover how Peer works — available anytime from Settings",
-            "Post creation is now several times faster for a smoother experience",
-            "General improvements and bug fixes to keep things running seamlessly"
+            "A fresh onboarding tutorial to help you explore Peer – anytime via Settings",
+            "See who liked your comments – just tap the number under the like icon",
+            "Plus, behind-the-scenes improvements and bug fixes for a smoother experience"
         ]
     }
 ]

@@ -8,11 +8,11 @@
 import Foundation
 
 enum Constants {
-#if RELEASE
+//#if RELEASE
     static let mediaURL: String = "https://media.peernetwork.eu"
-#else
-    static let mediaURL: String = "https://media.getpeer.eu"
-#endif
+//#else
+//    static let mediaURL: String = "https://media.getpeer.eu"
+//#endif
 
 //    static var mediaURL: String {
 //        if let urlString = UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")?.string(forKey: "customAPIEndpoint") {
