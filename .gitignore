@@ -136,3 +136,6 @@ ApolloGQL/apolloconfig.guest.json
 
 PeerApp/GoogleService-Info.plist
 Scripts/*.sh
+
+## gitleaks report json
+.gitleaks_out/
