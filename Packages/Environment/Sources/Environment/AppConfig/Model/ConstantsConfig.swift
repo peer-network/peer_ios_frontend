@@ -16,6 +16,7 @@ public struct ConstantsConfig: Codable {
     public struct ConstantsData: Codable {
         public let post: PostConstants
         public let comment: CommentConstants
+        public let user: UserConstants
         public let dailyFree: DailyFreeData
         public let tokenomics: Tokenomics
         public let minting: MintingData
@@ -23,6 +24,7 @@ public struct ConstantsConfig: Codable {
         public enum CodingKeys: String, CodingKey {
             case post = "POST"
             case comment = "COMMENT"
+            case user = "USER"
             case dailyFree = "DAILY_FREE"
             case tokenomics = "TOKENOMICS"
             case minting = "MINTING"
@@ -44,6 +46,42 @@ public struct ConstantsConfig: Codable {
 
         public enum CodingKeys: String, CodingKey {
             case content = "CONTENT"
+        }
+    }
+
+    public struct UserConstants: Codable {
+        public let username: Username
+        public let password: Password
+        public let biography: LengthConstraints
+
+        public enum CodingKeys: String, CodingKey {
+            case username = "USERNAME"
+            case password = "PASSWORD"
+            case biography = "BIOGRAPHY"
+        }
+
+        public struct Password: Codable {
+            public let minLength: Int
+            public let maxLength: Int
+            public let pattern: String
+
+            public enum CodingKeys: String, CodingKey {
+                case minLength = "MIN_LENGTH"
+                case maxLength = "MAX_LENGTH"
+                case pattern = "PATTERN"
+            }
+        }
+
+        public struct Username: Codable {
+            public let minLength: Int
+            public let maxLength: Int
+            public let pattern: String
+
+            public enum CodingKeys: String, CodingKey {
+                case minLength = "MIN_LENGTH"
+                case maxLength = "MAX_LENGTH"
+                case pattern = "PATTERN"
+            }
         }
     }
 

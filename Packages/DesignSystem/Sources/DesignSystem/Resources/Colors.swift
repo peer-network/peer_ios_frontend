@@ -22,8 +22,8 @@ public enum Colors: Equatable {
 
     public static let passwordBarsEmpty = Color(red: 0.85, green: 0.85, blue: 0.85)
     public static let passwordBarsRed = Color(red: 1, green: 0.4, blue: 0.4)
-    public static let passwordBarsYellow = Color(red: 1, green: 0.8, blue: 0.4)
-    public static let passwordBarsGreen = Color(red: 0.67, green: 1, blue: 0.4)
+    public static let passwordBarsYellow = Color(red: 0.969, green: 0.576, blue: 0.102)
+    public static let passwordBarsGreen = Color(red: 0.667, green: 1, blue: 0.404)
 
     public static let warning = Color(red: 1, green: 0.4, blue: 0.4)
     public static let greyIcons = Color(red: 0.48, green: 0.48, blue: 0.48)

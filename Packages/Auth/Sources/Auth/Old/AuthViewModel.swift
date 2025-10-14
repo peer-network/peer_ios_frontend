@@ -37,7 +37,7 @@ public final class AuthViewModel: ObservableObject {
                 }
             } else {
                 withAnimation {
-                    passwordStrength = PasswordStrength.evaluatePasswordStrength(regPassword)
+//                    passwordStrength = PasswordStrength.evaluatePasswordStrength(regPassword)
                 }
             }
         }

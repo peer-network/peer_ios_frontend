@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
+import Environment
 import DesignSystem
 
 struct LoginView: View {
+    @EnvironmentObject private var appState: AppState
     @EnvironmentObject private var authVM: AuthorizationViewModel
     
-    @AppStorage("username", store: UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")) private var username = "artem" // TODO: change to empty
+    @AppStorage("username", store: UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")) private var username = "" // TODO: change to empty
     
     private enum FocusField: Hashable {
         case email
@@ -39,8 +41,14 @@ struct LoginView: View {
             .padding(.bottom, 10)
         
         passwordTextField
-            .padding(.bottom, 16)
-        
+            .padding(.bottom, 10)
+
+        if !authVM.loginError.isEmpty {
+            errorView(authVM.loginError)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.bottom, 16)
+        }
+
         rememberMeSection
             .padding(.bottom, 24)
         
@@ -56,25 +64,20 @@ struct LoginView: View {
     @ViewBuilder
     private func welcomeText(username: String) -> some View {
         let isUsernameEmpty = username.isEmpty
-        
+
         let titleText = isUsernameEmpty ? "Hey there!" : "Hey, \(username)!"
-        let subtitleText = isUsernameEmpty ? "Glad You're Here" : "Welcome back"
+        let subtitleText = isUsernameEmpty ? "Glad you're here" : "Welcome back"
         let desctiptionText = isUsernameEmpty ? "Don’t have an account? Register now to get started!" : "It’s good to see you again! Log in to continue your journey with us!"
-        
+
         VStack(alignment: .leading, spacing: 0) {
-            HStack(spacing: 9) {
-                Text(titleText)
-                    .appFont(.extraLargeTitleRegular)
-                    .foregroundStyle(Colors.whitePrimary)
-                
-                LottieView(animation: .handWave)
-                    .frame(width: 31, height: 31)
-            }
-            
+            Text(titleText)
+                .appFont(.extraLargeTitleRegular)
+                .foregroundStyle(Colors.whitePrimary)
+
             Text(subtitleText)
                 .appFont(.extraLargeTitleRegular)
                 .foregroundStyle(Colors.whitePrimary)
-            
+
             Text(desctiptionText)
                 .appFont(.bodyRegular)
                 .foregroundStyle(Colors.whiteSecondary)
@@ -82,21 +85,45 @@ struct LoginView: View {
         .multilineTextAlignment(.leading)
         .fixedSize(horizontal: false, vertical: true)
     }
-    
+
     private var emailTextField: some View {
-        DataInputTextField(text: $authVM.loginEmail, placeholder: "E-mail", maxLength: 100, focusState: $focusedField, focusEquals: .email)
-            .submitLabel(.continue)
+        DataInputTextField(
+            leadingIcon: IconsNew.envelope,
+            text: $authVM.loginEmail,
+            placeholder: "E-mail",
+            maxLength: 999, // MARK: Take it from Constants
+            focusState: $focusedField,
+            focusEquals: .email,
+            keyboardType: .emailAddress,
+            textContentType: .username,
+            autocorrectionDisabled: true,
+            autocapitalization: .none,
+            returnKeyType: .next) {
+                focusedField = .password
+            }
     }
     
     private var passwordTextField: some View {
-        DataInputTextField(text: $authVM.loginPassword, placeholder: "Password", maxLength: 999, focusState: $focusedField, focusEquals: .password)
-            .submitLabel(.done)
+        DataInputTextField(
+            leadingIcon: IconsNew.lock,
+            text: $authVM.loginPassword,
+            placeholder: "Password",
+            maxLength: appState.getConstants()?.data.user.password.maxLength ?? 999,
+            isSecure: true,
+            focusState: $focusedField,
+            focusEquals: .password,
+            keyboardType: .asciiCapable,
+            textContentType: .password,
+            autocorrectionDisabled: true,
+            autocapitalization: .none,
+            returnKeyType: .done
+        )
     }
     
     private var rememberMeSection: some View {
         HStack(spacing: 4) {
-            CheckmarkButton(text: "Remember me", isChecked: $rememberMeChecked)
-            
+            CheckmarkButton(text: Text("Remember me"), isChecked: $rememberMeChecked)
+
             Spacer()
 
             Button {
@@ -132,13 +159,16 @@ struct LoginView: View {
         let config = StateButtonConfig(buttonSize: .large, buttonType: .primary, title: "Login")
 
         AsyncStateButton(config: config) {
-            try? await Task.sleep(for: .seconds(3))
+            focusedField = nil
+
+            await authVM.loginButtonTapped()
         }
+        .disabled(authVM.isLoginButtonDisabled)
     }
     
     @ViewBuilder
     private var registerButton: some View {
-        let config = StateButtonConfig(buttonSize: .large, buttonType: .secondary, title: "Register now", icon: IconsNew.arrowRight, iconPlacement: .trailing)
+        let config = StateButtonConfig(buttonSize: .large, buttonType: .secondary, title: "Register now")
 
         StateButton(config: config) {
             focusedField = nil
@@ -147,5 +177,12 @@ struct LoginView: View {
                 authVM.moveToReferralCodeScreen()
             }
         }
+    }
+
+    private func errorView(_ text: String) -> some View {
+        Text(text)
+            .appFont(.smallLabelRegular)
+            .multilineTextAlignment(.center)
+            .foregroundStyle(Colors.redAccent)
     }
 }

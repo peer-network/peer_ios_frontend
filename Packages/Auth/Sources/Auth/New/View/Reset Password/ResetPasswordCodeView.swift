@@ -29,10 +29,28 @@ struct ResetPasswordCodeView: View {
         descriptionText
             .padding(.bottom, 24)
 
-        emailTextField
+        codeTextField
             .padding(.bottom, 15)
 
-        continueButton
+        if !authVM.forgotPasswordErrorBadCode.isEmpty {
+            errorView(authVM.forgotPasswordErrorBadCode)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.bottom, 15)
+        }
+
+        verifyButton
+            .padding(.bottom, 15)
+
+        if authVM.forgotPasswordErrorResendEmail.isEmpty {
+            resendCodeButton
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.top, 9)
+        }
+
+        if !authVM.forgotPasswordErrorResendEmail.isEmpty {
+            errorView(authVM.forgotPasswordErrorResendEmail)
+                .frame(maxWidth: .infinity, alignment: .center)
+        }
     }
 
     private var titleText: some View {
@@ -51,21 +69,58 @@ struct ResetPasswordCodeView: View {
             .fixedSize(horizontal: false, vertical: true)
     }
 
-    private var emailTextField: some View {
-        DataInputTextField(text: $authVM.forgotPasswordCode, placeholder: "Enter code", maxLength: 999, focusState: $focusedField, focusEquals: .code)
-            .submitLabel(.done)
+    private var codeTextField: some View {
+        DataInputTextField(
+            leadingIcon: IconsNew.envelopeWithCode,
+            text: $authVM.forgotPasswordCode,
+            placeholder: "Enter code",
+            maxLength: 999, // MARK: Take it from Constants
+            focusState: $focusedField,
+            focusEquals: .code,
+            keyboardType: .asciiCapable,
+            textContentType: nil,
+            autocorrectionDisabled: true,
+            autocapitalization: .none,
+            returnKeyType: .done
+        )
     }
 
     @ViewBuilder
-    private var continueButton: some View {
-        let config = StateButtonConfig(buttonSize: .large, buttonType: .primary, title: "Continue")
+    private var verifyButton: some View {
+        let config = StateButtonConfig(buttonSize: .large, buttonType: .primary, title: "Verify code")
 
-        StateButton(config: config) {
+        AsyncStateButton(config: config) {
             focusedField = nil
             
-            withAnimation(.easeInOut(duration: 0.2)) {
-                authVM.moveToForgotPasswordNewPassScreen()
-            }
+            await authVM.verifyResetPasswordCodeButtonTapped()
         }
+        .disabled(authVM.isVerifyResetCodeButtonDisabled)
+    }
+
+    private var resendCodeButton: some View {
+        Button {
+            Task {
+                await authVM.resendPasswordResetEmailButtonTapped()
+            }
+        } label: {
+            HStack(spacing: 4.22) {
+                Text("Didn’t get the code?")
+
+                Text("Resend code")
+                    .appFont(.smallLabelBold)
+                    .underline(true, pattern: .solid)
+                    .foregroundStyle(Colors.whitePrimary)
+            }
+            .appFont(.smallLabelRegular)
+            .foregroundStyle(Colors.whiteSecondary)
+            .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private func errorView(_ text: String) -> some View {
+        Text(text)
+            .appFont(.smallLabelRegular)
+            .multilineTextAlignment(.center)
+            .foregroundStyle(Colors.redAccent)
     }
 }

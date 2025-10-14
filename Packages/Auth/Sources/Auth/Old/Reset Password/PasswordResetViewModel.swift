@@ -22,7 +22,7 @@ final class PasswordResetViewModel: ObservableObject {
                 }
             } else {
                 withAnimation {
-                    passwordStrength = PasswordStrength.evaluatePasswordStrength(newPassword)
+//                    passwordStrength = PasswordStrength.evaluatePasswordStrength(newPassword)
                 }
             }
         }

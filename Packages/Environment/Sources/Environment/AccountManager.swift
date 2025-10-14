@@ -133,8 +133,11 @@ public final class AccountManager: ObservableObject {
         switch result {
             case .success(let result):
                 self.offensiveContentFilter = result.contentFilter
+                print("🇷🇺")
+                print(result.shownOnboardings)
                 self.shownOnboardings = result.shownOnboardings
             case .failure(let apiError):
+                print("❤️")
                 throw apiError
         }
     }

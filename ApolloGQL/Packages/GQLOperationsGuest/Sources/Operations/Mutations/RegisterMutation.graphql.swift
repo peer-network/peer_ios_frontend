@@ -60,12 +60,13 @@ public class RegisterMutation: GraphQLMutation {
       public static var __parentType: any ApolloAPI.ParentType { GQLOperationsGuest.Objects.RegisterResponse }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
-        .field("status", String?.self),
+        .field("status", String.self),
         .field("ResponseCode", String?.self),
         .field("userid", GQLOperationsGuest.ID?.self),
       ] }
 
-      public var status: String? { __data["status"] }
+      public var status: String { __data["status"] }
+      @available(*, deprecated, message: "use meta.ResponseCode . this field will be removed after 15 October`.")
       public var responseCode: String? { __data["ResponseCode"] }
       public var userid: GQLOperationsGuest.ID? { __data["userid"] }
     }

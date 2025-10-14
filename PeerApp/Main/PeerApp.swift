@@ -97,7 +97,6 @@ struct PeerApp: App {
                         }
                     default:
                         contentView
-//                        AuthView()
                 }
             }
             .task {
@@ -137,7 +136,7 @@ struct PeerApp: App {
                 }
 
             case .unauthenticated:
-                MainAuthView(viewModel: AuthViewModel(authManager: self.authManager))
+                AuthView(viewModel: AuthorizationViewModel(authManager: self.authManager))
 #if DEBUG
                     .overlay(alignment: .top) {
                         VStack(spacing: 10) {
@@ -170,12 +169,13 @@ struct PeerApp: App {
                         .padding(.horizontal, 20)
                         .background(RoundedRectangle(cornerRadius: 24).fill(Colors.inactiveDark))
                         .background(RoundedRectangle(cornerRadius: 24).stroke(Colors.redAccent, lineWidth: 1))
-                        .padding(.horizontal, 20)
+                        .padding(.horizontal, 40)
                     }
 #endif
                     .withSafariRouter()
                     .environmentObject(authRouter)
                     .environmentObject(apiManager)
+                    .environmentObject(appState)
                     .analyticsService(analyticsService)
 
             case .authenticated(let userId):

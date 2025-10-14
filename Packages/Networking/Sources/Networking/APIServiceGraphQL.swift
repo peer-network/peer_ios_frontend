@@ -55,7 +55,25 @@ public final class APIServiceGraphQL: APIService {
             return .failure(.unknownError(error: error))
         }
     }
-    
+
+    public func verifyReferralCode(code: String) async -> Result<Void, APIError> {
+        do {
+            let result = try await qlClient.mutate(mutation: VerifyReferralCodeMutation(code: code))
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            return .success(())
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
     public func registerUser(email: String, password: String, username: String, referralUuid: String) async -> Result<String, APIError> {
         do {
             let result = try await qlClient.mutate(mutation: RegisterMutation(email: email, password: password, username: username, referralUuid: referralUuid))
@@ -92,6 +110,24 @@ public final class APIServiceGraphQL: APIService {
     public func requestPasswordReset(email: String) async -> Result<Void, APIError> {
         do {
             let result = try await qlClient.mutate(mutation: RequestPasswordResetMutation(email: email))
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            return .success(())
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
+    public func verifyResetPasswordCode(code: String) async -> Result<Void, APIError> {
+        do {
+            let result = try await qlClient.mutate(mutation: VerifyResetPasswordCodeMutation(token: code))
 
             guard result.isResponseCodeSuccess else {
                 if let errorCode = result.getResponseCode {
@@ -228,24 +264,27 @@ public final class APIServiceGraphQL: APIService {
                 }
             }
 
-            guard
-                let filterValue = result.getUserInfo.affectedRows?.userPreferences?.contentFilteringSeverityLevel,
-                let shownOnboardings = result.getUserInfo.affectedRows?.userPreferences?.onboardingsWereShown
-            else {
-                return .failure(.missingData)
+            var contentFilter: OffensiveContentFilter = .blocked
+
+            if let filterValue = result.getUserInfo.affectedRows?.userPreferences?.contentFilteringSeverityLevel {
+                switch filterValue {
+                    case .case(let filter):
+                        contentFilter = OffensiveContentFilter.normalizedValue(from: filter)
+                    case .unknown(_):
+                        contentFilter = .blocked
+                }
             }
 
-            let normalizedOnboardings = Onboarding.normalizedValue(from: shownOnboardings)
+            var shownOnboardings: [Onboarding] = []
 
-            switch filterValue {
-                case .case(let filter):
-                    return .success((
-                        contentFilter: OffensiveContentFilter.normalizedValue(from: filter),
-                        shownOnboardings: normalizedOnboardings
-                    ))
-                case .unknown(_):
-                    return .failure(.missingData)
+            if let shownOnboardingsValue = result.getUserInfo.affectedRows?.userPreferences?.onboardingsWereShown {
+                shownOnboardings = Onboarding.normalizedValue(from: shownOnboardingsValue)
             }
+
+            return .success((
+                contentFilter: contentFilter,
+                shownOnboardings: shownOnboardings
+            ))
         } catch {
             return .failure(.unknownError(error: error))
         }
