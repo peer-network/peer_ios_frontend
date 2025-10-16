@@ -1032,7 +1032,7 @@ public final class APIServiceGraphQL: APIService {
         do {
             let offensiveContentFilter =  UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")?.string(forKey: "offensiveContentFilter").flatMap(OffensiveContentFilter.init(rawValue:)) ?? .blocked
 
-            let operation =  GetPostCommentsQuery(
+            let operation = GetPostCommentsQuery(
                 contentFilterBy: offensiveContentFilter.apiValue,
                 postid: postID,
                 commentLimit: GraphQLNullable<Int>(integerLiteral: 20),
@@ -1216,6 +1216,41 @@ public final class APIServiceGraphQL: APIService {
             }
 
             return .success(())
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
+    // MARK: Advertisements
+    public func getListOfAds(with contentType: PostContentType, after offset: Int, amount: Int) async -> Result<[Post], APIError> {
+        let filterBy: [GraphQLEnum<ContentType>] = contentType.apiValue
+
+        let operation = GetListOfAdsQuery(
+            filterBy: GraphQLNullable<[GraphQLEnum<ContentType>]>.some(filterBy),
+            offset: GraphQLNullable<Int>(integerLiteral: offset),
+            limit: GraphQLNullable<Int>(integerLiteral: amount)
+        )
+
+        do {
+            let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            guard let data = result.listAdvertisementPosts.affectedRows else {
+                return .failure(.missingData)
+            }
+
+            let fetchedAds = data.compactMap { value in
+                Post(gqlAdvertisement: value)
+            }
+
+            return .success(fetchedAds)
         } catch {
             return .failure(.unknownError(error: error))
         }

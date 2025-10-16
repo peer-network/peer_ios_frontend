@@ -22,27 +22,21 @@ struct PostActionsView: View {
     }
 
     let layout: ActionsLayout
-
+    
     @ObservedObject var postViewModel: PostViewModel
-
+    
     var body: some View {
         actionButtonsView
     }
-
+    
     @ViewBuilder
     private var actionButtonsView: some View {
         switch layout {
             case .horizontal:
-                HStack(alignment: .center, spacing: 0) {
-                    ForEach(actions, id: \.self) { action in
-                        actionButton(action: action)
-                            .buttonStyle(PostActionButtonStyle(isOn: action.isOn(viewModel: postViewModel), tintColor: action.tintColor, defaultColor: action.getDefaultColor()))
-                            .contentShape(.rect)
-                    }
-
-                    Spacer()
-                        .frame(maxWidth: .infinity)
-                        .layoutPriority(-1)
+                ForEach(actions, id: \.self) { action in
+                    actionButton(action: action)
+                        .buttonStyle(PostActionButtonStyle(isOn: action.isOn(viewModel: postViewModel), tintColor: action.tintColor, defaultColor: action.getDefaultColor()))
+                        .contentShape(.rect)
                 }
             case .vertical:
                 VStack(alignment: .center, spacing: 0) {
@@ -79,7 +73,7 @@ struct PostActionsView: View {
                     } label: {
                         action.getIcon(viewModel: postViewModel)
                             .iconSize(height: 19)
-                            .frame(height: 32)
+                            .frame(height: 24)
                             .contentShape(.rect)
                     }
 
@@ -113,7 +107,7 @@ struct PostActionsView: View {
                                 .lineLimit(1)
                                 .foregroundStyle(action.getDefaultColor())
                                 .monospacedDigit()
-                                .frame(height: 32)
+                                .frame(height: 24)
                                 .padding(.trailing, 20)
                                 .padding(.leading, 5)
                                 .contentShape(.rect)

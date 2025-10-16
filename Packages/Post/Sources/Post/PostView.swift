@@ -59,7 +59,6 @@ public struct PostView: View {
                     audioPost()
             }
         }
-        .debugBorder()
         .onFirstAppear {
             postVM.apiService = apiManager.apiService
         }
@@ -111,16 +110,33 @@ public struct PostView: View {
             TextContent(postVM: postVM)
 
             if !reasons.contains(.placeholder) {
-                PostActionsView(layout: .horizontal, postViewModel: postVM)
-                    .background {
-                        Ellipse()
-                            .fill(Color(red: 0, green: 0.412, blue: 1).opacity(0.2))
-                            .frame(width: 195, height: 106)
-                            .offset(x: 195 / 3, y: -20)
-                            .blur(radius: 50)
-                            .frame(maxWidth: .infinity, alignment: .trailing)
-                            .ignoresSafeArea()
+                HStack(alignment: .center, spacing: 0) {
+                    PostActionsView(layout: .horizontal, postViewModel: postVM)
+                        .fixedSize(horizontal: true, vertical: false)
+
+                    Spacer()
+                        .frame(minWidth: 10)
+                        .frame(maxWidth: .infinity)
+                        .layoutPriority(-1)
+
+                    if let advertiser = postVM.post.advertisement?.adOwner.username {
+                        Text("Pin by ***\(advertiser)***")
+                            .appFont(.smallLabelRegular)
+                            .lineLimit(1)
+                            .foregroundStyle(Colors.whitePrimary)
                     }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(10)
+                .background {
+                    Ellipse()
+                        .fill(Color(red: 0, green: 0.412, blue: 1).opacity(0.2))
+                        .frame(width: 195, height: 106)
+                        .offset(x: 195 / 3, y: -20)
+                        .blur(radius: 50)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                        .ignoresSafeArea()
+                }
             }
         }
         .padding(10)
@@ -132,10 +148,9 @@ public struct PostView: View {
     }
 
     private func imagePost() -> some View {
-        VStack(alignment: .center, spacing: 0) {
+        VStack(alignment: .center, spacing: 10) {
             PostHeaderView(postVM: postVM, showAppleTranslation: $showAppleTranslation, showFollowButton: showFollowButton)
                 .padding(.horizontal, 20)
-                .padding(.vertical, 10)
 
             ImagesContent(postVM: postVM)
                 .doubleTapToLike {
@@ -154,24 +169,38 @@ public struct PostView: View {
                 }
 
             if !reasons.contains(.placeholder) {
-                PostActionsView(layout: .horizontal, postViewModel: postVM)
-                    .padding(.horizontal, 20)
-            } else {
-                Spacer()
-                    .frame(height: 8)
+                HStack(alignment: .center, spacing: 0) {
+                    PostActionsView(layout: .horizontal, postViewModel: postVM)
+                        .fixedSize(horizontal: true, vertical: false)
+
+                    Spacer()
+                        .frame(minWidth: 10)
+                        .frame(maxWidth: .infinity)
+                        .layoutPriority(-1)
+
+                    if let advertiser = postVM.post.advertisement?.adOwner.username {
+                        Text("Pin by ***\(advertiser)***")
+                            .appFont(.smallLabelRegular)
+                            .lineLimit(1)
+                            .foregroundStyle(Colors.whitePrimary)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 20)
             }
 
             PostDescriptionComment(postVM: postVM, isInFeed: true)
                 .padding(.horizontal, 20)
         }
+        .padding(.vertical, 10)
         .geometryGroup()
-//        .contextMenu {
-//            Button {
-//                //
-//            } label: {
-//                Text("Report")
-//            }
-//        }
+        //        .contextMenu {
+        //            Button {
+        //                //
+        //            } label: {
+        //                Text("Report")
+        //            }
+        //        }
     }
 
     private func audioPost() -> some View {
@@ -183,8 +212,24 @@ public struct PostView: View {
             AudioContent(postVM: postVM)
 
             if !reasons.contains(.placeholder) {
-                PostActionsView(layout: .horizontal, postViewModel: postVM)
-                    .padding(10)
+                HStack(alignment: .center, spacing: 0) {
+                    PostActionsView(layout: .horizontal, postViewModel: postVM)
+                        .fixedSize(horizontal: true, vertical: false)
+
+                    Spacer()
+                        .frame(minWidth: 10)
+                        .frame(maxWidth: .infinity)
+                        .layoutPriority(-1)
+
+                    if let advertiser = postVM.post.advertisement?.adOwner.username {
+                        Text("Pin by ***\(advertiser)***")
+                            .appFont(.smallLabelRegular)
+                            .lineLimit(1)
+                            .foregroundStyle(Colors.whitePrimary)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(10)
             }
         }
         .padding(10)

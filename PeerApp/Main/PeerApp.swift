@@ -97,7 +97,6 @@ struct PeerApp: App {
                         }
                     default:
                         contentView
-//                        AuthView()
                 }
             }
             .task {
@@ -179,6 +178,8 @@ struct PeerApp: App {
                     .analyticsService(analyticsService)
 
             case .authenticated(let userId):
+//                AdCheckoutView(viewModel: AdViewModel(post: .placeholderText(), pinAdvertisementPrice: 2000))
+//                    .environmentObject(Router())
                 ContentView(appRouter: appRouter)
                     .environmentObject(apiManager)
                     .environmentObject(accountManager)

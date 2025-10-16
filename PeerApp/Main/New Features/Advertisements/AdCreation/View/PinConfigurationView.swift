@@ -31,15 +31,15 @@ struct PinConfigurationView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 Text("Pinned postconfiguration")
-                    .font(.custom(.largeTitleBold))
+                    .appFont(.largeTitleBold)
                     .foregroundStyle(Colors.whitePrimary)
                     .padding(.bottom, 20)
 
                 RowPostView(post: viewModel.post)
-                    .padding(.bottom, 20)
+                    .padding(.bottom, 30)
 
                 Text("Ad period:")
-                    .font(.custom(.bodyBold))
+                    .appFont(.bodyBold)
                     .foregroundStyle(Colors.whitePrimary)
                     .padding(.bottom, 15)
 
@@ -53,7 +53,7 @@ struct PinConfigurationView: View {
                 .padding(.bottom, 30)
 
                 Text("Billing summary:")
-                    .font(.custom(.bodyBold))
+                    .appFont(.bodyBold)
                     .foregroundStyle(Colors.whitePrimary)
                     .padding(.bottom, 15)
 
@@ -62,19 +62,20 @@ struct PinConfigurationView: View {
             .padding(.horizontal, 20)
             .padding(.top, 20)
         }
+        .scrollIndicators(.hidden)
     }
 
     private func adPeriodRowView(title: String, value: String) -> some View {
         HStack {
             Text(title)
-                .font(.custom(.bodyRegular))
+                .appFont(.bodyRegular)
                 .foregroundStyle(Colors.whiteSecondary)
 
             Spacer()
                 .frame(maxWidth: .infinity)
 
             Text(value)
-                .font(.custom(.bodyRegular))
+                .appFont(.bodyRegular)
                 .foregroundStyle(Colors.whitePrimary)
         }
         .padding(20)
@@ -87,15 +88,15 @@ struct PinConfigurationView: View {
     private var billingRowView: some View {
         HStack {
             Text("Total ad cost")
-                .font(.custom(.bodyRegular))
+                .appFont(.bodyRegular)
                 .foregroundStyle(Colors.whiteSecondary)
 
             Spacer()
                 .frame(maxWidth: .infinity)
 
             HStack(spacing: 5) {
-                Text("2 000")
-                    .font(.custom(.largeTitleBold))
+                Text(viewModel.pinAdvertisementPrice, format: .number)
+                    .appFont(.largeTitleBold)
                     .foregroundStyle(Colors.whitePrimary)
 
                 Icons.logoCircleWhite
@@ -110,8 +111,8 @@ struct PinConfigurationView: View {
     }
 }
 
-//#Preview {
-//    PinConfigurationView(viewModel: AdViewModel(post: Post.placeholderText()))
-//        .environmentObject(Router())
-//        .environmentObject(AccountManager.shared)
-//}
+#Preview {
+    PinConfigurationView(viewModel: AdViewModel(post:  Post.placeholdersImage(count: 1).first!, pinAdvertisementPrice: 2000))
+        .environmentObject(Router())
+        .environmentObject(AccountManager.shared)
+}

@@ -109,4 +109,7 @@ public protocol APIService: AnyObject {
     //MARK: Wallet
     func fetchLiquidityState() async -> Result<Double, APIError>
     func transferTokens(to id: String, amount: Int) async -> Result<Void, APIError>
+
+    // MARK: Ads
+    func getListOfAds(with contentType: PostContentType, after offset: Int, amount: Int) async -> Result<[Post], APIError>
 }

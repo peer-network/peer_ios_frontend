@@ -18,15 +18,15 @@ public struct StateButtonConfig: Equatable {
         let style: any ButtonStyle
         switch buttonType {
             case .primary:
-                style = TargetStyle(backgroundStyle: buttonType.fillStyle, textColor: buttonType.textColor, height: buttonSize.height, font: buttonSize.font, isTextEmpty: title.isEmpty)
+                style = TargetStyle(backgroundStyle: buttonType.fillStyle, textColor: buttonType.textColor, height: buttonSize.height, font: buttonSize.font, cornerRadius: buttonSize.cornerRadius, isTextEmpty: title.isEmpty)
             case .secondary:
-                style = TargetStyle(backgroundStyle: buttonType.fillStyle, textColor: buttonType.textColor, height: buttonSize.height, font: buttonSize.font, isTextEmpty: title.isEmpty)
+                style = TargetStyle(backgroundStyle: buttonType.fillStyle, textColor: buttonType.textColor, height: buttonSize.height, font: buttonSize.font, cornerRadius: buttonSize.cornerRadius, isTextEmpty: title.isEmpty)
             case .teritary:
-                style = StrokeStyle(strokeStyle: buttonType.fillStyle, textColor: buttonType.textColor, height: buttonSize.height, font: buttonSize.font, isTextEmpty: title.isEmpty)
+                style = StrokeStyle(strokeStyle: buttonType.fillStyle, textColor: buttonType.textColor, height: buttonSize.height, font: buttonSize.font, cornerRadius: buttonSize.cornerRadius, isTextEmpty: title.isEmpty)
             case .alert:
-                style = StrokeStyle(strokeStyle: buttonType.fillStyle, textColor: buttonType.textColor, height: buttonSize.height, font: buttonSize.font, isTextEmpty: title.isEmpty)
+                style = StrokeStyle(strokeStyle: buttonType.fillStyle, textColor: buttonType.textColor, height: buttonSize.height, font: buttonSize.font, cornerRadius: buttonSize.cornerRadius, isTextEmpty: title.isEmpty)
             case .custom:
-                style = TargetStyle(backgroundStyle: buttonType.fillStyle, textColor: buttonType.textColor, height: buttonSize.height, font: buttonSize.font, isTextEmpty: title.isEmpty)
+                style = TargetStyle(backgroundStyle: buttonType.fillStyle, textColor: buttonType.textColor, height: buttonSize.height, font: buttonSize.font, cornerRadius: buttonSize.cornerRadius, isTextEmpty: title.isEmpty)
         }
         return AnyButtonStyle(style)
     }
@@ -151,10 +151,17 @@ public enum ButtonSize {
     case small
     case large
 
-    var height: CGFloat {
+    public var height: CGFloat {
         switch self {
             case .small: return 45
             case .large: return 60
+        }
+    }
+
+    var cornerRadius: CGFloat {
+        switch self {
+            case .small: return 24
+            case .large: return 30
         }
     }
 
@@ -249,6 +256,7 @@ struct StrokeStyle<S: ShapeStyle>: ButtonStyle {
     let textColor: Color
     let height: CGFloat
     let font: AppFont
+    let cornerRadius: CGFloat
     let isTextEmpty: Bool
 
     func makeBody(configuration: Configuration) -> some View {
@@ -260,9 +268,9 @@ struct StrokeStyle<S: ShapeStyle>: ButtonStyle {
                 .frame(height: height)
                 .frame(maxWidth: .infinity)
                 .background {
-//                    Colors.blackDark
+                    Colors.blackDark
 
-                    RoundedRectangle(cornerRadius: 24)
+                    RoundedRectangle(cornerRadius: cornerRadius)
                         .strokeBorder(strokeStyle, lineWidth: 1)
                 }
                 .overlay {
@@ -270,7 +278,7 @@ struct StrokeStyle<S: ShapeStyle>: ButtonStyle {
                         Color.black.opacity(0.3)
                     }
                 }
-                .clipShape(RoundedRectangle(cornerRadius: 24))
+                .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
                 .contentShape(Rectangle())
                 .animation(.linear(duration: 0.2)) {
                     $0.scaleEffect(configuration.isPressed ? 0.9 : 1)
@@ -284,6 +292,7 @@ struct TargetStyle<S: ShapeStyle>: ButtonStyle {
     let textColor: Color
     let height: CGFloat
     let font: AppFont
+    let cornerRadius: CGFloat
     let isTextEmpty: Bool
 
     func makeBody(configuration: Configuration) -> some View {
@@ -301,7 +310,7 @@ struct TargetStyle<S: ShapeStyle>: ButtonStyle {
                         Color.black.opacity(0.3)
                     }
                 }
-                .clipShape(RoundedRectangle(cornerRadius: 24))
+                .clipShape(RoundedRectangle(cornerRadius: cornerRadius))
                 .contentShape(Rectangle())
                 .animation(.linear(duration: 0.2)) {
                     $0.scaleEffect(configuration.isPressed ? 0.9 : 1)

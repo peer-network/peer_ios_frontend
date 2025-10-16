@@ -205,4 +205,9 @@ public final class APIServiceStub: APIService {
     public func transferTokens(to id: String, amount: Int) async -> Result<Void, APIError> {
         .success(())
     }
+
+    //MARK: Advertisements
+    public func getListOfAds(with contentType: PostContentType, after offset: Int, amount: Int) async -> Result<[Post], APIError> {
+        .failure(.missingData)
+    }
 }

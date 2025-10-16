@@ -22,21 +22,12 @@ public protocol PostMediaUploader {
 
 private struct UploadResponse: Decodable {
     let status: String?
-    // Backend sometimes uses capital "ResponseCode". Allow both just in case.
-    let responseCodeUpper: Int?
-    let responseCodeLower: Int?
+    let responseCode: String?
     let uploadedFiles: String?
-
-    var responseCodeString: String? {
-        if let c = responseCodeUpper { return String(c) }
-        if let c = responseCodeLower { return String(c) }
-        return nil
-    }
 
     enum CodingKeys: String, CodingKey {
         case status
-        case responseCodeUpper = "ResponseCode"
-        case responseCodeLower = "responseCode"
+        case responseCode = "ResponseCode"
         case uploadedFiles
     }
 }
@@ -84,13 +75,13 @@ public final class DefaultPostMediaUploader: PostMediaUploader {
 
         guard !data.isEmpty else { throw UploadParseError.emptyResponse }
 
-        // Try to decode JSON: { "status": "success", "ResponseCode": 11515, "uploadedFiles": "id1.jpg,id2.jpg" }
+        // Try to decode JSON: { "status": "success", "ResponseCode": "11515", "uploadedFiles": "id1.jpg,id2.jpg" }
         let decoder = JSONDecoder()
         if let resp = try? decoder.decode(UploadResponse.self, from: data) {
             // Check status
             let ok = resp.status?.lowercased()
             if ok != "success" {
-                throw UploadParseError.backendRejected(status: resp.status, code: resp.responseCodeString)
+                throw UploadParseError.backendRejected(status: resp.status, code: resp.responseCode)
             }
             guard let files = resp.uploadedFiles, !files.isEmpty else {
                 throw UploadParseError.missingUploadedFiles

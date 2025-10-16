@@ -16,7 +16,7 @@ struct PinIndicatorView: View {
             .padding(7.5)
             .background {
                 Circle()
-                    .foregroundStyle(Colors.hashtag)
+                    .foregroundStyle(Colors.version)
             }
     }
 }
