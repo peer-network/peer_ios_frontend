@@ -13,16 +13,15 @@ struct LoginView: View {
     @EnvironmentObject private var appState: AppState
     @EnvironmentObject private var authVM: AuthorizationViewModel
     
-    @AppStorage("username", store: UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")) private var username = "" // TODO: change to empty
-    
+    @AppStorage("username", store: UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")) private var username = ""
+    @AppStorage("rememberMe", store: UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")) private var rememberMe = true
+
     private enum FocusField: Hashable {
         case email
         case password
     }
     
     @FocusState private var focusedField: FocusField?
-    
-    @State private var rememberMeChecked = true
     
     var body: some View {
         pageContent
@@ -122,7 +121,7 @@ struct LoginView: View {
     
     private var rememberMeSection: some View {
         HStack(spacing: 4) {
-            CheckmarkButton(text: Text("Remember me"), isChecked: $rememberMeChecked)
+            CheckmarkButton(text: Text("Remember me"), isChecked: $rememberMe)
 
             Spacer()
 

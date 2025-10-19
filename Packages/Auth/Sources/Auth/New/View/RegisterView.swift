@@ -24,6 +24,8 @@ struct RegisterView: View {
 
     @FocusState private var focusedField: FocusField?
 
+    @State private var passwordsDoNotMatch: Bool = false
+
     var body: some View {
         pageContent
     }
@@ -63,6 +65,12 @@ struct RegisterView: View {
 
         if !authVM.regError.isEmpty {
             errorView(authVM.regError)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.bottom, 15)
+        }
+
+        if passwordsDoNotMatch {
+            errorView("Passwords do not match.")
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.bottom, 15)
         }
@@ -144,6 +152,7 @@ struct RegisterView: View {
         )
         .onChange(of: authVM.regPassword) {
             withAnimation(.easeInOut(duration: 0.2)) {
+                passwordsDoNotMatch = false
                 authVM.evaluateRegisterPasswordStrength()
             }
         }
@@ -164,6 +173,11 @@ struct RegisterView: View {
             autocapitalization: .none,
             returnKeyType: .done
         )
+        .onChange(of: authVM.regPasswordRepeat) {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                passwordsDoNotMatch = false
+            }
+        }
     }
 
     private var agreementsCheckmarks: some View {
@@ -184,9 +198,16 @@ struct RegisterView: View {
         AsyncStateButton(config: config) {
             focusedField = nil
 
+            if authVM.regPassword != authVM.regPasswordRepeat {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    passwordsDoNotMatch = true
+                }
+                return
+            }
+
             await authVM.registerButtonTapped()
         }
-        .disabled(authVM.isRegisterButtonDisabled)
+        .disabled(authVM.isRegisterButtonDisabled || passwordsDoNotMatch)
     }
 
     private var goToLoginScreenButton: some View {

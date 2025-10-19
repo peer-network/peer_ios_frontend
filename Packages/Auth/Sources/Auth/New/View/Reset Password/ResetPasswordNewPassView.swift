@@ -20,6 +20,8 @@ struct ResetPasswordNewPassView: View {
 
     @FocusState private var focusedField: FocusField?
 
+    @State private var passwordsDoNotMatch: Bool = false
+
     var body: some View {
         pageContent
     }
@@ -42,9 +44,21 @@ struct ResetPasswordNewPassView: View {
             .frame(height: 10)
 
         confirmPasswordTextField
-            .padding(.bottom, 15)
+
+        if passwordsDoNotMatch {
+            errorView("Passwords do not match.")
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.top, 10)
+        }
+
+        if !authVM.forgotPasswordErrorUpdatePassword.isEmpty {
+            errorView(authVM.forgotPasswordErrorUpdatePassword)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.top, 10)
+        }
 
         updatePasswordButton
+            .padding(.top, 15)
     }
 
     private var titleText: some View {
@@ -75,6 +89,7 @@ struct ResetPasswordNewPassView: View {
         )
         .onChange(of: authVM.forgotPasswordNewPass) {
             withAnimation(.easeInOut(duration: 0.2)) {
+                passwordsDoNotMatch = false
                 authVM.evaluateForgotPasswordStrength()
             }
         }
@@ -95,6 +110,11 @@ struct ResetPasswordNewPassView: View {
             autocapitalization: .none,
             returnKeyType: .done
         )
+        .onChange(of: authVM.forgotPasswordRepeatPass) {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                passwordsDoNotMatch = false
+            }
+        }
     }
 
     @ViewBuilder
@@ -103,9 +123,23 @@ struct ResetPasswordNewPassView: View {
 
         AsyncStateButton(config: config) {
             focusedField = nil
-            
-            try? await Task.sleep(for: .seconds(3))
+
+            if authVM.forgotPasswordNewPass != authVM.forgotPasswordRepeatPass {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    passwordsDoNotMatch = true
+                }
+                return
+            }
+
+            await authVM.updatePasswordButtonTapped()
         }
-        .disabled(authVM.isUpdatePasswordButtonDisabled)
+        .disabled(authVM.isUpdatePasswordButtonDisabled || passwordsDoNotMatch)
+    }
+
+    private func errorView(_ text: String) -> some View {
+        Text(text)
+            .appFont(.smallLabelRegular)
+            .multilineTextAlignment(.center)
+            .foregroundStyle(Colors.redAccent)
     }
 }

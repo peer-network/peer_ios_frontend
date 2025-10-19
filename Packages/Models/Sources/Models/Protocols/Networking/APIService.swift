@@ -40,7 +40,7 @@ public protocol APIService: AnyObject {
     func deleteAccount(password: String) async -> Result<Void, APIError>
 
     //MARK: User & Profile
-    func getMyInviter() async -> Result<RowUser, APIError>
+    func getMyInviter() async -> Result<RowUser?, APIError>
     func getMyReferralInfo() async -> Result<ReferralInfo, APIError>
     func getMyReferredUsers(after offset: Int) async -> Result<[RowUser], APIError>
     func getMyUserInfo() async -> Result<(contentFilter: OffensiveContentFilter, shownOnboardings: [Onboarding]), APIError>

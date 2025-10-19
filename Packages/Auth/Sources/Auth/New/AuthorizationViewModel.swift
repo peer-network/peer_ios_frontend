@@ -54,6 +54,8 @@ public final class AuthorizationViewModel: ObservableObject {
     @Published var forgotPasswordErrorEmail = ""
     @Published var forgotPasswordErrorResendEmail = ""
     @Published var forgotPasswordErrorBadCode = ""
+    @Published var forgotPasswordErrorUpdatePassword = ""
+    @Published var showUpdatePasswordSuccessCover = false
 
     @Published var showRegistrationSuccessCover = false
     private var registrationSuccessEmail = ""
@@ -151,6 +153,7 @@ public final class AuthorizationViewModel: ObservableObject {
         forgotPasswordErrorEmail = ""
         forgotPasswordErrorResendEmail = ""
         forgotPasswordErrorBadCode = ""
+        forgotPasswordErrorUpdatePassword = ""
     }
 
     func clearAllButLoginFields() {
@@ -173,6 +176,7 @@ public final class AuthorizationViewModel: ObservableObject {
         forgotPasswordErrorEmail = ""
         forgotPasswordErrorResendEmail = ""
         forgotPasswordErrorBadCode = ""
+        forgotPasswordErrorUpdatePassword = ""
     }
 
     func clearAllFields() {
@@ -197,6 +201,7 @@ public final class AuthorizationViewModel: ObservableObject {
         forgotPasswordErrorEmail = ""
         forgotPasswordErrorResendEmail = ""
         forgotPasswordErrorBadCode = ""
+        forgotPasswordErrorUpdatePassword = ""
     }
 }
 
@@ -323,7 +328,7 @@ extension AuthorizationViewModel {
         
         switch result {
             case .success():
-                print("success")
+                return
             case .failure(let apiError):
                 withAnimation(.easeInOut(duration: 0.2)) {
                     forgotPasswordErrorResendEmail = apiError.userFriendlyMessage
@@ -348,11 +353,28 @@ extension AuthorizationViewModel {
         }
     }
 
+    func updatePasswordButtonTapped() async {
+        withAnimation(.easeInOut(duration: 0.2)) {
+            clearErrors()
+        }
+
+        let result = await apiService.resetPassword(token: forgotPasswordCode, newPassword: forgotPasswordNewPass)
+
+        switch result {
+            case .success():
+                showUpdatePasswordSuccessCover = true
+            case .failure(let apiError):
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    forgotPasswordErrorUpdatePassword = apiError.userFriendlyMessage
+                }
+        }
+    }
+
     func evaluateForgotPasswordStrength() {
         if forgotPasswordNewPass.isEmpty {
             forgotPasswordStrength = nil
         } else {
-            forgotPasswordStrength = PasswordPolicy.evaluate(regPassword)
+            forgotPasswordStrength = PasswordPolicy.evaluate(forgotPasswordNewPass)
         }
     }
 }

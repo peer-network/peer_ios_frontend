@@ -60,12 +60,12 @@ public struct DataInputTextFieldRepresentable<Value: Hashable>: UIViewRepresenta
         textField.delegate = context.coordinator
 
         textField.font = UIFont.custom(.bodyRegular)
-        textField.textColor = Colors.textActive.uiColor
+        textField.textColor = Colors.whitePrimary.uiColor
         textField.tintColor = Colors.hashtag.uiColor
         textField.backgroundColor = .clear
         textField.attributedPlaceholder = NSAttributedString(
             string: placeholder,
-            attributes: [.foregroundColor: Colors.textSuggestions.uiColor]
+            attributes: [.foregroundColor: Colors.whiteSecondary.uiColor]
         )
 
         textField.keyboardType = keyboardType

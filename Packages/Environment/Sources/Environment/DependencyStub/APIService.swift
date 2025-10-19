@@ -50,7 +50,7 @@ public final class APIServiceStub: APIService {
     }
 
     //MARK: User & Profile
-    public func getMyInviter() async -> Result<RowUser, APIError> {
+    public func getMyInviter() async -> Result<RowUser?, APIError> {
         .failure(.missingData)
     }
 

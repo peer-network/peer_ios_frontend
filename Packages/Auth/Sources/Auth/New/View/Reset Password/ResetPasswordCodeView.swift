@@ -41,16 +41,14 @@ struct ResetPasswordCodeView: View {
         verifyButton
             .padding(.bottom, 15)
 
-        if authVM.forgotPasswordErrorResendEmail.isEmpty {
-            resendCodeButton
-                .frame(maxWidth: .infinity, alignment: .center)
-                .padding(.top, 9)
-        }
-
         if !authVM.forgotPasswordErrorResendEmail.isEmpty {
             errorView(authVM.forgotPasswordErrorResendEmail)
                 .frame(maxWidth: .infinity, alignment: .center)
         }
+
+        resendCodeButton
+            .frame(maxWidth: .infinity, alignment: .center)
+            .padding(.top, 9)
     }
 
     private var titleText: some View {

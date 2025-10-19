@@ -49,13 +49,13 @@ public struct AuthView: View {
                         .onGeometryChange(for: CGFloat.self, of: \.size.height) { height in
                             singlePadding = abs(geo.frame(in: .global).height - height) / 2
                         }
-                    
+
                     if !isBottomSectionFit {
                         bottomSectionView
                             .padding(.top, singlePadding)
                             .animation(nil)
                     }
-                    
+
                     Color.clear
                         .frame(height: singlePadding)
                         .overlay(alignment: .bottom) {
@@ -86,8 +86,18 @@ public struct AuthView: View {
              })
         .environmentObject(authVM)
         .fullScreenCover(isPresented: $authVM.showRegistrationSuccessCover) {
-            SuccessView(title: "Welcome to peer", description: "Your account is ready! Start exploring and earn your first token today.") {
+            SuccessView(title: "Welcome to peer!", description: "Your account is ready! Start exploring and earn your first token today.") {
                 await authVM.successCoverContinueButtonTapped()
+            }
+            .background {
+                backgroundView
+                    .ignoresSafeArea()
+            }
+        }
+        .fullScreenCover(isPresented: $authVM.showUpdatePasswordSuccessCover) {
+            SuccessView(title: "Password Updated!", description: "Your password has been updated. Please use your new password to log in.") {
+                authVM.showUpdatePasswordSuccessCover = false
+                authVM.alreadyRegisteredButtonTapped()
             }
             .background {
                 backgroundView
@@ -96,7 +106,7 @@ public struct AuthView: View {
         }
         .onFirstAppear { authVM.apiService = apiManager.apiService }
     }
-    
+
     private var pageContent: some View {
         VStack(alignment: .leading, spacing: 0) {
             switch authVM.formType {
@@ -127,19 +137,19 @@ public struct AuthView: View {
             }
         }
     }
-    
+
     private var backgroundView: some View {
         ZStack {
             Colors.textActive
-            
+
             GeometryReader { proxy in
                 let w = proxy.size.width
                 let h = proxy.size.height
-                
+
                 // MARK: - First Glow
                 let glow1Width  = w * (347 / 393)
                 let glow1Height = glow1Width * (318 / 347)
-                
+
                 Ellipse()
                     .frame(width: glow1Width, height: glow1Height)
                     .foregroundStyle(Colors.glowBlue.opacity(0.19))
@@ -148,11 +158,11 @@ public struct AuthView: View {
                         x: w * (141 / 393),
                         y: -(glow1Height - (0.047 * h))
                     )
-                
+
                 // MARK: - Second Glow
                 let glow2Width  = w * (530 / 393)
                 let glow2Height = glow2Width * (342 / 530)
-                
+
                 Ellipse()
                     .frame(width: glow2Width, height: glow2Height)
                     .foregroundStyle(Colors.glowBlue.opacity(0.56))
@@ -164,7 +174,7 @@ public struct AuthView: View {
             }
         }
     }
-    
+
     private func backButton(_ action: @escaping () -> Void) -> some View {
         Button {
             action()
@@ -173,7 +183,7 @@ public struct AuthView: View {
                 IconsNew.arrowRight
                     .iconSize(width: 14)
                     .rotationEffect(.degrees(180))
-                
+
                 Text("Back")
             }
             .appFont(.bodyRegular)
@@ -183,7 +193,7 @@ public struct AuthView: View {
             .contentShape(.rect)
         }
     }
-    
+
     private var privacyPolicyButton: some View {
         Button {
             openURL(URL(string: "https://peerapp.de/privacy.html")!)
@@ -194,20 +204,23 @@ public struct AuthView: View {
                 .foregroundStyle(Colors.whiteSecondary)
         }
     }
-    
-    private var versionLabel: some View {
-        Text("Version 1.0.0 build 1")
-            .appFont(.smallLabelRegular)
-            .foregroundStyle(Colors.whitePrimary)
-            .opacity(0.2)
-    }
-    
+
     private var bottomSectionView: some View {
         VStack(spacing: 10) {
             privacyPolicyButton
-            
-            versionLabel
+
+            if let version = Bundle.appVersionBundle,
+               let build = Bundle.appBuildBundle {
+                versionLabel(version: version, build: build)
+            }
         }
+    }
+
+    private func versionLabel(version: String, build: String) -> some View {
+        Text("Version \(version) build \(build)")
+            .appFont(.smallLabelRegular)
+            .foregroundStyle(Colors.whitePrimary)
+            .opacity(0.2)
     }
 }
 
@@ -242,5 +255,29 @@ struct KeyboardProvider: ViewModifier {
 public extension View {
     func keyboardHeight(_ state: Binding<CGFloat>) -> some View {
         self.modifier(KeyboardProvider(keyboardHeight: state))
+    }
+}
+
+private extension Bundle {
+    static var appVersionBundle: String? {
+        guard
+            let info = Bundle.main.infoDictionary,
+            let version = info["CFBundleShortVersionString"] as? String
+        else {
+            return nil
+        }
+
+        return version
+    }
+
+    static var appBuildBundle: String? {
+        guard
+            let info = Bundle.main.infoDictionary,
+            let version = info["CFBundleVersion"] as? String
+        else {
+            return nil
+        }
+
+        return version
     }
 }

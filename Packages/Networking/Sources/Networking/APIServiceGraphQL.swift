@@ -180,7 +180,7 @@ public final class APIServiceGraphQL: APIService {
     }
 
     //MARK: User & Profile
-    public func getMyInviter() async -> Result<RowUser, APIError> {
+    public func getMyInviter() async -> Result<RowUser?, APIError> {
         do {
             let result = try await qlClient.fetch(query: GetMyInviterQuery(), cachePolicy: .fetchIgnoringCacheCompletely)
 
@@ -197,7 +197,7 @@ public final class APIServiceGraphQL: APIService {
                 !data.id.isEmpty,
                 let inviter = RowUser(gqlUser: data)
             else {
-                return .failure(.missingData)
+                return .success(nil)
             }
 
             return .success(inviter)

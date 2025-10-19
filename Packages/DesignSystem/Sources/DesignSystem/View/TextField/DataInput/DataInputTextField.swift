@@ -110,13 +110,10 @@ public struct DataInputTextField<Value: Hashable>: View {
         .frame(height: 52)
         .padding(.horizontal, 16)
         .background {
-            Colors.whitePrimary
+            Colors.inactiveDark
         }
-        .clipShape(RoundedRectangle(cornerRadius: 30))
-        .overlay {
-            RoundedRectangle(cornerRadius: 30)
-                .stroke(Color(red: 0.89, green: 0.91, blue: 0.94), lineWidth: 1)
-        }
+        .clipShape(RoundedRectangle(cornerRadius: 32))
+        .shadow(color: .black.opacity(0.05), radius: 1, x: 0, y: 1)
         .contentShape(.rect)
         .onTapGesture {
             if isEditable {
