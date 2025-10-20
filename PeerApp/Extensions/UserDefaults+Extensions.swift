@@ -15,6 +15,7 @@ extension UserDefaults {
     private enum Keys {
         static let badge = "badge"
         static let offensiveContentFilter = "offensiveContentFilter"
+        static let username = "username"
     }
 
     var badge: Int {
@@ -25,5 +26,10 @@ extension UserDefaults {
     var offensiveContentFilter: OffensiveContentFilter {
         get { UserDefaults.extensions.value(forKey: Keys.offensiveContentFilter) as? OffensiveContentFilter ?? .blocked }
         set { UserDefaults.extensions.set(newValue, forKey: Keys.offensiveContentFilter) }
+    }
+
+    var username: String {
+        get { UserDefaults.extensions.string(forKey: Keys.username) ?? "" }
+        set { UserDefaults.extensions.set(newValue, forKey: Keys.username) }
     }
 }

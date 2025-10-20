@@ -9,56 +9,82 @@ import Foundation
 
 enum PasswordStrength: String {
     case empty = ""
-    case tooWeak = "Too weak!"
-    case notStrongEnough = "Not strong enough!"
-    case good = "Good!"
-    case excellent = "Excellent!"
+    case veryWeak = "Very weak"
+    case weak = "Weak"
+    case notStrongEnough = "Needs improvement"
+    case good = "Strong"
+    case strong = "Excellent"
+}
 
-    static func evaluatePasswordStrength(_ password: String) -> PasswordStrength {
-        // At minimum, a password must be:
-        // 1) >= 8 characters
-        // 2) contain at least one uppercase letter
-        // 3) contain at least one lowercase letter
-        // 4) contain at least one digit
+enum PasswordRequirement: CaseIterable {
+    case minLength, lowercase, uppercase, number
 
-        // Check each requirement
+    var phrase: String {
+        switch self {
+        case .minLength: return "8 characters"
+        case .lowercase: return "1 lowercase"
+        case .uppercase: return "1 uppercase"
+        case .number:    return "1 number"
+        }
+    }
+}
+
+struct PasswordEvaluation {
+    let strength: PasswordStrength
+    let unmetRequirements: [PasswordRequirement]
+    let meetsExcellentBonus: Bool
+}
+
+enum PasswordPolicy {
+    static func evaluate(_ password: String) -> PasswordEvaluation {
+        // Core checks
         let lengthRequirement = password.count >= 8
         let hasUppercase = password.rangeOfCharacter(from: .uppercaseLetters) != nil
         let hasLowercase = password.rangeOfCharacter(from: .lowercaseLetters) != nil
         let hasDigit = password.rangeOfCharacter(from: .decimalDigits) != nil
 
-        // Count how many are satisfied
+        // Unmet in the order they should appear in the hint
+        var unmet: [PasswordRequirement] = []
+        if !lengthRequirement { unmet.append(.minLength) }
+        if !hasLowercase     { unmet.append(.lowercase) }
+        if !hasUppercase     { unmet.append(.uppercase) }
+        if !hasDigit         { unmet.append(.number) }
+
+        // Score for strength
         var score = 0
         score += lengthRequirement ? 1 : 0
         score += hasUppercase      ? 1 : 0
         score += hasLowercase      ? 1 : 0
         score += hasDigit          ? 1 : 0
 
-        // Additional requirement to qualify as "excellent"
-        // e.g., length ≥ 12 or has a special character, etc.
+        // Bonus for "Excellent"
         let hasSpecialCharacter = password.rangeOfCharacter(
             from: CharacterSet.punctuationCharacters.union(.symbols)
         ) != nil
         let lengthBonus = password.count >= 12
-
         let meetsExcellentBonus = hasSpecialCharacter || lengthBonus
 
-        // Decide on final rating:
+        let strength: PasswordStrength
         switch score {
-            case 0, 1:
-                return .tooWeak
-            case 2:
-                return .notStrongEnough
-            case 3:
-                // 3 means one of the four core checks is missing
-                // so still "notStrongEnough" if it doesn't meet all 4
-                return .notStrongEnough
-            case 4:
-                // All minimum requirements are met
-                return meetsExcellentBonus ? .excellent : .good
-            default:
-                // Should never hit here, but as a fallback:
-                return .tooWeak
+        case 0, 1:
+            strength = .veryWeak
+        case 2:
+            strength = .weak
+        case 3:
+            strength = .notStrongEnough
+        case 4:
+            strength = meetsExcellentBonus ? .strong : .good
+        default:
+            strength = .veryWeak
         }
+
+        // Empty convenience: if they haven't typed anything, surface nothing as strength label
+        let finalStrength: PasswordStrength = password.isEmpty ? .empty : strength
+
+        return PasswordEvaluation(
+            strength: finalStrength,
+            unmetRequirements: unmet,
+            meetsExcellentBonus: meetsExcellentBonus
+        )
     }
 }

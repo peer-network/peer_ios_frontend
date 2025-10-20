@@ -31,14 +31,16 @@ public protocol APIService: AnyObject {
     //MARK: Auth/Reg
     func fetchAuthorizedUserID() async -> Result<String, APIError>
     func loginWithCredentials(email: String, password: String) async -> Result<AuthToken, APIError>
+    func verifyReferralCode(code: String) async -> Result<Void, APIError>
     func registerUser(email: String, password: String, username: String, referralUuid: String) async -> Result<String, APIError>
     func verifyRegistration(userID: String) async -> Result<Void, APIError>
     func requestPasswordReset(email: String) async -> Result<Void, APIError>
+    func verifyResetPasswordCode(code: String) async -> Result<Void, APIError>
     func resetPassword(token: String, newPassword: String) async -> Result<Void, APIError>
     func deleteAccount(password: String) async -> Result<Void, APIError>
 
     //MARK: User & Profile
-    func getMyInviter() async -> Result<RowUser, APIError>
+    func getMyInviter() async -> Result<RowUser?, APIError>
     func getMyReferralInfo() async -> Result<ReferralInfo, APIError>
     func getMyReferredUsers(after offset: Int) async -> Result<[RowUser], APIError>
     func getMyUserInfo() async -> Result<(contentFilter: OffensiveContentFilter, shownOnboardings: [Onboarding]), APIError>

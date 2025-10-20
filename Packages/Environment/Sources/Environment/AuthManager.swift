@@ -20,7 +20,9 @@ public enum AuthState {
 //TODO: Get rid of ObservableObject inheritance, bad practice to use @Published in service
 public final class AuthManager: ObservableObject {
     @Published public var state: AuthState = .loading
-    
+    @Published public var showRestoringAlert = false
+    @Published public var restoringError = ""
+
     private let accountManager: AccountManager
     private let tokenManager: TokenKeychainManager
     
@@ -34,6 +36,11 @@ public final class AuthManager: ObservableObject {
     
     /// Checks if we have valid tokens and tries to fetch the current user ID.
     public func restoreSessionIfPossible() async -> AuthState {
+        await MainActor.run {
+            showRestoringAlert = false
+            restoringError = ""
+        }
+
         if tokenManager.getAccessToken() == nil {
             if let userId = accountManager.userId {
                 NotificationService.logoutUser(userId: userId)
@@ -46,20 +53,29 @@ public final class AuthManager: ObservableObject {
             let userId = try await accountManager.getCurrentUserId()
 
             // Optionally, fetch daily freebies or any user data
-            try? await accountManager.fetchDailyFreeLimits()
-            try? await accountManager.fetchUserInviter()
-            try? await accountManager.fetchUserInfo()
+            try await accountManager.fetchDailyFreeLimits()
+            try await accountManager.fetchUserInviter()
+            try await accountManager.fetchUserInfo()
 
             await PushNotifications.registerFCMToken(for: userId)
             
             return .authenticated(userId: userId)
         } catch {
-            // If the token call fails, user is unauthenticated
-            if let userId = accountManager.userId {
-                NotificationService.logoutUser(userId: userId)
+            print(error.userFriendlyMessage)
+            switch error {
+                case .unknownError(let error):
+                    await MainActor.run {
+                        restoringError = error.localizedDescription
+                        showRestoringAlert = true
+                    }
+                    return .loading
+                default:
+                    if let userId = accountManager.userId {
+                        NotificationService.logoutUser(userId: userId)
+                    }
+                    tokenManager.removeCredentials()
+                    return .unauthenticated
             }
-            tokenManager.removeCredentials()
-            return .unauthenticated
         }
     }
     
@@ -83,6 +99,10 @@ public final class AuthManager: ObservableObject {
         // Update state
         withAnimation {
             self.state = .authenticated(userId: userId)
+        }
+
+        if let username = accountManager.user?.username {
+            UserDefaults(suiteName: Config.appGroup)!.set(username, forKey: "username")
         }
     }
     

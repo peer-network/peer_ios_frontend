@@ -11,7 +11,7 @@ import DesignSystem
 struct SuccessView: View {
     let title: String
     let description: String
-    let action: () -> Void
+    let action: () async -> Void
 
     var body: some View {
         VStack(spacing: 56) {
@@ -25,11 +25,14 @@ struct SuccessView: View {
 
             continueButton
         }
+        .padding(.horizontal, 22)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
     }
 
     private var icon: some View {
         IconsNew.checkCircle2
             .iconSize(height: 94)
+            .foregroundStyle(Colors.passwordBarsGreen)
     }
 
     private var titleText: some View {
@@ -52,8 +55,8 @@ struct SuccessView: View {
     private var continueButton: some View {
         let config = StateButtonConfig(buttonSize: .large, buttonType: .primary, title: "Continue")
 
-        StateButton(config: config) {
-            action()
+        AsyncStateButton(config: config) {
+            await action()
         }
     }
 }

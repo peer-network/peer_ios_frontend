@@ -17,6 +17,7 @@ import Messages
 import RemoteConfig
 import FirebaseMessaging
 import Analytics
+import TokenKeychainManager
 
 @main
 struct PeerApp: App {
@@ -41,6 +42,8 @@ struct PeerApp: App {
     @State private var restoreSessionResult = AuthState.loading
 
     private let analyticsService: AnalyticsServiceProtocol
+
+    @AppStorage("rememberMe", store: UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")) private var rememberMe = true
 
     init() {
         FirebaseApp.configure()
@@ -131,12 +134,23 @@ struct PeerApp: App {
                     }
                     .frame(width: UIScreen.main.bounds.width * 0.6)
                 }
-                .task {
-                    restoreSessionResult = await authManager.restoreSessionIfPossible()
+                .onFirstAppear {
+                    Task {
+                        restoreSessionResult = await authManager.restoreSessionIfPossible()
+                    }
+                }
+                .alert("Failed to restore session", isPresented: $authManager.showRestoringAlert) {
+                    Button("Try again") {
+                        Task {
+                            restoreSessionResult = await authManager.restoreSessionIfPossible()
+                        }
+                    }
+                } message: {
+                    Text(authManager.restoringError)
                 }
 
             case .unauthenticated:
-                MainAuthView(viewModel: AuthViewModel(authManager: self.authManager))
+                AuthView(viewModel: AuthorizationViewModel(authManager: self.authManager))
 #if DEBUG
                     .overlay(alignment: .top) {
                         VStack(spacing: 10) {
@@ -169,12 +183,13 @@ struct PeerApp: App {
                         .padding(.horizontal, 20)
                         .background(RoundedRectangle(cornerRadius: 24).fill(Colors.inactiveDark))
                         .background(RoundedRectangle(cornerRadius: 24).stroke(Colors.redAccent, lineWidth: 1))
-                        .padding(.horizontal, 20)
+                        .padding(.horizontal, 40)
                     }
 #endif
                     .withSafariRouter()
                     .environmentObject(authRouter)
                     .environmentObject(apiManager)
+                    .environmentObject(appState)
                     .analyticsService(analyticsService)
 
             case .authenticated(let userId):
@@ -198,6 +213,12 @@ struct PeerApp: App {
                         analyticsService.setUserID(userId)
                     }
                     .analyticsService(analyticsService)
+                    .onReceive(NotificationCenter.default.publisher(for: UIApplication.willTerminateNotification)) { _ in
+                        if !rememberMe {
+                            TokenKeychainManager.shared.removeCredentials()
+                            UserDefaults.extensions.username = ""
+                        }
+                    }
         }
     }
 

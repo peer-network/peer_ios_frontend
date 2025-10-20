@@ -494,8 +494,8 @@ public struct MainAuthView: View {
                 Spacer()
                     .frame(height: 10)
                 
-                PasswordStrengthBarsView(strength: viewModel.passwordStrength)
-                    .padding(.horizontal, 35)
+//                PasswordStrengthBarsView(strength: viewModel.passwordStrength)
+//                    .padding(.horizontal, 35)
             }
 
             Spacer()

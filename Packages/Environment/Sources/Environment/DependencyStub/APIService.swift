@@ -20,7 +20,11 @@ public final class APIServiceStub: APIService {
     public func loginWithCredentials(email: String, password: String) async -> Result<AuthToken, APIError> {
         .success(AuthToken(accessToken: "ACCESS_TOKEN", refreshToken: "REFRESH_TOKEN"))
     }
-    
+
+    public func verifyReferralCode(code: String) async -> Result<Void, APIError> {
+        .success(())
+    }
+
     public func registerUser(email: String, password: String, username: String, referralUuid: String) async -> Result<String, APIError> {
         .success("Registered")
     }
@@ -33,6 +37,10 @@ public final class APIServiceStub: APIService {
         .success(())
     }
 
+    public func verifyResetPasswordCode(code: String) async -> Result<Void, APIError> {
+        .success(())
+    }
+
     public func resetPassword(token: String, newPassword password: String) async -> Result<Void, APIError> {
         .success(())
     }
@@ -42,7 +50,7 @@ public final class APIServiceStub: APIService {
     }
 
     //MARK: User & Profile
-    public func getMyInviter() async -> Result<RowUser, APIError> {
+    public func getMyInviter() async -> Result<RowUser?, APIError> {
         .failure(.missingData)
     }
 

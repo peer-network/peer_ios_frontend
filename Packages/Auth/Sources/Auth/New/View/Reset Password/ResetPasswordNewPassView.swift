@@ -7,8 +7,10 @@
 
 import SwiftUI
 import DesignSystem
+import Environment
 
 struct ResetPasswordNewPassView: View {
+    @EnvironmentObject private var appState: AppState
     @EnvironmentObject private var authVM: AuthorizationViewModel
 
     private enum FocusField: Hashable {
@@ -18,6 +20,8 @@ struct ResetPasswordNewPassView: View {
 
     @FocusState private var focusedField: FocusField?
 
+    @State private var passwordsDoNotMatch: Bool = false
+
     var body: some View {
         pageContent
     }
@@ -25,26 +29,36 @@ struct ResetPasswordNewPassView: View {
     @ViewBuilder
     private var pageContent: some View {
         titleText
-            .padding(.bottom, 4)
-
-        descriptionText
-            .padding(.bottom, 24)
+            .padding(.bottom, 15)
 
         passwordTextField
 
-        if authVM.forgotPasswordStrength != .empty {
-            PasswordStrengthBarsView(strength: authVM.forgotPasswordStrength)
-                .padding(.horizontal, 15)
-                .padding(.vertical, 10)
-        } else {
-            Spacer()
-                .frame(height: 10)
+        if authVM.forgotPasswordStrength != nil {
+            PasswordStrengthBarsView(password: authVM.forgotPasswordNewPass)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.horizontal, 20)
+                .padding(.top, 3)
         }
 
+        Spacer()
+            .frame(height: 10)
+
         confirmPasswordTextField
-            .padding(.bottom, 15)
+
+        if passwordsDoNotMatch {
+            errorView("Passwords do not match.")
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.top, 10)
+        }
+
+        if !authVM.forgotPasswordErrorUpdatePassword.isEmpty {
+            errorView(authVM.forgotPasswordErrorUpdatePassword)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.top, 10)
+        }
 
         updatePasswordButton
+            .padding(.top, 15)
     }
 
     private var titleText: some View {
@@ -55,27 +69,52 @@ struct ResetPasswordNewPassView: View {
             .fixedSize(horizontal: false, vertical: true)
     }
 
-    private var descriptionText: some View {
-        Text("Create a new password. Ensure it differs from previous ones for security.")
-            .appFont(.bodyRegular)
-            .foregroundStyle(Colors.whiteSecondary)
-            .multilineTextAlignment(.leading)
-            .fixedSize(horizontal: false, vertical: true)
-    }
-
     private var passwordTextField: some View {
-        DataInputTextField(text: $authVM.forgotPasswordNewPass, placeholder: "Password", maxLength: 999, focusState: $focusedField, focusEquals: .password)
-            .submitLabel(.continue)
-            .onChange(of: authVM.forgotPasswordNewPass) {
-                withAnimation(.easeInOut(duration: 0.2)) {
-                    authVM.evaluateForgotPasswordStrength()
-                }
+        DataInputTextField(
+            leadingIcon: IconsNew.lock,
+            text: $authVM.forgotPasswordNewPass,
+            placeholder: "Password",
+            maxLength: appState.getConstants()?.data.user.password.maxLength ?? 999,
+            isSecure: true,
+            focusState: $focusedField,
+            focusEquals: .password,
+            keyboardType: .asciiCapable,
+            textContentType: .newPassword,
+            autocorrectionDisabled: true,
+            autocapitalization: .none,
+            returnKeyType: .next,
+            onSubmit: {
+                focusedField = .confirmPassword
             }
+        )
+        .onChange(of: authVM.forgotPasswordNewPass) {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                passwordsDoNotMatch = false
+                authVM.evaluateForgotPasswordStrength()
+            }
+        }
     }
 
     private var confirmPasswordTextField: some View {
-        DataInputTextField(text: $authVM.forgotPasswordRepeatPass, placeholder: "Confirm password", maxLength: 999, focusState: $focusedField, focusEquals: .confirmPassword)
-            .submitLabel(.done)
+        DataInputTextField(
+            leadingIcon: IconsNew.lock,
+            text: $authVM.forgotPasswordRepeatPass,
+            placeholder: "Confirm password",
+            maxLength:  appState.getConstants()?.data.user.password.maxLength ?? 999,
+            isSecure: true,
+            focusState: $focusedField,
+            focusEquals: .confirmPassword,
+            keyboardType: .asciiCapable,
+            textContentType: .newPassword,
+            autocorrectionDisabled: true,
+            autocapitalization: .none,
+            returnKeyType: .done
+        )
+        .onChange(of: authVM.forgotPasswordRepeatPass) {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                passwordsDoNotMatch = false
+            }
+        }
     }
 
     @ViewBuilder
@@ -83,7 +122,24 @@ struct ResetPasswordNewPassView: View {
         let config = StateButtonConfig(buttonSize: .large, buttonType: .primary, title: "Update password")
 
         AsyncStateButton(config: config) {
-            try? await Task.sleep(for: .seconds(3))
+            focusedField = nil
+
+            if authVM.forgotPasswordNewPass != authVM.forgotPasswordRepeatPass {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    passwordsDoNotMatch = true
+                }
+                return
+            }
+
+            await authVM.updatePasswordButtonTapped()
         }
+        .disabled(authVM.isUpdatePasswordButtonDisabled || passwordsDoNotMatch)
+    }
+
+    private func errorView(_ text: String) -> some View {
+        Text(text)
+            .appFont(.smallLabelRegular)
+            .multilineTextAlignment(.center)
+            .foregroundStyle(Colors.redAccent)
     }
 }
