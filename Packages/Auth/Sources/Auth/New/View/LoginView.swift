@@ -167,7 +167,7 @@ struct LoginView: View {
     
     @ViewBuilder
     private var registerButton: some View {
-        let config = StateButtonConfig(buttonSize: .large, buttonType: .secondary, title: "Register now")
+        let config = StateButtonConfig(buttonSize: .large, buttonType: .secondary, title: "Register now", icon: IconsNew.arrowRight, iconPlacement: .trailing)
 
         StateButton(config: config) {
             focusedField = nil
