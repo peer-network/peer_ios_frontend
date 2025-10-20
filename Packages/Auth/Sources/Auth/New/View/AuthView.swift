@@ -173,6 +173,7 @@ public struct AuthView: View {
                     )
             }
         }
+        .drawingGroup(opaque: false)
     }
 
     private func backButton(_ action: @escaping () -> Void) -> some View {
