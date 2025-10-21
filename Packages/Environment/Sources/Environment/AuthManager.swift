@@ -61,14 +61,21 @@ public final class AuthManager: ObservableObject {
             
             return .authenticated(userId: userId)
         } catch {
-            print(error.userFriendlyMessage)
             switch error {
                 case .unknownError(let error):
-                    await MainActor.run {
-                        restoringError = error.localizedDescription
-                        showRestoringAlert = true
+                    if error.localizedDescription.lowercased().contains("invalid access token") {
+                        if let userId = accountManager.userId {
+                            NotificationService.logoutUser(userId: userId)
+                        }
+                        tokenManager.removeCredentials()
+                        return .unauthenticated
+                    } else {
+                        await MainActor.run {
+                            restoringError = error.localizedDescription
+                            showRestoringAlert = true
+                        }
+                        return .loading
                     }
-                    return .loading
                 default:
                     if let userId = accountManager.userId {
                         NotificationService.logoutUser(userId: userId)
