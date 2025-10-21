@@ -49,6 +49,8 @@ struct ProfileHeader: View {
                     inviteFriendsButton
 
                     settingsButton
+
+                    moreButton
                 }
             } else {
                 HStack(spacing: 15) {
@@ -132,43 +134,53 @@ struct ProfileHeader: View {
 
     private var moreButton: some View {
         Menu {
-            Section {
-                Button(role: .destructive) {
-                    Task {
-                        let result = await apiManager.apiService.toggleHideUserContent(with: user.id)
+            if !AccountManager.shared.isCurrentUser(id: user.id) {
+                Section {
+                    Button(role: .destructive) {
+                        Task {
+                            let result = await apiManager.apiService.toggleHideUserContent(with: user.id)
 
-                        switch result {
-                            case .success(let isNowBlocked):
-                                if isNowBlocked {
-                                    showPopup(text: "User was blocked.")
-                                } else {
-                                    showPopup(text: "User was unblocked.")
-                                }
-                            case .failure(let error):
-                                showPopup(
-                                    text: error.userFriendlyDescription
-                                )
+                            switch result {
+                                case .success(let isNowBlocked):
+                                    if isNowBlocked {
+                                        showPopup(text: "User was blocked.")
+                                    } else {
+                                        showPopup(text: "User was unblocked.")
+                                    }
+                                case .failure(let error):
+                                    showPopup(
+                                        text: error.userFriendlyDescription
+                                    )
+                            }
                         }
+                    } label: {
+                        Label("Toggle User Block", systemImage: "person.slash.fill")
                     }
-                } label: {
-                    Label("Toggle User Block", systemImage: "person.slash.fill")
+
+                    Button(role: .destructive) {
+                        Task {
+                            let result = await apiManager.apiService.reportUser(with: user.id)
+
+                            switch result {
+                                case .success():
+                                    showPopup(text: "User was reported.")
+                                case .failure(let error):
+                                    showPopup(
+                                        text: error.userFriendlyDescription
+                                    )
+                            }
+                        }
+                    } label: {
+                        Label("Report User", systemImage: "exclamationmark.circle")
+                    }
                 }
-
-                Button(role: .destructive) {
-                    Task {
-                        let result = await apiManager.apiService.reportUser(with: user.id)
-
-                        switch result {
-                            case .success():
-                                showPopup(text: "User was reported.")
-                            case .failure(let error):
-                                showPopup(
-                                    text: error.userFriendlyDescription
-                                )
-                        }
+            } else {
+                Section {
+                    Button {
+                        //
+                    } label: {
+                        Text("My ads")
                     }
-                } label: {
-                    Label("Report User", systemImage: "exclamationmark.circle")
                 }
             }
         } label: {
@@ -176,7 +188,7 @@ struct ProfileHeader: View {
                 .iconSize(width: 16)
                 .rotationEffect(.degrees(90))
                 .foregroundStyle(Colors.whitePrimary)
-                .frame(width: 40, height: 40)
+                .frame(width: 45, height: 45)
                 .background(Colors.inactiveDark)
                 .clipShape(RoundedRectangle(cornerRadius: 25))
         }
