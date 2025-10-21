@@ -7,6 +7,7 @@
 
 import Foundation
 import UIKit
+import Models
 
 public enum UploadMedia {
     case data(Data, filename: String, mime: String)
@@ -21,8 +22,8 @@ public protocol PostMediaUploader {
 // MARK: - Response model
 
 private struct UploadResponse: Decodable {
-    let status: String?
-    let responseCode: String?
+    let status: String
+    let responseCode: String
     let uploadedFiles: String?
 
     enum CodingKeys: String, CodingKey {
@@ -35,16 +36,18 @@ private struct UploadResponse: Decodable {
 public enum UploadParseError: Error, LocalizedError {
     case emptyResponse
     case decodingFailed
-    case backendRejected(status: String?, code: String?)
+    case backendRejected(status: String, code: String)
     case missingUploadedFiles
 
     public var errorDescription: String? {
         switch self {
-        case .emptyResponse: return "Upload returned an empty response."
-        case .decodingFailed: return "Failed to decode upload response."
-        case .backendRejected(let status, let code):
-            return "Upload failed (\(status ?? "unknown")). Code: \(code ?? "N/A")."
-        case .missingUploadedFiles: return "Upload succeeded but file IDs are missing."
+            case .emptyResponse: return "Upload returned an empty response."
+            case .decodingFailed: return "Failed to decode upload response."
+            case .backendRejected(let status, let code):
+                let message = ErrorCodeManager.shared.getUserFriendlyMessage(for: code)
+                return message
+                //            return "Upload failed (\(status ?? "unknown")). Code: \(code ?? "N/A")."
+            case .missingUploadedFiles: return "Upload succeeded but file IDs are missing."
         }
     }
 }
@@ -79,7 +82,7 @@ public final class DefaultPostMediaUploader: PostMediaUploader {
         let decoder = JSONDecoder()
         if let resp = try? decoder.decode(UploadResponse.self, from: data) {
             // Check status
-            let ok = resp.status?.lowercased()
+            let ok = resp.status.lowercased()
             if ok != "success" {
                 throw UploadParseError.backendRejected(status: resp.status, code: resp.responseCode)
             }
