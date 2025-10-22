@@ -36,6 +36,8 @@ public struct Post: Identifiable, Hashable {
     public let url: String
     public var owner: ObjectOwner
 
+    public let advertisement: Advertisement?
+
     public var mediaURLs: [URL] {
         media.compactMap {
             URL(string: "\(Constants.mediaURL)\($0.path)")
@@ -95,6 +97,7 @@ public struct Post: Identifiable, Hashable {
         self.tags = gqlPost.tags as? [String] ?? []
         self.url = gqlPost.url
         self.owner = postOwner
+        advertisement = nil
     }
 
     public init?(gqlPost: GetPostByIdQuery.Data.ListPosts.AffectedRow) {
@@ -133,6 +136,48 @@ public struct Post: Identifiable, Hashable {
         self.tags = gqlPost.tags as? [String] ?? []
         self.url = gqlPost.url
         self.owner = postOwner
+        advertisement = nil
+    }
+
+    public init?(gqlAdvertisement: GetListOfAdsQuery.Data.ListAdvertisementPosts.AffectedRow) {
+        let gqlPost = gqlAdvertisement.post
+
+        guard
+            let contentType = ContentType(rawValue: gqlPost.contenttype),
+            let postOwner = ObjectOwner(gqlUser: gqlPost.user),
+            let mediaData = gqlPost.media.data(using: .utf8),
+            let parsedMedia = try? JSONDecoder().decode([MediaItem].self, from: mediaData)
+        else {
+            return nil
+        }
+
+        self.id = gqlPost.id
+        self.contentType = contentType
+        self.title = gqlPost.title
+        self.media = parsedMedia
+        if !gqlPost.cover.isEmpty,
+           let coverData = gqlPost.cover.data(using: .utf8),
+           let parsedCover = try? JSONDecoder().decode([MediaItem].self, from: coverData)
+        {
+            self.cover = parsedCover
+        } else {
+            self.cover = []
+        }
+        self.mediaDescription = gqlPost.mediadescription
+        self.createdAt = gqlPost.createdat
+        self.amountLikes = gqlPost.amountlikes
+        self.amountViews = gqlPost.amountviews
+        self.amountComments = gqlPost.amountcomments
+        self.amountDislikes = gqlPost.amountdislikes
+        self.isLiked = gqlPost.isliked
+        self.isViewed = gqlPost.isviewed
+        self.isReported = gqlPost.isreported
+        self.isDisliked = gqlPost.isdisliked
+        self.isSaved = gqlPost.issaved
+        self.tags = gqlPost.tags as? [String] ?? []
+        self.url = gqlPost.url
+        self.owner = postOwner
+        advertisement = Advertisement(gqlAdvertisement: gqlAdvertisement)
     }
 
     public init(
@@ -175,6 +220,7 @@ public struct Post: Identifiable, Hashable {
         self.tags = tags
         self.url = url
         self.owner = owner
+        advertisement = nil
     }
 }
 

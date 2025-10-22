@@ -13,7 +13,7 @@ struct RowPostView: View {
     let post: Post
 
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(alignment: .top, spacing: 10) {
             if post.contentType != .text {
                 let imageWidth = (getRect().width - 20 * 3) * 0.3
                 let imageHeight = imageWidth * 0.77
@@ -29,7 +29,7 @@ struct RowPostView: View {
             VStack(alignment: .leading, spacing: 7) {
                 HStack(spacing: 0) {
                     Text(post.title)
-                        .font(.custom(.bodyBold))
+                        .appFont(.bodyBold)
                         .lineLimit(1)
 
                     Spacer()
@@ -41,7 +41,7 @@ struct RowPostView: View {
                 }
 
                 Text("There’s something about hiking that resets everything.")
-                    .font(.custom(.bodyRegular))
+                    .appFont(.bodyRegular)
                     .lineLimit(2)
             }
         }

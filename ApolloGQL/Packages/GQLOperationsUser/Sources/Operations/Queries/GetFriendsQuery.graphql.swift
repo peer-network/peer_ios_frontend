@@ -60,7 +60,9 @@ public class GetFriendsQuery: GraphQLQuery {
         .field("affectedRows", [AffectedRow?]?.self),
       ] }
 
+      @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")
       public var status: String { __data["status"] }
+      @available(*, deprecated, message: "use meta.ResponseCode . this field will be removed after 15 October`.")
       public var responseCode: String? { __data["ResponseCode"] }
       public var affectedRows: [AffectedRow?]? { __data["affectedRows"] }
 

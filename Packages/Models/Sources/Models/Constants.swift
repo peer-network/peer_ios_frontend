@@ -21,5 +21,5 @@ enum Constants {
 //        return "https://media.peernetwork.eu"
 //    }
 
-    static let errorCodesURL = URL(string: "https://media.getpeer.eu/assets/response-codes.json")!
+    static let errorCodesURL = URL(string: "https://media.peernetwork.eu/assets/response-codes.json")!
 }

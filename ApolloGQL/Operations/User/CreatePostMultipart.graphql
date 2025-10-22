@@ -1,0 +1,38 @@
+mutation CreatePostMultipart($contentType: ContentType!, $title: String!, $uploadedFiles: String!, $mediadescription: String, $tags: [String!], $cover: [String!]) {
+    createPost(
+        action: POST
+        input: { contenttype: $contentType, title: $title, uploadedFiles: $uploadedFiles, mediadescription: $mediadescription, tags: $tags, cover: $cover }
+    ) {
+        status
+        ResponseCode
+        affectedRows {
+            id
+            contenttype
+            title
+            media
+            cover
+            mediadescription
+            createdat
+            amountlikes
+            amountviews
+            amountcomments
+            amountdislikes
+            amounttrending
+            isliked
+            isviewed
+            isreported
+            isdisliked
+            issaved
+            tags
+            url
+            user {
+                id
+                username
+                slug
+                img
+                isfollowed
+                isfollowing
+            }
+        }
+    }
+}

@@ -54,7 +54,7 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                 }
 
                 header()
-                    .font(.custom(.bodyRegular))
+                    .appFont(.bodyRegular)
 
                 Spacer()
 
@@ -89,7 +89,7 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                             }
                     }
                 }
-                .font(.custom(.bodyRegular))
+                .appFont(.bodyRegular)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 5)
                 .background(Colors.inactiveDark)
@@ -100,7 +100,7 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                 }
                 .popover(isPresented: $showPopover, arrowEdge: .top) {
                     Text("Your daily free actions")
-                        .font(.customFont(weight: .regular, style: .footnote))
+                        .appFont(.bodyRegular)
                         .padding()
                         .presentationBackground(Colors.blackDark)
                         .presentationCompactAdaptation(.popover)
@@ -113,7 +113,7 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                         }
                     } label: {
                         Text("v \(version)")
-                            .font(.custom(.bodyRegular))
+                            .appFont(.bodyRegular)
                             .foregroundStyle(Colors.version)
                             .padding(.vertical, 5)
                             .contentShape(.rect)

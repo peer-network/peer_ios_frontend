@@ -8,12 +8,12 @@
 import SwiftUI
 
 public struct CheckmarkButton: View {
-    let text: String
+    let text: Text
     @Binding var isChecked: Bool
     let action: (() -> Void)?
 
     public init(
-        text: String,
+        text: Text,
         isChecked: Binding<Bool>,
         action: (() -> Void)? = nil
     ) {
@@ -32,15 +32,15 @@ public struct CheckmarkButton: View {
             HStack(spacing: 6) {
                 if isChecked {
                     Icons.checkMarkSqareEnable
-                        .iconSize(height: 18)
+                        .iconSize(height: 15)
                 } else {
                     Icons.checkMarkSqareDisable
-                        .iconSize(height: 18)
+                        .iconSize(height: 15)
                 }
 
-                Text(text)
+                text
+                    .foregroundStyle(Colors.whiteSecondary)
                     .appFont(.smallLabelRegular)
-                    .foregroundStyle(isChecked ? Colors.whitePrimary : Colors.whiteSecondary)
             }
         }
         .buttonStyle(ScaleButtonStyle())

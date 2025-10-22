@@ -34,12 +34,14 @@ public class GetMyInviterQuery: GraphQLQuery {
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("status", String.self),
-        .field("ResponseCode", String.self),
+        .field("ResponseCode", String?.self),
         .field("affectedRows", AffectedRows.self),
       ] }
 
+      @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")
       public var status: String { __data["status"] }
-      public var responseCode: String { __data["ResponseCode"] }
+      @available(*, deprecated, message: "use meta.ResponseCode . this field will be removed after 15 October`.")
+      public var responseCode: String? { __data["ResponseCode"] }
       public var affectedRows: AffectedRows { __data["affectedRows"] }
 
       /// ReferralList.AffectedRows

@@ -14,52 +14,13 @@ struct FloatingNavigationButtons: View {
 
     var body: some View {
         HStack(spacing: 10) {
-            Button {
-                clearAction()
-            } label: {
-                Text("Clear")
-            }
-            .buttonStyle(StrokeButtonStyle())
+            let clearButtonConfig = StateButtonConfig(buttonSize: .large, buttonType: .teritary, title: "Clear")
 
-            Button {
-                postAction()
-            } label: {
-                Text("Post")
-            }
-            .buttonStyle(TargetButtonStyle())
+            StateButton(config: clearButtonConfig, action: clearAction)
+
+            let postButtonConfig = StateButtonConfig(buttonSize: .large, buttonType: .primary, title: "Post")
+
+            StateButton(config: postButtonConfig, action: postAction)
         }
     }
-
-    
-
-//    Button {
-//        router.navigate(to: .changePassword)
-//    } label: {
-//        Text("Change password")
-//            .font(.customFont(weight: .regular, style: .footnote))
-//            .foregroundStyle(Colors.blackDark)
-//            .padding(20)
-//            .frame(maxWidth: .infinity)
-//            .background {
-//                RoundedRectangle(cornerRadius: 24)
-//                    .foregroundStyle(Colors.whitePrimary)
-//            }
-//    }
-//
-//    Button {
-//        audioManager.stop()
-//        analytics.track(AuthEvent.logout)
-//        analytics.resetUserID()
-//        authManager.logout()
-//    } label: {
-//        Text("Logout")
-//            .padding(20)
-//            .foregroundStyle(Colors.redAccent)
-//            .font(.customFont(weight: .regular, style: .footnote))
-//            .frame(maxWidth: .infinity)
-//            .overlay {
-//                RoundedRectangle(cornerRadius: 24)
-//                    .strokeBorder(Colors.redAccent, lineWidth: 1)
-//            }
-//    }
 }

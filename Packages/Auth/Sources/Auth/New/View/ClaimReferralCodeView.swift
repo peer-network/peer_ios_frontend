@@ -11,6 +11,8 @@ import DesignSystem
 struct ClaimReferralCodeView: View {
     @EnvironmentObject private var authVM: AuthorizationViewModel
 
+    private let companyReferralCode = "85d5f836-b1f5-4c4e-9381-1b058e13df93"
+
     private enum FocusField: Hashable {
         case referralCode
     }
@@ -23,9 +25,6 @@ struct ClaimReferralCodeView: View {
 
     @ViewBuilder
     private var pageContent: some View {
-        handShakeAnimation
-            .padding(.bottom, 27)
-
         titleText
             .padding(.bottom, 4)
 
@@ -38,13 +37,8 @@ struct ClaimReferralCodeView: View {
         useCodeButton
     }
 
-    private var handShakeAnimation: some View {
-        LottieView(animation: .handShake)
-            .frame(width: 119, height: 119)
-    }
-
     private var titleText: some View {
-        Text("Claim Your Invitation")
+        Text("Claim your invitation")
             .appFont(.extraLargeTitleRegular)
             .foregroundStyle(Colors.whitePrimary)
             .multilineTextAlignment(.leading)
@@ -52,7 +46,7 @@ struct ClaimReferralCodeView: View {
     }
 
     private var descriptionText: some View {
-        Text("Earning starts the moment you enter this.")
+        Text("Earning starts the moment you enter this magic code.")
             .appFont(.bodyRegular)
             .foregroundStyle(Colors.whiteSecondary)
             .multilineTextAlignment(.leading)
@@ -60,8 +54,20 @@ struct ClaimReferralCodeView: View {
     }
 
     private var codeTextField: some View {
-        DataInputTextField(text: $authVM.referralCode, placeholder: "Referral code", maxLength: 999, focusState: $focusedField, focusEquals: .referralCode)
-            .submitLabel(.done)
+        DataInputTextField(
+            leadingIcon: IconsNew.referral,
+            text: .constant(companyReferralCode),
+            placeholder: "Referral code",
+            maxLength: 999,
+            isEditable: false,
+            focusState: $focusedField,
+            focusEquals: .referralCode,
+            keyboardType: .asciiCapable,
+            textContentType: nil,
+            autocorrectionDisabled: true,
+            autocapitalization: .none,
+            returnKeyType: .done
+        )
     }
 
     @ViewBuilder
@@ -72,6 +78,7 @@ struct ClaimReferralCodeView: View {
             focusedField = nil
             
             withAnimation(.easeInOut(duration: 0.2)) {
+                authVM.referralCode = companyReferralCode
                 authVM.moveToRegisterScreen()
             }
         }

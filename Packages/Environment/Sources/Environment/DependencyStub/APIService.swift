@@ -20,7 +20,11 @@ public final class APIServiceStub: APIService {
     public func loginWithCredentials(email: String, password: String) async -> Result<AuthToken, APIError> {
         .success(AuthToken(accessToken: "ACCESS_TOKEN", refreshToken: "REFRESH_TOKEN"))
     }
-    
+
+    public func verifyReferralCode(code: String) async -> Result<Void, APIError> {
+        .success(())
+    }
+
     public func registerUser(email: String, password: String, username: String, referralUuid: String) async -> Result<String, APIError> {
         .success("Registered")
     }
@@ -33,6 +37,10 @@ public final class APIServiceStub: APIService {
         .success(())
     }
 
+    public func verifyResetPasswordCode(code: String) async -> Result<Void, APIError> {
+        .success(())
+    }
+
     public func resetPassword(token: String, newPassword password: String) async -> Result<Void, APIError> {
         .success(())
     }
@@ -42,7 +50,7 @@ public final class APIServiceStub: APIService {
     }
 
     //MARK: User & Profile
-    public func getMyInviter() async -> Result<RowUser, APIError> {
+    public func getMyInviter() async -> Result<RowUser?, APIError> {
         .failure(.missingData)
     }
 
@@ -134,11 +142,19 @@ public final class APIServiceStub: APIService {
     public func fetchPostsByTag(_ tag: String, after offset: Int) async -> Result<[Post], APIError> {
         .failure(.missingData)
     }
-    
+
+    public func getMediaUploadToken() async -> Result<String, APIError> {
+        .success("123")
+    }
+
     public func makePost(of type: ContentType, with title: String, content: [String], contentDescitpion: String, tags: [String], cover: String?) async -> Result<Void, APIError> {
         .success(())
     }
-    
+
+    public func makePostMultipart(of type: ContentType, with title: String, content: String, contentDescitpion: String, tags: [String], cover: String?) async -> Result<Void, APIError> {
+        .success(())
+    }
+
     public func fetchPosts(with contentType: FeedContentType, sort byPopularity: FeedContentSortingByPopularity, showHiddenContent: Bool, filter byRelationship: FeedFilterByRelationship, in timeframe: FeedContentSortingByTime, after offset: Int, for userID: String?, amount: Int) async -> Result<[Post], APIError> {
         .failure(.missingData)
     }
@@ -196,5 +212,10 @@ public final class APIServiceStub: APIService {
 
     public func transferTokens(to id: String, amount: Int) async -> Result<Void, APIError> {
         .success(())
+    }
+
+    //MARK: Advertisements
+    public func getListOfAds(with contentType: PostContentType, after offset: Int, amount: Int) async -> Result<[Post], APIError> {
+        .failure(.missingData)
     }
 }

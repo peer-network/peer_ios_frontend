@@ -1,0 +1,6 @@
+mutation VerifyReferralCode($code: String!) {
+    verifyReferralString(referralString: $code) {
+        status
+        ResponseCode
+    }
+}

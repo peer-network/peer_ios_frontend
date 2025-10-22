@@ -45,7 +45,9 @@ public class RefreshTokenMutation: GraphQLMutation {
         .field("refreshToken", String?.self),
       ] }
 
+      @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")
       public var status: String { __data["status"] }
+      @available(*, deprecated, message: "use meta.ResponseCode . this field will be removed after 15 October`.")
       public var responseCode: String? { __data["ResponseCode"] }
       public var accessToken: String? { __data["accessToken"] }
       public var refreshToken: String? { __data["refreshToken"] }

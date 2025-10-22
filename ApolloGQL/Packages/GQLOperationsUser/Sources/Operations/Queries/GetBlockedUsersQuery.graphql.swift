@@ -50,12 +50,14 @@ public class GetBlockedUsersQuery: GraphQLQuery {
       public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.BlockedUsersResponse }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
-        .field("status", String?.self),
+        .field("status", String.self),
         .field("ResponseCode", String?.self),
         .field("affectedRows", AffectedRows?.self),
       ] }
 
-      public var status: String? { __data["status"] }
+      @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")
+      public var status: String { __data["status"] }
+      @available(*, deprecated, message: "use meta.ResponseCode . this field will be removed after 15 October`.")
       public var responseCode: String? { __data["ResponseCode"] }
       public var affectedRows: AffectedRows? { __data["affectedRows"] }
 

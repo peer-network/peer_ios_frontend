@@ -50,6 +50,8 @@ public final class NormalFeedViewModel: ObservableObject, PostsFetcher {
         
         fetchTask = Task {
             do {
+//                let advertisements = try await fetchAdvertisements()
+
                 let sort = FeedContentSortingAndFiltering.shared.sortByPopularity
                 let filter = FeedContentSortingAndFiltering.shared.filterByRelationship
                 let inTimeframe = FeedContentSortingAndFiltering.shared.sortByTime
@@ -63,7 +65,7 @@ public final class NormalFeedViewModel: ObservableObject, PostsFetcher {
                     for: userId,
                     amount: Constants.postsFetchLimit
                 )
-                
+
                 try Task.checkCancellation()
                 
                 switch result {
@@ -71,6 +73,8 @@ public final class NormalFeedViewModel: ObservableObject, PostsFetcher {
                     if reset {
                         posts.removeAll()
                     }
+
+//                    posts.append(contentsOf: advertisements)
 
                     posts.append(contentsOf: fetchedPosts)
                     
@@ -93,6 +97,19 @@ public final class NormalFeedViewModel: ObservableObject, PostsFetcher {
             
             // Reset fetchTask to nil when done
             fetchTask = nil
+        }
+    }
+
+    private func fetchAdvertisements() async throws -> [Post] {
+        let result = await apiService.getListOfAds(with: .regular, after: 0, amount: 20)
+
+        try Task.checkCancellation()
+
+        switch result {
+        case .success(let fetchedAds):
+            return fetchedAds
+        case .failure(let apiError):
+            throw apiError
         }
     }
 }
