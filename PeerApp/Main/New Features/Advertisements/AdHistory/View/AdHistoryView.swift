@@ -7,8 +7,6 @@
 
 import SwiftUI
 import DesignSystem
-import Environment
-import Models
 
 struct AdHistoryView: View {
     var body: some View {
@@ -191,10 +189,4 @@ struct AdHistoryView: View {
             }
         }
     }
-}
-
-#Preview {
-    AdHistoryView()
-        .environmentObject(Router())
-        .environmentObject(AccountManager.shared)
 }

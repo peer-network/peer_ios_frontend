@@ -7,8 +7,6 @@
 
 import SwiftUI
 import DesignSystem
-import Environment
-import Models
 
 struct PinConfigurationView: View {
     @StateObject private var viewModel: AdViewModel
@@ -107,10 +105,4 @@ struct PinConfigurationView: View {
                 .foregroundStyle(Colors.inactiveDark)
         }
     }
-}
-
-#Preview {
-    PinConfigurationView(viewModel: AdViewModel(post:  Post.placeholdersImage(count: 1).first!, pinAdvertisementPrice: 2000))
-        .environmentObject(Router())
-        .environmentObject(AccountManager.shared)
 }
