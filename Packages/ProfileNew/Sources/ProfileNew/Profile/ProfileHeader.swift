@@ -174,15 +174,16 @@ struct ProfileHeader: View {
                         Label("Report User", systemImage: "exclamationmark.circle")
                     }
                 }
-            } else {
-                Section {
-                    Button {
-                        //
-                    } label: {
-                        Text("My ads")
-                    }
-                }
             }
+//            } else {
+//                Section {
+//                    Button {
+//                        //
+//                    } label: {
+//                        Text("My ads")
+//                    }
+//                }
+//            }
         } label: {
             Icons.ellipsis
                 .iconSize(width: 16)

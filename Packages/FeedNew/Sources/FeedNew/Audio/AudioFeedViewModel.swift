@@ -50,7 +50,7 @@ public final class AudioFeedViewModel: ObservableObject, PostsFetcher {
         
         fetchTask = Task {
             do {
-                let advertisements = try await fetchAdvertisements()
+//                let advertisements = try await fetchAdvertisements()
                 
                 let sort = FeedContentSortingAndFiltering.shared.sortByPopularity
                 let filter = FeedContentSortingAndFiltering.shared.filterByRelationship
@@ -74,7 +74,7 @@ public final class AudioFeedViewModel: ObservableObject, PostsFetcher {
                         posts.removeAll()
                     }
 
-                    posts.append(contentsOf: advertisements)
+//                    posts.append(contentsOf: advertisements)
 
                     posts.append(contentsOf: fetchedPosts)
                     

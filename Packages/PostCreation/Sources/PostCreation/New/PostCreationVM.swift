@@ -22,7 +22,7 @@ final class PostCreationVM: ObservableObject {
     @Published var error = ""
 
     init(uploader: PostMediaUploader = DefaultPostMediaUploader()) {
-        RestClient.shared.baseURL = URL(string: "https://getpeer.eu")!
+        RestClient.shared.baseURL = URL(string: "https://peernetwork.eu")!
         self.uploader = uploader
     }
 

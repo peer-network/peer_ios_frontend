@@ -88,13 +88,13 @@ struct PostHeaderView: View {
                         Label("Translate", systemImage: "captions.bubble")
                     }
 
-                    if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id) {
-                        Button {
-                            // TODO: Add action to promote post
-                        } label: {
-                            Label("Boost post", systemImage: "megaphone")
-                        }
-                    }
+//                    if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id) {
+//                        Button {
+//                            // TODO: Add action to promote post
+//                        } label: {
+//                            Label("Boost post", systemImage: "megaphone")
+//                        }
+//                    }
                 }
 
                 if !AccountManager.shared.isCurrentUser(id: postVM.post.owner.id) {

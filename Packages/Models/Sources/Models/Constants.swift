@@ -9,9 +9,9 @@ import Foundation
 
 enum Constants {
 //#if RELEASE
-//    static let mediaURL: String = "https://media.peernetwork.eu"
+    static let mediaURL: String = "https://media.peernetwork.eu"
 //#else
-    static let mediaURL: String = "https://media.getpeer.eu"
+//    static let mediaURL: String = "https://media.getpeer.eu"
 //#endif
 
 //    static var mediaURL: String {
