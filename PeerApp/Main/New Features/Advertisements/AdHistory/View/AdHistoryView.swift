@@ -7,10 +7,8 @@
 
 import SwiftUI
 import DesignSystem
-#if DEBUG
 import Environment
 import Models
-#endif
 
 struct AdHistoryView: View {
     var body: some View {
