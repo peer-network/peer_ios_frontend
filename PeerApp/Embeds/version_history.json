@@ -154,5 +154,11 @@
             "Invite-only access: Join with a code from a friend or directly from us — keeping Peer safe and community-driven",
             "Better account experience: Easier password resets, reliable “Remember me,” and a consistent look across iOS, Android, and Web"
         ]
+    },
+    {
+        "version": "1.10.0",
+        "date": "23 Oct 2025",
+        "releaseNotes": [
+        ]
     }
 ]
