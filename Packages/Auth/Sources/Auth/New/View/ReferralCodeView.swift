@@ -23,9 +23,6 @@ struct ReferralCodeView: View {
 
     @ViewBuilder
     private var pageContent: some View {
-        confettiAnimation
-            .padding(.bottom, 27)
-
         welcomeText
             .padding(.bottom, 4)
 
@@ -33,18 +30,19 @@ struct ReferralCodeView: View {
             .padding(.bottom, 24)
 
         codeTextField
-            .padding(.bottom, 15)
+
+        if !authVM.referralError.isEmpty {
+            errorView(authVM.referralError)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.top, 10)
+        }
 
         verifyButton
+            .padding(.top, 15)
             .padding(.bottom, 24)
 
         getReferralCodeButton
             .frame(maxWidth: .infinity, alignment: .center)
-    }
-
-    private var confettiAnimation: some View {
-        LottieView(animation: .confetti)
-            .frame(width: 119, height: 119)
     }
 
     @ViewBuilder
@@ -67,17 +65,31 @@ struct ReferralCodeView: View {
     }
 
     private var codeTextField: some View {
-        DataInputTextField(text: $authVM.referralCode, placeholder: "Referral code", maxLength: 999, focusState: $focusedField, focusEquals: .referralCode)
-            .submitLabel(.done)
+        DataInputTextField(
+            leadingIcon: IconsNew.referral,
+            text: $authVM.referralCode,
+            placeholder: "Referral code",
+            maxLength: 999,
+            focusState: $focusedField,
+            focusEquals: .referralCode,
+            keyboardType: .asciiCapable,
+            textContentType: nil,
+            autocorrectionDisabled: true,
+            autocapitalization: .none,
+            returnKeyType: .done
+        )
     }
 
     @ViewBuilder
     private var verifyButton: some View {
-        let config = StateButtonConfig(buttonSize: .large, buttonType: .primary, title: "Verify")
+        let config = StateButtonConfig(buttonSize: .large, buttonType: .primary, title: "Verify code")
 
         AsyncStateButton(config: config) {
-            try? await Task.sleep(for: .seconds(3))
+            focusedField = nil
+            
+            await authVM.verifyReferralCodeButtonTapped()
         }
+        .disabled(authVM.isVerifyReferralCodeButtonDisabled)
     }
 
     private var getReferralCodeButton: some View {
@@ -86,15 +98,17 @@ struct ReferralCodeView: View {
                 authVM.moveToClaimReferralCodeScreen()
             }
         } label: {
-            HStack(spacing: 0) {
-                Text("Don't have a code? ")
+            HStack(spacing: 4.22) {
+                Text("Don't have a code?")
 
-                Text("Click here")
-                    .appFont(.smallLabelBold)
-                    .underline(true, pattern: .solid)
-                    .foregroundStyle(Colors.whitePrimary)
+                HStack(spacing: 0) {
+                    Text("Click here")
+                        .appFont(.smallLabelBold)
+                        .underline(true, pattern: .solid)
+                        .foregroundStyle(Colors.whitePrimary)
 
-                Text(" to get peer code.")
+                    Text(" to get peer code.")
+                }
             }
             .appFont(.smallLabelRegular)
             .foregroundStyle(Colors.whiteSecondary)
@@ -102,18 +116,10 @@ struct ReferralCodeView: View {
         }
     }
 
-    private var privacyPolicyAgreementAndVersionStack: some View {
-        VStack(alignment: .center, spacing: 10) {
-            Text("By continuing, you agree to")
-                .foregroundStyle(Colors.whitePrimary)
-
-            Button {
-                //
-            } label: {
-                Text("Privacy Policy.")
-                    .foregroundStyle(Colors.hashtag)
-            }
-        }
-        .appFont(.smallLabelRegular)
+    private func errorView(_ text: String) -> some View {
+        Text(text)
+            .appFont(.smallLabelRegular)
+            .multilineTextAlignment(.center)
+            .foregroundStyle(Colors.redAccent)
     }
 }

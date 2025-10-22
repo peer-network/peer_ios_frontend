@@ -13,9 +13,6 @@ public struct LottieView: View {
     public enum LottieAnimation: String {
         case splashScreenLogo = "SplashScreenLogoAnimation"
         case loading = "LoadingAnimation"
-        case confetti = "PartyPopperAnimation"
-        case handShake = "HandShakeAnimation"
-        case handWave = "HandWaveAnimation"
     }
 
     private let name: String
@@ -61,7 +58,7 @@ public struct LottieView: View {
 }
 
 // MARK: - Observer class
-private class CompletionObserver: Observer {
+private class CompletionObserver: DotLottie.Observer {
     let onLoopComplete: (() -> Void)?
 
     init(onLoopComplete: (() -> Void)?) {

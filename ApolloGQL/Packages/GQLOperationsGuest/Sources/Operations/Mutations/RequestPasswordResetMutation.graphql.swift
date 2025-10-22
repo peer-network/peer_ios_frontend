@@ -7,7 +7,7 @@ public class RequestPasswordResetMutation: GraphQLMutation {
   public static let operationName: String = "RequestPasswordReset"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"mutation RequestPasswordReset($email: String!) { requestPasswordReset(email: $email) { __typename status ResponseCode } }"#
+      #"mutation RequestPasswordReset($email: String!) { requestPasswordReset(email: $email) { __typename status ResponseCode nextAttemptAt } }"#
     ))
 
   public var email: String
@@ -41,10 +41,14 @@ public class RequestPasswordResetMutation: GraphQLMutation {
         .field("__typename", String.self),
         .field("status", String.self),
         .field("ResponseCode", String?.self),
+        .field("nextAttemptAt", String?.self),
       ] }
 
+      @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")
       public var status: String { __data["status"] }
+      @available(*, deprecated, message: "use meta.ResponseCode . this field will be removed after 15 October`.")
       public var responseCode: String? { __data["ResponseCode"] }
+      public var nextAttemptAt: String? { __data["nextAttemptAt"] }
     }
   }
 }

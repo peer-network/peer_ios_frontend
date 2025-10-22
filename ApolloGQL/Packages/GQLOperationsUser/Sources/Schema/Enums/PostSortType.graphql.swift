@@ -11,4 +11,9 @@ public enum PostSortType: String, EnumType {
   case views = "VIEWS"
   case comments = "COMMENTS"
   case forMe = "FOR_ME"
+  case oldest = "OLDEST"
+  case follower = "FOLLOWER"
+  case followed = "FOLLOWED"
+  case relevant = "RELEVANT"
+  case friends = "FRIENDS"
 }

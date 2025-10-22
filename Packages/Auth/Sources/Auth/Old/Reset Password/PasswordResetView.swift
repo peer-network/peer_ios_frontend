@@ -127,11 +127,11 @@ struct PasswordResetView: View {
     private var enterNewPasswordView: some View {
         newPasswordTextField
 
-        if passwordResetViewModel.passwordStrength != .empty {
-            PasswordStrengthBarsView(strength: passwordResetViewModel.passwordStrength)
-                .padding(.horizontal, 15)
-                .padding(.vertical, -10)
-        }
+//        if passwordResetViewModel.passwordStrength != .empty {
+//            PasswordStrengthBarsView(strength: passwordResetViewModel.passwordStrength)
+//                .padding(.horizontal, 15)
+//                .padding(.vertical, -10)
+//        }
 
         if !passwordResetViewModel.error.isEmpty {
             Text(passwordResetViewModel.error)

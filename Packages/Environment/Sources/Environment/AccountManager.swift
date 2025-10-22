@@ -100,7 +100,7 @@ public final class AccountManager: ObservableObject {
         }
     }
 
-    public func fetchDailyFreeLimits() async throws {
+    public func fetchDailyFreeLimits() async throws(APIError) {
         let result = await apiService.fetchDailyFreeLimits()
 
         switch result {
@@ -115,7 +115,7 @@ public final class AccountManager: ObservableObject {
         }
     }
 
-    public func fetchUserInviter() async throws {
+    public func fetchUserInviter() async throws(APIError) {
         let result = await apiService.getMyInviter()
 
         switch result {
@@ -127,7 +127,7 @@ public final class AccountManager: ObservableObject {
         }
     }
 
-    public func fetchUserInfo() async throws {
+    public func fetchUserInfo() async throws(APIError) {
         let result = await apiService.getMyUserInfo()
 
         switch result {

@@ -1,0 +1,68 @@
+query GetAdsHistory($offset: Int, $limit: Int) {
+	advertisementHistory(
+        sort: NEWEST
+        offset: $offset
+        limit: $limit
+    ) {
+        status
+        ResponseCode
+        affectedRows {
+            stats {
+                tokenSpent
+                euroSpent
+                amountAds
+                gemsEarned
+                amountLikes
+                amountViews
+                amountComments
+                amountDislikes
+                amountReports
+            }
+            advertisements {
+                id
+                createdAt
+                type
+                timeframeStart
+                timeframeEnd
+                totalTokenCost
+                totalEuroCost
+                gemsEarned
+                amountLikes
+                amountViews
+                amountComments
+                amountDislikes
+                amountReports
+                post {
+                    id
+                    contenttype
+                    title
+                    media
+                    cover
+                    mediadescription
+                    createdat
+                    amountlikes
+                    amountviews
+                    amountcomments
+                    amountdislikes
+                    amounttrending
+                    isliked
+                    isviewed
+                    isreported
+                    isdisliked
+                    issaved
+                    tags
+                    url
+                    user {
+                        id
+                        username
+                        slug
+                        img
+                        isfollowed
+                        isfollowing
+                        isfriend
+                    }
+                }
+            }
+        }
+    }
+}

@@ -30,9 +30,16 @@ struct ResetPasswordView: View {
             .padding(.bottom, 24)
 
         emailTextField
-            .padding(.bottom, 15)
+            .padding(.bottom, 10)
+
+        if !authVM.forgotPasswordErrorEmail.isEmpty {
+            errorView(authVM.forgotPasswordErrorEmail)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.bottom, 5)
+        }
 
         resetButton
+            .padding(.top, 5)
     }
 
     private var titleText: some View {
@@ -52,16 +59,37 @@ struct ResetPasswordView: View {
     }
 
     private var emailTextField: some View {
-        DataInputTextField(text: $authVM.forgotPasswordEmail, placeholder: "E-mail", maxLength: 999, focusState: $focusedField, focusEquals: .email)
-            .submitLabel(.done)
+        DataInputTextField(
+            leadingIcon: IconsNew.envelope,
+            text: $authVM.forgotPasswordEmail,
+            placeholder: "E-mail",
+            maxLength: 999, // MARK: Take it from Constants
+            focusState: $focusedField,
+            focusEquals: .email,
+            keyboardType: .emailAddress,
+            textContentType: .username,
+            autocorrectionDisabled: true,
+            autocapitalization: .none,
+            returnKeyType: .done
+        )
     }
 
     @ViewBuilder
     private var resetButton: some View {
-        let config = StateButtonConfig(buttonSize: .large, buttonType: .primary, title: "Reset password")
+        let config = StateButtonConfig(buttonSize: .large, buttonType: .primary, title: "Send")
 
         AsyncStateButton(config: config) {
-            try? await Task.sleep(for: .seconds(3))
+            focusedField = nil
+            
+            await authVM.sendResetPasswordEmailButtonTapped()
         }
+        .disabled(authVM.isSendResetCodeButtonDisabled)
+    }
+
+    private func errorView(_ text: String) -> some View {
+        Text(text)
+            .appFont(.smallLabelRegular)
+            .multilineTextAlignment(.center)
+            .foregroundStyle(Colors.redAccent)
     }
 }

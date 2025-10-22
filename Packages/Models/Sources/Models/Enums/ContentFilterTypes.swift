@@ -14,6 +14,15 @@ public enum FeedContentType: String, CaseIterable {
     case all
 }
 
+public enum PostContentType: String, CaseIterable {
+    case regular
+    case audio
+    case video
+    case image
+    case imageAndVideo
+    case all
+}
+
 public enum FeedContentSortingByTime: String, CaseIterable {
     case allTime = "All Time"
     case today = "Today"

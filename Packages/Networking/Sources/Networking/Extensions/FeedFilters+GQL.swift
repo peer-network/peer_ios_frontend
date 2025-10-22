@@ -28,6 +28,25 @@ extension FeedContentType {
     }
 }
 
+extension PostContentType {
+    var apiValue: [GraphQLEnum<ContentType>] {
+        switch self {
+            case .regular:
+                [.case(.text), .case(.image)]
+            case .audio:
+                [.case(.audio)]
+            case .video:
+                [.case(.video)]
+            case .image:
+                [.case(.image)]
+            case .imageAndVideo:
+                [.case(.image), .case(.video)]
+            case .all:
+                [.case(.audio), .case(.video), .case(.image), .case(.text)]
+        }
+    }
+}
+
 extension FeedFilterByRelationship {
     var apiValue: GraphQLEnum<PostFilterType>? {
         switch self {

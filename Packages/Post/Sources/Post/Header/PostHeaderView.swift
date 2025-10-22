@@ -70,6 +70,10 @@ struct PostHeaderView: View {
                     .fixedSize(horizontal: true, vertical: false)
             }
 
+            if postVM.post.advertisement != nil {
+                PinIndicatorView()
+            }
+
             Menu {
                 Section {
                     Button {
@@ -88,7 +92,7 @@ struct PostHeaderView: View {
 //                        Button {
 //                            // TODO: Add action to promote post
 //                        } label: {
-//                            Label("Boost Post", systemImage: "megaphone")
+//                            Label("Boost post", systemImage: "megaphone")
 //                        }
 //                    }
                 }
@@ -142,5 +146,18 @@ struct PostHeaderView: View {
             .buttonStyle(PostActionButtonStyle(isOn: false, tintColor: nil, defaultColor: Colors.whitePrimary))
             .contentShape(.rect)
         }
+    }
+}
+
+private struct PinIndicatorView: View {
+    var body: some View {
+        Icons.pin
+            .iconSize(height: 19)
+            .foregroundStyle(Colors.whitePrimary)
+            .frame(width: 45, height: 45)
+            .background {
+                Circle()
+                    .foregroundStyle(Colors.version)
+            }
     }
 }

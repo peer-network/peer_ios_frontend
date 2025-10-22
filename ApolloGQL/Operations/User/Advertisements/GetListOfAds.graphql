@@ -1,0 +1,60 @@
+query GetListOfAds($filterBy: [ContentType!], $offset: Int, $limit: Int) {
+	listAdvertisementPosts(
+        filterBy: $filterBy
+        offset: $offset
+        limit: $limit
+    ) {
+        status
+        ResponseCode
+        counter
+        affectedRows {
+            advertisement {
+                advertisementid
+                postid
+                advertisementtype
+                startdate
+                enddate
+                createdat
+                user {
+                    id
+                    username
+                    slug
+                    img
+                    isfollowed
+                    isfollowing
+                    isfriend
+                }
+            }
+            post {
+                id
+                contenttype
+                title
+                media
+                cover
+                mediadescription
+                createdat
+                amountlikes
+                amountviews
+                amountcomments
+                amountdislikes
+                amounttrending
+                isliked
+                isviewed
+                isreported
+                isdisliked
+                issaved
+                tags
+                url
+                user {
+                    id
+                    username
+                    slug
+                    img
+                    isfollowed
+                    isfollowing
+                    isfriend
+                }
+            }
+        }
+    }
+}

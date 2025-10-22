@@ -20,6 +20,10 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
 
   public static func objectType(forTypename typename: String) -> ApolloAPI.Object? {
     switch typename {
+    case "AdvCreator": return GQLOperationsUser.Objects.AdvCreator
+    case "Advertisement": return GQLOperationsUser.Objects.Advertisement
+    case "AdvertisementHistoryResult": return GQLOperationsUser.Objects.AdvertisementHistoryResult
+    case "AdvertisementPost": return GQLOperationsUser.Objects.AdvertisementPost
     case "BasicUserInfo": return GQLOperationsUser.Objects.BasicUserInfo
     case "BlockedUser": return GQLOperationsUser.Objects.BlockedUser
     case "BlockedUsers": return GQLOperationsUser.Objects.BlockedUsers
@@ -34,8 +38,11 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "FollowStatusResponse": return GQLOperationsUser.Objects.FollowStatusResponse
     case "GetDailyResponse": return GQLOperationsUser.Objects.GetDailyResponse
     case "HelloResponse": return GQLOperationsUser.Objects.HelloResponse
+    case "ListAdvertisementPostsResponse": return GQLOperationsUser.Objects.ListAdvertisementPostsResponse
+    case "ListedAdvertisementData": return GQLOperationsUser.Objects.ListedAdvertisementData
     case "Mutation": return GQLOperationsUser.Objects.Mutation
     case "Post": return GQLOperationsUser.Objects.Post
+    case "PostEligibilityResponse": return GQLOperationsUser.Objects.PostEligibilityResponse
     case "PostInteractionResponse": return GQLOperationsUser.Objects.PostInteractionResponse
     case "PostListResponse": return GQLOperationsUser.Objects.PostListResponse
     case "PostResponse": return GQLOperationsUser.Objects.PostResponse
@@ -48,6 +55,7 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "ReferralUsers": return GQLOperationsUser.Objects.ReferralUsers
     case "Tag": return GQLOperationsUser.Objects.Tag
     case "TagSearchResponse": return GQLOperationsUser.Objects.TagSearchResponse
+    case "TotalAdvertisementHistoryStats": return GQLOperationsUser.Objects.TotalAdvertisementHistoryStats
     case "User": return GQLOperationsUser.Objects.User
     case "UserFriendsResponse": return GQLOperationsUser.Objects.UserFriendsResponse
     case "UserInfo": return GQLOperationsUser.Objects.UserInfo

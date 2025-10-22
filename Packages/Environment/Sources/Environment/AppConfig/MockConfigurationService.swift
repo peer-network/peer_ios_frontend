@@ -77,6 +77,7 @@ class MockConfigurationService: ConfigurationServiceProtocol {
                     mediaDescription: .init(minLength: 3, maxLength: 500)
                 ),
                 comment: .init(content: .init(minLength: 2, maxLength: 200)),
+                user: .init(username: .init(minLength: 3, maxLength: 23, pattern: "^[a-zA-Z0-9_-]+$"), password: .init(minLength: 8, maxLength: 128, pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$"), biography: .init(minLength: 3, maxLength: 5000)),
                 dailyFree: .init(dailyFreeActions: .init(post: 1, like: 3, comment: 4, dislike: 0)),
                 tokenomics: .init(
                     actionTokenPrices: .init(post: 20, like: 3, comment: 3, dislike: 1),
