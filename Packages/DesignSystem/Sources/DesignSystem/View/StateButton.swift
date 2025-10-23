@@ -76,6 +76,9 @@ public struct StateButton: View {
 
                 if !config.title.isEmpty {
                     Text(config.title)
+                        .minimumScaleFactor(0.5)
+                        .truncationMode(.tail)
+                        .lineLimit(1)
                 }
 
                 if let icon = config.icon, case .trailing = config.iconPlacement {
@@ -123,6 +126,9 @@ public struct AsyncStateButton: View {
 
                     if !config.title.isEmpty {
                         Text(config.title)
+                            .minimumScaleFactor(0.5)
+                            .truncationMode(.tail)
+                            .lineLimit(1)
                     }
 
                     if let icon = config.icon, case .trailing = config.iconPlacement {

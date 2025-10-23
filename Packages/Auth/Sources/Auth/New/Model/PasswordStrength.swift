@@ -21,10 +21,10 @@ enum PasswordRequirement: CaseIterable {
 
     var phrase: String {
         switch self {
-        case .minLength: return "8 characters"
-        case .lowercase: return "1 lowercase"
-        case .uppercase: return "1 uppercase"
-        case .number:    return "1 number"
+            case .minLength: return "8 characters"
+            case .lowercase: return "1 lowercase"
+            case .uppercase: return "1 uppercase"
+            case .number:    return "1 number"
         }
     }
 }
@@ -66,16 +66,16 @@ enum PasswordPolicy {
 
         let strength: PasswordStrength
         switch score {
-        case 0, 1:
-            strength = .veryWeak
-        case 2:
-            strength = .weak
-        case 3:
-            strength = .notStrongEnough
-        case 4:
-            strength = meetsExcellentBonus ? .strong : .good
-        default:
-            strength = .veryWeak
+            case 0, 1:
+                strength = .veryWeak
+            case 2:
+                strength = .weak
+            case 3:
+                strength = .notStrongEnough
+            case 4:
+                strength = meetsExcellentBonus ? .strong : .good
+            default:
+                strength = .veryWeak
         }
 
         // Empty convenience: if they haven't typed anything, surface nothing as strength label
