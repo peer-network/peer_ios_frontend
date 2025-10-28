@@ -16,7 +16,7 @@ enum CommentError: Error {
     case freeCommentsLimitReached
     case serverError(APIError)
 
-    var localizedDescription: String {
+    var displayMessage: String {
         switch self {
             case .alreadyLiked:
                 return NSLocalizedString(

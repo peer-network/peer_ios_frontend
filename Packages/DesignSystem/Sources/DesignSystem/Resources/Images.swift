@@ -105,4 +105,6 @@ public enum IconsNew {
     public static let lock = Image(.icLock)
     public static let person = Image(.icPerson)
     public static let referral = Image(.icReferral)
+    public static let megaphone = Image(.icMegaphone)
+    public static let exclamaitionMarkCircle = Image(.icExclamationMarkCircle)
 }

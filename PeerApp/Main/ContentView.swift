@@ -29,6 +29,8 @@ struct ContentView: View {
     @StateObject private var popupManager = PopupManager.shared
     @StateObject private var accountManager = AccountManager.shared
 
+    @StateObject private var systemPopupManager = SystemPopupManager.shared
+
     private var showIntroBinding: Binding<Bool> {
         Binding(
             get: { !accountManager.shownOnboardings.contains(.intro) },
@@ -131,6 +133,7 @@ struct ContentView: View {
         .onOpenURL { url in
             selectedTab = .feed
         }
+        .systemPopupOverlay(systemPopupManager)
         .ifCondition(appState.getConstants() != nil) {
             $0.fullScreenCover(isPresented: showIntroBinding) {
                 OnboardingView(viewModel: OnboardingViewModel(closeButtonType: .skip, tokenomics: appState.getConstants()!.data.tokenomics, dailyFree: appState.getConstants()!.data.dailyFree, minting: appState.getConstants()!.data.minting, dismissAction: { isSkipped in

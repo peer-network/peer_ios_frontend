@@ -158,16 +158,18 @@ struct ProfileHeader: View {
                     }
 
                     Button(role: .destructive) {
-                        Task {
-                            let result = await apiManager.apiService.reportUser(with: user.id)
+                        SystemPopupManager.shared.presentPopup(.reportUser) {
+                            Task {
+                                let result = await apiManager.apiService.reportUser(with: user.id)
 
-                            switch result {
-                                case .success():
-                                    showPopup(text: "User was reported.")
-                                case .failure(let error):
-                                    showPopup(
-                                        text: error.userFriendlyDescription
-                                    )
+                                switch result {
+                                    case .success():
+                                        showPopup(text: "User was reported.")
+                                    case .failure(let error):
+                                        showPopup(
+                                            text: error.userFriendlyDescription
+                                        )
+                                }
                             }
                         }
                     } label: {

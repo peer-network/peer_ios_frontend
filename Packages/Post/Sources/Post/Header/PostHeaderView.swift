@@ -90,7 +90,10 @@ struct PostHeaderView: View {
 
                     if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id) {
                         Button {
-                            // TODO: Add action to promote post
+                            SystemPopupManager.shared.presentPopup(.postPromotion) {
+                                //
+                            }
+
                         } label: {
                             Label("Boost post", systemImage: "megaphone")
                         }
@@ -119,15 +122,17 @@ struct PostHeaderView: View {
                         }
 
                         Button(role: .destructive) {
-                            Task {
-                                do {
-                                    try await postVM.report()
-                                    showPopup(text: "Post was reported.")
-                                } catch let error as PostActionError {
-                                    showPopup(
-                                        text: error.displayMessage,
-                                        icon: error.displayIcon
-                                    )
+                            SystemPopupManager.shared.presentPopup(.reportPost) {
+                                Task {
+                                    do {
+                                        try await postVM.report()
+                                        showPopup(text: "Post was reported.")
+                                    } catch let error as PostActionError {
+                                        showPopup(
+                                            text: error.displayMessage,
+                                            icon: error.displayIcon
+                                        )
+                                    }
                                 }
                             }
                         } label: {
