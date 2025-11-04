@@ -137,22 +137,24 @@ struct AdCheckoutView: View {
                         }
                     }
 
-                    HStack(spacing: 0) {
-                        Text("To the inviter (\(viewModel.inviterFee.percent)%)")
-                            .appFont(.bodyRegular)
-                            .foregroundStyle(Colors.whiteSecondary)
-
-                        Spacer()
-                            .frame(minWidth: 10)
-                            .frame(maxWidth: .infinity)
-                            .layoutPriority(-1)
-
-                        HStack(spacing: 5) {
-                            Text(viewModel.inviterFee.amount, format: .number)
+                    if AccountManager.shared.inviter != nil {
+                        HStack(spacing: 0) {
+                            Text("To the inviter (\(viewModel.inviterFee.percent)%)")
                                 .appFont(.bodyRegular)
+                                .foregroundStyle(Colors.whiteSecondary)
 
-                            Icons.logoCircleWhite
-                                .iconSize(height: 12)
+                            Spacer()
+                                .frame(minWidth: 10)
+                                .frame(maxWidth: .infinity)
+                                .layoutPriority(-1)
+
+                            HStack(spacing: 5) {
+                                Text(viewModel.inviterFee.amount, format: .number)
+                                    .appFont(.bodyRegular)
+
+                                Icons.logoCircleWhite
+                                    .iconSize(height: 12)
+                            }
                         }
                     }
 
