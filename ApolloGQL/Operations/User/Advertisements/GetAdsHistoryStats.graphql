@@ -1,0 +1,21 @@
+query GetAdsHistoryStats($userId: ID) {
+	advertisementHistory(
+        filter: { userId: $userId }
+    ) {
+        status
+        ResponseCode
+        affectedRows {
+            stats {
+                tokenSpent
+                euroSpent
+                amountAds
+                gemsEarned
+                amountLikes
+                amountViews
+                amountComments
+                amountDislikes
+                amountReports
+            }
+        }
+    }
+}

@@ -173,6 +173,8 @@ public enum FontSize2 {
     // Label
     case smallLabel
 
+    case dummyDesignSystem
+
     var value: CGFloat {
         switch self {
             case .extraLargeTitle: return 30
@@ -180,6 +182,7 @@ public enum FontSize2 {
             case .button: return 17
             case .body: return 14
             case .smallLabel: return 11
+            case .dummyDesignSystem: return 8
         }
     }
 }

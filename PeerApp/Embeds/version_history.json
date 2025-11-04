@@ -147,7 +147,7 @@
     },
     {
         "version": "1.9.0",
-        "date": "23 Oct 2025",
+        "date": "28 Oct 2025",
         "releaseNotes": [
             "Multi-photo posts: Share up to 20 photos in a single post - more moments, one story",
             "Smoother posting: We’ve rebuilt how uploads work behind the scenes for faster, more reliable - performance - even with larger posts",
@@ -157,7 +157,7 @@
     },
     {
         "version": "1.10.0",
-        "date": "23 Oct 2025",
+        "date": "1 Nov 2025",
         "releaseNotes": [
         ]
     }

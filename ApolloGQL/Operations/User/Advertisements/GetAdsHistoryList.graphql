@@ -1,5 +1,6 @@
-query GetAdsHistory($offset: Int, $limit: Int) {
+query GetAdsHistoryList($userId: ID, $offset: Int, $limit: Int) {
 	advertisementHistory(
+        filter: { userId: $userId },
         sort: NEWEST
         offset: $offset
         limit: $limit
@@ -7,17 +8,6 @@ query GetAdsHistory($offset: Int, $limit: Int) {
         status
         ResponseCode
         affectedRows {
-            stats {
-                tokenSpent
-                euroSpent
-                amountAds
-                gemsEarned
-                amountLikes
-                amountViews
-                amountComments
-                amountDislikes
-                amountReports
-            }
             advertisements {
                 id
                 createdAt
@@ -61,6 +51,15 @@ query GetAdsHistory($offset: Int, $limit: Int) {
                         isfollowing
                         isfriend
                     }
+                }
+                user {
+                    id
+                    username
+                    slug
+                    img
+                    isfollowed
+                    isfollowing
+                    isfriend
                 }
             }
         }

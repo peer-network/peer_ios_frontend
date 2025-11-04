@@ -6,18 +6,21 @@
 //
 
 import SwiftUI
+import Environment
 
 @MainActor
-public class SystemPopupManager: ObservableObject {
+public final class SystemPopupManager: SystemPopupManaging {
     public static let shared = SystemPopupManager()
 
     @Published public var presentedPopupBuilder: (() -> AnyView)? = nil
 
     private init() {}
 
-    public func presentPopup(_ type: SystemPopupType,
-                             confirmation: @escaping () -> Void,
-                             cancel: (() -> Void)? = nil) {
+    public func presentPopup(
+        _ type: SystemPopupType,
+        confirmation: @escaping () -> Void,
+        cancel: (() -> Void)? = nil
+    ) {
         presentedPopupBuilder = { [weak self] in
             AnyView(
                 SystemPopupView(

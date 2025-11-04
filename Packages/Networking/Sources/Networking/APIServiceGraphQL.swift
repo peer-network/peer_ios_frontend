@@ -1261,10 +1261,11 @@ public final class APIServiceGraphQL: APIService {
     }
 
     // MARK: Advertisements
-    public func getListOfAds(with contentType: PostContentType, after offset: Int, amount: Int) async -> Result<[Post], APIError> {
+    public func getListOfAds(userID: String?, with contentType: PostContentType, after offset: Int, amount: Int) async -> Result<[Post], APIError> {
         let filterBy: [GraphQLEnum<ContentType>] = contentType.apiValue
 
         let operation = GetListOfAdsQuery(
+            userID: userID == nil ? nil : GraphQLNullable(stringLiteral: userID!),
             filterBy: GraphQLNullable<[GraphQLEnum<ContentType>]>.some(filterBy),
             offset: GraphQLNullable<Int>(integerLiteral: offset),
             limit: GraphQLNullable<Int>(integerLiteral: amount)
@@ -1290,6 +1291,89 @@ public final class APIServiceGraphQL: APIService {
             }
 
             return .success(fetchedAds)
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
+    public func getAdsHistoryList(userID: String, after offset: Int, amount: Int) async -> Result<[SingleAdStats], APIError> {
+        let operation = GetAdsHistoryListQuery(
+            userId: GraphQLNullable(stringLiteral: userID),
+            offset: GraphQLNullable<Int>(integerLiteral: offset),
+            limit: GraphQLNullable<Int>(integerLiteral: amount)
+        )
+
+        do {
+            let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            guard
+                let adsData = result.advertisementHistory.affectedRows?.advertisements
+            else {
+                return .failure(.missingData)
+            }
+
+            let fetchedAds = adsData.compactMap { value in
+                SingleAdStats(gqlAd: value)
+            }
+
+            return .success(fetchedAds)
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
+    public func getAdsHistoryStats(userID: String) async -> Result<AdsStats, APIError> {
+        let operation = GetAdsHistoryStatsQuery(userId: GraphQLNullable(stringLiteral: userID))
+
+        do {
+            let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            guard
+                let statsData = result.advertisementHistory.affectedRows?.stats,
+                let stats = AdsStats(gqlAdsStats: statsData)
+            else {
+                return .failure(.missingData)
+            }
+
+            return .success(stats)
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
+    public func promotePostPinned(for postID: String) async -> Result<String, APIError> {
+        do {
+            let result = try await qlClient.mutate(mutation: PromotePostPinnedMutation(postid: postID))
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            guard let endDate = result.advertisePostPinned.affectedRows?.first??.timeframeEnd else {
+                return .failure(.missingData)
+            }
+
+            return .success(endDate)
         } catch {
             return .failure(.unknownError(error: error))
         }

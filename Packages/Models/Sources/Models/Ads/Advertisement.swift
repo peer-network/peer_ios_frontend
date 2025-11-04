@@ -8,10 +8,6 @@
 import Foundation
 import GQLOperationsUser
 
-public enum AdType {
-    case pinned
-}
-
 public struct Advertisement: Identifiable, Hashable {
     public let id: String
     public let adType: AdType
@@ -32,6 +28,21 @@ public struct Advertisement: Identifiable, Hashable {
         self.creationDate = gqlAdvertisement.advertisement.createdat
         self.startDate = gqlAdvertisement.advertisement.startdate
         self.endDate = gqlAdvertisement.advertisement.enddate
+        self.adOwner = adOwner
+    }
+
+    public init?(gqlAdvertisement: GetAdsHistoryListQuery.Data.AdvertisementHistory.AffectedRows.Advertisement) {
+        guard
+            let adOwner = RowUser(gqlUser: gqlAdvertisement.user)
+        else {
+            return nil
+        }
+
+        self.id = gqlAdvertisement.id
+        self.adType = .pinned
+        self.creationDate = gqlAdvertisement.createdAt
+        self.startDate = gqlAdvertisement.timeframeStart
+        self.endDate = gqlAdvertisement.timeframeEnd
         self.adOwner = adOwner
     }
 }

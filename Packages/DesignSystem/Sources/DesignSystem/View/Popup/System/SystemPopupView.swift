@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Environment
 
 public struct SystemPopupView: View {
     private let type: SystemPopupType
@@ -36,19 +37,18 @@ public struct SystemPopupView: View {
                 .foregroundStyle(type.titleColor)
 
             if let description = type.description {
-                Text(description)
+                Text(.init(description))
                     .appFont(.smallLabelRegular)
                     .foregroundStyle(Colors.whitePrimary)
                     .padding(.top, 5)
             }
 
             HStack(spacing: 20) {
-                let cancelButtonConfig = StateButtonConfig(buttonSize: .small, buttonType: .teritary, title: "Cancel")
-                StateButton(config: cancelButtonConfig) {
+                StateButton(config: type.firstButtonConfig) {
                     cancel?()
                 }
 
-                StateButton(config: type.confirmationButtonConfig) {
+                StateButton(config: type.secondButtonConfig) {
                     confirmation()
                 }
             }

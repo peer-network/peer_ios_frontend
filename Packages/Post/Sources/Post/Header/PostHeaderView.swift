@@ -13,7 +13,10 @@ struct PostHeaderView: View {
     @Environment(\.redactionReasons) private var redactionReasons
 
     @EnvironmentObject private var router: Router
+    @EnvironmentObject private var apiManager: APIServiceManager
+    @EnvironmentObject private var appState: AppState
     @EnvironmentObject private var accountManager: AccountManager
+    @EnvironmentObject private var flows: PromotePostFlowStore
 
     @ObservedObject var postVM: PostViewModel
     
@@ -45,7 +48,6 @@ struct PostHeaderView: View {
                         .foregroundStyle(Colors.whiteSecondary)
                 }
                 .lineLimit(1)
-//                .minimumScaleFactor(0.5)
                 .foregroundStyle(Colors.whitePrimary)
                 .contentShape(.rect)
             }
@@ -88,10 +90,25 @@ struct PostHeaderView: View {
                         Label("Translate", systemImage: "captions.bubble")
                     }
 
-                    if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id) {
+                    if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.advertisement == nil {
                         Button {
                             SystemPopupManager.shared.presentPopup(.postPromotion) {
-                                //
+                                let flowID = flows.startFlow(
+                                    post: postVM.post,
+                                    apiService: apiManager.apiService,
+                                    tokenomics: appState.getConstants()!.data.tokenomics,
+                                    popupManager: SystemPopupManager.shared,
+                                    onGoToProfile: {
+                                        router.navigate(to: .accountDetail(id: postVM.post.owner.id))
+                                    },
+                                    onGoToPost: {
+                                        router.navigate(to: .postDetailsWithPostId(id: postVM.post.id))
+                                    },
+                                    onFinish: { [weak router] in
+                                        // Dismiss entire flow; we pop to wherever we want.
+                                    }
+                                )
+                                router.path.append(.promotePost(flowID: flowID, step: .config))
                             }
 
                         } label: {

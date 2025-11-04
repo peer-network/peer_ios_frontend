@@ -24,6 +24,7 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "Advertisement": return GQLOperationsUser.Objects.Advertisement
     case "AdvertisementHistoryResult": return GQLOperationsUser.Objects.AdvertisementHistoryResult
     case "AdvertisementPost": return GQLOperationsUser.Objects.AdvertisementPost
+    case "AdvertisementRow": return GQLOperationsUser.Objects.AdvertisementRow
     case "BasicUserInfo": return GQLOperationsUser.Objects.BasicUserInfo
     case "BlockedUser": return GQLOperationsUser.Objects.BlockedUser
     case "BlockedUsers": return GQLOperationsUser.Objects.BlockedUsers
@@ -38,6 +39,7 @@ public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
     case "FollowStatusResponse": return GQLOperationsUser.Objects.FollowStatusResponse
     case "GetDailyResponse": return GQLOperationsUser.Objects.GetDailyResponse
     case "HelloResponse": return GQLOperationsUser.Objects.HelloResponse
+    case "ListAdvertisementData": return GQLOperationsUser.Objects.ListAdvertisementData
     case "ListAdvertisementPostsResponse": return GQLOperationsUser.Objects.ListAdvertisementPostsResponse
     case "ListedAdvertisementData": return GQLOperationsUser.Objects.ListedAdvertisementData
     case "Mutation": return GQLOperationsUser.Objects.Mutation

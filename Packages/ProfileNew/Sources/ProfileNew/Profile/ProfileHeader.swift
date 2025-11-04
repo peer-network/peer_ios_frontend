@@ -179,9 +179,9 @@ struct ProfileHeader: View {
             } else {
                 Section {
                     Button {
-                        //
+                        router.navigate(to: .adsHistoryOverview)
                     } label: {
-                        Text("My ads")
+                        Label("My ads", systemImage: "megaphone")
                     }
                 }
             }

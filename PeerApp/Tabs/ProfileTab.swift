@@ -13,6 +13,8 @@ struct ProfileTab: View {
     @Environment(\.selectedTabEmptyPath) private var selectedTabEmptyPath
 
     @EnvironmentObject private var accountManager: AccountManager
+    @EnvironmentObject private var appState: AppState
+    @EnvironmentObject private var apiManager: APIServiceManager
 
     @StateObject private var router = Router()
 
@@ -23,13 +25,13 @@ struct ProfileTab: View {
                     if #available(iOS 18, *) {
                         ProfilePageView(userId: userId)
                             .toolbar(.hidden, for: .navigationBar)
-                            .withAppRouter()
+                            .withAppRouter(appState: appState, apiServiceManager: apiManager, router: router)
                             .withSheetDestinations(sheetDestinations: $router.presentedSheet)
                             .id(userId)
                     } else {
                         ProfileView(userId: userId)
                             .toolbar(.hidden, for: .navigationBar)
-                            .withAppRouter()
+                            .withAppRouter(appState: appState, apiServiceManager: apiManager, router: router)
                             .withSheetDestinations(sheetDestinations: $router.presentedSheet)
                             .id(userId)
                     }
