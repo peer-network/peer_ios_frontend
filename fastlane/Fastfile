@@ -158,34 +158,33 @@ platform :ios do
   end
 
   private_lane :assign_build_to_internal_groups do |options|
-    group_names = options[:group_names] || []
+    group_names = Array(options[:group_names]).map(&:to_s).map(&:strip).reject(&:empty?)
     next if group_names.empty?
-
+  
     fastlane_require "spaceship"
-
-    # Reuse the already-loaded API key token
-    api_key = lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
-
-    app = Spaceship::ConnectAPI::App.find(APP_IDENTIFIER)
-
-    # get groups by name
+  
+    # Token is already set by app_store_connect_api_key
+    app = Spaceship::ConnectAPI::App.find(APP_IDENTIFIER) or UI.user_error!("App not found: #{APP_IDENTIFIER}")
+  
+    # Resolve internal groups by exact name
     groups = group_names.map do |name|
       (app.get_beta_groups(filter: { name: name }) || []).first or
         UI.user_error!("Internal TestFlight group not found: #{name}")
     end
-
-    # Find the latest processed (valid) build for this app/version
+  
     current_version = get_version_number(target: MAIN_TARGET)
-
-    builds = Spaceship::ConnectAPI::Build.all(
-      filter: { app: app.id, version: current_version, processingState: "VALID" },
+  
+    # Fetch latest VALID build for this version (sorted newest first)
+    # NOTE: filter keys depend on ASC — these work on current Spaceship.
+    builds = app.get_builds(
+      filter: { version: current_version, processingState: "VALID" }, # optionally: preReleaseVersionPlatform: "IOS"
       sort: "-uploadedDate",
-      limit: 5
+      limit: 10
     )
-
-    build = builds.first or UI.user_error!("No VALID build found to assign")
-
-    UI.message("Assigning build #{build.version} (#{build.build_number}) to internal groups: #{group_names.join(", ")}")
+  
+    build = builds.first or UI.user_error!("No VALID build found for version #{current_version}")
+  
+    UI.message("Assigning build #{build.version} (#{build.build_number}) to internal groups: #{group_names.join(', ')}")
     build.add_beta_groups(beta_groups: groups)
   end
 
