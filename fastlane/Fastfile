@@ -34,22 +34,20 @@ platform :ios do
   lane :notes_from_json do
     require "json"
     current_version = get_version_number(target: MAIN_TARGET)
-  
-    # Allow override via env VERSION_NOTES_PATH, else use default
+
     path = (ENV["VERSION_NOTES_PATH"] && !ENV["VERSION_NOTES_PATH"].empty?) ? ENV["VERSION_NOTES_PATH"] : VERSION_NOTES_PATH_DEFAULT
-  
     unless File.exist?(path)
       UI.user_error!("version_history.json not found at #{path}. Current dir: #{Dir.pwd}")
     end
-  
+
     json = JSON.parse(File.read(path))
     entry = json.find { |e| e["version"].to_s.strip == current_version.to_s.strip }
-  
+
     if entry.nil? || entry["releaseNotes"].nil?
       UI.important("No notes found for version #{current_version} in #{path}")
       next ""
     end
-  
+
     "- " + entry["releaseNotes"].map(&:to_s).join("\n- ")
   end
 
@@ -79,12 +77,11 @@ platform :ios do
   desc "Installs signing certificate and provisioning profiles"
   lane :prepare_signing do
     api_key = lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
-    
+
     # Create a fresh temporary keychain
     begin
       delete_keychain(name: KEYCHAIN_NAME)
     rescue
-      # ignore if missing
     end
 
     create_keychain(
@@ -103,23 +100,15 @@ platform :ios do
     )
 
     # Fetch and install provisioning profiles from ASC
-    sigh(
-      api_key: api_key,
-      app_identifier: APP_IDENTIFIER,
-      readonly: false
-    )
+    sigh(api_key: api_key, app_identifier: APP_IDENTIFIER, readonly: false)
     @main_profile_name = lane_context[SharedValues::SIGH_NAME]
 
-    sigh(
-      api_key: api_key,
-      app_identifier: EXTENSION_IDENTIFIER,
-      readonly: false
-    )
+    sigh(api_key: api_key, app_identifier: EXTENSION_IDENTIFIER, readonly: false)
     @extension_profile_name = lane_context[SharedValues::SIGH_NAME]
   end
 
   desc "Build the iOS app for release"
-  lane :build_release do 
+  lane :build_release do
     # Explicit code signing for both targets
     update_code_signing_settings(
       use_automatic_signing: false,
@@ -157,54 +146,9 @@ platform :ios do
     )
   end
 
-  private_lane :assign_build_to_internal_groups do |options|
-    group_names = Array(options[:group_names]).map { |n| n.to_s.strip }.reject(&:empty?)
-    next if group_names.empty?
-  
-    fastlane_require "spaceship"
-  
-    app = Spaceship::ConnectAPI::App.find(APP_IDENTIFIER) or UI.user_error!("App not found: #{APP_IDENTIFIER}")
-  
-    # Resolve groups by exact name
-    groups = group_names.map do |name|
-      (app.get_beta_groups(filter: { name: name }) || []).first or
-        UI.user_error!("Internal TestFlight group not found: #{name}")
-    end
-  
-    current_version = get_version_number(target: MAIN_TARGET)
-    current_build_number = (lane_context[SharedValues::BUILD_NUMBER] || get_build_number(xcodeproj: "#{MAIN_TARGET}.xcodeproj")).to_s
-  
-    UI.message("Looking up build #{current_version} (#{current_build_number}) to attach groups: #{group_names.join(', ')}")
-  
-    build = nil
-    retries = 12      # ~2 minutes
-    sleep_seconds = 10
-  
-    retries.times do |i|
-      builds = app.get_builds(sort: "-uploadedDate", limit: 50) || []
-      build = builds.find { |b| b.version.to_s == current_version.to_s && b.build_number.to_s == current_build_number }
-      break if build
-      UI.message("Build not visible yet (attempt #{i + 1}/#{retries})…")
-      sleep(sleep_seconds)
-    end
-  
-    unless build
-      # Fallback: newest build with same marketing version
-      builds_for_version = (app.get_builds(sort: "-uploadedDate", limit: 50) || []).select { |b| b.version.to_s == current_version.to_s }
-      build = builds_for_version.first
-    end
-  
-    UI.user_error!("Could not find uploaded build #{current_version} (#{current_build_number}) in App Store Connect") unless build
-  
-    UI.message("Assigning build #{build.version} (#{build.build_number}) to internal groups: #{group_names.join(', ')}")
-    build.add_beta_groups(beta_groups: groups)
-    UI.success("Assigned build to internal groups ✔︎")
-  end
-
-  desc "Upload to TestFlight (internal only) + assign internal groups"
+  desc "Upload to TestFlight (internal only)"
   lane :upload_release do
     api_key = lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
-
     notes = notes_from_json
 
     upload_to_testflight(
@@ -214,11 +158,6 @@ platform :ios do
       distribute_external: false,
       changelog: notes
     )
-
-    internal_groups = (ENV["INTERNAL_TF_GROUPS"] || "")
-      .split(",").map(&:strip).reject(&:empty?)
-
-    assign_build_to_internal_groups(group_names: internal_groups) unless internal_groups.empty?
   end
   
   desc "Build and upload to TestFlight"
@@ -230,11 +169,9 @@ platform :ios do
       build_release
       upload_release
     ensure
-      # Cleanup keychain even if something failed
       begin
         delete_keychain(name: KEYCHAIN_NAME)
       rescue
-        # ignore
       end
     end
   end
