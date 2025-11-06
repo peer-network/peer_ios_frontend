@@ -1,4 +1,4 @@
-name: iOS binary build & uploadd
+name: iOS binary build & upload
  
 on:
   pull_request:
