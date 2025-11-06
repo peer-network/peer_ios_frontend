@@ -12,7 +12,8 @@ platform :ios do
   OUTPUT_DIR  = "build"
   KEYCHAIN_NAME = "signing"
   KEYCHAIN_PASSWORD = "temp"
-  VERSION_NOTES_PATH = "PeerApp/Embeds/version_history.json"
+  ROOT_DIR = File.expand_path("..", __dir__)
+  VERSION_NOTES_PATH_DEFAULT = File.join(ROOT_DIR, "PeerApp", "Embeds", "version_history.json")
 
   before_all do
     sh("mkdir -p #{OUTPUT_DIR}")
@@ -33,16 +34,22 @@ platform :ios do
   lane :notes_from_json do
     require "json"
     current_version = get_version_number(target: MAIN_TARGET)
-
-    json = JSON.parse(File.read(VERSION_NOTES_PATH))
+  
+    # Allow override via env VERSION_NOTES_PATH, else use default
+    path = (ENV["VERSION_NOTES_PATH"] && !ENV["VERSION_NOTES_PATH"].empty?) ? ENV["VERSION_NOTES_PATH"] : VERSION_NOTES_PATH_DEFAULT
+  
+    unless File.exist?(path)
+      UI.user_error!("version_history.json not found at #{path}. Current dir: #{Dir.pwd}")
+    end
+  
+    json = JSON.parse(File.read(path))
     entry = json.find { |e| e["version"].to_s.strip == current_version.to_s.strip }
-
+  
     if entry.nil? || entry["releaseNotes"].nil?
-      UI.important("No notes found for version #{current_version} in #{VERSION_NOTES_PATH}")
+      UI.important("No notes found for version #{current_version} in #{path}")
       next ""
     end
-
-    # Prefix each item with "- "
+  
     "- " + entry["releaseNotes"].map(&:to_s).join("\n- ")
   end
 
