@@ -165,7 +165,6 @@ platform :ios do
 
     # Reuse the already-loaded API key token
     api_key = lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
-    Spaceship::ConnectAPI.token = api_key
 
     app = Spaceship::ConnectAPI::App.find(APP_IDENTIFIER)
 
@@ -200,7 +199,6 @@ platform :ios do
       api_key: api_key,
       ipa: File.join(OUTPUT_DIR, "#{OUTPUT_NAME}.ipa"),
       skip_waiting_for_build_processing: false,
-      wait_for_uploaded_build: true,
       distribute_external: false,
       changelog: notes
     )
