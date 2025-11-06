@@ -158,34 +158,50 @@ platform :ios do
   end
 
   private_lane :assign_build_to_internal_groups do |options|
-    group_names = Array(options[:group_names]).map(&:to_s).map(&:strip).reject(&:empty?)
+    group_names = Array(options[:group_names]).map { |n| n.to_s.strip }.reject(&:empty?)
     next if group_names.empty?
   
     fastlane_require "spaceship"
   
-    # Token is already set by app_store_connect_api_key
+    # Token already set by app_store_connect_api_key
     app = Spaceship::ConnectAPI::App.find(APP_IDENTIFIER) or UI.user_error!("App not found: #{APP_IDENTIFIER}")
   
-    # Resolve internal groups by exact name
+    # Resolve groups by exact name (internal groups)
     groups = group_names.map do |name|
-      (app.get_beta_groups(filter: { name: name }) || []).first or
-        UI.user_error!("Internal TestFlight group not found: #{name}")
+      (app.get_beta_groups(filter: { name: name }) || []).first or UI.user_error!("Internal TestFlight group not found: #{name}")
     end
   
     current_version = get_version_number(target: MAIN_TARGET)
+    # read the build number we just set (same one archived & uploaded)
+    current_build_number = get_build_number(xcodeproj: "#{MAIN_TARGET}.xcodeproj", target: MAIN_TARGET).to_s
   
-    # Fetch latest VALID build for this version (sorted newest first)
-    # NOTE: filter keys depend on ASC — these work on current Spaceship.
-    builds = app.get_builds(
-      filter: { version: current_version, processingState: "VALID" }, # optionally: preReleaseVersionPlatform: "IOS"
-      sort: "-uploadedDate",
-      limit: 10
-    )
+    UI.message("Looking up build version=#{current_version} build_number=#{current_build_number} to attach groups: #{group_names.join(', ')}")
   
-    build = builds.first or UI.user_error!("No VALID build found for version #{current_version}")
+    # Robust lookup without fragile filters – fetch recent builds and match in Ruby
+    build = nil
+    retries = 12         # up to ~2 minutes total
+    sleep_seconds = 10
+  
+    retries.times do |i|
+      builds = app.get_builds(sort: "-uploadedDate", limit: 50) || []
+      build = builds.find { |b| b.version.to_s == current_version.to_s && b.build_number.to_s == current_build_number }
+      break if build
+  
+      UI.message("Build not visible yet (attempt #{i + 1}/#{retries})…")
+      sleep(sleep_seconds)
+    end
+  
+    unless build
+      # Last-ditch fallback: take the newest build with the same marketing version
+      builds_for_version = (app.get_builds(sort: "-uploadedDate", limit: 50) || []).select { |b| b.version.to_s == current_version.to_s }
+      build = builds_for_version.first
+    end
+  
+    UI.user_error!("Could not find uploaded build #{current_version} (#{current_build_number}) in App Store Connect") unless build
   
     UI.message("Assigning build #{build.version} (#{build.build_number}) to internal groups: #{group_names.join(', ')}")
     build.add_beta_groups(beta_groups: groups)
+    UI.success("Assigned build to internal groups ✔︎")
   end
 
   desc "Upload to TestFlight (internal only) + assign internal groups"
