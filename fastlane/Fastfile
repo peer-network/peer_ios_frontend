@@ -215,7 +215,7 @@ platform :ios do
   desc "Build & upload the ALT flavor to its own TestFlight app"
   lane :build_upload_testflight_alt do |options|
     alt_app_id = "eu.peernetwork.PeerApp.Staging"
-    alt_ext_id = "eu.peernetwork.PeerApp.PayloadModification.Staging"
+    alt_ext_id = "eu.peernetwork.PeerApp.Staging.PayloadModification"
     scheme     = options[:scheme] || "PeerAppStaging"
     config     = options[:configuration] || "Staging"
     output     = "PeerAppStaging"

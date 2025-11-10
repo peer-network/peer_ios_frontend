@@ -6,4 +6,4 @@
 //
 
 PRODUCT_BUNDLE_IDENTIFIER = eu.peernetwork.PeerApp.Staging
-PRODUCT_BUNDLE_IDENTIFIER_EXTENSION = eu.peernetwork.PeerApp.PayloadModification.Staging
+PRODUCT_BUNDLE_IDENTIFIER_EXTENSION = eu.peernetwork.PeerApp.Staging.PayloadModification
