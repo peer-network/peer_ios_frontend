@@ -71,7 +71,7 @@ jobs:
           FASTLANE_XCODEBUILD_SETTINGS_RETRIES: "4"
           # alt app identifiers (see Fastfile below)
           ALT_APP_IDENTIFIER: "eu.peernetwork.PeerApp.Staging"
-          ALT_EXTENSION_IDENTIFIER: "eu.peernetwork.PeerApp.PayloadModification.Staging"
+          ALT_EXTENSION_IDENTIFIER: "eu.peernetwork.PeerApp.Staging.PayloadModification"
         run: |
           bundle exec fastlane build_upload_testflight_alt \
             scheme:"${{ github.event.inputs.scheme }}" \
