@@ -6,13 +6,21 @@
 //
 
 import SwiftUI
+import Environment
 import DesignSystem
+import Post
 
 struct PinConfigurationView: View {
-    @StateObject private var viewModel: AdViewModel
+    @EnvironmentObject private var apiManager: APIServiceManager
 
-    init(viewModel: AdViewModel) {
+    @StateObject private var viewModel: AdViewModel
+    let onBack: () -> Void
+    let onNext: () -> Void
+
+    init(viewModel: AdViewModel, onBack: @escaping () -> Void, onNext: @escaping () -> Void) {
         _viewModel = StateObject(wrappedValue: viewModel)
+        self.onBack = onBack
+        self.onNext = onNext
     }
 
     var body: some View {
@@ -26,12 +34,12 @@ struct PinConfigurationView: View {
     private var content: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
-                Text("Pinned postconfiguration")
+                Text("Pinned post configuration")
                     .appFont(.largeTitleBold)
                     .foregroundStyle(Colors.whitePrimary)
                     .padding(.bottom, 20)
 
-                RowPostView(post: viewModel.post)
+                RowAdPostView(post: viewModel.post)
                     .padding(.bottom, 30)
 
                 Text("Ad period:")
@@ -55,10 +63,33 @@ struct PinConfigurationView: View {
 
                 billingRowView
             }
-            .padding(.horizontal, 20)
-            .padding(.top, 20)
+            .padding(20)
+            .padding(.bottom, ButtonSize.large.height + 20)
         }
         .scrollIndicators(.hidden)
+        .overlay(alignment: .bottom) {
+            HStack(spacing: 10) {
+                let backButtonConfig = StateButtonConfig(buttonSize: .large, buttonType: .teritary, title: "Back")
+
+                StateButton(config: backButtonConfig, action: onBack)
+
+                let nextButtonConfig = StateButtonConfig(buttonSize: .large, buttonType: .primary, title: "Next")
+
+                StateButton(config: nextButtonConfig, action: onNext)
+            }
+            .padding(.bottom, 20)
+            .padding(.horizontal, 20)
+            .background(
+                LinearGradient(
+                    stops: [
+                        Gradient.Stop(color: Color(red: 0.15, green: 0.15, blue: 0.15).opacity(0), location: 0.00),
+                        Gradient.Stop(color: Color(red: 0.15, green: 0.15, blue: 0.15), location: 1.00),
+                    ],
+                    startPoint: UnitPoint(x: 0.5, y: 0),
+                    endPoint: UnitPoint(x: 0.5, y: 1)
+                )
+            )
+        }
     }
 
     private func adPeriodRowView(title: String, value: String) -> some View {
@@ -68,7 +99,9 @@ struct PinConfigurationView: View {
                 .foregroundStyle(Colors.whiteSecondary)
 
             Spacer()
+                .frame(minWidth: 10)
                 .frame(maxWidth: .infinity)
+                .layoutPriority(-1)
 
             Text(value)
                 .appFont(.bodyRegular)
@@ -88,10 +121,12 @@ struct PinConfigurationView: View {
                 .foregroundStyle(Colors.whiteSecondary)
 
             Spacer()
+                .frame(minWidth: 10)
                 .frame(maxWidth: .infinity)
+                .layoutPriority(-1)
 
             HStack(spacing: 5) {
-                Text(viewModel.pinAdvertisementPrice, format: .number)
+                Text(viewModel.adPrice, format: .number)
                     .appFont(.largeTitleBold)
                     .foregroundStyle(Colors.whitePrimary)
 

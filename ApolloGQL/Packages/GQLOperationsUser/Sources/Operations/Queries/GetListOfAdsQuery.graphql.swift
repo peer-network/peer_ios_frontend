@@ -7,24 +7,28 @@ public class GetListOfAdsQuery: GraphQLQuery {
   public static let operationName: String = "GetListOfAds"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetListOfAds($filterBy: [ContentType!], $offset: Int, $limit: Int) { listAdvertisementPosts(filterBy: $filterBy, offset: $offset, limit: $limit) { __typename status ResponseCode counter affectedRows { __typename advertisement { __typename advertisementid postid advertisementtype startdate enddate createdat user { __typename id username slug img isfollowed isfollowing isfriend } } post { __typename id contenttype title media cover mediadescription createdat amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags url user { __typename id username slug img isfollowed isfollowing isfriend } } } } }"#
+      #"query GetListOfAds($userID: ID, $filterBy: [ContentType!], $offset: Int, $limit: Int) { listAdvertisementPosts( userid: $userID filterBy: $filterBy offset: $offset limit: $limit ) { __typename status ResponseCode counter affectedRows { __typename advertisement { __typename advertisementid postid advertisementtype startdate enddate createdat user { __typename id username slug img isfollowed isfollowing isfriend } } post { __typename id contenttype title media cover mediadescription createdat amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags url user { __typename id username slug img isfollowed isfollowing isfriend } } } } }"#
     ))
 
+  public var userID: GraphQLNullable<ID>
   public var filterBy: GraphQLNullable<[GraphQLEnum<ContentType>]>
   public var offset: GraphQLNullable<Int>
   public var limit: GraphQLNullable<Int>
 
   public init(
+    userID: GraphQLNullable<ID>,
     filterBy: GraphQLNullable<[GraphQLEnum<ContentType>]>,
     offset: GraphQLNullable<Int>,
     limit: GraphQLNullable<Int>
   ) {
+    self.userID = userID
     self.filterBy = filterBy
     self.offset = offset
     self.limit = limit
   }
 
   public var __variables: Variables? { [
+    "userID": userID,
     "filterBy": filterBy,
     "offset": offset,
     "limit": limit
@@ -37,6 +41,7 @@ public class GetListOfAdsQuery: GraphQLQuery {
     public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("listAdvertisementPosts", ListAdvertisementPosts.self, arguments: [
+        "userid": .variable("userID"),
         "filterBy": .variable("filterBy"),
         "offset": .variable("offset"),
         "limit": .variable("limit")

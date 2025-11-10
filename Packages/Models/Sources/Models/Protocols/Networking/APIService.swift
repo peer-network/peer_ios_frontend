@@ -113,5 +113,8 @@ public protocol APIService: AnyObject {
     func transferTokens(to id: String, amount: Int) async -> Result<Void, APIError>
 
     // MARK: Ads
-    func getListOfAds(with contentType: PostContentType, after offset: Int, amount: Int) async -> Result<[Post], APIError>
+    func getListOfAds(userID: String?, with contentType: PostContentType, after offset: Int, amount: Int) async -> Result<[Post], APIError>
+    func getAdsHistoryList(userID: String, after offset: Int, amount: Int) async -> Result<[SingleAdStats], APIError>
+    func getAdsHistoryStats(userID: String) async -> Result<AdsStats, APIError>
+    func promotePostPinned(for postID: String) async -> Result<String, APIError>
 }

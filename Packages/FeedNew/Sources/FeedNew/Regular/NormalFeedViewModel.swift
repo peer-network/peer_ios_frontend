@@ -23,7 +23,10 @@ public final class NormalFeedViewModel: ObservableObject, PostsFetcher {
     private var currentOffset: Int = 0
     private var hasMorePosts: Bool = true
     private var posts: [Post] = []
-    
+
+    private var currentOffsetAds: Int = 0
+    private var hasMoreAds: Bool = true
+
     public init(userId: String? = nil) {
         self.userId = userId
     }
@@ -46,11 +49,27 @@ public final class NormalFeedViewModel: ObservableObject, PostsFetcher {
 
             currentOffset = 0
             hasMorePosts = true
+
+            currentOffsetAds = 0
+            hasMoreAds = true
         }
         
         fetchTask = Task {
             do {
-//                let advertisements = try await fetchAdvertisements()
+                if hasMoreAds {
+                    let advertisements = try await fetchAdvertisements()
+
+                    if reset {
+                        posts.removeAll()
+                    }
+
+                    posts.append(contentsOf: advertisements)
+                    state = .display(posts: posts, hasMore: .hasMore)
+                    if hasMoreAds {
+                        fetchTask = nil
+                        return
+                    }
+                }
 
                 let sort = FeedContentSortingAndFiltering.shared.sortByPopularity
                 let filter = FeedContentSortingAndFiltering.shared.filterByRelationship
@@ -70,11 +89,9 @@ public final class NormalFeedViewModel: ObservableObject, PostsFetcher {
                 
                 switch result {
                 case .success(let fetchedPosts):
-                    if reset {
-                        posts.removeAll()
-                    }
-
-//                    posts.append(contentsOf: advertisements)
+//                    if reset {
+//                        posts.removeAll()
+//                    }
 
                     posts.append(contentsOf: fetchedPosts)
                     
@@ -101,15 +118,20 @@ public final class NormalFeedViewModel: ObservableObject, PostsFetcher {
     }
 
     private func fetchAdvertisements() async throws -> [Post] {
-        let result = await apiService.getListOfAds(with: .regular, after: 0, amount: 20)
+        let result = await apiService.getListOfAds(userID: nil, with: .regular, after: currentOffsetAds, amount: Constants.postsFetchLimit)
 
         try Task.checkCancellation()
 
         switch result {
-        case .success(let fetchedAds):
-            return fetchedAds
-        case .failure(let apiError):
-            throw apiError
+            case .success(let fetchedAds):
+                if fetchedAds.count != Constants.postsFetchLimit {
+                    hasMoreAds = false
+                } else {
+                    currentOffsetAds += Constants.postsFetchLimit
+                }
+                return fetchedAds
+            case .failure(let apiError):
+                throw apiError
         }
     }
 }

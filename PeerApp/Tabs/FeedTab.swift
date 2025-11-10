@@ -12,13 +12,16 @@ import FeedNew
 struct FeedTab: View {
     @Environment(\.selectedTabEmptyPath) private var selectedTabEmptyPath
 
+    @EnvironmentObject private var appState: AppState
+    @EnvironmentObject private var apiManager: APIServiceManager
+
     @StateObject private var router = Router()
     
     var body: some View {
         NavigationStack(path: $router.path) {
             FeedView()
                 .toolbar(.hidden, for: .navigationBar)
-                .withAppRouter()
+                .withAppRouter(appState: appState, apiServiceManager: apiManager, router: router)
                 .withSheetDestinations(sheetDestinations: $router.presentedSheet)
                 .onChange(of: selectedTabEmptyPath) {
                     if selectedTabEmptyPath == 0, !router.path.isEmpty {

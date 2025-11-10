@@ -1,0 +1,12 @@
+mutation PromotePostPinned($postid: ID!) {
+	advertisePostPinned(
+        postid: $postid
+        advertisePlan: PINNED
+    ) {
+        status
+        ResponseCode
+        affectedRows {
+            timeframeEnd
+        }
+    }
+}

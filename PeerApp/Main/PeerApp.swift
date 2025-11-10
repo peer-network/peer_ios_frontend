@@ -41,6 +41,8 @@ struct PeerApp: App {
 
     @State private var restoreSessionResult = AuthState.loading
 
+    @StateObject private var promotePostFlows = PromotePostFlowStore.shared
+
     private let analyticsService: AnalyticsServiceProtocol
 
     @AppStorage("rememberMe", store: UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")) private var rememberMe = true
@@ -200,6 +202,7 @@ struct PeerApp: App {
                     .environmentObject(authManager)
                     .environmentObject(audioManager)
                     .environmentObject(appState)
+                    .environmentObject(promotePostFlows)
                     .sheet(item: $quickLook.selectedMediaAttachment) { selectedMediaAttachment in
                         MediaUIView(data: quickLook.mediaAttachments, initialItem: selectedMediaAttachment)
                             .presentationBackground(.ultraThinMaterial)

@@ -194,13 +194,6 @@ public struct PostView: View {
         }
         .padding(.vertical, 10)
         .geometryGroup()
-        //        .contextMenu {
-        //            Button {
-        //                //
-        //            } label: {
-        //                Text("Report")
-        //            }
-        //        }
     }
 
     private func audioPost() -> some View {
@@ -243,6 +236,7 @@ public struct PostView: View {
                             .overlay {
                                 Gradients.blackHover
                             }
+                            .allowsHitTesting(false)
                     } else {
                         Colors.textActive
                     }

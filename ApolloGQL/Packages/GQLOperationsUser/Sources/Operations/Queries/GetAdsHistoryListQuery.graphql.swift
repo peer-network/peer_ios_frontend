@@ -3,25 +3,29 @@
 
 @_exported import ApolloAPI
 
-public class GetAdsHistoryQuery: GraphQLQuery {
-  public static let operationName: String = "GetAdsHistory"
+public class GetAdsHistoryListQuery: GraphQLQuery {
+  public static let operationName: String = "GetAdsHistoryList"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetAdsHistory($offset: Int, $limit: Int) { advertisementHistory(sort: NEWEST, offset: $offset, limit: $limit) { __typename status ResponseCode affectedRows { __typename stats { __typename tokenSpent euroSpent amountAds gemsEarned amountLikes amountViews amountComments amountDislikes amountReports } advertisements { __typename id createdAt type timeframeStart timeframeEnd totalTokenCost totalEuroCost gemsEarned amountLikes amountViews amountComments amountDislikes amountReports post { __typename id contenttype title media cover mediadescription createdat amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags url user { __typename id username slug img isfollowed isfollowing isfriend } } } } } }"#
+      #"query GetAdsHistoryList($userId: ID, $offset: Int, $limit: Int) { advertisementHistory( filter: { userId: $userId } sort: NEWEST offset: $offset limit: $limit ) { __typename status ResponseCode affectedRows { __typename advertisements { __typename id createdAt type timeframeStart timeframeEnd totalTokenCost totalEuroCost gemsEarned amountLikes amountViews amountComments amountDislikes amountReports post { __typename id contenttype title media cover mediadescription createdat amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags url user { __typename id username slug img isfollowed isfollowing isfriend } } user { __typename id username slug img isfollowed isfollowing isfriend } } } } }"#
     ))
 
+  public var userId: GraphQLNullable<ID>
   public var offset: GraphQLNullable<Int>
   public var limit: GraphQLNullable<Int>
 
   public init(
+    userId: GraphQLNullable<ID>,
     offset: GraphQLNullable<Int>,
     limit: GraphQLNullable<Int>
   ) {
+    self.userId = userId
     self.offset = offset
     self.limit = limit
   }
 
   public var __variables: Variables? { [
+    "userId": userId,
     "offset": offset,
     "limit": limit
   ] }
@@ -33,6 +37,7 @@ public class GetAdsHistoryQuery: GraphQLQuery {
     public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("advertisementHistory", AdvertisementHistory.self, arguments: [
+        "filter": ["userId": .variable("userId")],
         "sort": "NEWEST",
         "offset": .variable("offset"),
         "limit": .variable("limit")
@@ -70,44 +75,10 @@ public class GetAdsHistoryQuery: GraphQLQuery {
         public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.AdvertisementHistoryResult }
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
-          .field("stats", Stats?.self),
           .field("advertisements", [Advertisement?]?.self),
         ] }
 
-        public var stats: Stats? { __data["stats"] }
         public var advertisements: [Advertisement?]? { __data["advertisements"] }
-
-        /// AdvertisementHistory.AffectedRows.Stats
-        ///
-        /// Parent Type: `TotalAdvertisementHistoryStats`
-        public struct Stats: GQLOperationsUser.SelectionSet {
-          public let __data: DataDict
-          public init(_dataDict: DataDict) { __data = _dataDict }
-
-          public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.TotalAdvertisementHistoryStats }
-          public static var __selections: [ApolloAPI.Selection] { [
-            .field("__typename", String.self),
-            .field("tokenSpent", Double.self),
-            .field("euroSpent", Double.self),
-            .field("amountAds", Int.self),
-            .field("gemsEarned", Double.self),
-            .field("amountLikes", Int.self),
-            .field("amountViews", Int.self),
-            .field("amountComments", Int.self),
-            .field("amountDislikes", Int.self),
-            .field("amountReports", Int.self),
-          ] }
-
-          public var tokenSpent: Double { __data["tokenSpent"] }
-          public var euroSpent: Double { __data["euroSpent"] }
-          public var amountAds: Int { __data["amountAds"] }
-          public var gemsEarned: Double { __data["gemsEarned"] }
-          public var amountLikes: Int { __data["amountLikes"] }
-          public var amountViews: Int { __data["amountViews"] }
-          public var amountComments: Int { __data["amountComments"] }
-          public var amountDislikes: Int { __data["amountDislikes"] }
-          public var amountReports: Int { __data["amountReports"] }
-        }
 
         /// AdvertisementHistory.AffectedRows.Advertisement
         ///
@@ -133,6 +104,7 @@ public class GetAdsHistoryQuery: GraphQLQuery {
             .field("amountDislikes", Int.self),
             .field("amountReports", Int.self),
             .field("post", Post.self),
+            .field("user", User.self),
           ] }
 
           public var id: GQLOperationsUser.ID { __data["id"] }
@@ -149,6 +121,7 @@ public class GetAdsHistoryQuery: GraphQLQuery {
           public var amountDislikes: Int { __data["amountDislikes"] }
           public var amountReports: Int { __data["amountReports"] }
           public var post: Post { __data["post"] }
+          public var user: User { __data["user"] }
 
           /// AdvertisementHistory.AffectedRows.Advertisement.Post
           ///
@@ -230,6 +203,34 @@ public class GetAdsHistoryQuery: GraphQLQuery {
               public var isfollowing: Bool? { __data["isfollowing"] }
               public var isfriend: Bool? { __data["isfriend"] }
             }
+          }
+
+          /// AdvertisementHistory.AffectedRows.Advertisement.User
+          ///
+          /// Parent Type: `ProfileUser`
+          public struct User: GQLOperationsUser.SelectionSet {
+            public let __data: DataDict
+            public init(_dataDict: DataDict) { __data = _dataDict }
+
+            public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.ProfileUser }
+            public static var __selections: [ApolloAPI.Selection] { [
+              .field("__typename", String.self),
+              .field("id", GQLOperationsUser.ID.self),
+              .field("username", String?.self),
+              .field("slug", Int?.self),
+              .field("img", String?.self),
+              .field("isfollowed", Bool?.self),
+              .field("isfollowing", Bool?.self),
+              .field("isfriend", Bool?.self),
+            ] }
+
+            public var id: GQLOperationsUser.ID { __data["id"] }
+            public var username: String? { __data["username"] }
+            public var slug: Int? { __data["slug"] }
+            public var img: String? { __data["img"] }
+            public var isfollowed: Bool? { __data["isfollowed"] }
+            public var isfollowing: Bool? { __data["isfollowing"] }
+            public var isfriend: Bool? { __data["isfriend"] }
           }
         }
       }

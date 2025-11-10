@@ -243,7 +243,9 @@ public struct SettingsView: View {
         let config = StateButtonConfig(buttonSize: .large, buttonType: .alert, title: "Deactivate profile")
 
         StateButton(config: config) {
-            router.navigate(to: .deleteAccount)
+            SystemPopupManager.shared.presentPopup(.deactivateAccount) {
+                router.navigate(to: .deleteAccount)
+            }
         }
     }
 
@@ -252,10 +254,12 @@ public struct SettingsView: View {
         let config = StateButtonConfig(buttonSize: .large, buttonType: .alert, title: "Logout")
 
         StateButton(config: config) {
-            audioManager.stop()
-            analytics.track(AuthEvent.logout)
-            analytics.resetUserID()
-            authManager.logout()
+            SystemPopupManager.shared.presentPopup(.logout) {
+                audioManager.stop()
+                analytics.track(AuthEvent.logout)
+                analytics.resetUserID()
+                authManager.logout()
+            }
         }
     }
 

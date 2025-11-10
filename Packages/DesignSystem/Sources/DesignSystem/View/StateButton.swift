@@ -274,7 +274,7 @@ struct StrokeStyle<S: ShapeStyle>: ButtonStyle {
                 .frame(height: height)
                 .frame(maxWidth: .infinity)
                 .background {
-                    Colors.blackDark
+//                    Colors.blackDark
 
                     RoundedRectangle(cornerRadius: cornerRadius)
                         .strokeBorder(strokeStyle, lineWidth: 1)

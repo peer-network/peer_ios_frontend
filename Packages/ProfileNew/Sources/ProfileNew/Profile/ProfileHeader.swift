@@ -158,32 +158,33 @@ struct ProfileHeader: View {
                     }
 
                     Button(role: .destructive) {
-                        Task {
-                            let result = await apiManager.apiService.reportUser(with: user.id)
+                        SystemPopupManager.shared.presentPopup(.reportUser) {
+                            Task {
+                                let result = await apiManager.apiService.reportUser(with: user.id)
 
-                            switch result {
-                                case .success():
-                                    showPopup(text: "User was reported.")
-                                case .failure(let error):
-                                    showPopup(
-                                        text: error.userFriendlyDescription
-                                    )
+                                switch result {
+                                    case .success():
+                                        showPopup(text: "User was reported.")
+                                    case .failure(let error):
+                                        showPopup(
+                                            text: error.userFriendlyDescription
+                                        )
+                                }
                             }
                         }
                     } label: {
                         Label("Report User", systemImage: "exclamationmark.circle")
                     }
                 }
+            } else {
+                Section {
+                    Button {
+                        router.navigate(to: .adsHistoryOverview)
+                    } label: {
+                        Label("My ads", systemImage: "megaphone")
+                    }
+                }
             }
-//            } else {
-//                Section {
-//                    Button {
-//                        //
-//                    } label: {
-//                        Text("My ads")
-//                    }
-//                }
-//            }
         } label: {
             Icons.ellipsis
                 .iconSize(width: 16)

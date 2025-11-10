@@ -52,6 +52,7 @@ public enum Icons {
     public static let plusBold = Image(.iconPlusBold)
     public static let arrowDown = Image(.iconArrowDown)
     public static let arrowDownNormal = Image(.iconNormalArrowDown)
+    public static let arrowNormal = Image(.iconNormalArrow)
     public static let arrowsBackToBack = Image(.iconArrowsBackToBack)
     public static let arrowsBackRounded = Image(.iconArrowBackRounded)
     public static let musicNote = Image(.iconMusicNote)
@@ -105,4 +106,6 @@ public enum IconsNew {
     public static let lock = Image(.icLock)
     public static let person = Image(.icPerson)
     public static let referral = Image(.icReferral)
+    public static let megaphone = Image(.icMegaphone)
+    public static let exclamaitionMarkCircle = Image(.icExclamationMarkCircle)
 }
