@@ -8,18 +8,22 @@
 import Foundation
 
 enum Constants {
-//#if RELEASE
-    static let mediaURL: String = "https://media.peernetwork.eu"
-//#else
-//    static let mediaURL: String = "https://media.getpeer.eu"
-//#endif
+    //#if RELEASE
+    //    static let mediaURL: String = "https://media.peernetwork.eu"
+    //#else
+    //    static let mediaURL: String = "https://media.getpeer.eu"
+    //#endif
 
-//    static var mediaURL: String {
-//        if let urlString = UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")?.string(forKey: "customAPIEndpoint") {
-//            return urlString.replacingOccurrences(of: "/graphql", with: "").replacingOccurrences(of: "//", with: "//media.")
-//        }
-//        return "https://media.peernetwork.eu"
-//    }
+//#if DEBUG || STAGING
+    static var mediaURL: String {
+        if let urlString = UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")?.string(forKey: "customAPIEndpoint") {
+            return urlString.replacingOccurrences(of: "/graphql", with: "").replacingOccurrences(of: "//", with: "//media.")
+        }
+        return "https://media.peernetwork.eu"
+    }
+//#else
+//    static let mediaURL: String = "https://media.peernetwork.eu"
+//#endif
 
     static let errorCodesURL = URL(string: "https://media.peernetwork.eu/assets/response-codes.json")!
 }

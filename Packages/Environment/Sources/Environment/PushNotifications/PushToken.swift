@@ -17,7 +17,7 @@ struct PushToken {
     init(token: Data) {
         self.token = token.reduce("") { $0 + String(format: "%02x", $1) }
         language = Locale.preferredLanguages[0]
-#if DEBUG
+#if DEBUG || STAGING
         encoder.outputFormatting = .prettyPrinted
         debug = true
         print(String(describing: self))

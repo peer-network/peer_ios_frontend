@@ -2,13 +2,12 @@
 default_platform(:ios)
 
 platform :ios do
-  # Constants
+  # ==== Constants (prod defaults) ====
   APP_IDENTIFIER = "eu.peernetwork.PeerApp"
   EXTENSION_IDENTIFIER = "eu.peernetwork.PeerApp.PayloadModification"
   MAIN_TARGET = "PeerApp"
   EXTENSION_TARGET = "PayloadModification"
   SCHEME = "PeerApp"
-  OUTPUT_NAME = "PeerApp"
   OUTPUT_DIR  = "build"
   KEYCHAIN_NAME = "signing"
   KEYCHAIN_PASSWORD = "temp"
@@ -31,36 +30,42 @@ platform :ios do
   end
 
   desc "Get release notes for current version from JSON"
-  lane :notes_from_json do
+  lane :notes_from_json do |options|
     require "json"
-    current_version = get_version_number(target: MAIN_TARGET)
+    target = options[:target] || MAIN_TARGET
+    current_version = get_version_number(target: target)
 
-    path = (ENV["VERSION_NOTES_PATH"] && !ENV["VERSION_NOTES_PATH"].empty?) ? ENV["VERSION_NOTES_PATH"] : VERSION_NOTES_PATH_DEFAULT
+    path = if ENV["VERSION_NOTES_PATH"] && !ENV["VERSION_NOTES_PATH"].empty?
+             ENV["VERSION_NOTES_PATH"]
+           else
+             VERSION_NOTES_PATH_DEFAULT
+           end
+
     unless File.exist?(path)
-      UI.user_error!("version_history.json not found at #{path}. Current dir: #{Dir.pwd}")
+      UI.important("version_history.json not found at #{path}. Using empty notes.")
+      next ""
     end
 
     json = JSON.parse(File.read(path))
     entry = json.find { |e| e["version"].to_s.strip == current_version.to_s.strip }
-
     if entry.nil? || entry["releaseNotes"].nil?
       UI.important("No notes found for version #{current_version} in #{path}")
       next ""
     end
-
     "- " + entry["releaseNotes"].map(&:to_s).join("\n- ")
   end
 
-  desc "Bump build number based on most recent TestFlight build number"
-  lane :fetch_and_increment_build_number do
+  private_lane :fetch_and_increment_build_number_for do |options|
     api_key = lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
-    current_version = get_version_number(target: MAIN_TARGET)
+    app_identifier = options[:app_identifier]
+    target = options[:target] || MAIN_TARGET
+    current_version = get_version_number(target: target)
 
     begin
       latest_build_number = latest_testflight_build_number(
         api_key: api_key,
         version: current_version,
-        app_identifier: APP_IDENTIFIER
+        app_identifier: app_identifier
       )
       new_build_number = latest_build_number ? (latest_build_number + 1) : 1
     rescue => e
@@ -73,12 +78,13 @@ platform :ios do
       xcodeproj: "#{MAIN_TARGET}.xcodeproj"
     )
   end
-  
-  desc "Installs signing certificate and provisioning profiles"
-  lane :prepare_signing do
-    api_key = lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
 
-    # Create a fresh temporary keychain
+  private_lane :prepare_signing_for do |options|
+    api_key = lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
+    app_identifier = options[:app_identifier]
+    extension_identifier = options[:extension_identifier]
+    team_id = ENV["APP_STORE_CONNECT_TEAM_ID"]
+
     begin
       delete_keychain(name: KEYCHAIN_NAME)
     rescue
@@ -99,75 +105,133 @@ platform :ios do
       keychain_password: KEYCHAIN_PASSWORD
     )
 
-    # Fetch and install provisioning profiles from ASC
-    sigh(api_key: api_key, app_identifier: APP_IDENTIFIER, readonly: false)
+    sigh(api_key: api_key, team_id: team_id, app_identifier: app_identifier, readonly: false)
     @main_profile_name = lane_context[SharedValues::SIGH_NAME]
 
-    sigh(api_key: api_key, app_identifier: EXTENSION_IDENTIFIER, readonly: false)
+    sigh(api_key: api_key, team_id: team_id, app_identifier: extension_identifier, readonly: false)
     @extension_profile_name = lane_context[SharedValues::SIGH_NAME]
   end
 
-  desc "Build the iOS app for release"
-  lane :build_release do
-    # Explicit code signing for both targets
+  private_lane :build_for do |options|
+    scheme = options[:scheme]
+    configuration = options[:configuration] || "Release"
+    output_name = options[:output_name]
+    app_identifier = options[:app_identifier]
+    extension_identifier = options[:extension_identifier]
+
+    # explicit code signing for both targets (this pins config-specific settings)
     update_code_signing_settings(
       use_automatic_signing: false,
       targets: [MAIN_TARGET],
       code_sign_identity: "Apple Distribution",
-      bundle_identifier: APP_IDENTIFIER,
+      bundle_identifier: app_identifier,
       profile_name: @main_profile_name,
-      build_configurations: ["Release"]
+      build_configurations: [configuration]
     )
 
     update_code_signing_settings(
       use_automatic_signing: false,
       targets: [EXTENSION_TARGET],
       code_sign_identity: "Apple Distribution",
-      bundle_identifier: EXTENSION_IDENTIFIER,
+      bundle_identifier: extension_identifier,
       profile_name: @extension_profile_name,
-      build_configurations: ["Release"]
+      build_configurations: [configuration]
     )
-        
-    # Build the app
+
     gym(
-      scheme: SCHEME,
-      output_name: OUTPUT_NAME,
+      scheme: scheme,
+      output_name: output_name,
       output_directory: OUTPUT_DIR,
-      configuration: "Release",
+      configuration: configuration,
       clean: true,
       silent: false,
       export_options: {
         method: "app-store",
         provisioningProfiles: {
-          APP_IDENTIFIER => @main_profile_name,
-          EXTENSION_IDENTIFIER => @extension_profile_name
+          app_identifier => @main_profile_name,
+          extension_identifier => @extension_profile_name
         }
       }
     )
   end
 
-  desc "Upload to TestFlight (internal only)"
-  lane :upload_release do
+  private_lane :upload_for do |options|
     api_key = lane_context[SharedValues::APP_STORE_CONNECT_API_KEY]
-    notes = notes_from_json
+    notes = notes_from_json(target: MAIN_TARGET)
+    ipa_name = options[:output_name]
+    distribute_external = options[:distribute_external] || false
+    groups = options[:groups] || ENV["INTERNAL_TF_GROUPS"]
 
     upload_to_testflight(
       api_key: api_key,
-      ipa: File.join(OUTPUT_DIR, "#{OUTPUT_NAME}.ipa"),
+      ipa: File.join(OUTPUT_DIR, "#{ipa_name}.ipa"),
       skip_waiting_for_build_processing: false,
-      distribute_external: false,
+      distribute_external: distribute_external,
+      groups: groups,
       changelog: notes
     )
   end
-  
-  desc "Build and upload to TestFlight"
+
+  # ====== PROD (existing behaviour) ======
+
+  lane :build_release do
+    # preserved for backwards compatibility
+    build_for(
+      scheme: SCHEME,
+      configuration: "Release",
+      output_name: "PeerApp",
+      app_identifier: APP_IDENTIFIER,
+      extension_identifier: EXTENSION_IDENTIFIER
+    )
+  end
+
+  lane :upload_release do
+    upload_for(output_name: "PeerApp", distribute_external: false)
+  end
+
   lane :build_upload_testflight do
     begin
       load_asc_api_key
-      prepare_signing
-      fetch_and_increment_build_number
+      prepare_signing_for(
+        app_identifier: APP_IDENTIFIER,
+        extension_identifier: EXTENSION_IDENTIFIER
+      )
+      fetch_and_increment_build_number_for(
+        app_identifier: APP_IDENTIFIER,
+        target: MAIN_TARGET
+      )
       build_release
       upload_release
+    ensure
+      begin
+        delete_keychain(name: KEYCHAIN_NAME)
+      rescue
+      end
+    end
+  end
+
+  # ====== ALT (manual channel) ======
+
+  desc "Build & upload the ALT flavor to its own TestFlight app"
+  lane :build_upload_testflight_alt do |options|
+    alt_app_id = "eu.peernetwork.PeerApp.Staging"
+    alt_ext_id = "eu.peernetwork.PeerApp.PayloadModification.Staging"
+    scheme     = options[:scheme] || "PeerAppStaging"
+    config     = options[:configuration] || "Staging"
+    output     = "PeerAppStaging"
+
+    begin
+      load_asc_api_key
+      prepare_signing_for(app_identifier: alt_app_id, extension_identifier: alt_ext_id)
+      fetch_and_increment_build_number_for(app_identifier: alt_app_id, target: MAIN_TARGET)
+      build_for(
+        scheme: scheme,
+        configuration: config,
+        output_name: output,
+        app_identifier: alt_app_id,
+        extension_identifier: alt_ext_id
+      )
+      upload_for(output_name: output, distribute_external: false)
     ensure
       begin
         delete_keychain(name: KEYCHAIN_NAME)
