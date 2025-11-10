@@ -64,7 +64,7 @@ public final class AudioFeedViewModel: ObservableObject, PostsFetcher {
                     }
 
                     posts.append(contentsOf: advertisements)
-                    state = .display(posts: posts, hasMore: .hasMore)
+
                     if hasMoreAds {
                         fetchTask = nil
                         return
