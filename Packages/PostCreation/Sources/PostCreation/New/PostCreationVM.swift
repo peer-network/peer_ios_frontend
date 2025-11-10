@@ -22,7 +22,13 @@ final class PostCreationVM: ObservableObject {
     @Published var error = ""
 
     init(uploader: PostMediaUploader = DefaultPostMediaUploader()) {
-        RestClient.shared.baseURL = URL(string: "https://getpeer.eu")!
+        var urlString = ""
+        if let defaultsURLString = UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")?.string(forKey: "customAPIEndpoint") {
+            urlString = defaultsURLString.replacingOccurrences(of: "/graphql", with: "")
+        } else {
+            urlString = "https://peernetwork.eu"
+        }
+        RestClient.shared.baseURL = URL(string: urlString)!
         self.uploader = uploader
     }
 
