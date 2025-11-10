@@ -20,7 +20,7 @@ public final class FirebaseRemoteConfigService: RemoteConfigProtocol {
 
     private func setupConfig() {
         let settings = RemoteConfigSettings()
-#if DEBUG
+#if DEBUG || STAGING
         // DO NOT DECREASE IT UNTIL ACTUALLY NEEDED. THE FIREBASE QUOTA FOR CONFIG FETCHES IS REALLY LIMITED
         settings.minimumFetchInterval = 43200 // Frequent updates for debugging (10 sec, for example)
 #else

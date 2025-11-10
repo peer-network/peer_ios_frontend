@@ -1,0 +1,9 @@
+//
+//  Release.xcconfig
+//  PeerApp
+//
+//  Created by Artem Vasin on 10.11.25.
+//
+
+PRODUCT_BUNDLE_IDENTIFIER = eu.peernetwork.PeerApp
+PRODUCT_BUNDLE_IDENTIFIER_EXTENSION = eu.peernetwork.PeerApp.PayloadModification
