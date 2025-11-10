@@ -47,7 +47,6 @@ jobs:
           test -n "$CERTIFICATE_BASE64"
           echo "$CERTIFICATE_BASE64" | base64 --decode > signing-cert.p12
 
-      # Use the ALT Firebase/Google plist for the ALT flavor
       - name: Create GoogleService-Info.plist
         env:
           GOOGLE_SERVICES_INFO_BASE64: ${{ secrets.GOOGLE_SERVICES_INFO_BASE64 }}
@@ -59,17 +58,13 @@ jobs:
 
       - name: Build & upload iOS binary (ALT)
         env:
-          # ASC creds (same account is fine)
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
           ASC_PRIVATE_KEY: ${{ secrets.ASC_PRIVATE_KEY }}
-          # signing
           SIGNING_KEY_PASSWORD: ${{ secrets.IOS_DIST_SIGNING_KEY_PASSWORD }}
           SIGNING_KEY_FILE_PATH: signing-cert.p12
-          # fastlane runtime niceties
           FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: "120"
           FASTLANE_XCODEBUILD_SETTINGS_RETRIES: "4"
-          # alt app identifiers (see Fastfile below)
           ALT_APP_IDENTIFIER: "eu.peernetwork.PeerApp.Staging"
           ALT_EXTENSION_IDENTIFIER: "eu.peernetwork.PeerApp.Staging.PayloadModification"
         run: |
