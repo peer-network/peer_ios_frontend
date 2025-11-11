@@ -22,6 +22,9 @@ public struct User: Identifiable, Hashable {
     public let amountFollowing: Int
     public let amountFriends: Int
 
+    public let hasActiveReports: Bool = true
+    public let visibilityStatus: ContentVisibilityStatus = .illegal
+
     public var imageURL: URL? {
         guard image != "" else { return nil }
         return URL(string: "\(Constants.mediaURL)\(image)")

@@ -15,7 +15,10 @@ public struct ObjectOwner: Identifiable, Hashable {
     public let image: String
     public var isFollowing: Bool
     public var isFollowed: Bool
-    
+
+    public let hasActiveReports: Bool = true
+    public let visibilityStatus: ContentVisibilityStatus = .hidden
+
     public var imageURL: URL? {
         URL(string: "\(Constants.mediaURL)\(image)")
     }

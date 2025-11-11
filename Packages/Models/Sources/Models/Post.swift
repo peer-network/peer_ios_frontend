@@ -38,6 +38,9 @@ public struct Post: Identifiable, Hashable {
 
     public let advertisement: Advertisement?
 
+    public let hasActiveReports: Bool = true
+    public let visibilityStatus: ContentVisibilityStatus = .hidden
+
     public var mediaURLs: [URL] {
         media.compactMap {
             URL(string: "\(Constants.mediaURL)\($0.path)")

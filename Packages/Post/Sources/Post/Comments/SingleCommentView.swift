@@ -12,10 +12,13 @@ import Environment
 
 struct SingleCommentView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.redactionReasons) var reasons
     @EnvironmentObject private var apiManager: APIServiceManager
     @EnvironmentObject private var router: Router
 
     @StateObject private var commentVM: SingleCommentViewModel
+
+    @State private var showPopover = false
 
     init(comment: Comment) {
         _commentVM = .init(wrappedValue: .init(comment: comment))
@@ -42,9 +45,33 @@ struct SingleCommentView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-                Text(commentVM.comment.formattedCreatedAt)
-                    .font(.custom(.smallLabelRegular))
-                    .foregroundStyle(Colors.whiteSecondary)
+                if !reasons.contains(.placeholder), commentVM.comment.hasActiveReports {
+                    HStack(spacing: 0) {
+                        Text(commentVM.comment.formattedCreatedAt)
+                            .font(.custom(.smallLabelRegular))
+                            .foregroundStyle(Colors.whiteSecondary)
+
+                        Spacer()
+                            .frame(minWidth: 10)
+                            .frame(maxWidth: .infinity)
+                            .layoutPriority(-1)
+
+                        IconsNew.flag
+                            .iconSize(width: 9)
+                            .foregroundStyle(Colors.redAccent)
+                            .contentShape(.rect)
+                            .onTapGesture {
+                                showPopover = true
+                            }
+                            .popover(isPresented: $showPopover, arrowEdge: .trailing) {
+                                Text("Reported")
+                                    .appFont(.smallLabelRegular)
+                                    .foregroundStyle(Colors.redAccent)
+                                    .presentationBackground(Colors.inactiveDark)
+                                    .presentationCompactAdaptation(.popover)
+                            }
+                    }
+                }
             }
 
             VStack(spacing: 5) {

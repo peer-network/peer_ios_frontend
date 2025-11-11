@@ -15,7 +15,10 @@ public struct RowUser: Identifiable, Hashable {
     public let image: String
     public let isFollowed: Bool
     public let isFollowing: Bool
-    
+
+    public let hasActiveReports: Bool = true
+    public let visibilityStatus: ContentVisibilityStatus = .hidden
+
     public var imageURL: URL? {
         guard image != "" else { return nil }
         return URL(string: "\(Constants.mediaURL)\(image)")

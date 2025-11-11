@@ -11,7 +11,7 @@ import Environment
 import Models
 
 struct ProfileHeader: View {
-    @Environment(\.redactionReasons) private var redactionReasons
+    @Environment(\.redactionReasons) private var reasons
 
     @EnvironmentObject private var apiManager: APIServiceManager
 
@@ -24,8 +24,14 @@ struct ProfileHeader: View {
 
     @Binding var showAvatarPicker: Bool
 
+    @State private var showPopover = false
+
     var body: some View {
-        VStack(spacing: 15) {
+        VStack(spacing: 10) {
+            if AccountManager.shared.isCurrentUser(id: user.id), user.visibilityStatus == .illegal {
+                ownProfileIllegalView
+            }
+
             HStack(alignment: .center, spacing: 15) {
                 profileImage
 
@@ -100,17 +106,40 @@ struct ProfileHeader: View {
     }
 
     private var username: some View {
-        HStack(alignment: .center, spacing: 5) {
+        HStack(spacing: 0) {
             Text(user.username)
                 .font(.custom(.bodyBoldItalic))
                 .foregroundStyle(Colors.whitePrimary)
                 .multilineTextAlignment(.leading)
                 .lineLimit(1)
                 .fixedSize(horizontal: false, vertical: true)
+                .padding(.trailing, 5)
 
             Text("#\(String(user.slug))")
                 .font(.custom(.smallLabelRegular))
                 .foregroundStyle(Colors.whiteSecondary)
+
+            if !reasons.contains(.placeholder), user.hasActiveReports {
+                Spacer()
+                    .frame(minWidth: 5)
+                    .frame(maxWidth: .infinity)
+                    .layoutPriority(-1)
+
+                IconsNew.flag
+                    .iconSize(width: 13)
+                    .foregroundStyle(Colors.redAccent)
+                    .contentShape(.rect)
+                    .onTapGesture {
+                        showPopover = true
+                    }
+                    .popover(isPresented: $showPopover, arrowEdge: .trailing) {
+                        Text("Reported")
+                            .appFont(.smallLabelRegular)
+                            .foregroundStyle(Colors.redAccent)
+                            .presentationBackground(Colors.inactiveDark)
+                            .presentationCompactAdaptation(.popover)
+                    }
+            }
         }
     }
 
@@ -193,6 +222,24 @@ struct ProfileHeader: View {
                 .frame(width: 45, height: 45)
                 .background(Colors.inactiveDark)
                 .clipShape(RoundedRectangle(cornerRadius: 25))
+        }
+    }
+
+    private var ownProfileIllegalView: some View {
+        HStack(spacing: 15) {
+            Icons.trashBin
+                .iconSize(width: 15)
+
+            Text("**Your profile data is removed as illegal.** All changes you make will not be visible for others")
+                .appFont(.smallLabelRegular)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .foregroundStyle(Colors.redAccent)
+        .padding(.vertical, 10)
+        .padding(.horizontal, 20)
+        .background {
+            RoundedRectangle(cornerRadius: 24)
+                .foregroundStyle(Colors.inactiveDark)
         }
     }
 }
