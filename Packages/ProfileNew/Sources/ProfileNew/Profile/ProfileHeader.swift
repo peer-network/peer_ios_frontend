@@ -27,7 +27,7 @@ struct ProfileHeader: View {
     @State private var showPopover = false
 
     var body: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: 15) {
             if AccountManager.shared.isCurrentUser(id: user.id), user.visibilityStatus == .illegal {
                 ownProfileIllegalView
             }
@@ -48,6 +48,10 @@ struct ProfileHeader: View {
                     .foregroundStyle(Colors.whitePrimary)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .multilineTextAlignment(.leading)
+            }
+
+            if !AccountManager.shared.isCurrentUser(id: user.id), user.visibilityStatus == .illegal {
+                otherProfileIllegalView
             }
 
             if AccountManager.shared.isCurrentUser(id: user.id) {
@@ -235,6 +239,24 @@ struct ProfileHeader: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
         .foregroundStyle(Colors.redAccent)
+        .padding(.vertical, 10)
+        .padding(.horizontal, 20)
+        .background {
+            RoundedRectangle(cornerRadius: 24)
+                .foregroundStyle(Colors.inactiveDark)
+        }
+    }
+
+    private var otherProfileIllegalView: some View {
+        HStack(spacing: 15) {
+            Icons.trashBin
+                .iconSize(width: 15)
+
+            Text("Profile data is removed as illegal")
+                .appFont(.bodyBold)
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
+        .foregroundStyle(Colors.whitePrimary)
         .padding(.vertical, 10)
         .padding(.horizontal, 20)
         .background {
