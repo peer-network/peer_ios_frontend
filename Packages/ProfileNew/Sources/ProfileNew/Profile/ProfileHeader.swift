@@ -28,8 +28,13 @@ struct ProfileHeader: View {
 
     var body: some View {
         VStack(spacing: 15) {
-            if AccountManager.shared.isCurrentUser(id: user.id), user.visibilityStatus == .illegal {
-                ownProfileIllegalView
+            if AccountManager.shared.isCurrentUser(id: user.id) {
+                if user.visibilityStatus == .illegal {
+                    ownProfileIllegalView
+                } else if user.visibilityStatus == .hidden {
+                    ownProfileHiddenView
+                        .padding(.horizontal, -20)
+                }
             }
 
             HStack(alignment: .center, spacing: 15) {
@@ -263,5 +268,20 @@ struct ProfileHeader: View {
             RoundedRectangle(cornerRadius: 24)
                 .foregroundStyle(Colors.inactiveDark)
         }
+    }
+
+    private var ownProfileHiddenView: some View {
+        HStack(spacing: 5) {
+            IconsNew.eyeWithSlash
+                .iconSize(width: 13)
+
+            Text("Profile data is hidden due to reports")
+                .appFont(.smallLabelRegular)
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
+        .foregroundStyle(Colors.whiteSecondary)
+        .padding(.vertical, 10)
+        .padding(.horizontal, 20)
+        .background(Colors.inactiveDark)
     }
 }
