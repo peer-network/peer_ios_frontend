@@ -48,17 +48,18 @@ struct SingleCommentView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
 
-                    if !reasons.contains(.placeholder), commentVM.comment.hasActiveReports {
-                        HStack(spacing: 0) {
-                            Text(commentVM.comment.formattedCreatedAt)
-                                .font(.custom(.smallLabelRegular))
-                                .foregroundStyle(Colors.whiteSecondary)
 
-                            Spacer()
-                                .frame(minWidth: 10)
-                                .frame(maxWidth: .infinity)
-                                .layoutPriority(-1)
+                    HStack(spacing: 0) {
+                        Text(commentVM.comment.formattedCreatedAt)
+                            .font(.custom(.smallLabelRegular))
+                            .foregroundStyle(Colors.whiteSecondary)
 
+                        Spacer()
+                            .frame(minWidth: 10)
+                            .frame(maxWidth: .infinity)
+                            .layoutPriority(-1)
+
+                        if !reasons.contains(.placeholder), commentVM.comment.hasActiveReports {
                             IconsNew.flag
                                 .iconSize(width: 9)
                                 .foregroundStyle(Colors.redAccent)
@@ -73,6 +74,18 @@ struct SingleCommentView: View {
                                         .presentationBackground(Colors.inactiveDark)
                                         .presentationCompactAdaptation(.popover)
                                 }
+                        }
+
+                        if !reasons.contains(.placeholder), AccountManager.shared.isCurrentUser(id: commentVM.comment.user.id), commentVM.comment.visibilityStatus == .hidden {
+                            IconsNew.eyeWithSlash
+                                .iconSize(width: 9)
+                                .foregroundStyle(Colors.whiteSecondary)
+                                .padding(.horizontal, 5)
+
+                            Text("Not visible in the feed")
+                                .appFont(.smallLabelRegular)
+                                .foregroundStyle(Colors.whiteSecondary)
+                                .lineLimit(1)
                         }
                     }
                 }
