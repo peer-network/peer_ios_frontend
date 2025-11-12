@@ -193,6 +193,16 @@ public struct PostView: View {
                         )
                     }
                 }
+                .ifCondition(showSensitiveContentWarning) {
+                    $0
+                        .allowsHitTesting(false)
+                        .blur(radius: 25)
+                        .overlay {
+                            sensitiveContentWarningForImagePostView
+                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                        }
+                        .clipped()
+                }
 
             if !reasons.contains(.placeholder) {
                 HStack(alignment: .center, spacing: 0) {
@@ -226,9 +236,20 @@ public struct PostView: View {
         VStack(alignment: .center, spacing: 10) {
             PostHeaderView(postVM: postVM, showAppleTranslation: $showAppleTranslation, showFollowButton: showFollowButton)
 
-            TextContent(postVM: postVM)
+            VStack(alignment: .center, spacing: 10) {
+                TextContent(postVM: postVM)
 
-            AudioContent(postVM: postVM)
+                AudioContent(postVM: postVM)
+            }
+            .ifCondition(showSensitiveContentWarning) {
+                $0
+                    .allowsHitTesting(false)
+                    .blur(radius: 15)
+                    .overlay {
+                        sensitiveContentWarningForTextPostView
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+            }
 
             if !reasons.contains(.placeholder) {
                 HStack(alignment: .center, spacing: 0) {
@@ -399,5 +420,36 @@ public struct PostView: View {
             .fixedSize()
         }
         .multilineTextAlignment(.leading)
+    }
+
+    private var sensitiveContentWarningForImagePostView: some View {
+        VStack(spacing: 0) {
+            Circle()
+                .frame(height: 50)
+                .foregroundStyle(Colors.whitePrimary.opacity(0.2))
+                .overlay {
+                    IconsNew.eyeWithSlash
+                        .iconSize(height: 27)
+                        .foregroundStyle(Colors.whitePrimary)
+                }
+                .padding(.bottom, 14.02)
+
+            Text("Sensitive content")
+                .appFont(.largeTitleBold)
+
+            Text("This content may be sensitive or abusive.\nDo you want to view it anyway?")
+                .appFont(.bodyRegular)
+                .padding(.bottom, 10)
+
+            let showButtonConfig = StateButtonConfig(buttonSize: .small, buttonType: .teritary, title: "View content")
+            StateButton(config: showButtonConfig) {
+                withAnimation {
+                    showSensitiveContentWarning = false
+                }
+            }
+            .fixedSize()
+        }
+        .multilineTextAlignment(.center)
+        .foregroundStyle(Colors.whitePrimary)
     }
 }
