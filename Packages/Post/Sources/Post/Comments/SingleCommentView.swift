@@ -156,7 +156,7 @@ struct SingleCommentView: View {
         }
         .padding(10)
         .contentShape(Rectangle())
-        .ifCondition(!showSensitiveContentWarning) {
+        .ifCondition(!showSensitiveContentWarning && commentVM.comment.visibilityStatus != .illegal) {
             $0.contextMenu {
                 if !AccountManager.shared.isCurrentUser(id: commentVM.comment.user.id) {
                     Button(role: .destructive) {

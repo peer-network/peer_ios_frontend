@@ -180,6 +180,7 @@ struct ProfileHeader: View {
                             .presentationBackground(Colors.inactiveDark)
                             .presentationCompactAdaptation(.popover)
                     }
+                    .fixedSize()
             }
         }
     }
@@ -335,11 +336,11 @@ struct ProfileHeader: View {
                         .appFont(.bodyBold)
                         .foregroundStyle(Colors.whitePrimary)
                 }
+                .fixedSize(horizontal: true, vertical: false)
 
                 Spacer()
                     .frame(minWidth: 10)
                     .frame(maxWidth: .infinity)
-                    .layoutPriority(-1)
 
                 let showButtonConfig = StateButtonConfig(buttonSize: .small, buttonType: .teritary, title: "Show")
                 StateButton(config: showButtonConfig) {
@@ -347,6 +348,7 @@ struct ProfileHeader: View {
                         showSensitiveContentWarning = false
                     }
                 }
+                .fixedSize()
             }
 
             Text("This content may be sensitive or abusive.\nDo you want to view it anyway?")
