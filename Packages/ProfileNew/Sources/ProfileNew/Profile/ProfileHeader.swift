@@ -25,7 +25,7 @@ struct ProfileHeader: View {
     @Binding var showAvatarPicker: Bool
 
     @State private var showPopover = false
-
+    
     @State private var showSensitiveContentWarning: Bool = false
 
     var body: some View {
@@ -335,11 +335,11 @@ struct ProfileHeader: View {
                         .appFont(.bodyBold)
                         .foregroundStyle(Colors.whitePrimary)
                 }
-                .fixedSize(horizontal: true, vertical: false)
 
                 Spacer()
                     .frame(minWidth: 10)
                     .frame(maxWidth: .infinity)
+                    .layoutPriority(-1)
 
                 let showButtonConfig = StateButtonConfig(buttonSize: .small, buttonType: .teritary, title: "Show")
                 StateButton(config: showButtonConfig) {
@@ -353,5 +353,6 @@ struct ProfileHeader: View {
                 .appFont(.smallLabelRegular)
                 .foregroundStyle(Colors.whitePrimary)
         }
+        .multilineTextAlignment(.leading)
     }
 }

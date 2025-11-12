@@ -19,6 +19,8 @@ struct SingleCommentView: View {
     @StateObject private var commentVM: SingleCommentViewModel
 
     @State private var showPopover = false
+    
+    @State private var showSensitiveContentWarning: Bool = false
 
     init(comment: Comment) {
         _commentVM = .init(wrappedValue: .init(comment: comment))
@@ -35,82 +37,94 @@ struct SingleCommentView: View {
                     .frame(width: (getRect().width - 20) * 0.2, alignment: .topLeading)
             }
 
-            VStack(alignment: .leading, spacing: 0) {
-                Group {
-                    if let attributedText = commentVM.attributedContent {
-                        Text(attributedText)
-                    } else {
-                        Text(commentVM.comment.content)
+            HStack(alignment: .top, spacing: 5) {
+                VStack(alignment: .leading, spacing: 0) {
+                    Group {
+                        if let attributedText = commentVM.attributedContent {
+                            Text(attributedText)
+                        } else {
+                            Text(commentVM.comment.content)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                    if !reasons.contains(.placeholder), commentVM.comment.hasActiveReports {
+                        HStack(spacing: 0) {
+                            Text(commentVM.comment.formattedCreatedAt)
+                                .font(.custom(.smallLabelRegular))
+                                .foregroundStyle(Colors.whiteSecondary)
+
+                            Spacer()
+                                .frame(minWidth: 10)
+                                .frame(maxWidth: .infinity)
+                                .layoutPriority(-1)
+
+                            IconsNew.flag
+                                .iconSize(width: 9)
+                                .foregroundStyle(Colors.redAccent)
+                                .contentShape(.rect)
+                                .onTapGesture {
+                                    showPopover = true
+                                }
+                                .popover(isPresented: $showPopover, arrowEdge: .trailing) {
+                                    Text("Reported")
+                                        .appFont(.smallLabelRegular)
+                                        .foregroundStyle(Colors.redAccent)
+                                        .presentationBackground(Colors.inactiveDark)
+                                        .presentationCompactAdaptation(.popover)
+                                }
+                        }
                     }
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
 
-                if !reasons.contains(.placeholder), commentVM.comment.hasActiveReports {
-                    HStack(spacing: 0) {
-                        Text(commentVM.comment.formattedCreatedAt)
-                            .font(.custom(.smallLabelRegular))
-                            .foregroundStyle(Colors.whiteSecondary)
-
-                        Spacer()
-                            .frame(minWidth: 10)
-                            .frame(maxWidth: .infinity)
-                            .layoutPriority(-1)
-
-                        IconsNew.flag
-                            .iconSize(width: 9)
-                            .foregroundStyle(Colors.redAccent)
-                            .contentShape(.rect)
-                            .onTapGesture {
-                                showPopover = true
+                VStack(spacing: 5) {
+                    Button {
+                        Task {
+                            do {
+                                try await commentVM.likeComment()
+                            } catch {
+                                if let error = error as? CommentError {
+                                    showPopup(text: error.displayMessage)
+                                } else {
+                                    showPopup(
+                                        text: error.userFriendlyDescription
+                                    )
+                                }
                             }
-                            .popover(isPresented: $showPopover, arrowEdge: .trailing) {
-                                Text("Reported")
-                                    .appFont(.smallLabelRegular)
+                        }
+                    } label: {
+                        Group {
+                            if commentVM.isLiked {
+                                Icons.heartFill
+                                    .iconSize(height: 15)
                                     .foregroundStyle(Colors.redAccent)
-                                    .presentationBackground(Colors.inactiveDark)
-                                    .presentationCompactAdaptation(.popover)
+                            } else {
+                                Icons.heart
+                                    .iconSize(height: 15)
                             }
+                        }
+                        .clipShape(Rectangle())
+                        .contentShape(.rect)
+                    }
+
+                    Button {
+                        dismiss()
+                        router.navigate(to: .commentLikes(comment: commentVM.comment))
+                    } label: {
+                        Text("\(commentVM.amountLikes)")
+                            .contentShape(.rect)
                     }
                 }
             }
-
-            VStack(spacing: 5) {
-                Button {
-                    Task {
-                        do {
-                            try await commentVM.likeComment()
-                        } catch {
-                            if let error = error as? CommentError {
-                                showPopup(text: error.displayMessage)
-                            } else {
-                                showPopup(
-                                    text: error.userFriendlyDescription
-                                )
-                            }
-                        }
+            .ifCondition(showSensitiveContentWarning) {
+                $0
+                    .allowsHitTesting(false)
+                    .blur(radius: 4)
+                    .overlay {
+                        sensitiveContentWarningView
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .ignoresSafeArea(.container, edges: .vertical)
                     }
-                } label: {
-                    Group {
-                        if commentVM.isLiked {
-                            Icons.heartFill
-                                .iconSize(height: 15)
-                                .foregroundStyle(Colors.redAccent)
-                        } else {
-                            Icons.heart
-                                .iconSize(height: 15)
-                        }
-                    }
-                    .clipShape(Rectangle())
-                    .contentShape(.rect)
-                }
-
-                Button {
-                    dismiss()
-                    router.navigate(to: .commentLikes(comment: commentVM.comment))
-                } label: {
-                    Text("\(commentVM.amountLikes)")
-                        .contentShape(.rect)
-                }
             }
         }
         .font(.custom(.bodyRegular))
@@ -121,31 +135,71 @@ struct SingleCommentView: View {
         }
         .padding(10)
         .contentShape(Rectangle())
-        .contextMenu {
-            if !AccountManager.shared.isCurrentUser(id: commentVM.comment.user.id) {
-                Button(role: .destructive) {
-                    dismiss()
-                    SystemPopupManager.shared.presentPopup(.reportComment) {
-                        Task {
-                            do {
-                                try await commentVM.report()
-                                showPopup(text: "Comment was reported.")
-                            } catch let error as CommentError {
-                                showPopup(
-                                    text: error.localizedDescription
-                                )
-                            } catch {
-                                showPopup(
-                                    text: error.userFriendlyDescription
-                                )
+        .ifCondition(!showSensitiveContentWarning) {
+            $0.contextMenu {
+                if !AccountManager.shared.isCurrentUser(id: commentVM.comment.user.id) {
+                    Button(role: .destructive) {
+                        dismiss()
+                        SystemPopupManager.shared.presentPopup(.reportComment) {
+                            Task {
+                                do {
+                                    try await commentVM.report()
+                                    showPopup(text: "Comment was reported.")
+                                } catch let error as CommentError {
+                                    showPopup(
+                                        text: error.localizedDescription
+                                    )
+                                } catch {
+                                    showPopup(
+                                        text: error.userFriendlyDescription
+                                    )
+                                }
                             }
                         }
+                    } label: {
+                        Label("Report Comment", systemImage: "exclamationmark.circle")
                     }
-                } label: {
-                    Label("Report Comment", systemImage: "exclamationmark.circle")
                 }
             }
         }
         .padding(-10)
+        .onFirstAppear {
+            if !reasons.contains(.placeholder), !AccountManager.shared.isCurrentUser(id: commentVM.comment.user.id), commentVM.comment.visibilityStatus == .hidden {
+                showSensitiveContentWarning = true
+            }
+        }
+    }
+
+    private var sensitiveContentWarningView: some View {
+        HStack(alignment: .center, spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
+                HStack(spacing: 5) {
+                    IconsNew.eyeWithSlash
+                        .iconSize(height: 14)
+
+                    Text("Sensitive content")
+                        .appFont(.smallLabelBold)
+                }
+
+                Text("This content may be sensitive or abusive.\nDo you want to view it anyway?")
+                    .appFont(.smallLabelRegular)
+            }
+            .foregroundStyle(Colors.whitePrimary)
+            .fixedSize(horizontal: false, vertical: true)
+
+            Spacer()
+                .frame(minWidth: 10)
+                .frame(maxWidth: .infinity)
+                .layoutPriority(-1)
+
+            let showButtonConfig = StateButtonConfig(buttonSize: .small, buttonType: .teritary, title: "Show")
+            StateButton(config: showButtonConfig) {
+                withAnimation {
+                    showSensitiveContentWarning = false
+                }
+            }
+            .fixedSize()
+        }
+        .multilineTextAlignment(.leading)
     }
 }
