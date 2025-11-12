@@ -19,8 +19,8 @@ public struct Comment: Identifiable, Hashable {
     public let createdAt: String
     public let user: ObjectOwner
 
-    public let hasActiveReports: Bool = false
-    public let visibilityStatus: ContentVisibilityStatus = .illegal
+    public let hasActiveReports: Bool = true
+    public let visibilityStatus: ContentVisibilityStatus = .normal
 
     public var formattedCreatedAt: String {
         return createdAt.timeAgo(isShort: true)

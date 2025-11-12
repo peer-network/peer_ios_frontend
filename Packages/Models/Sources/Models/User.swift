@@ -23,7 +23,7 @@ public struct User: Identifiable, Hashable {
     public let amountFriends: Int
 
     public let hasActiveReports: Bool = true
-    public let visibilityStatus: ContentVisibilityStatus = .hidden
+    public let visibilityStatus: ContentVisibilityStatus = .normal
 
     public var imageURL: URL? {
         guard image != "" else { return nil }

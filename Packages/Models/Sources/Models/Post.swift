@@ -38,7 +38,7 @@ public struct Post: Identifiable, Hashable {
 
     public let advertisement: Advertisement?
 
-    public let hasActiveReports: Bool = true
+    public let hasActiveReports: Bool = false
     public let visibilityStatus: ContentVisibilityStatus = .hidden
 
     public var mediaURLs: [URL] {

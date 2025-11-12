@@ -27,6 +27,8 @@ public struct PostView: View {
     @State private var showAppleTranslation: Bool = false
     @State private var shareSheetHeight: Double = 20
 
+    @State private var showSensitiveContentWarning: Bool = false
+
     private let displayType: DisplayType
     private let showFollowButton: Bool
 
@@ -101,6 +103,11 @@ public struct PostView: View {
         .addTranslateView(
             isPresented: $showAppleTranslation, text: "\(postVM.post.title)\n\n\(postVM.description ?? "")"
         )
+        .onFirstAppear {
+            if !reasons.contains(.placeholder), !AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.visibilityStatus == .hidden {
+                showSensitiveContentWarning = true
+            }
+        }
     }
 
     private func textPost() -> some View {
@@ -108,6 +115,15 @@ public struct PostView: View {
             PostHeaderView(postVM: postVM, showAppleTranslation: $showAppleTranslation, showFollowButton: showFollowButton)
 
             TextContent(postVM: postVM)
+                .ifCondition(showSensitiveContentWarning) {
+                    $0
+                        .allowsHitTesting(false)
+                        .blur(radius: 15)
+                        .overlay {
+                            sensitiveContentWarningForTextPostView
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                }
 
             if !reasons.contains(.placeholder) {
                 HStack(alignment: .center, spacing: 0) {
@@ -119,7 +135,17 @@ public struct PostView: View {
                         .frame(maxWidth: .infinity)
                         .layoutPriority(-1)
 
-                    if let advertiser = postVM.post.advertisement?.adOwner.username {
+                    if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.visibilityStatus == .hidden {
+                        Text("Hidden") // TODO: Apply designs after they are fixed
+                            .appFont(.smallLabelRegular)
+                            .lineLimit(1)
+                            .foregroundStyle(Colors.whiteSecondary)
+                    } else if postVM.post.hasActiveReports {
+                        Text("Reported") // TODO: Apply designs after they are fixed
+                            .appFont(.smallLabelRegular)
+                            .lineLimit(1)
+                            .foregroundStyle(Colors.redAccent)
+                    } else if let advertiser = postVM.post.advertisement?.adOwner.username {
                         Text("Pin by ***\(advertiser)***")
                             .appFont(.smallLabelRegular)
                             .lineLimit(1)
@@ -335,5 +361,43 @@ public struct PostView: View {
         .clipped()
         .aspectRatio(1, contentMode: .fit)
         .contentShape(Rectangle())
+    }
+
+    private var sensitiveContentWarningForTextPostView: some View {
+        HStack(alignment: .center, spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
+                Circle()
+                    .frame(height: 50)
+                    .foregroundStyle(Colors.whitePrimary.opacity(0.2))
+                    .overlay {
+                        IconsNew.eyeWithSlash
+                            .iconSize(height: 27)
+                            .foregroundStyle(Colors.whitePrimary)
+                    }
+                    .padding(.bottom, 5)
+
+                Text("Sensitive content")
+                    .appFont(.bodyBold)
+
+                Text("This content may be sensitive or abusive.\nDo you want to view it anyway?")
+                    .appFont(.smallLabelRegular)
+            }
+            .foregroundStyle(Colors.whitePrimary)
+            .fixedSize(horizontal: false, vertical: true)
+
+            Spacer()
+                .frame(minWidth: 10)
+                .frame(maxWidth: .infinity)
+                .layoutPriority(-1)
+
+            let showButtonConfig = StateButtonConfig(buttonSize: .small, buttonType: .teritary, title: "Show")
+            StateButton(config: showButtonConfig) {
+                withAnimation {
+                    showSensitiveContentWarning = false
+                }
+            }
+            .fixedSize()
+        }
+        .multilineTextAlignment(.leading)
     }
 }
