@@ -19,7 +19,7 @@ struct SingleCommentView: View {
     @StateObject private var commentVM: SingleCommentViewModel
 
     @State private var showPopover = false
-    
+
     @State private var showSensitiveContentWarning: Bool = false
 
     init(comment: Comment) {
@@ -39,15 +39,18 @@ struct SingleCommentView: View {
 
             HStack(alignment: .top, spacing: 5) {
                 VStack(alignment: .leading, spacing: 0) {
-                    Group {
-                        if let attributedText = commentVM.attributedContent {
-                            Text(attributedText)
-                        } else {
-                            Text(commentVM.comment.content)
+                    if commentVM.comment.visibilityStatus != .illegal {
+                        Group {
+                            if let attributedText = commentVM.attributedContent {
+                                Text(attributedText)
+                            } else {
+                                Text(commentVM.comment.content)
+                            }
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    } else {
+                        illegalContentView
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-
 
                     HStack(spacing: 0) {
                         Text(commentVM.comment.formattedCreatedAt)
@@ -90,43 +93,48 @@ struct SingleCommentView: View {
                     }
                 }
 
-                VStack(spacing: 5) {
-                    Button {
-                        Task {
-                            do {
-                                try await commentVM.likeComment()
-                            } catch {
-                                if let error = error as? CommentError {
-                                    showPopup(text: error.displayMessage)
-                                } else {
-                                    showPopup(
-                                        text: error.userFriendlyDescription
-                                    )
+                if commentVM.comment.visibilityStatus != .illegal {
+                    VStack(spacing: 5) {
+                        Button {
+                            Task {
+                                do {
+                                    try await commentVM.likeComment()
+                                } catch {
+                                    if let error = error as? CommentError {
+                                        showPopup(text: error.displayMessage)
+                                    } else {
+                                        showPopup(
+                                            text: error.userFriendlyDescription
+                                        )
+                                    }
                                 }
                             }
-                        }
-                    } label: {
-                        Group {
-                            if commentVM.isLiked {
-                                Icons.heartFill
-                                    .iconSize(height: 15)
-                                    .foregroundStyle(Colors.redAccent)
-                            } else {
-                                Icons.heart
-                                    .iconSize(height: 15)
+                        } label: {
+                            Group {
+                                if commentVM.isLiked {
+                                    Icons.heartFill
+                                        .iconSize(height: 15)
+                                        .foregroundStyle(Colors.redAccent)
+                                } else {
+                                    Icons.heart
+                                        .iconSize(height: 15)
+                                }
                             }
-                        }
-                        .clipShape(Rectangle())
-                        .contentShape(.rect)
-                    }
-
-                    Button {
-                        dismiss()
-                        router.navigate(to: .commentLikes(comment: commentVM.comment))
-                    } label: {
-                        Text("\(commentVM.amountLikes)")
+                            .clipShape(Rectangle())
                             .contentShape(.rect)
+                        }
+
+                        Button {
+                            dismiss()
+                            router.navigate(to: .commentLikes(comment: commentVM.comment))
+                        } label: {
+                            Text("\(commentVM.amountLikes)")
+                                .contentShape(.rect)
+                        }
                     }
+                } else {
+                    Spacer()
+                        .frame(width: 15)
                 }
             }
             .ifCondition(showSensitiveContentWarning) {
@@ -214,5 +222,23 @@ struct SingleCommentView: View {
             .fixedSize()
         }
         .multilineTextAlignment(.leading)
+    }
+
+    private var illegalContentView: some View {
+        HStack(spacing: 10) {
+            Icons.trashBin
+                .iconSize(width: 15)
+
+            Text("This content was removed as illegal")
+                .appFont(.smallLabelRegular)
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
+        .foregroundStyle(Colors.whiteSecondary)
+        .padding(.vertical, 1)
+        .padding(.horizontal, 8)
+        .background {
+            RoundedRectangle(cornerRadius: 24)
+                .foregroundStyle(Colors.inactiveDark)
+        }
     }
 }
