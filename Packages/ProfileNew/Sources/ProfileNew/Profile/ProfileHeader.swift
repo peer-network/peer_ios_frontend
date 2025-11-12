@@ -41,7 +41,13 @@ struct ProfileHeader: View {
                 profileImage
 
                 VStack(alignment: .leading, spacing: 10) {
-                    username
+                    if !AccountManager.shared.isCurrentUser(id: user.id), user.visibilityStatus == .illegal {
+                        RoundedRectangle(cornerRadius: 24)
+                            .frame(width: 138, height: 21)
+                            .foregroundStyle(Colors.inactiveDark)
+                    } else {
+                        username
+                    }
 
                     FollowersHeader(userId: user.id, postsCount: user.postsAmount, followersCount: user.amountFollowers, followingsCount: user.amountFollowing, friends: user.amountFriends)
                 }
@@ -106,11 +112,17 @@ struct ProfileHeader: View {
                     showAvatarPicker = true
                 }
         } else {
-            ProfileAvatarView(url: user.imageURL, name: user.username, config: .profile, ignoreCache: false)
-                .onTapGesture {
-                    let mediaData = MediaData(url: user.imageURL, type: .image)
-                    quickLook.prepareFor(selectedMediaAttachment: mediaData, mediaAttachments: [mediaData])
-                }
+            if user.visibilityStatus == .illegal {
+                Circle()
+                    .frame(height: 68)
+                    .foregroundStyle(Colors.inactiveDark)
+            } else {
+                ProfileAvatarView(url: user.imageURL, name: user.username, config: .profile, ignoreCache: false)
+                    .onTapGesture {
+                        let mediaData = MediaData(url: user.imageURL, type: .image)
+                        quickLook.prepareFor(selectedMediaAttachment: mediaData, mediaAttachments: [mediaData])
+                    }
+            }
         }
     }
 
