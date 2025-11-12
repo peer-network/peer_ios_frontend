@@ -92,25 +92,64 @@ struct PostHeaderView: View {
 
                     if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.advertisement == nil {
                         Button {
-                            SystemPopupManager.shared.presentPopup(.postPromotion) {
-                                let flowID = flows.startFlow(
-                                    post: postVM.post,
-                                    apiService: apiManager.apiService,
-                                    tokenomics: appState.getConstants()!.data.tokenomics,
-                                    popupManager: SystemPopupManager.shared,
-                                    onGoToProfile: {
-                                        router.navigate(to: .accountDetail(id: postVM.post.owner.id))
-                                    },
-                                    onGoToPost: {
-                                        router.navigate(to: .postDetailsWithPostId(id: postVM.post.id))
-                                    },
-                                    onFinish: { [weak router] in
-                                        // Dismiss entire flow; we pop to wherever we want.
-                                    }
-                                )
-                                router.path.append(.promotePost(flowID: flowID, step: .config))
+                            if postVM.post.visibilityStatus == .hidden {
+                                SystemPopupManager.shared.presentPopup(.postPromotionHidden) {
+                                    let flowID = flows.startFlow(
+                                        post: postVM.post,
+                                        apiService: apiManager.apiService,
+                                        tokenomics: appState.getConstants()!.data.tokenomics,
+                                        popupManager: SystemPopupManager.shared,
+                                        onGoToProfile: {
+                                            router.navigate(to: .accountDetail(id: postVM.post.owner.id))
+                                        },
+                                        onGoToPost: {
+                                            router.navigate(to: .postDetailsWithPostId(id: postVM.post.id))
+                                        },
+                                        onFinish: { [weak router] in
+                                            // Dismiss entire flow; we pop to wherever we want.
+                                        }
+                                    )
+                                    router.path.append(.promotePost(flowID: flowID, step: .config))
+                                }
+                            } else if postVM.post.hasActiveReports {
+                                SystemPopupManager.shared.presentPopup(.postPromotionReview) {
+                                    let flowID = flows.startFlow(
+                                        post: postVM.post,
+                                        apiService: apiManager.apiService,
+                                        tokenomics: appState.getConstants()!.data.tokenomics,
+                                        popupManager: SystemPopupManager.shared,
+                                        onGoToProfile: {
+                                            router.navigate(to: .accountDetail(id: postVM.post.owner.id))
+                                        },
+                                        onGoToPost: {
+                                            router.navigate(to: .postDetailsWithPostId(id: postVM.post.id))
+                                        },
+                                        onFinish: { [weak router] in
+                                            // Dismiss entire flow; we pop to wherever we want.
+                                        }
+                                    )
+                                    router.path.append(.promotePost(flowID: flowID, step: .config))
+                                }
+                            } else {
+                                SystemPopupManager.shared.presentPopup(.postPromotion) {
+                                    let flowID = flows.startFlow(
+                                        post: postVM.post,
+                                        apiService: apiManager.apiService,
+                                        tokenomics: appState.getConstants()!.data.tokenomics,
+                                        popupManager: SystemPopupManager.shared,
+                                        onGoToProfile: {
+                                            router.navigate(to: .accountDetail(id: postVM.post.owner.id))
+                                        },
+                                        onGoToPost: {
+                                            router.navigate(to: .postDetailsWithPostId(id: postVM.post.id))
+                                        },
+                                        onFinish: { [weak router] in
+                                            // Dismiss entire flow; we pop to wherever we want.
+                                        }
+                                    )
+                                    router.path.append(.promotePost(flowID: flowID, step: .config))
+                                }
                             }
-
                         } label: {
                             Label("Boost post", systemImage: "megaphone")
                         }
