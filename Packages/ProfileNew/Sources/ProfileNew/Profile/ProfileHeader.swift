@@ -28,7 +28,7 @@ struct ProfileHeader: View {
 
     var body: some View {
         VStack(spacing: 15) {
-            if AccountManager.shared.isCurrentUser(id: user.id) {
+            if !reasons.contains(.placeholder), AccountManager.shared.isCurrentUser(id: user.id) {
                 if user.visibilityStatus == .illegal {
                     ownProfileIllegalView
                 } else if user.visibilityStatus == .hidden {
@@ -63,7 +63,7 @@ struct ProfileHeader: View {
                 }
             }
 
-            if !AccountManager.shared.isCurrentUser(id: user.id), user.visibilityStatus == .illegal {
+            if !reasons.contains(.placeholder), !AccountManager.shared.isCurrentUser(id: user.id), user.visibilityStatus == .illegal {
                 otherProfileIllegalView
             }
 
