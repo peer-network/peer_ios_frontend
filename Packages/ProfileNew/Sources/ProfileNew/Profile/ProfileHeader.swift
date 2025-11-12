@@ -26,45 +26,58 @@ struct ProfileHeader: View {
 
     @State private var showPopover = false
 
+    @State private var showSensitiveContentWarning: Bool = false
+
     var body: some View {
         VStack(spacing: 15) {
-            if !reasons.contains(.placeholder), AccountManager.shared.isCurrentUser(id: user.id) {
-                if user.visibilityStatus == .illegal {
-                    ownProfileIllegalView
-                } else if user.visibilityStatus == .hidden {
-                    ownProfileHiddenView
-                        .padding(.horizontal, -20)
-                }
-            }
-
-            HStack(alignment: .center, spacing: 15) {
-                profileImage
-
-                VStack(alignment: .leading, spacing: 10) {
-                    if !AccountManager.shared.isCurrentUser(id: user.id), user.visibilityStatus == .illegal {
-                        RoundedRectangle(cornerRadius: 24)
-                            .frame(width: 138, height: 21)
-                            .foregroundStyle(Colors.inactiveDark)
-                    } else {
-                        username
+            VStack(spacing: 15) {
+                if !reasons.contains(.placeholder), AccountManager.shared.isCurrentUser(id: user.id) {
+                    if user.visibilityStatus == .illegal {
+                        ownProfileIllegalView
+                    } else if user.visibilityStatus == .hidden {
+                        ownProfileHiddenView
+                            .padding(.horizontal, -20)
                     }
+                }
 
-                    FollowersHeader(userId: user.id, postsCount: user.postsAmount, followersCount: user.amountFollowers, followingsCount: user.amountFollowing, friends: user.amountFriends)
+                HStack(alignment: .center, spacing: 15) {
+                    profileImage
+
+                    VStack(alignment: .leading, spacing: 10) {
+                        if !AccountManager.shared.isCurrentUser(id: user.id), user.visibilityStatus == .illegal {
+                            RoundedRectangle(cornerRadius: 24)
+                                .frame(width: 138, height: 21)
+                                .foregroundStyle(Colors.inactiveDark)
+                        } else {
+                            username
+                        }
+
+                        FollowersHeader(userId: user.id, postsCount: user.postsAmount, followersCount: user.amountFollowers, followingsCount: user.amountFollowing, friends: user.amountFriends)
+                    }
+                }
+
+                if !bio.isEmpty {
+                    if AccountManager.shared.isCurrentUser(id: user.id) || user.visibilityStatus != .illegal {
+                        Text(bio)
+                            .font(.custom(.smallLabelRegular))
+                            .foregroundStyle(Colors.whitePrimary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .multilineTextAlignment(.leading)
+                    }
+                }
+
+                if !reasons.contains(.placeholder), !AccountManager.shared.isCurrentUser(id: user.id), user.visibilityStatus == .illegal {
+                    otherProfileIllegalView
                 }
             }
-
-            if !bio.isEmpty {
-                if AccountManager.shared.isCurrentUser(id: user.id) || user.visibilityStatus != .illegal {
-                    Text(bio)
-                        .font(.custom(.smallLabelRegular))
-                        .foregroundStyle(Colors.whitePrimary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .multilineTextAlignment(.leading)
-                }
-            }
-
-            if !reasons.contains(.placeholder), !AccountManager.shared.isCurrentUser(id: user.id), user.visibilityStatus == .illegal {
-                otherProfileIllegalView
+            .ifCondition(showSensitiveContentWarning) {
+                $0
+                    .allowsHitTesting(false)
+                    .blur(radius: 5)
+                    .overlay {
+                        sensitiveContentWarningView
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
             }
 
             if AccountManager.shared.isCurrentUser(id: user.id) {
@@ -86,6 +99,11 @@ struct ProfileHeader: View {
 
                     moreButton
                 }
+            }
+        }
+        .onFirstAppear {
+            if !reasons.contains(.placeholder), !AccountManager.shared.isCurrentUser(id: user.id), user.visibilityStatus == .hidden {
+                showSensitiveContentWarning = true
             }
         }
     }
@@ -297,5 +315,43 @@ struct ProfileHeader: View {
         .padding(.vertical, 10)
         .padding(.horizontal, 20)
         .background(Colors.inactiveDark)
+    }
+
+    private var sensitiveContentWarningView: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 0) {
+                Group {
+                    Circle()
+                        .frame(height: 30)
+                        .foregroundStyle(Colors.whitePrimary.opacity(0.2))
+                        .overlay {
+                            IconsNew.eyeWithSlash
+                                .iconSize(height: 16.2)
+                                .foregroundStyle(Colors.whitePrimary)
+                        }
+                        .padding(.trailing, 5)
+
+                    Text("Sensitive content")
+                        .appFont(.bodyBold)
+                        .foregroundStyle(Colors.whitePrimary)
+                }
+                .fixedSize(horizontal: true, vertical: false)
+
+                Spacer()
+                    .frame(minWidth: 10)
+                    .frame(maxWidth: .infinity)
+
+                let showButtonConfig = StateButtonConfig(buttonSize: .small, buttonType: .teritary, title: "Show")
+                StateButton(config: showButtonConfig) {
+                    withAnimation {
+                        showSensitiveContentWarning = false
+                    }
+                }
+            }
+
+            Text("This content may be sensitive or abusive.\nDo you want to view it anyway?")
+                .appFont(.smallLabelRegular)
+                .foregroundStyle(Colors.whitePrimary)
+        }
     }
 }
