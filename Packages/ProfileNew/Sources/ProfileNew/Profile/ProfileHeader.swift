@@ -54,11 +54,13 @@ struct ProfileHeader: View {
             }
 
             if !bio.isEmpty {
-                Text(bio)
-                    .font(.custom(.smallLabelRegular))
-                    .foregroundStyle(Colors.whitePrimary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .multilineTextAlignment(.leading)
+                if AccountManager.shared.isCurrentUser(id: user.id) || user.visibilityStatus != .illegal {
+                    Text(bio)
+                        .font(.custom(.smallLabelRegular))
+                        .foregroundStyle(Colors.whitePrimary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .multilineTextAlignment(.leading)
+                }
             }
 
             if !AccountManager.shared.isCurrentUser(id: user.id), user.visibilityStatus == .illegal {
