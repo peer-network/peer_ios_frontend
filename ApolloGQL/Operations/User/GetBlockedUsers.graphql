@@ -11,6 +11,7 @@ query GetBlockedUsers($offset: Int, $limit: Int) {
                 img
                 username
                 slug
+                visibilityStatus
             }
         }
     }

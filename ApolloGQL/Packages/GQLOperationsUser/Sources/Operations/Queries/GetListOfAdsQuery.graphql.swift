@@ -7,7 +7,7 @@ public class GetListOfAdsQuery: GraphQLQuery {
   public static let operationName: String = "GetListOfAds"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetListOfAds($userID: ID, $filterBy: [ContentType!], $offset: Int, $limit: Int) { listAdvertisementPosts( userid: $userID filterBy: $filterBy offset: $offset limit: $limit ) { __typename status ResponseCode counter affectedRows { __typename advertisement { __typename advertisementid postid advertisementtype startdate enddate createdat user { __typename id username slug img isfollowed isfollowing isfriend } } post { __typename id contenttype title media cover mediadescription createdat amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags url user { __typename id username slug img isfollowed isfollowing isfriend } } } } }"#
+      #"query GetListOfAds($userID: ID, $filterBy: [ContentType!], $offset: Int, $limit: Int) { listAdvertisementPosts( userid: $userID filterBy: $filterBy offset: $offset limit: $limit ) { __typename status ResponseCode counter affectedRows { __typename advertisement { __typename advertisementid postid advertisementtype startdate enddate createdat user { __typename id username slug img isfollowed isfollowing isfriend visibilityStatus hasActiveReports } } post { __typename id contenttype title media cover mediadescription createdat visibilityStatus hasActiveReports amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags url user { __typename id username slug img isfollowed isfollowing isfriend visibilityStatus hasActiveReports } } } } }"#
     ))
 
   public var userID: GraphQLNullable<ID>
@@ -134,6 +134,8 @@ public class GetListOfAdsQuery: GraphQLQuery {
               .field("isfollowed", Bool?.self),
               .field("isfollowing", Bool?.self),
               .field("isfriend", Bool?.self),
+              .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>?.self),
+              .field("hasActiveReports", Bool.self),
             ] }
 
             public var id: GQLOperationsUser.ID { __data["id"] }
@@ -143,6 +145,8 @@ public class GetListOfAdsQuery: GraphQLQuery {
             public var isfollowed: Bool? { __data["isfollowed"] }
             public var isfollowing: Bool? { __data["isfollowing"] }
             public var isfriend: Bool? { __data["isfriend"] }
+            public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>? { __data["visibilityStatus"] }
+            public var hasActiveReports: Bool { __data["hasActiveReports"] }
           }
         }
 
@@ -163,6 +167,8 @@ public class GetListOfAdsQuery: GraphQLQuery {
             .field("cover", String.self),
             .field("mediadescription", String.self),
             .field("createdat", GQLOperationsUser.Date.self),
+            .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>?.self),
+            .field("hasActiveReports", Bool.self),
             .field("amountlikes", Int.self),
             .field("amountviews", Int.self),
             .field("amountcomments", Int.self),
@@ -185,6 +191,8 @@ public class GetListOfAdsQuery: GraphQLQuery {
           public var cover: String { __data["cover"] }
           public var mediadescription: String { __data["mediadescription"] }
           public var createdat: GQLOperationsUser.Date { __data["createdat"] }
+          public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>? { __data["visibilityStatus"] }
+          public var hasActiveReports: Bool { __data["hasActiveReports"] }
           public var amountlikes: Int { __data["amountlikes"] }
           public var amountviews: Int { __data["amountviews"] }
           public var amountcomments: Int { __data["amountcomments"] }
@@ -216,6 +224,8 @@ public class GetListOfAdsQuery: GraphQLQuery {
               .field("isfollowed", Bool?.self),
               .field("isfollowing", Bool?.self),
               .field("isfriend", Bool?.self),
+              .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>?.self),
+              .field("hasActiveReports", Bool.self),
             ] }
 
             public var id: GQLOperationsUser.ID { __data["id"] }
@@ -225,6 +235,8 @@ public class GetListOfAdsQuery: GraphQLQuery {
             public var isfollowed: Bool? { __data["isfollowed"] }
             public var isfollowing: Bool? { __data["isfollowing"] }
             public var isfriend: Bool? { __data["isfriend"] }
+            public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>? { __data["visibilityStatus"] }
+            public var hasActiveReports: Bool { __data["hasActiveReports"] }
           }
         }
       }

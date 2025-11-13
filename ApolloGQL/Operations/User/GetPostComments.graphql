@@ -10,17 +10,23 @@ query GetPostComments($contentFilterBy: ContentFilterType, $postid: ID!, $commen
                 postid
                 parentid
                 content
+                createdat
+                visibilityStatus
+                hasActiveReports
                 amountlikes
                 amountreplies
+                amountreports
                 isliked
-                createdat
                 user {
                     id
                     username
                     slug
                     img
+                    visibilityStatus
+                    hasActiveReports
                     isfollowed
                     isfollowing
+                    isfriend
                 }
             }
         }

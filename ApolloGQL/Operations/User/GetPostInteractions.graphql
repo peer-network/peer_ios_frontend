@@ -12,8 +12,11 @@ query PostInteractions($getOnly: GetOnly!, $postOrCommentId: ID!, $offset: Int, 
             username
             slug
             img
+            visibilityStatus
+            hasActiveReports
             isfollowed
             isfollowing
+            isfriend
         }
     }
 }

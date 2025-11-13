@@ -14,6 +14,8 @@ query GetPostById($postid: ID!) {
             cover
             mediadescription
             createdat
+            visibilityStatus
+            hasActiveReports
             amountlikes
             amountviews
             amountcomments
@@ -31,8 +33,11 @@ query GetPostById($postid: ID!) {
                 username
                 slug
                 img
+                visibilityStatus
+                hasActiveReports
                 isfollowed
                 isfollowing
+                isfriend
             }
         }
     }

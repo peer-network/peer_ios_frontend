@@ -7,7 +7,7 @@ public class GetMyReferredUsersQuery: GraphQLQuery {
   public static let operationName: String = "GetMyReferredUsers"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetMyReferredUsers($offset: Int, $limit: Int) { referralList(offset: $offset, limit: $limit) { __typename status counter ResponseCode affectedRows { __typename iInvited { __typename id username slug img isfollowed isfollowing } } } }"#
+      #"query GetMyReferredUsers($offset: Int, $limit: Int) { referralList(offset: $offset, limit: $limit) { __typename status counter ResponseCode affectedRows { __typename iInvited { __typename id username slug img visibilityStatus hasActiveReports isfollowed isfollowing isfriend } } } }"#
     ))
 
   public var offset: GraphQLNullable<Int>
@@ -92,16 +92,22 @@ public class GetMyReferredUsersQuery: GraphQLQuery {
             .field("username", String?.self),
             .field("slug", Int?.self),
             .field("img", String?.self),
+            .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>?.self),
+            .field("hasActiveReports", Bool.self),
             .field("isfollowed", Bool?.self),
             .field("isfollowing", Bool?.self),
+            .field("isfriend", Bool?.self),
           ] }
 
           public var id: GQLOperationsUser.ID { __data["id"] }
           public var username: String? { __data["username"] }
           public var slug: Int? { __data["slug"] }
           public var img: String? { __data["img"] }
+          public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>? { __data["visibilityStatus"] }
+          public var hasActiveReports: Bool { __data["hasActiveReports"] }
           public var isfollowed: Bool? { __data["isfollowed"] }
           public var isfollowing: Bool? { __data["isfollowing"] }
+          public var isfriend: Bool? { __data["isfriend"] }
         }
       }
     }

@@ -11,6 +11,10 @@ query GetFriends($contentFilterBy: ContentFilterType, $offset: Int, $limit: Int)
             img
             username
             slug
+            biography
+            visibilityStatus
+            hasActiveReports
+            updatedat
         }
     }
 }

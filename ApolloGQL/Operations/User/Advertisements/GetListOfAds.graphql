@@ -24,6 +24,8 @@ query GetListOfAds($userID: ID, $filterBy: [ContentType!], $offset: Int, $limit:
                     isfollowed
                     isfollowing
                     isfriend
+                    visibilityStatus
+                    hasActiveReports
                 }
             }
             post {
@@ -34,6 +36,8 @@ query GetListOfAds($userID: ID, $filterBy: [ContentType!], $offset: Int, $limit:
                 cover
                 mediadescription
                 createdat
+                visibilityStatus
+                hasActiveReports
                 amountlikes
                 amountviews
                 amountcomments
@@ -54,6 +58,8 @@ query GetListOfAds($userID: ID, $filterBy: [ContentType!], $offset: Int, $limit:
                     isfollowed
                     isfollowing
                     isfriend
+                    visibilityStatus
+                    hasActiveReports
                 }
             }
         }

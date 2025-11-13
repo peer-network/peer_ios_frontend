@@ -13,8 +13,11 @@ query GetFollowings($contentFilterBy: ContentFilterType, $userid: ID, $offset: I
                 username
                 slug
                 img
+                visibilityStatus
+                hasActiveReports
                 isfollowed
                 isfollowing
+                isfriend
             }
         }
     }

@@ -7,7 +7,7 @@ public class GetFollowersQuery: GraphQLQuery {
   public static let operationName: String = "GetFollowers"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetFollowers($contentFilterBy: ContentFilterType, $userid: ID, $offset: Int, $limit: Int) { listFollowRelations( contentFilterBy: $contentFilterBy userid: $userid offset: $offset limit: $limit ) { __typename status ResponseCode affectedRows { __typename followers { __typename id username slug img isfollowed isfollowing } } } }"#
+      #"query GetFollowers($contentFilterBy: ContentFilterType, $userid: ID, $offset: Int, $limit: Int) { listFollowRelations( contentFilterBy: $contentFilterBy userid: $userid offset: $offset limit: $limit ) { __typename status ResponseCode affectedRows { __typename followers { __typename id username slug img visibilityStatus hasActiveReports isfollowed isfollowing isfriend } } } }"#
     ))
 
   public var contentFilterBy: GraphQLNullable<GraphQLEnum<ContentFilterType>>
@@ -100,16 +100,22 @@ public class GetFollowersQuery: GraphQLQuery {
             .field("username", String?.self),
             .field("slug", Int?.self),
             .field("img", String?.self),
+            .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>?.self),
+            .field("hasActiveReports", Bool.self),
             .field("isfollowed", Bool?.self),
             .field("isfollowing", Bool?.self),
+            .field("isfriend", Bool?.self),
           ] }
 
           public var id: GQLOperationsUser.ID { __data["id"] }
           public var username: String? { __data["username"] }
           public var slug: Int? { __data["slug"] }
           public var img: String? { __data["img"] }
+          public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>? { __data["visibilityStatus"] }
+          public var hasActiveReports: Bool { __data["hasActiveReports"] }
           public var isfollowed: Bool? { __data["isfollowed"] }
           public var isfollowing: Bool? { __data["isfollowing"] }
+          public var isfriend: Bool? { __data["isfriend"] }
         }
       }
     }

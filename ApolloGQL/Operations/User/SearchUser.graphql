@@ -16,6 +16,10 @@ query SearchUser($contentFilterBy: ContentFilterType, $userid: ID, $username: St
             slug
             img
             biography
+            visibilityStatus
+            hasActiveReports
+            createdat
+            updatedat
         }
     }
 }

@@ -1,7 +1,11 @@
 query HelloUser {
     hello {
         currentuserid
+        userroles
+        userRoleString
         currentVersion
         wikiLink
+        lastMergedPullRequestNumber
+        companyAccountId
     }
 }

@@ -30,6 +30,8 @@ query GetAdsHistoryList($userId: ID, $offset: Int, $limit: Int) {
                     cover
                     mediadescription
                     createdat
+                    visibilityStatus
+                    hasActiveReports
                     amountlikes
                     amountviews
                     amountcomments
@@ -50,6 +52,8 @@ query GetAdsHistoryList($userId: ID, $offset: Int, $limit: Int) {
                         isfollowed
                         isfollowing
                         isfriend
+                        visibilityStatus
+                        hasActiveReports
                     }
                 }
                 user {
@@ -60,6 +64,8 @@ query GetAdsHistoryList($userId: ID, $offset: Int, $limit: Int) {
                     isfollowed
                     isfollowing
                     isfriend
+                    visibilityStatus
+                    hasActiveReports
                 }
             }
         }

@@ -147,6 +147,8 @@ enum DayFilterType {
   D3
   D4
   D5
+  D6
+  D7
   W0
   M0
   Y0
@@ -154,6 +156,25 @@ enum DayFilterType {
 
 enum OnboardingType {
   INTROONBOARDING
+}
+
+enum ModerationStatus {
+  waiting_for_review
+  hidden
+  restored
+  illegal
+}
+
+enum ModerationContentType {
+  post
+  comment
+  user
+}
+
+enum ContentVisibilityStatus {
+  NORMAL
+  HIDDEN
+  ILLEGAL
 }
 
 input AdvertisementHistoryFilter {
@@ -181,23 +202,6 @@ input PostInput {
   cover: [String!]
   tags: [String!]
   uploadedFiles: String
-}
-
-input ChatInput {
-  name: String!
-  image: String
-  recipients: [String!]!
-}
-
-input UpdateChatInput {
-  chatid: ID!
-  name: String
-  image: String
-}
-
-input ChatParticipantsInput {
-  chatid: ID!
-  recipients: [String!]!
 }
 
 input FeedInput {
@@ -302,6 +306,9 @@ type Post {
   cover: String!
   mediadescription: String!
   createdat: Date!
+  visibilityStatus: ContentVisibilityStatus
+  hasActiveReports: Boolean!
+  amountreports: Int!
   amountlikes: Int!
   amountviews: Int!
   amountcomments: Int!
@@ -325,8 +332,11 @@ type Comment {
   parentid: ID
   content: String!
   createdat: Date!
+  visibilityStatus: ContentVisibilityStatus
+  hasActiveReports: Boolean!
   amountlikes: Int!
   amountreplies: Int!
+  amountreports: Int!
   isliked: Boolean!
   user: ProfileUser!
 }
@@ -336,6 +346,8 @@ type ProfileUser {
   username: String
   slug: Int
   img: String
+  visibilityStatus: ContentVisibilityStatus
+  hasActiveReports: Boolean!
   isfollowed: Boolean
   isfollowing: Boolean
   isfriend: Boolean
@@ -363,6 +375,8 @@ type Transaction {
   transferaction: String!
   message: String!
   createdat: String!
+  sender: BasicUserInfo!
+  recipient: BasicUserInfo!
 }
 
 type TransferToken {
@@ -410,6 +424,7 @@ type UserInfo {
   userid: ID!
   liquidity: Decimal!
   amountposts: Int!
+  amountreports: Int!
   amountblocked: Int!
   amountfollower: Int!
   amountfollowed: Int!
@@ -425,32 +440,6 @@ type CommentInfo {
   comments: Int!
 }
 
-type Chat {
-  id: ID!
-  image: String!
-  name: String!
-  createdat: Date
-  updatedat: Date
-  chatmessages: [ChatMessage!]!
-  chatparticipants: [ChatParticipant!]!
-}
-
-type ChatMessage {
-  id: ID!
-  senderid: ID!
-  chatid: ID!
-  content: String!
-  createdat: Date!
-}
-
-type ChatParticipant {
-  userid: ID!
-  img: String!
-  username: String!
-  slug: Int!
-  hasaccess: Int!
-}
-
 type Profile {
   id: ID
   username: String
@@ -458,6 +447,8 @@ type Profile {
   slug: Int
   img: String
   biography: String
+  visibilityStatus: ContentVisibilityStatus
+  hasActiveReports: Boolean!
   isfollowed: Boolean
   isfollowing: Boolean
   amountposts: Int
@@ -466,10 +457,11 @@ type Profile {
   amountfollower: Int
   amountfriends: Int
   amountblocked: Int
-  imageposts: [ProfilePostMedia!]
-  textposts: [ProfilePostMedia!]
-  videoposts: [ProfilePostMedia!]
-  audioposts: [ProfilePostMedia!]
+  amountreports: Int
+  imageposts: [ProfilePostMedia!] @deprecated(reason: "use listPosts by userid")
+  textposts: [ProfilePostMedia!] @deprecated(reason: "use listPosts by userid")
+  videoposts: [ProfilePostMedia!] @deprecated(reason: "use listPosts by userid")
+  audioposts: [ProfilePostMedia!] @deprecated(reason: "use listPosts by userid")
 }
 
 type ProfileInfo {
@@ -488,6 +480,7 @@ type BlockedUser {
   img: String
   username: String
   slug: Int
+  visibilityStatus: ContentVisibilityStatus
 }
 
 type BlockedUsers {
@@ -536,6 +529,8 @@ type DailyGemStatusData {
   d3: Decimal
   d4: Decimal
   d5: Decimal
+  d6: Decimal
+  d7: Decimal
   w0: Decimal
   m0: Decimal
   y0: Decimal
@@ -601,6 +596,7 @@ type ProfilePostMedia {
   contenttype: String!
   media: String!
   createdat: String
+  visibilityStatus: ContentVisibilityStatus
 }
 
 type PostCommentsData {
@@ -614,6 +610,7 @@ type PostCommentsData {
   isliked: Boolean
   user: BasicUserInfo
   subcomments: [PostSubCommentsData]
+  visibilityStatus: ContentVisibilityStatus
 }
 
 type PostSubCommentsData {
@@ -627,6 +624,7 @@ type PostSubCommentsData {
   amountreplies: Decimal
   isliked: Boolean
   user: BasicUserInfo
+  visibilityStatus: ContentVisibilityStatus
 }
 
 type BasicUserInfo {
@@ -635,6 +633,8 @@ type BasicUserInfo {
   username: String
   slug: Int
   biography: String
+  visibilityStatus: ContentVisibilityStatus
+  hasActiveReports: Boolean!
   updatedat: Date!
 }
 
@@ -645,6 +645,8 @@ type User {
   slug: Int
   img: String
   biography: String
+  visibilityStatus: ContentVisibilityStatus
+  hasActiveReports: Boolean!
   createdat: Date
   updatedat: Date
 }
@@ -673,18 +675,6 @@ type PostInfo {
   comments: Int!
 }
 
-type ChatMessageInfo {
-  messid: ID
-  chatid: ID
-  userid: ID
-  content: String
-  createdat: Date
-}
-
-type ChatInfo {
-  chatid: ID
-}
-
 type AllUserInfo {
   followerid: ID
   followername: String
@@ -697,6 +687,44 @@ type AllUserFriends {
   counter: Int!
   ResponseCode: String
   affectedRows: [AllUserInfo]
+}
+
+type ModerationStatsResponse {
+  status: String!
+  ResponseCode: String
+  affectedRows: ModerationStats
+  meta: DefaultResponse
+}
+
+type ModerationStats {
+  AmountAwaitingReview: Int!
+  AmountHidden: Int!
+  AmountRestored: Int!
+  AmountIllegal: Int!
+}
+
+type ModerationItemListResponse {
+  status: String!
+  ResponseCode: String
+  affectedRows: [ModerationItem!]!
+  meta: DefaultResponse
+}
+
+type ModerationItem {
+  moderationTicketId: ID!
+  targetContentId: ID!
+  targettype: String!
+  reportscount: Int!
+  status: String!
+  createdat: String!
+  targetcontent: TargetContent!
+  reporters: [BasicUserInfo!]!
+}
+
+type TargetContent {
+  post: Post
+  comment: Comment
+  user: BasicUserInfo
 }
 
 type DefaultResponse {
@@ -716,6 +744,8 @@ type ListAdvertisementPostsResponse {
 
 type HelloResponse {
   currentuserid: ID
+  userroles: Int!
+  userRoleString: String!
   currentVersion: String
   wikiLink: String
   lastMergedPullRequestNumber: String
@@ -827,14 +857,6 @@ type CommentInfoResponse {
   affectedRows: CommentInfo
 }
 
-type ChatResponse {
-  meta: DefaultResponse
-  status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
-  counter: Int!
-  ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
-  affectedRows: [Chat!]
-}
-
 type FollowStatusResponse {
   meta: DefaultResponse
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
@@ -854,21 +876,6 @@ type AddPostResponse {
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   affectedRows: PostInfo
-}
-
-type AddChatResponse {
-  meta: DefaultResponse
-  status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
-  ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
-  affectedRows: ChatInfo
-}
-
-type AddChatmessageResponse {
-  meta: DefaultResponse
-  status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
-  counter: Int!
-  ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
-  affectedRows: [ChatMessageInfo]
 }
 
 type BasicUserInfoResponse {
@@ -1040,30 +1047,21 @@ type RefreshMarketCapResponse {
   affectedRows: RefreshMarketCapData
 }
 
-type Subscription {
-  getChatMessages(chatid: ID!): AddChatmessageResponse!
-  setChatMessages(chatid: ID!, content: String!): AddChatmessageResponse!
-}
-
 type Query {
   hello: HelloResponse!
-  searchUser(userid: ID, contentFilterBy: ContentFilterType, username: String, offset: Int, limit: Int): UserListResponse!
-  listUsers(contentFilterBy: ContentFilterType, offset: Int, limit: Int): UserListResponse!
-  getProfile(userid: ID, contentFilterBy: ContentFilterType, postLimit: Int): ProfileInfo!
+  searchUser(userid: ID, contentFilterBy: ContentFilterType, username: String, offset: Int, limit: Int): UserListResponse! @deprecated(reason: "Use listUsersV2.")
+  listUsers(contentFilterBy: ContentFilterType, offset: Int, limit: Int): UserListResponse! @deprecated(reason: "Use listUsersV2.")
+  listUsersV2(contentFilterBy: ContentFilterType, userid: ID, username: String, offset: Int, limit: Int): UserListResponse!
+  getProfile(userid: ID, contentFilterBy: ContentFilterType): ProfileInfo!
   listFollowRelations(contentFilterBy: ContentFilterType, userid: ID, offset: Int, limit: Int): FollowRelationsResponse!
-  listFriends(contentFilterBy: ContentFilterType, offset: Int, limit: Int): UserFriendsResponse!
+  listFriends(contentFilterBy: ContentFilterType, userid: ID, offset: Int, limit: Int): UserFriendsResponse!
   getUserInfo: UserInfoResponse!
   listBlockedUsers(offset: Int, limit: Int): BlockedUsersResponse!
   listPosts(filterBy: [PostFilterType!], contentFilterBy: ContentFilterType, IgnorList: IgnoreOption, sortBy: PostSortType, userid: ID, postid: ID, title: String, tag: String, from: Date, to: Date, offset: Int, limit: Int, commentOffset: Int, commentLimit: Int): PostListResponse!
-  listAdvertisementPosts(filterBy: [ContentType!], userid: ID, postid: ID, tag: String, offset: Int, limit: Int, commentOffset: Int, commentLimit: Int): ListAdvertisementPostsResponse!
-  getPostInfo(postid: ID!): PostInfoResponse!
-  getCommentInfo(commentId: ID!): CommentInfoResponse!
+  listAdvertisementPosts(filterBy: [ContentType!], contentFilterBy: ContentFilterType, userid: ID, postid: ID, tag: String, offset: Int, limit: Int, commentOffset: Int, commentLimit: Int): ListAdvertisementPostsResponse!
   listChildComments(parent: ID!, offset: Int, limit: Int): CommentResponse!
   listTags(offset: Int, limit: Int): TagSearchResponse!
   searchTags(tagName: String!, offset: Int, limit: Int): TagSearchResponse!
-  getChat(chatid: ID!, messageOffset: Int, messageLimit: Int): ChatResponse!
-  listChats(sortBy: String, from: Date, to: Date, offset: Int, limit: Int, messageOffset: Int, messageLimit: Int): ChatResponse!
-  listChatMessages(chatid: ID!, offset: Int, limit: Int): AddChatmessageResponse!
   getDailyFreeStatus: GetDailyResponse!
   balance: CurrentLiquidity!
   listWinLogs(day: DayFilterType!, offset: Int, limit: Int): UserLogWins!
@@ -1089,23 +1087,14 @@ type Mutation {
   toggleUserFollowStatus(userid: ID!): FollowStatusResponse!
   toggleBlockUserStatus(userid: ID!): DefaultResponse!
   deleteAccount(password: String!): DefaultResponse!
-  createChat(input: ChatInput!): AddChatResponse!
-  updateChatInformations(input: UpdateChatInput!): AddChatResponse!
-  addChatParticipants(input: ChatParticipantsInput!): AddChatResponse!
-  removeChatParticipants(input: ChatParticipantsInput!): AddChatResponse!
-  sendChatMessage(chatid: ID!, content: String!): AddChatmessageResponse!
-  deleteChatMessage(chatid: ID!, messid: Int!): DefaultResponse!
-  deleteChat(id: ID!): DefaultResponse!
-  createChatFeed(input: FeedInput!): AddPostResponse!
   likeComment(commentid: ID!): DefaultResponse!
   reportComment(commentid: ID!): DefaultResponse!
   reportUser(userid: ID!): DefaultResponse!
-  deletePost(id: ID!): DefaultResponse!
   createPost(action: PostType!, input: PostInput!): PostResponse!
   createComment(action: CommentType!, postid: ID!, parentid: ID, content: String!): CommentResponse!
   resolvePostAction(action: PostActionType!, postid: ID!): DefaultResponse!
   resolveTransfer(recipient: ID!, numberoftokens: Int!): DefaultResponse! @deprecated(reason: "Use `resolveTransferV2`.")
   resolveTransferV2(recipient: ID!, numberoftokens: Decimal!, message: String): TransferTokenResponse!
   advertisePostBasic(postid: ID!, startday: Date!, durationInDays: AdDuration!, advertisePlan: AdvertisementBasicPlan!): ListAdvertisementData!
-  advertisePostPinned(postid: ID!, advertisePlan: AdvertisementPinnedPlan!, forceUpdate: Boolean): ListAdvertisementData!
+  advertisePostPinned(postid: ID!, advertisePlan: AdvertisementPinnedPlan!): ListAdvertisementData!
 }

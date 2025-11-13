@@ -7,7 +7,7 @@ public class GetBlockedUsersQuery: GraphQLQuery {
   public static let operationName: String = "GetBlockedUsers"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetBlockedUsers($offset: Int, $limit: Int) { listBlockedUsers(offset: $offset, limit: $limit) { __typename status ResponseCode affectedRows { __typename iBlocked { __typename userid img username slug } } } }"#
+      #"query GetBlockedUsers($offset: Int, $limit: Int) { listBlockedUsers(offset: $offset, limit: $limit) { __typename status ResponseCode affectedRows { __typename iBlocked { __typename userid img username slug visibilityStatus } } } }"#
     ))
 
   public var offset: GraphQLNullable<Int>
@@ -90,12 +90,14 @@ public class GetBlockedUsersQuery: GraphQLQuery {
             .field("img", String?.self),
             .field("username", String?.self),
             .field("slug", Int?.self),
+            .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>?.self),
           ] }
 
           public var userid: String? { __data["userid"] }
           public var img: String? { __data["img"] }
           public var username: String? { __data["username"] }
           public var slug: Int? { __data["slug"] }
+          public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>? { __data["visibilityStatus"] }
         }
       }
     }
