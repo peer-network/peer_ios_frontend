@@ -7,25 +7,29 @@ public class GetFriendsQuery: GraphQLQuery {
   public static let operationName: String = "GetFriends"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetFriends($contentFilterBy: ContentFilterType, $offset: Int, $limit: Int) { listFriends(contentFilterBy: $contentFilterBy, offset: $offset, limit: $limit) { __typename status ResponseCode affectedRows { __typename userid img username slug biography visibilityStatus hasActiveReports updatedat } } }"#
+      #"query GetFriends($contentFilterBy: ContentFilterType, $userid: ID, $offset: Int, $limit: Int) { listFriends( contentFilterBy: $contentFilterBy userid: $userid offset: $offset limit: $limit ) { __typename status ResponseCode affectedRows { __typename userid img username slug biography visibilityStatus hasActiveReports updatedat } } }"#
     ))
 
   public var contentFilterBy: GraphQLNullable<GraphQLEnum<ContentFilterType>>
+  public var userid: GraphQLNullable<ID>
   public var offset: GraphQLNullable<Int>
   public var limit: GraphQLNullable<Int>
 
   public init(
     contentFilterBy: GraphQLNullable<GraphQLEnum<ContentFilterType>>,
+    userid: GraphQLNullable<ID>,
     offset: GraphQLNullable<Int>,
     limit: GraphQLNullable<Int>
   ) {
     self.contentFilterBy = contentFilterBy
+    self.userid = userid
     self.offset = offset
     self.limit = limit
   }
 
   public var __variables: Variables? { [
     "contentFilterBy": contentFilterBy,
+    "userid": userid,
     "offset": offset,
     "limit": limit
   ] }
@@ -38,6 +42,7 @@ public class GetFriendsQuery: GraphQLQuery {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("listFriends", ListFriends.self, arguments: [
         "contentFilterBy": .variable("contentFilterBy"),
+        "userid": .variable("userid"),
         "offset": .variable("offset"),
         "limit": .variable("limit")
       ]),
