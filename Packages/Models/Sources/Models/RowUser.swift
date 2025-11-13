@@ -16,8 +16,8 @@ public struct RowUser: Identifiable, Hashable {
     public let isFollowed: Bool
     public let isFollowing: Bool
 
-    public let hasActiveReports: Bool = true
-    public let visibilityStatus: ContentVisibilityStatus = .hidden
+    public let hasActiveReports: Bool
+    public let visibilityStatus: ContentVisibilityStatus
 
     public var imageURL: URL? {
         guard image != "" else { return nil }
@@ -30,7 +30,9 @@ public struct RowUser: Identifiable, Hashable {
         slug: Int,
         image: String,
         isFollowed: Bool,
-        isFollowing: Bool
+        isFollowing: Bool,
+        hasActiveReports: Bool = false,
+        visibilityStatus: ContentVisibilityStatus = .normal
     ) {
         self.id = id
         self.username = username
@@ -38,6 +40,8 @@ public struct RowUser: Identifiable, Hashable {
         self.image = image
         self.isFollowed = isFollowed
         self.isFollowing = isFollowing
+        self.hasActiveReports = hasActiveReports
+        self.visibilityStatus = visibilityStatus
     }
 
     public init?(gqlUser: GetFollowersQuery.Data.ListFollowRelations.AffectedRows.Follower) {
@@ -57,6 +61,8 @@ public struct RowUser: Identifiable, Hashable {
         self.image = image
         self.isFollowed = isFollowed
         self.isFollowing = isFollowing
+        self.hasActiveReports = gqlUser.hasActiveReports
+        self.visibilityStatus = .normalizedValue(gqlUser.visibilityStatus!.value)
     }
 
     public init?(gqlUser: GetFollowingsQuery.Data.ListFollowRelations.AffectedRows.Following) {
@@ -76,14 +82,17 @@ public struct RowUser: Identifiable, Hashable {
         self.image = image
         self.isFollowed = isFollowed
         self.isFollowing = isFollowing
+        self.hasActiveReports = gqlUser.hasActiveReports
+        self.visibilityStatus = .normalizedValue(gqlUser.visibilityStatus!.value)
     }
 
     public init?(gqlUser: GetFriendsQuery.Data.ListFriends.AffectedRow?) {
         guard
-            let id = gqlUser?.userid,
-            let username = gqlUser?.username,
-            let slug = gqlUser?.slug,
-            let image = gqlUser?.img
+            let gqlUser,
+            let id = gqlUser.userid,
+            let username = gqlUser.username,
+            let slug = gqlUser.slug,
+            let image = gqlUser.img
         else {
             return nil
         }
@@ -94,14 +103,17 @@ public struct RowUser: Identifiable, Hashable {
         self.image = image
         self.isFollowed = true
         self.isFollowing = true
+        self.hasActiveReports = gqlUser.hasActiveReports
+        self.visibilityStatus = .normalizedValue(gqlUser.visibilityStatus!.value)
     }
 
     public init?(gqlUser: SearchUserQuery.Data.SearchUser.AffectedRow?) {
         guard
-            let id = gqlUser?.id,
-            let username = gqlUser?.username,
-            let image = gqlUser?.img,
-            let slug = gqlUser?.slug
+            let gqlUser,
+            let id = gqlUser.id,
+            let username = gqlUser.username,
+            let slug = gqlUser.slug,
+            let image = gqlUser.img
         else {
             return nil
         }
@@ -112,6 +124,8 @@ public struct RowUser: Identifiable, Hashable {
         self.image = image
         self.isFollowed = false
         self.isFollowing = false
+        self.hasActiveReports = gqlUser.hasActiveReports
+        self.visibilityStatus = .normalizedValue(gqlUser.visibilityStatus!.value)
     }
 
     public init?(gqlUser: GetMyInviterQuery.Data.ReferralList.AffectedRows.InvitedBy) {
@@ -131,6 +145,8 @@ public struct RowUser: Identifiable, Hashable {
         self.image = image
         self.isFollowed = isFollowed
         self.isFollowing = isFollowing
+        self.hasActiveReports = gqlUser.hasActiveReports
+        self.visibilityStatus = .normalizedValue(gqlUser.visibilityStatus!.value)
     }
 
     public init?(gqlUser: GetMyReferredUsersQuery.Data.ReferralList.AffectedRows.IInvited) {
@@ -150,6 +166,8 @@ public struct RowUser: Identifiable, Hashable {
         self.image = image
         self.isFollowed = isFollowed
         self.isFollowing = isFollowing
+        self.hasActiveReports = gqlUser.hasActiveReports
+        self.visibilityStatus = .normalizedValue(gqlUser.visibilityStatus!.value)
     }
 
     public init?(gqlUser: GetBlockedUsersQuery.Data.ListBlockedUsers.AffectedRows.IBlocked) {
@@ -168,6 +186,8 @@ public struct RowUser: Identifiable, Hashable {
         self.image = image
         self.isFollowed = false
         self.isFollowing = false
+        self.hasActiveReports = false
+        self.visibilityStatus = .normalizedValue(gqlUser.visibilityStatus!.value)
     }
 
     public init?(gqlUser: PostInteractionsQuery.Data.PostInteractions.AffectedRow) {
@@ -187,6 +207,8 @@ public struct RowUser: Identifiable, Hashable {
         self.image = image
         self.isFollowed = isFollowed
         self.isFollowing = isFollowing
+        self.hasActiveReports = gqlUser.hasActiveReports
+        self.visibilityStatus = .normalizedValue(gqlUser.visibilityStatus!.value)
     }
 
     public init?(gqlUser: GetListOfAdsQuery.Data.ListAdvertisementPosts.AffectedRow.Advertisement.User) {
@@ -206,6 +228,8 @@ public struct RowUser: Identifiable, Hashable {
         self.image = image
         self.isFollowed = isFollowed
         self.isFollowing = isFollowing
+        self.hasActiveReports = gqlUser.hasActiveReports
+        self.visibilityStatus = .normalizedValue(gqlUser.visibilityStatus!.value)
     }
 
     public init?(gqlUser: GetAdsHistoryListQuery.Data.AdvertisementHistory.AffectedRows.Advertisement.User) {
@@ -225,6 +249,8 @@ public struct RowUser: Identifiable, Hashable {
         self.image = image
         self.isFollowed = isFollowed
         self.isFollowing = isFollowing
+        self.hasActiveReports = gqlUser.hasActiveReports
+        self.visibilityStatus = .normalizedValue(gqlUser.visibilityStatus!.value)
     }
 }
 

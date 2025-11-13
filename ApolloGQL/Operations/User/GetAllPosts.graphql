@@ -37,13 +37,18 @@ query GetAllPosts($filterBy: [PostFilterType!], $contentFilterBy: ContentFilterT
             issaved
             tags
             url
+            visibilityStatus
+            hasActiveReports
             user {
                 id
                 username
                 slug
                 img
+                visibilityStatus
+                hasActiveReports
                 isfollowed
                 isfollowing
+                isfriend
             }
         }
     }

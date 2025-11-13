@@ -405,12 +405,13 @@ public final class APIServiceGraphQL: APIService {
         }
     }
 
-    public func fetchUserFriends(after offset: Int) async -> Result<[RowUser], APIError> {
+    public func fetchUserFriends(for userID: String, after offset: Int) async -> Result<[RowUser], APIError> {
         do {
             let offensiveContentFilter =  UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")?.string(forKey: "offensiveContentFilter").flatMap(OffensiveContentFilter.init(rawValue:)) ?? .blocked
 
             let operation = GetFriendsQuery(
                 contentFilterBy: offensiveContentFilter.apiValue,
+                userid: GraphQLNullable(stringLiteral: userID),
                 offset: GraphQLNullable<Int>(integerLiteral: offset),
                 limit: 20
             )

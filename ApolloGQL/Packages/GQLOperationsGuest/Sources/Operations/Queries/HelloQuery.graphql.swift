@@ -7,7 +7,7 @@ public class HelloQuery: GraphQLQuery {
   public static let operationName: String = "Hello"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query Hello { hello { __typename currentuserid currentVersion wikiLink } }"#
+      #"query Hello { hello { __typename currentuserid currentVersion wikiLink companyAccountId } }"#
     ))
 
   public init() {}
@@ -36,11 +36,13 @@ public class HelloQuery: GraphQLQuery {
         .field("currentuserid", GQLOperationsGuest.ID?.self),
         .field("currentVersion", String?.self),
         .field("wikiLink", String?.self),
+        .field("companyAccountId", GQLOperationsGuest.ID?.self),
       ] }
 
       public var currentuserid: GQLOperationsGuest.ID? { __data["currentuserid"] }
       public var currentVersion: String? { __data["currentVersion"] }
       public var wikiLink: String? { __data["wikiLink"] }
+      public var companyAccountId: GQLOperationsGuest.ID? { __data["companyAccountId"] }
     }
   }
 }

@@ -38,8 +38,8 @@ public struct Post: Identifiable, Hashable {
 
     public let advertisement: Advertisement?
 
-    public let hasActiveReports: Bool = false
-    public let visibilityStatus: ContentVisibilityStatus = .hidden
+    public let hasActiveReports: Bool
+    public let visibilityStatus: ContentVisibilityStatus
 
     public var mediaURLs: [URL] {
         media.compactMap {
@@ -101,6 +101,8 @@ public struct Post: Identifiable, Hashable {
         self.url = gqlPost.url
         self.owner = postOwner
         advertisement = nil
+        self.hasActiveReports = gqlPost.hasActiveReports
+        self.visibilityStatus = .normalizedValue(gqlPost.visibilityStatus!.value)
     }
 
     public init?(gqlPost: GetPostByIdQuery.Data.ListPosts.AffectedRow) {
@@ -140,6 +142,8 @@ public struct Post: Identifiable, Hashable {
         self.url = gqlPost.url
         self.owner = postOwner
         advertisement = nil
+        self.hasActiveReports = gqlPost.hasActiveReports
+        self.visibilityStatus = .normalizedValue(gqlPost.visibilityStatus!.value)
     }
 
     public init?(gqlAdvertisement: GetListOfAdsQuery.Data.ListAdvertisementPosts.AffectedRow) {
@@ -181,6 +185,8 @@ public struct Post: Identifiable, Hashable {
         self.url = gqlPost.url
         self.owner = postOwner
         advertisement = Advertisement(gqlAdvertisement: gqlAdvertisement)
+        self.hasActiveReports = gqlPost.hasActiveReports
+        self.visibilityStatus = .normalizedValue(gqlPost.visibilityStatus!.value)
     }
 
     public init?(gqlPost: GetAdsHistoryListQuery.Data.AdvertisementHistory.AffectedRows.Advertisement.Post) {
@@ -220,6 +226,8 @@ public struct Post: Identifiable, Hashable {
         self.url = gqlPost.url
         self.owner = postOwner
         advertisement = nil
+        self.hasActiveReports = gqlPost.hasActiveReports
+        self.visibilityStatus = .normalizedValue(gqlPost.visibilityStatus!.value)
     }
 
     public init(
@@ -241,7 +249,9 @@ public struct Post: Identifiable, Hashable {
         isSaved: Bool,
         tags: [String],
         url: String,
-        owner: ObjectOwner
+        owner: ObjectOwner,
+        hasActiveReports: Bool = false,
+        visibilityStatus: ContentVisibilityStatus = .normal
     ) {
         self.id = id
         self.contentType = contentType
@@ -263,6 +273,8 @@ public struct Post: Identifiable, Hashable {
         self.url = url
         self.owner = owner
         advertisement = nil
+        self.hasActiveReports = hasActiveReports
+        self.visibilityStatus = visibilityStatus
     }
 }
 

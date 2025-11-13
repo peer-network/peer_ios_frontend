@@ -7,7 +7,7 @@ public class GetAllPostsQuery: GraphQLQuery {
   public static let operationName: String = "GetAllPosts"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetAllPosts($filterBy: [PostFilterType!], $contentFilterBy: ContentFilterType, $ignoreOption: IgnoreOption, $sortBy: PostSortType, $title: String, $tag: String, $from: Date, $to: Date, $offset: Int, $limit: Int, $commentOffset: Int, $commentLimit: Int, $postid: ID, $userid: ID) { listPosts( filterBy: $filterBy contentFilterBy: $contentFilterBy IgnorList: $ignoreOption commentLimit: $commentLimit commentOffset: $commentOffset limit: $limit offset: $offset to: $to from: $from tag: $tag title: $title sortBy: $sortBy postid: $postid userid: $userid ) { __typename status ResponseCode affectedRows { __typename id contenttype title media cover mediadescription createdat amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags url user { __typename id username slug img isfollowed isfollowing } } } }"#
+      #"query GetAllPosts($filterBy: [PostFilterType!], $contentFilterBy: ContentFilterType, $ignoreOption: IgnoreOption, $sortBy: PostSortType, $title: String, $tag: String, $from: Date, $to: Date, $offset: Int, $limit: Int, $commentOffset: Int, $commentLimit: Int, $postid: ID, $userid: ID) { listPosts( filterBy: $filterBy contentFilterBy: $contentFilterBy IgnorList: $ignoreOption commentLimit: $commentLimit commentOffset: $commentOffset limit: $limit offset: $offset to: $to from: $from tag: $tag title: $title sortBy: $sortBy postid: $postid userid: $userid ) { __typename status ResponseCode affectedRows { __typename id contenttype title media cover mediadescription createdat amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags url visibilityStatus hasActiveReports user { __typename id username slug img visibilityStatus hasActiveReports isfollowed isfollowing isfriend } } } }"#
     ))
 
   public var filterBy: GraphQLNullable<[GraphQLEnum<PostFilterType>]>
@@ -150,6 +150,8 @@ public class GetAllPostsQuery: GraphQLQuery {
           .field("issaved", Bool.self),
           .field("tags", [String?].self),
           .field("url", String.self),
+          .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>?.self),
+          .field("hasActiveReports", Bool.self),
           .field("user", User.self),
         ] }
 
@@ -172,6 +174,8 @@ public class GetAllPostsQuery: GraphQLQuery {
         public var issaved: Bool { __data["issaved"] }
         public var tags: [String?] { __data["tags"] }
         public var url: String { __data["url"] }
+        public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>? { __data["visibilityStatus"] }
+        public var hasActiveReports: Bool { __data["hasActiveReports"] }
         public var user: User { __data["user"] }
 
         /// ListPosts.AffectedRow.User
@@ -188,16 +192,22 @@ public class GetAllPostsQuery: GraphQLQuery {
             .field("username", String?.self),
             .field("slug", Int?.self),
             .field("img", String?.self),
+            .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>?.self),
+            .field("hasActiveReports", Bool.self),
             .field("isfollowed", Bool?.self),
             .field("isfollowing", Bool?.self),
+            .field("isfriend", Bool?.self),
           ] }
 
           public var id: GQLOperationsUser.ID { __data["id"] }
           public var username: String? { __data["username"] }
           public var slug: Int? { __data["slug"] }
           public var img: String? { __data["img"] }
+          public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>? { __data["visibilityStatus"] }
+          public var hasActiveReports: Bool { __data["hasActiveReports"] }
           public var isfollowed: Bool? { __data["isfollowed"] }
           public var isfollowing: Bool? { __data["isfollowing"] }
+          public var isfriend: Bool? { __data["isfriend"] }
         }
       }
     }

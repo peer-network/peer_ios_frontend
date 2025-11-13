@@ -16,8 +16,8 @@ public struct ObjectOwner: Identifiable, Hashable {
     public var isFollowing: Bool
     public var isFollowed: Bool
 
-    public let hasActiveReports: Bool = true
-    public let visibilityStatus: ContentVisibilityStatus = .hidden
+    public let hasActiveReports: Bool
+    public let visibilityStatus: ContentVisibilityStatus
 
     public var imageURL: URL? {
         URL(string: "\(Constants.mediaURL)\(image)")
@@ -29,7 +29,9 @@ public struct ObjectOwner: Identifiable, Hashable {
         slug: Int,
         image: String,
         isFollowing: Bool,
-        isFollowed: Bool
+        isFollowed: Bool,
+        hasActiveReports: Bool = false,
+        visibilityStatus: ContentVisibilityStatus = .normal
     ) {
         self.id = id
         self.username = username
@@ -37,6 +39,8 @@ public struct ObjectOwner: Identifiable, Hashable {
         self.image = image
         self.isFollowing = isFollowing
         self.isFollowed = isFollowed
+        self.hasActiveReports = hasActiveReports
+        self.visibilityStatus = visibilityStatus
     }
 
     public init?(gqlUser: GetPostCommentsQuery.Data.ListPosts.AffectedRow.Comment.User) {
@@ -56,6 +60,8 @@ public struct ObjectOwner: Identifiable, Hashable {
         self.image = image
         self.isFollowed = isFollowed
         self.isFollowing = isFollowing
+        self.hasActiveReports = gqlUser.hasActiveReports
+        self.visibilityStatus = .normalizedValue(gqlUser.visibilityStatus!.value)
     }
 
     public init?(gqlUser: GetAllPostsQuery.Data.ListPosts.AffectedRow.User) {
@@ -75,6 +81,8 @@ public struct ObjectOwner: Identifiable, Hashable {
         self.image = image
         self.isFollowed = isFollowed
         self.isFollowing = isFollowing
+        self.hasActiveReports = gqlUser.hasActiveReports
+        self.visibilityStatus = .normalizedValue(gqlUser.visibilityStatus!.value)
     }
 
     public init?(gqlUser: GetPostByIdQuery.Data.ListPosts.AffectedRow.User) {
@@ -94,6 +102,8 @@ public struct ObjectOwner: Identifiable, Hashable {
         self.image = image
         self.isFollowed = isFollowed
         self.isFollowing = isFollowing
+        self.hasActiveReports = gqlUser.hasActiveReports
+        self.visibilityStatus = .normalizedValue(gqlUser.visibilityStatus!.value)
     }
 
     public init?(gqlUser: CreateCommentMutation.Data.CreateComment.AffectedRow.User) {
@@ -113,6 +123,8 @@ public struct ObjectOwner: Identifiable, Hashable {
         self.image = image
         self.isFollowed = isFollowed
         self.isFollowing = isFollowing
+        self.hasActiveReports = gqlUser.hasActiveReports
+        self.visibilityStatus = .normalizedValue(gqlUser.visibilityStatus!.value)
     }
 
     public init?(gqlUser: GetListOfAdsQuery.Data.ListAdvertisementPosts.AffectedRow.Post.User) {
@@ -132,6 +144,8 @@ public struct ObjectOwner: Identifiable, Hashable {
         self.image = image
         self.isFollowed = isFollowed
         self.isFollowing = isFollowing
+        self.hasActiveReports = gqlUser.hasActiveReports
+        self.visibilityStatus = .normalizedValue(gqlUser.visibilityStatus!.value)
     }
 
     public init?(gqlUser: GetAdsHistoryListQuery.Data.AdvertisementHistory.AffectedRows.Advertisement.Post.User) {
@@ -151,6 +165,8 @@ public struct ObjectOwner: Identifiable, Hashable {
         self.image = image
         self.isFollowed = isFollowed
         self.isFollowing = isFollowing
+        self.hasActiveReports = gqlUser.hasActiveReports
+        self.visibilityStatus = .normalizedValue(gqlUser.visibilityStatus!.value)
     }
 }
 
