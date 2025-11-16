@@ -46,6 +46,7 @@ struct AdHistoryEarningsView: View {
                     .blur(radius: 10)
             }
             .ignoresSafeArea()
+            .allowsHitTesting(false)
         }
         .background(Colors.inactiveDark)
         .clipShape(RoundedRectangle(cornerRadius: 25))
