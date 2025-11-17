@@ -50,7 +50,7 @@ struct PostDescriptionComment: View {
                     Button {
                         postVM.showComments()
                     } label: {
-                        Text("^[\(postVM.amountComments) comment](inflect: true) more...")
+                        Text("^[\(postVM.amountComments) comment](inflect: true)...")
                             .foregroundStyle(Colors.whiteSecondary)
                             .contentShape(.rect)
                     }
@@ -71,15 +71,6 @@ struct PostDescriptionComment: View {
         }
     }
 }
-
-
-
-
-
-
-
-
-import SwiftUI
 
 struct CollapsibleTextView: View {
     let attributedText: AttributedString
