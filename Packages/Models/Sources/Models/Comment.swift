@@ -19,8 +19,8 @@ public struct Comment: Identifiable, Hashable {
     public let createdAt: String
     public let user: ObjectOwner
 
-    public let hasActiveReports: Bool = true
-    public let visibilityStatus: ContentVisibilityStatus = .normal
+    public let hasActiveReports: Bool
+    public let visibilityStatus: ContentVisibilityStatus
 
     public var formattedCreatedAt: String {
         return createdAt.timeAgo(isShort: true)
@@ -35,7 +35,9 @@ public struct Comment: Identifiable, Hashable {
         amountLikes: Int,
         isLiked: Bool,
         createdAt: String,
-        user: ObjectOwner
+        user: ObjectOwner,
+        hasActiveReports: Bool = false,
+        visibilityStatus: ContentVisibilityStatus = .normal
     ) {
         self.id = id
         self.userId = userId
@@ -46,6 +48,8 @@ public struct Comment: Identifiable, Hashable {
         self.isLiked = isLiked
         self.createdAt = createdAt
         self.user = user
+        self.hasActiveReports = hasActiveReports
+        self.visibilityStatus = visibilityStatus
     }
 
     public init?(gqlComment: GetPostCommentsQuery.Data.ListPosts.AffectedRow.Comment) {
@@ -65,6 +69,8 @@ public struct Comment: Identifiable, Hashable {
         self.isLiked = gqlComment.isliked
         self.createdAt = gqlComment.createdat
         self.user = user
+        self.hasActiveReports = gqlComment.hasActiveReports
+        self.visibilityStatus = .normalizedValue(gqlComment.visibilityStatus!.value)
     }
 
     public init?(gqlComment: CreateCommentMutation.Data.CreateComment.AffectedRow) {
@@ -84,6 +90,8 @@ public struct Comment: Identifiable, Hashable {
         self.isLiked = gqlComment.isliked
         self.createdAt = gqlComment.createdat
         self.user = user
+        self.hasActiveReports = gqlComment.hasActiveReports
+        self.visibilityStatus = .normalizedValue(gqlComment.visibilityStatus!.value)
     }
 }
 
