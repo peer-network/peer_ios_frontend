@@ -136,20 +136,9 @@ public struct PostView: View {
                         .layoutPriority(-1)
 
                     if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.visibilityStatus == .hidden {
-                        Text("Hidden") // TODO: Apply designs after they are fixed
-                            .appFont(.smallLabelRegular)
-                            .lineLimit(1)
-                            .foregroundStyle(Colors.whiteSecondary)
+                        HiddenBadgeView()
                     } else if postVM.post.hasActiveReports {
-                        Text("Reported") // TODO: Apply designs after they are fixed
-                            .appFont(.smallLabelRegular)
-                            .lineLimit(1)
-                            .foregroundStyle(Colors.redAccent)
-                    } else if let advertiser = postVM.post.advertisement?.adOwner.username {
-                        Text("Pin by ***\(advertiser)***")
-                            .appFont(.smallLabelRegular)
-                            .lineLimit(1)
-                            .foregroundStyle(Colors.whitePrimary)
+                        ReportedBadgeView()
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -214,11 +203,10 @@ public struct PostView: View {
                         .frame(maxWidth: .infinity)
                         .layoutPriority(-1)
 
-                    if let advertiser = postVM.post.advertisement?.adOwner.username {
-                        Text("Pin by ***\(advertiser)***")
-                            .appFont(.smallLabelRegular)
-                            .lineLimit(1)
-                            .foregroundStyle(Colors.whitePrimary)
+                    if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.visibilityStatus == .hidden {
+                        HiddenBadgeView()
+                    } else if postVM.post.hasActiveReports {
+                        ReportedBadgeView()
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -261,11 +249,10 @@ public struct PostView: View {
                         .frame(maxWidth: .infinity)
                         .layoutPriority(-1)
 
-                    if let advertiser = postVM.post.advertisement?.adOwner.username {
-                        Text("Pin by ***\(advertiser)***")
-                            .appFont(.smallLabelRegular)
-                            .lineLimit(1)
-                            .foregroundStyle(Colors.whitePrimary)
+                    if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.visibilityStatus == .hidden {
+                        HiddenBadgeView()
+                    } else if postVM.post.hasActiveReports {
+                        ReportedBadgeView()
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)

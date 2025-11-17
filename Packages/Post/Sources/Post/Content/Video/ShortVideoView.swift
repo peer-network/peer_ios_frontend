@@ -304,17 +304,10 @@ struct ShortVideoView2: View {
     private func reelDetailsView() -> some View {
         HStack(alignment: .bottom, spacing: 5) {
             VStack(alignment: .leading, spacing: 10) {
-                if let advertiser = postVM.post.advertisement?.adOwner.username {
-                    Text("Pin by ***\(advertiser)***")
-                        .appFont(.smallLabelRegular)
-                        .lineLimit(1)
-                        .foregroundStyle(Colors.whitePrimary)
-                        .padding(.vertical, 5)
-                        .padding(.horizontal, 10)
-                        .background {
-                            RoundedRectangle(cornerRadius: 15)
-                                .foregroundStyle(Colors.version)
-                        }
+                if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.visibilityStatus == .hidden {
+                    HiddenBadgeView()
+                } else if postVM.post.hasActiveReports {
+                    ReportedBadgeView()
                 }
 
                 PostDescriptionComment(postVM: postVM, isInFeed: false)
