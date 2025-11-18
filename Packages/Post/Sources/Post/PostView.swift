@@ -27,8 +27,6 @@ public struct PostView: View {
     @State private var showAppleTranslation: Bool = false
     @State private var shareSheetHeight: Double = 20
 
-    @State private var showSensitiveContentWarning: Bool = false
-
     private let displayType: DisplayType
     private let showFollowButton: Bool
 
@@ -103,11 +101,6 @@ public struct PostView: View {
         .addTranslateView(
             isPresented: $showAppleTranslation, text: "\(postVM.post.title)\n\n\(postVM.description ?? "")"
         )
-        .onFirstAppear {
-            if !reasons.contains(.placeholder), !AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.visibilityStatus == .hidden {
-                showSensitiveContentWarning = true
-            }
-        }
     }
 
     private func textPost() -> some View {
@@ -115,7 +108,7 @@ public struct PostView: View {
             PostHeaderView(postVM: postVM, showAppleTranslation: $showAppleTranslation, showFollowButton: showFollowButton)
 
             TextContent(postVM: postVM)
-                .ifCondition(showSensitiveContentWarning) {
+                .ifCondition(postVM.showSensitiveContentWarning) {
                     $0
                         .allowsHitTesting(false)
                         .blur(radius: 15)
@@ -182,7 +175,7 @@ public struct PostView: View {
                         )
                     }
                 }
-                .ifCondition(showSensitiveContentWarning) {
+                .ifCondition(postVM.showSensitiveContentWarning) {
                     $0
                         .allowsHitTesting(false)
                         .blur(radius: 25)
@@ -229,7 +222,7 @@ public struct PostView: View {
 
                 AudioContent(postVM: postVM)
             }
-            .ifCondition(showSensitiveContentWarning) {
+            .ifCondition(postVM.showSensitiveContentWarning) {
                 $0
                     .allowsHitTesting(false)
                     .blur(radius: 15)
@@ -401,7 +394,7 @@ public struct PostView: View {
             let showButtonConfig = StateButtonConfig(buttonSize: .small, buttonType: .teritary, title: "Show")
             StateButton(config: showButtonConfig) {
                 withAnimation {
-                    showSensitiveContentWarning = false
+                    postVM.showSensitiveContentWarning = false
                 }
             }
             .fixedSize()
@@ -431,7 +424,7 @@ public struct PostView: View {
             let showButtonConfig = StateButtonConfig(buttonSize: .small, buttonType: .teritary, title: "View content")
             StateButton(config: showButtonConfig) {
                 withAnimation {
-                    showSensitiveContentWarning = false
+                    postVM.showSensitiveContentWarning = false
                 }
             }
             .fixedSize()

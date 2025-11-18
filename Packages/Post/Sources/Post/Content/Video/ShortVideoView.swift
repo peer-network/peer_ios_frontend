@@ -116,7 +116,7 @@ struct ShortVideoView2: View {
                             setupPlayer()
                         }
 
-                        if scenePhase == .active && !pausedByUser {
+                        if scenePhase == .active, !pausedByUser {
                             playPause(offsetKeyValue)
                         }
                     }
@@ -124,6 +124,8 @@ struct ShortVideoView2: View {
                         cleanupPlayer()
                     }
                     .onChange(of: scenePhase) {
+                        guard !postVM.showSensitiveContentWarning, !postVM.showIllegalBlur else { return }
+
                         switch scenePhase {
                             case .active:
                                 if !pausedByUser {
@@ -172,6 +174,16 @@ struct ShortVideoView2: View {
                                 text: error.userFriendlyDescription
                             )
                         }
+                    }
+                    .ifCondition(postVM.showSensitiveContentWarning) { // TODO: ADD COVER IMAGE AND BLUR IT HERE BECAUSE OF RERENDERING
+                        $0
+                            .allowsHitTesting(false)
+                            .blur(radius: 25)
+                            .overlay {
+                                sensitiveContentWarningForVideoPostView
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                            }
+                            .clipped()
                     }
             }
             .overlay(alignment: .top) {
@@ -282,6 +294,8 @@ struct ShortVideoView2: View {
     // MARK: - Play/Pause Logic Based on Offset
 
     private func playPause(_ rect: CGRect) {
+        guard !postVM.showSensitiveContentWarning, !postVM.showIllegalBlur else { return }
+
         let visibleHeight = max(0, min(rect.height, size.height - rect.minY, rect.maxY))
         let visibilityHeightRatio = max(0, min(visibleHeight / rect.height, 1))
 
@@ -583,5 +597,37 @@ struct ShortVideoView2: View {
         let coversToEnd    = abs(end   - totalDuration) < eps
 
         showBottomSeekerView = (coversFromZero && coversToEnd)
+    }
+
+    private var sensitiveContentWarningForVideoPostView: some View {
+        VStack(spacing: 0) {
+            Circle()
+                .frame(height: 50)
+                .foregroundStyle(Colors.whitePrimary.opacity(0.2))
+                .overlay {
+                    IconsNew.eyeWithSlash
+                        .iconSize(height: 27)
+                        .foregroundStyle(Colors.whitePrimary)
+                }
+                .padding(.bottom, 14.02)
+
+            Text("Sensitive content")
+                .appFont(.largeTitleBold)
+
+            Text("This content may be sensitive or abusive.\nDo you want to view it anyway?")
+                .appFont(.bodyRegular)
+                .padding(.bottom, 10)
+
+            let showButtonConfig = StateButtonConfig(buttonSize: .small, buttonType: .teritary, title: "View content")
+            StateButton(config: showButtonConfig) {
+                withAnimation {
+                    postVM.showSensitiveContentWarning = false
+                }
+                playPause(offsetKeyValue)
+            }
+            .fixedSize()
+        }
+        .multilineTextAlignment(.center)
+        .foregroundStyle(Colors.whitePrimary)
     }
 }

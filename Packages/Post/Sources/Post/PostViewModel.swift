@@ -81,6 +81,9 @@ public final class PostViewModel: ObservableObject {
 
     @Published var showShareSheet = false
 
+    @Published var showSensitiveContentWarning: Bool
+    public let showIllegalBlur: Bool
+
     public init(post: Post) {
         self.post = post
 
@@ -96,6 +99,14 @@ public final class PostViewModel: ObservableObject {
         amountComments = post.amountComments
 
         attributedTitle = post.title.createAttributedString()
+
+        showIllegalBlur = post.visibilityStatus == .illegal
+
+//        if !AccountManager.shared.isCurrentUser(id: post.owner.id), post.visibilityStatus == .hidden {
+            showSensitiveContentWarning = true
+//        } else {
+//            showSensitiveContentWarning = false
+//        }
 
         if post.contentType == .text {
             fetchTextPostBody()

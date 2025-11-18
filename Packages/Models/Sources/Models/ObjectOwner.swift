@@ -183,6 +183,15 @@ extension ObjectOwner {
     }
     
     public static func placeholders(count: Int = 10) -> [ObjectOwner] {
-        return Array(repeating: .placeholder(), count: count)
+        return (0..<count).map { _ in
+            ObjectOwner(
+                id: UUID().uuidString,
+                username: "Ender Peer",
+                slug: 23910,
+                image: "",
+                isFollowing: false,
+                isFollowed: false
+            )
+        }
     }
 }
