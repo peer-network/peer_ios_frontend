@@ -27,7 +27,6 @@ public struct BlockedUsersPageView: View {
             viewModel.apiService = apiManager.apiService
             viewModel.getMyBlockedUsers(reset: true)
         }
-        // TODO: Add screen tracking
     }
 
     private var pageContent: some View {

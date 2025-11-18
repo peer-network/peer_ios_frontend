@@ -22,6 +22,9 @@ final class AudioFeedViewModel: ObservableObject, PostsFetcher {
     private var hasMorePosts: Bool = true
     private var posts: [Post] = []
 
+    private var currentOffsetAds: Int = 0
+    private var hasMoreAds: Bool = true
+
     init(userId: String) {
         self.userId = userId
     }
@@ -44,10 +47,28 @@ final class AudioFeedViewModel: ObservableObject, PostsFetcher {
 
             currentOffset = 0
             hasMorePosts = true
+
+            currentOffsetAds = 0
+            hasMoreAds = true
         }
 
         fetchTask = Task {
             do {
+                if hasMoreAds {
+                    let advertisements = try await fetchAdvertisements()
+
+                    if reset {
+                        posts.removeAll()
+                    }
+
+                    posts.append(contentsOf: advertisements)
+                    
+                    if hasMoreAds {
+                        fetchTask = nil
+                        return
+                    }
+                }
+                
                 let result = await apiService.fetchPosts(
                     with: .audio,
                     sort: .newest,
@@ -63,9 +84,9 @@ final class AudioFeedViewModel: ObservableObject, PostsFetcher {
 
                 switch result {
                 case .success(let fetchedPosts):
-                    if reset {
-                        posts.removeAll()
-                    }
+//                    if reset {
+//                        posts.removeAll()
+//                    }
 
                     posts.append(contentsOf: fetchedPosts)
 
@@ -88,6 +109,24 @@ final class AudioFeedViewModel: ObservableObject, PostsFetcher {
 
             // Reset fetchTask to nil when done
             fetchTask = nil
+        }
+    }
+
+    private func fetchAdvertisements() async throws -> [Post] {
+        let result = await apiService.getListOfAds(userID: userId, with: .audio, after: currentOffsetAds, amount: Constants.postsFetchLimit)
+
+        try Task.checkCancellation()
+
+        switch result {
+            case .success(let fetchedAds):
+                if fetchedAds.count != Constants.postsFetchLimit {
+                    hasMoreAds = false
+                } else {
+                    currentOffsetAds += Constants.postsFetchLimit
+                }
+                return fetchedAds
+            case .failure(let apiError):
+                throw apiError
         }
     }
 }

@@ -103,10 +103,12 @@ public struct ConstantsConfig: Codable {
     public struct Tokenomics: Codable {
         public let actionTokenPrices: ActionTokenPrices
         public let actionGemsReturn: ActionGemsReturn
+        public let fees: Fees
 
         public enum CodingKeys: String, CodingKey {
             case actionTokenPrices = "ACTION_TOKEN_PRICES"
             case actionGemsReturn = "ACTION_GEMS_RETURNS"
+            case fees = "FEES"
         }
 
         public struct ActionTokenPrices: Codable {
@@ -114,6 +116,8 @@ public struct ConstantsConfig: Codable {
             public let like: Double
             public let comment: Double
             public let dislike: Double
+            public let advertisementBasic: Double
+            public let advertisementPinned: Double
         }
 
         public struct ActionGemsReturn: Codable {
@@ -121,6 +125,18 @@ public struct ConstantsConfig: Codable {
             public let like: Double
             public let comment: Double
             public let dislike: Double
+        }
+
+        public struct Fees: Codable {
+            public let invitation: Double
+            public let peer: Double
+            public let burn: Double
+
+            public enum CodingKeys: String, CodingKey {
+                case invitation = "INVITATION"
+                case peer = "PEER"
+                case burn = "BURN"
+            }
         }
     }
 

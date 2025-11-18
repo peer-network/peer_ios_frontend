@@ -215,7 +215,19 @@ public final class APIServiceStub: APIService {
     }
 
     //MARK: Advertisements
-    public func getListOfAds(with contentType: PostContentType, after offset: Int, amount: Int) async -> Result<[Post], APIError> {
+    public func getListOfAds(userID: String?, with contentType: PostContentType, after offset: Int, amount: Int) async -> Result<[Post], APIError> {
+        .failure(.missingData)
+    }
+
+    public func getAdsHistoryList(userID: String, after offset: Int, amount: Int) async -> Result<[SingleAdStats], APIError> {
+        .failure(.missingData)
+    }
+
+    public func getAdsHistoryStats(userID: String) async -> Result<AdsStats, APIError> {
+        .failure(.missingData)
+    }
+
+    public func promotePostPinned(for postID: String) async -> Result<String, APIError> {
         .failure(.missingData)
     }
 }

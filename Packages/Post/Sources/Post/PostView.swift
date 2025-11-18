@@ -119,12 +119,12 @@ public struct PostView: View {
                         .frame(maxWidth: .infinity)
                         .layoutPriority(-1)
 
-                    if let advertiser = postVM.post.advertisement?.adOwner.username {
-                        Text("Pin by ***\(advertiser)***")
-                            .appFont(.smallLabelRegular)
-                            .lineLimit(1)
-                            .foregroundStyle(Colors.whitePrimary)
-                    }
+//                    if let advertiser = postVM.post.advertisement?.adOwner.username {
+//                        Text("Pin by ***\(advertiser)***")
+//                            .appFont(.smallLabelRegular)
+//                            .lineLimit(1)
+//                            .foregroundStyle(Colors.whitePrimary)
+//                    }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(10)
@@ -178,12 +178,12 @@ public struct PostView: View {
                         .frame(maxWidth: .infinity)
                         .layoutPriority(-1)
 
-                    if let advertiser = postVM.post.advertisement?.adOwner.username {
-                        Text("Pin by ***\(advertiser)***")
-                            .appFont(.smallLabelRegular)
-                            .lineLimit(1)
-                            .foregroundStyle(Colors.whitePrimary)
-                    }
+//                    if let advertiser = postVM.post.advertisement?.adOwner.username {
+//                        Text("Pin by ***\(advertiser)***")
+//                            .appFont(.smallLabelRegular)
+//                            .lineLimit(1)
+//                            .foregroundStyle(Colors.whitePrimary)
+//                    }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 20)
@@ -194,13 +194,6 @@ public struct PostView: View {
         }
         .padding(.vertical, 10)
         .geometryGroup()
-        //        .contextMenu {
-        //            Button {
-        //                //
-        //            } label: {
-        //                Text("Report")
-        //            }
-        //        }
     }
 
     private func audioPost() -> some View {
@@ -221,12 +214,12 @@ public struct PostView: View {
                         .frame(maxWidth: .infinity)
                         .layoutPriority(-1)
 
-                    if let advertiser = postVM.post.advertisement?.adOwner.username {
-                        Text("Pin by ***\(advertiser)***")
-                            .appFont(.smallLabelRegular)
-                            .lineLimit(1)
-                            .foregroundStyle(Colors.whitePrimary)
-                    }
+//                    if let advertiser = postVM.post.advertisement?.adOwner.username {
+//                        Text("Pin by ***\(advertiser)***")
+//                            .appFont(.smallLabelRegular)
+//                            .lineLimit(1)
+//                            .foregroundStyle(Colors.whitePrimary)
+//                    }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(10)
@@ -243,6 +236,7 @@ public struct PostView: View {
                             .overlay {
                                 Gradients.blackHover
                             }
+                            .allowsHitTesting(false)
                     } else {
                         Colors.textActive
                     }

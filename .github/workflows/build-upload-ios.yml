@@ -53,7 +53,6 @@ jobs:
           SIGNING_KEY_FILE_PATH: signing-cert.p12
           FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: "120"
           FASTLANE_XCODEBUILD_SETTINGS_RETRIES: "4"
-          INTERNAL_TF_GROUPS: ${{ secrets.INTERNAL_TF_GROUPS }}
         run: bundle exec fastlane build_upload_testflight
 
       - name: Upload ipa & dSYMs to artifacts

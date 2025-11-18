@@ -23,6 +23,16 @@ public enum RouterDestination: Hashable {
     case blockedUsers
     case deleteAccount
     case commentLikes(comment: Comment)
+
+    case promotePost(flowID: UUID, step: PromotePostStep)
+
+    case adsHistoryOverview
+    case adsHistoryDetails(ad: SingleAdStats)
+}
+
+public enum PromotePostStep: Hashable {
+    case config
+    case checkout
 }
 
 public enum FullScreenCoverDestination: Hashable, Identifiable {

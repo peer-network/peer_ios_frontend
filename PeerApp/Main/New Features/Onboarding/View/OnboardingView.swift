@@ -740,7 +740,7 @@ private struct OnboardingFifthPageView: View {
                 RoundedRectangle(cornerRadius: 23)
                     .foregroundStyle(Colors.inactiveDark)
                     .overlay {
-                        usageTileView(title: "Boost your content", description: "Coming soon...", icon: Icons.ad)
+                        usageTileView(title: "Boost your content", icon: Icons.ad)
                     }
             }
             .frame(height: 180)

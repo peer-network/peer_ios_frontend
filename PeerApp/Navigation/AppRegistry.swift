@@ -19,7 +19,7 @@ import Post
 import TokenKeychainManager
 
 extension View {
-    func withAppRouter() -> some View {
+    func withAppRouter(appState: AppState, apiServiceManager: APIServiceManager, router: Router) -> some View {
         navigationDestination(for: RouterDestination.self) { destination in
             switch destination {
                 case .accountDetail(let id):
@@ -111,6 +111,15 @@ extension View {
                         .toolbar(.hidden, for: .navigationBar)
                 case .commentLikes(let comment):
                     CommentLikesListView(comment: comment)
+                        .toolbar(.hidden, for: .navigationBar)
+                case .promotePost(let flowID, let step):
+                    PromotePostStepView(flowID: flowID, step: step)
+                           .toolbar(.hidden, for: .navigationBar)
+                case .adsHistoryOverview:
+                    AdHistoryOverviewView(viewModel: .init(apiService: apiServiceManager.apiService))
+                        .toolbar(.hidden, for: .navigationBar)
+                case .adsHistoryDetails(let ad):
+                    AdHistoryAdDetailView(ad: ad)
                         .toolbar(.hidden, for: .navigationBar)
             }
         }

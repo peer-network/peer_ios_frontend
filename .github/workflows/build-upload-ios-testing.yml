@@ -1,0 +1,81 @@
+name: iOS Testing build & upload (manual)
+ 
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Git ref (branch, tag or SHA) to build"
+        required: false
+        default: ""
+      scheme:
+        description: "Xcode scheme to build"
+        required: false
+        default: "PeerAppStaging"
+      configuration:
+        description: "Xcode build configuration"
+        required: false
+        default: "Staging"
+
+concurrency:
+  group: ios-deploy-alt-${{ github.run_id }}
+  cancel-in-progress: true
+ 
+jobs:
+  deploy:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.ref || github.ref }}
+
+      - name: Select Xcode version
+        run: sudo xcode-select -s /Applications/Xcode_16.4.app
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.1.4
+          bundler-cache: true
+
+      - name: Decode signing certificate into a file
+        env:
+          CERTIFICATE_BASE64: ${{ secrets.IOS_DIST_SIGNING_KEY }}
+        run: |
+          set -euo pipefail
+          test -n "$CERTIFICATE_BASE64"
+          echo "$CERTIFICATE_BASE64" | base64 --decode > signing-cert.p12
+
+      - name: Create GoogleService-Info.plist
+        env:
+          GOOGLE_SERVICES_INFO_BASE64: ${{ secrets.GOOGLE_SERVICES_INFO_BASE64 }}
+        run: |
+          set -euo pipefail
+          test -n "$GOOGLE_SERVICES_INFO_BASE64"
+          echo "$GOOGLE_SERVICES_INFO_BASE64" | base64 --decode > PeerApp/GoogleService-Info.plist
+          ls -la PeerApp/GoogleService-Info.plist
+
+      - name: Build & upload iOS binary (ALT)
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_PRIVATE_KEY: ${{ secrets.ASC_PRIVATE_KEY }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.IOS_DIST_SIGNING_KEY_PASSWORD }}
+          SIGNING_KEY_FILE_PATH: signing-cert.p12
+          FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT: "120"
+          FASTLANE_XCODEBUILD_SETTINGS_RETRIES: "4"
+          ALT_APP_IDENTIFIER: "eu.peernetwork.PeerApp.Staging"
+          ALT_EXTENSION_IDENTIFIER: "eu.peernetwork.PeerApp.Staging.PayloadModification"
+        run: |
+          bundle exec fastlane build_upload_testflight_alt \
+            scheme:"${{ github.event.inputs.scheme }}" \
+            configuration:"${{ github.event.inputs.configuration }}"
+
+      - name: Upload ipa & dSYMs to artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: alt-testflight ipa & dsyms
+          path: |
+            ${{ github.workspace }}/build/PeerAppTesting.ipa
+            ${{ github.workspace }}/build/*.app.dSYM.zip

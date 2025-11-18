@@ -275,7 +275,7 @@ struct TransferFailedView: View {
 
             HStack(spacing: 10) {
                 Button {
-                    router.path.removeAll()
+                    router.emptyPath()
                 } label: {
                     Text("Back to Wallet")
                         .padding(10)

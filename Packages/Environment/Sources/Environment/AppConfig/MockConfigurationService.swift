@@ -80,8 +80,9 @@ class MockConfigurationService: ConfigurationServiceProtocol {
                 user: .init(username: .init(minLength: 3, maxLength: 23, pattern: "^[a-zA-Z0-9_-]+$"), password: .init(minLength: 8, maxLength: 128, pattern: "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).+$"), biography: .init(minLength: 3, maxLength: 5000)),
                 dailyFree: .init(dailyFreeActions: .init(post: 1, like: 3, comment: 4, dislike: 0)),
                 tokenomics: .init(
-                    actionTokenPrices: .init(post: 20, like: 3, comment: 3, dislike: 1),
-                    actionGemsReturn: .init(view: 0.25, like: 5, comment: -3, dislike: 2)
+                    actionTokenPrices: .init(post: 20, like: 3, comment: 3, dislike: 1, advertisementBasic: 50, advertisementPinned: 200),
+                    actionGemsReturn: .init(view: 0.25, like: 5, comment: -3, dislike: 2),
+                    fees: .init(invitation: 0.01, peer: 0.02, burn: 0.01)
                 ),
                 minting: .init(dailyNumberTokens: 5000)
             )

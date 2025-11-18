@@ -12,6 +12,9 @@ import PostCreation
 struct PostCreationTab: View {
     @Environment(\.selectedTabEmptyPath) private var selectedTabEmptyPath
 
+    @EnvironmentObject private var appState: AppState
+    @EnvironmentObject private var apiManager: APIServiceManager
+
     @StateObject private var router = Router()
 
     var body: some View {
@@ -19,7 +22,7 @@ struct PostCreationTab: View {
 //            PostCreationView()
             PostCreationMainView()
                 .toolbar(.hidden, for: .navigationBar)
-                .withAppRouter()
+                .withAppRouter(appState: appState, apiServiceManager: apiManager, router: router)
                 .withSheetDestinations(sheetDestinations: $router.presentedSheet)
                 .onChange(of: selectedTabEmptyPath) {
                     if selectedTabEmptyPath == 2, !router.path.isEmpty {

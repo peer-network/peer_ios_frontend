@@ -11,10 +11,9 @@ import Environment
 import Models
 
 struct AdCheckoutView: View {
-    @EnvironmentObject private var accountManager: AccountManager
-
     @ObservedObject var viewModel: AdViewModel
-    private let balance = 3500.524 // TODO: Take it from user manager
+    let onBack: () -> Void
+    let onPay:  () async -> Void
 
     @State private var expandDistribution: Bool = false
 
@@ -29,17 +28,20 @@ struct AdCheckoutView: View {
     private var content: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
+                Text("Promote your post")
+                    .appFont(.largeTitleBold)
+                    .foregroundStyle(Colors.whitePrimary)
+
                 availableTokensView
 
                 pricingView
 
-                Text(viewModel.hasEnoughTokens ? "All set! Your ad is ready to go - click 'Pay' to lunch your ad." : "You don’t have enough Peer Tokens to start this promotion.")
+                Text(viewModel.hasEnoughTokens ? "Ready to launch? Click 'Pay' to promote your post." : "You don’t have enough Peer Tokens to start this promotion.")
                     .appFont(.bodyRegular)
                     .multilineTextAlignment(.leading)
                     .foregroundStyle(viewModel.hasEnoughTokens ? Colors.whiteSecondary : Colors.redAccent)
             }
-            .padding(.horizontal, 20)
-            .padding(.top, 20)
+            .padding(20)
             .padding(.bottom, ButtonSize.large.height + 20)
         }
         .scrollIndicators(.hidden)
@@ -47,11 +49,11 @@ struct AdCheckoutView: View {
             HStack(spacing: 10) {
                 let clearButtonConfig = StateButtonConfig(buttonSize: .large, buttonType: .teritary, title: "Back")
 
-                StateButton(config: clearButtonConfig, action: {})
+                StateButton(config: clearButtonConfig, action: onBack)
 
                 let postButtonConfig = StateButtonConfig(buttonSize: .large, buttonType: .primary, title: "Pay")
 
-                StateButton(config: postButtonConfig, action: {})
+                AsyncStateButton(config: postButtonConfig, action: onPay)
                     .disabled(!viewModel.hasEnoughTokens)
             }
             .padding(.bottom, 20)
@@ -72,7 +74,7 @@ struct AdCheckoutView: View {
     private var pricingView: some View {
         VStack(alignment: .leading, spacing: 20) {
             HStack(spacing: 0) {
-                Text("Checkout")
+                Text("Promotion cost")
                     .appFont(.largeTitleRegular)
 
                 Spacer()
@@ -81,7 +83,7 @@ struct AdCheckoutView: View {
                     .layoutPriority(-1)
 
                 HStack(spacing: 10) {
-                    Text(viewModel.pinAdvertisementPrice, format: .number)
+                    Text(viewModel.adPrice, format: .number)
                         .appFont(.extraLargeTitleBold)
 
                     Icons.logoCircleWhite
@@ -99,7 +101,7 @@ struct AdCheckoutView: View {
                 }
             } label: {
                 HStack(spacing: 0) {
-                    Text("Token distribution")
+                    Text("Fees included")
                         .appFont(.bodyRegular)
 
                     Spacer()
@@ -117,7 +119,7 @@ struct AdCheckoutView: View {
             if expandDistribution {
                 VStack(alignment: .leading, spacing: 15) {
                     HStack(spacing: 0) {
-                        Text("96% Burn account")
+                        Text("Peer Bank (\(viewModel.peerFee.percent)%)")
                             .appFont(.bodyRegular)
                             .foregroundStyle(Colors.whiteSecondary)
 
@@ -127,7 +129,7 @@ struct AdCheckoutView: View {
                             .layoutPriority(-1)
 
                         HStack(spacing: 5) {
-                            Text(Int(Double(viewModel.pinAdvertisementPrice) * 0.96), format: .number)
+                            Text(viewModel.peerFee.amount, format: .number)
                                 .appFont(.bodyRegular)
 
                             Icons.logoCircleWhite
@@ -135,27 +137,29 @@ struct AdCheckoutView: View {
                         }
                     }
 
-                    HStack(spacing: 0) {
-                        Text("1% @\(accountManager.inviter?.username ?? "Your inviter")") // TODO: FIX FEES WITH BACKEND
-                            .appFont(.bodyRegular)
-                            .foregroundStyle(Colors.whiteSecondary)
-
-                        Spacer()
-                            .frame(minWidth: 10)
-                            .frame(maxWidth: .infinity)
-                            .layoutPriority(-1)
-
-                        HStack(spacing: 5) {
-                            Text(Int(Double(viewModel.pinAdvertisementPrice) * 0.01), format: .number)
+                    if AccountManager.shared.inviter != nil {
+                        HStack(spacing: 0) {
+                            Text("To the inviter (\(viewModel.inviterFee.percent)%)")
                                 .appFont(.bodyRegular)
+                                .foregroundStyle(Colors.whiteSecondary)
 
-                            Icons.logoCircleWhite
-                                .iconSize(height: 12)
+                            Spacer()
+                                .frame(minWidth: 10)
+                                .frame(maxWidth: .infinity)
+                                .layoutPriority(-1)
+
+                            HStack(spacing: 5) {
+                                Text(viewModel.inviterFee.amount, format: .number)
+                                    .appFont(.bodyRegular)
+
+                                Icons.logoCircleWhite
+                                    .iconSize(height: 12)
+                            }
                         }
                     }
 
                     HStack(spacing: 0) {
-                        Text("1% Liquidity pool")
+                        Text("Burn (\(viewModel.burnFee.percent)%)")
                             .appFont(.bodyRegular)
                             .foregroundStyle(Colors.whiteSecondary)
 
@@ -165,26 +169,7 @@ struct AdCheckoutView: View {
                             .layoutPriority(-1)
 
                         HStack(spacing: 5) {
-                            Text(Int(Double(viewModel.pinAdvertisementPrice) * 0.01), format: .number)
-                                .appFont(.bodyRegular)
-
-                            Icons.logoCircleWhite
-                                .iconSize(height: 12)
-                        }
-                    }
-
-                    HStack(spacing: 0) {
-                        Text("2% Peer bank")
-                            .appFont(.bodyRegular)
-                            .foregroundStyle(Colors.whiteSecondary)
-
-                        Spacer()
-                            .frame(minWidth: 10)
-                            .frame(maxWidth: .infinity)
-                            .layoutPriority(-1)
-
-                        HStack(spacing: 5) {
-                            Text(Int(Double(viewModel.pinAdvertisementPrice) * 0.02), format: .number)
+                            Text(viewModel.burnFee.amount, format: .number)
                                 .appFont(.bodyRegular)
 
                             Icons.logoCircleWhite
@@ -205,7 +190,7 @@ struct AdCheckoutView: View {
 
     private var availableTokensView: some View {
         HStack(spacing: 0) {
-            Text("Available tokens")
+            Text("Your Balance")
                 .appFont(.smallLabelRegular)
                 .padding(.horizontal, 10)
                 .padding(.vertical, 5)
@@ -220,7 +205,7 @@ struct AdCheckoutView: View {
                 .layoutPriority(-1)
 
             HStack(spacing: 5) {
-                Text(balance, format: .number)
+                Text(viewModel.balance, format: .number)
                     .appFont(.bodyBold)
 
                 Icons.logoCircleWhite
@@ -245,14 +230,9 @@ struct AdCheckoutView: View {
                     .blur(radius: 10)
             }
             .ignoresSafeArea()
+            .allowsHitTesting(false)
         }
         .background(Colors.blackDark)
         .clipShape(RoundedRectangle(cornerRadius: 20))
     }
-}
-
-#Preview {
-    AdCheckoutView(viewModel: AdViewModel(post:  Post.placeholdersImage(count: 1).first!, pinAdvertisementPrice: 2000))
-        .environmentObject(Router())
-        .environmentObject(AccountManager.shared)
 }

@@ -41,6 +41,8 @@ struct PeerApp: App {
 
     @State private var restoreSessionResult = AuthState.loading
 
+    @StateObject private var promotePostFlows = PromotePostFlowStore.shared
+
     private let analyticsService: AnalyticsServiceProtocol
 
     @AppStorage("rememberMe", store: UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")) private var rememberMe = true
@@ -49,7 +51,7 @@ struct PeerApp: App {
         FirebaseApp.configure()
 
         _appState = .init(wrappedValue: AppState())
-#if DEBUG
+#if DEBUG || STAGING
         let testConfig = APIConfiguration(endpoint: .custom)
         let testServiceManager = APIServiceManager(.normal(config: testConfig))
         _apiManager = .init(wrappedValue: testServiceManager)
@@ -151,7 +153,7 @@ struct PeerApp: App {
 
             case .unauthenticated:
                 AuthView(viewModel: AuthorizationViewModel(authManager: self.authManager))
-#if DEBUG
+#if DEBUG || STAGING
                     .overlay(alignment: .top) {
                         VStack(spacing: 10) {
                             HStack(spacing: 10) {
@@ -200,6 +202,7 @@ struct PeerApp: App {
                     .environmentObject(authManager)
                     .environmentObject(audioManager)
                     .environmentObject(appState)
+                    .environmentObject(promotePostFlows)
                     .sheet(item: $quickLook.selectedMediaAttachment) { selectedMediaAttachment in
                         MediaUIView(data: quickLook.mediaAttachments, initialItem: selectedMediaAttachment)
                             .presentationBackground(.ultraThinMaterial)
@@ -268,4 +271,22 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         PushNotifications.registerCustomActions()
         PushNotifications.setFirebaseToken(deviceToken)
     }
+}
+
+enum Env {
+    static let analyticsEnabled: Bool = {
+#if STAGING || DEBUG
+        return false
+#else
+        return true
+#endif
+    }()
+
+    static let apiBaseURL: URL = {
+#if STAGING || DEBUG
+        return URL(string: "https://staging.api.example.com")!
+#else
+        return URL(string: "https://api.example.com")!
+#endif
+    }()
 }

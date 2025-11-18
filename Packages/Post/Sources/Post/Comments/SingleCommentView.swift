@@ -53,7 +53,13 @@ struct SingleCommentView: View {
                         do {
                             try await commentVM.likeComment()
                         } catch {
-                            showPopup(text: error.userFriendlyDescription)
+                            if let error = error as? CommentError {
+                                showPopup(text: error.displayMessage)
+                            } else {
+                                showPopup(
+                                    text: error.userFriendlyDescription
+                                )
+                            }
                         }
                     }
                 } label: {
@@ -91,18 +97,21 @@ struct SingleCommentView: View {
         .contextMenu {
             if !AccountManager.shared.isCurrentUser(id: commentVM.comment.user.id) {
                 Button(role: .destructive) {
-                    Task {
-                        do {
-                            try await commentVM.report()
-                            showPopup(text: "Comment was reported.")
-                        } catch let error as CommentError {
-                            showPopup(
-                                text: error.localizedDescription
-                            )
-                        } catch {
-                            showPopup(
-                                text: error.userFriendlyDescription
-                            )
+                    dismiss()
+                    SystemPopupManager.shared.presentPopup(.reportComment) {
+                        Task {
+                            do {
+                                try await commentVM.report()
+                                showPopup(text: "Comment was reported.")
+                            } catch let error as CommentError {
+                                showPopup(
+                                    text: error.localizedDescription
+                                )
+                            } catch {
+                                showPopup(
+                                    text: error.userFriendlyDescription
+                                )
+                            }
                         }
                     }
                 } label: {

@@ -45,6 +45,9 @@ struct GemsMainView: View {
                         .contentTransition(.numericText())
                         .animation(.snappy, value: balance.amount)
                         .font(.customFont(weight: .semiBold, style: .largeTitle))
+                        .minimumScaleFactor(0.5)
+                        .truncationMode(.tail)
+                        .lineLimit(1)
                         .skeleton(isRedacted: isLoading ? true : false)
                 }
 
@@ -71,6 +74,7 @@ struct GemsMainView: View {
                     .blur(radius: 10)
             }
             .ignoresSafeArea()
+            .allowsHitTesting(false)
         }
         .padding(20)
         .background(Colors.inactiveDark)

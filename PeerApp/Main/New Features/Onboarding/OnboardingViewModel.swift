@@ -23,7 +23,7 @@ enum OnboardingStep: Int, CaseIterable, Hashable, Identifiable {
             case .welcome:
                 "Every interaction earns you Gems, your path to Peer Tokens."
             case .prices:
-                "But hey - you can also invite friends and **_earn 1%_** of their token income daily."
+                "And hey - invite friends and **_earn 1%_** from every token transaction they make!"
             case .earnings:
                 "The more Gems you collect, the bigger your share of the \(dailyTokensAmount.formatted(.number)) daily minted Peer Tokens. Simple."
             case .distribution, .spending:
