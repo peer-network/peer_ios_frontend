@@ -74,6 +74,7 @@ struct GemsMainView: View {
                     .blur(radius: 10)
             }
             .ignoresSafeArea()
+            .allowsHitTesting(false)
         }
         .padding(20)
         .background(Colors.inactiveDark)

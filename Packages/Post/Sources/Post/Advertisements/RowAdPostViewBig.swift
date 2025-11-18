@@ -39,12 +39,13 @@ public struct RowAdPostViewBig: View {
                 if let image = state.image {
                     image
                         .resizable()
-                        .aspectRatio(contentMode: .fill)
+                        .scaledToFill()
                         .frame(
                             width: imageWidth,
                             height: imageHeight
                         )
                         .clipShape(Rectangle())
+                        .allowsHitTesting(false)
                 } else {
                     Colors.blackDark
                 }
