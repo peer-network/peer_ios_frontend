@@ -47,7 +47,7 @@ final class TransferPageViewModel: ObservableObject {
         Task { [weak self] in
             guard let self else { return }
 
-            let result = await apiService.transferTokens(to: recipient.id, amount: amount)
+            let result = await apiService.transferTokens(to: recipient.id, amount: Double(amount), message: nil)
 
             switch result {
                 case .success:

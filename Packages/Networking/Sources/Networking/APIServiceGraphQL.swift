@@ -1242,9 +1242,9 @@ public final class APIServiceGraphQL: APIService {
         }
     }
 
-    public func transferTokens(to id: String, amount: Int) async -> Result<Void, APIError> {
+    public func transferTokens(to id: String, amount: Double, message: String?) async -> Result<Void, APIError> {
         do {
-            let result = try await qlClient.mutate(mutation: TransferTokensMutation(recipient: id, numberoftokens: amount))
+            let result = try await qlClient.mutate(mutation: TransferTokensMutation(recipient: id, numberoftokens: Decimal(amount), message: message != nil ? GraphQLNullable(stringLiteral: message!) : nil))
 
             guard result.isResponseCodeSuccess else {
                 if let errorCode = result.getResponseCode {
