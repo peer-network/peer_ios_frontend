@@ -9,6 +9,7 @@ import SwiftUI
 import AVKit
 import DesignSystem
 import Environment
+import NukeUI
 
 private final class PlayerVC: AVPlayerViewController {
     override var prefersStatusBarHidden: Bool { false }
@@ -135,6 +136,7 @@ struct ShortVideoView2: View {
                                 player?.pause()
                         }
                     }
+                    .opacity(postVM.showSensitiveContentWarning ? 0.01 : 1)
 
                 Color.clear
                     .contentShape(.rect)
@@ -175,10 +177,26 @@ struct ShortVideoView2: View {
                             )
                         }
                     }
-                    .ifCondition(postVM.showSensitiveContentWarning) { // TODO: ADD COVER IMAGE AND BLUR IT HERE BECAUSE OF RERENDERING
+                    .ifCondition(postVM.showSensitiveContentWarning) {
                         $0
                             .allowsHitTesting(false)
-                            .blur(radius: 25)
+                            .overlay {
+                                if let url = postVM.post.coverURL {
+                                    LazyImage(url: url) { state in
+                                        if let image = state.image {
+                                            image
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fill)
+                                                .blur(radius: 25)
+                                                .allowsHitTesting(false)
+                                        } else {
+                                            Colors.textActive
+                                        }
+                                    }
+                                } else {
+                                    Colors.textActive
+                                }
+                            }
                             .overlay {
                                 sensitiveContentWarningForVideoPostView
                                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)

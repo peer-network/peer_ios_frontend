@@ -47,6 +47,22 @@ public struct PostView: View {
                             imagePost()
                         case .grid:
                             imageGridPost()
+                                .ifCondition(postVM.showSensitiveContentWarning) {
+                                    $0
+                                        .blur(radius: 7.38)
+                                        .overlay {
+                                            Circle()
+                                                .frame(height: 50)
+                                                .foregroundStyle(Colors.whitePrimary.opacity(0.2))
+                                                .overlay {
+                                                    IconsNew.eyeWithSlash
+                                                        .iconSize(height: 27)
+                                                        .foregroundStyle(Colors.whitePrimary)
+                                                }
+                                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                                        }
+                                        .clipped()
+                                }
                     }
                 case .video:
                     switch displayType {
@@ -54,6 +70,22 @@ public struct PostView: View {
                             videoPost()
                         case .grid:
                             videoGridPost()
+                                .ifCondition(postVM.showSensitiveContentWarning) {
+                                    $0
+                                        .blur(radius: 7.38)
+                                        .overlay {
+                                            Circle()
+                                                .frame(height: 50)
+                                                .foregroundStyle(Colors.whitePrimary.opacity(0.2))
+                                                .overlay {
+                                                    IconsNew.eyeWithSlash
+                                                        .iconSize(height: 27)
+                                                        .foregroundStyle(Colors.whitePrimary)
+                                                }
+                                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                                        }
+                                        .clipped()
+                                }
                     }
                 case .audio:
                     audioPost()
@@ -144,6 +176,7 @@ public struct PostView: View {
                         .blur(radius: 50)
                         .frame(maxWidth: .infinity, alignment: .trailing)
                         .ignoresSafeArea()
+                        .allowsHitTesting(false)
                 }
             }
         }
@@ -262,6 +295,11 @@ public struct PostView: View {
                             .scaledToFill()
                             .overlay {
                                 Gradients.blackHover
+                            }
+                            .ifCondition(postVM.showSensitiveContentWarning) {
+                                $0
+                                    .blur(radius: 25)
+                                    .clipped()
                             }
                             .allowsHitTesting(false)
                     } else {
