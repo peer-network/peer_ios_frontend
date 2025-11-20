@@ -319,7 +319,7 @@ struct ProfileHeader: View {
     }
 
     private var sensitiveContentWarningView: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        VStack(alignment: .leading, spacing: 0) {
             HStack(spacing: 0) {
                 Group {
                     Circle()
@@ -354,6 +354,7 @@ struct ProfileHeader: View {
             Text("This content may be sensitive or abusive.\nDo you want to view it anyway?")
                 .appFont(.smallLabelRegular)
                 .foregroundStyle(Colors.whitePrimary)
+                .fixedSize()
         }
         .multilineTextAlignment(.leading)
     }
