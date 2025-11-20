@@ -18,7 +18,7 @@ public final class PostViewModel: ObservableObject {
     @AppStorage("enablePostActionsConfirmation", store: UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")) private var enablePostActionsConfirmation = true
 
     // MARK: Post properties
-    public let post: Post
+    public var post: Post
 
     @Published public private(set) var isLiked: Bool
     @Published public private(set) var isViewed: Bool
@@ -84,6 +84,8 @@ public final class PostViewModel: ObservableObject {
     @Published var showSensitiveContentWarning: Bool
     public let showIllegalBlur: Bool
 
+    @Published var showHeaderSensitiveWarning: Bool
+
     public init(post: Post) {
         self.post = post
 
@@ -100,12 +102,30 @@ public final class PostViewModel: ObservableObject {
 
         attributedTitle = post.title.createAttributedString()
 
-        showIllegalBlur = post.visibilityStatus == .illegal
+        // TODO: REMOVE THIS TESTING SETTERS
+        showSensitiveContentWarning = false
+        showHeaderSensitiveWarning = false
+        showIllegalBlur = true
+        self.post.owner.username = "hidden_account"
+        self.post.owner.image = "hidden_account"
 
-//        if !AccountManager.shared.isCurrentUser(id: post.owner.id), post.visibilityStatus == .hidden {
-            showSensitiveContentWarning = true
-//        } else {
-//            showSensitiveContentWarning = false
+//        showIllegalBlur = post.visibilityStatus == .illegal
+//        if !AccountManager.shared.isCurrentUser(id: post.owner.id) {
+//            if post.visibilityStatus == .hidden {
+//                showSensitiveContentWarning = true
+//            } else {
+//                showSensitiveContentWarning = false
+//            }
+//
+//            if post.owner.visibilityStatus == .hidden {
+//                showHeaderSensitiveWarning = true
+//            } else {
+//                showSensitiveContentWarning = false
+//                if post.owner.visibilityStatus == .illegal {
+//                    self.post.owner.username = "hidden_account"
+//                    self.post.owner.image = "hidden_account"
+//                }
+//            }
 //        }
 
         if post.contentType == .text {

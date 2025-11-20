@@ -36,7 +36,7 @@ struct PostDescriptionComment: View {
                         .font(.custom(.bodyBold))
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .layoutPriority(-1)
-                        .ifCondition(postVM.showSensitiveContentWarning) {
+                        .ifCondition(postVM.showSensitiveContentWarning || postVM.showIllegalBlur) {
                             $0
                                 .allowsHitTesting(false)
                                 .redacted(reason: .placeholder)
@@ -49,7 +49,7 @@ struct PostDescriptionComment: View {
 
                 if !postVM.post.media.isEmpty, let text = postVM.attributedDescription {
                     CollapsibleText(text, lineLimit: 3)
-                        .ifCondition(postVM.showSensitiveContentWarning) {
+                        .ifCondition(postVM.showSensitiveContentWarning || postVM.showIllegalBlur) {
                             $0
                                 .allowsHitTesting(false)
                                 .redacted(reason: .placeholder)

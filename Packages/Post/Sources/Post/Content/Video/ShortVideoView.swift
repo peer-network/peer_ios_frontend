@@ -87,122 +87,129 @@ struct ShortVideoView2: View {
             let rect = geo.frame(in: .scrollView(axis: .vertical))
 
             ZStack {
-                CustomVideoPlayer(player: $player)
-                    .preference(key: OffsetKeyRect.self, value: rect)
-                    .onPreferenceChange(OffsetKeyRect.self) { value in
-                        offsetKeyValue = value
-                        playPause(offsetKeyValue)
-                    }
-                    .pinchZoom()
-                    .overlay(alignment: .center) {
-                        if showLoadingIndicator {
-                            ProgressView()
-                                .controlSize(.large)
-                        }
-                    }
-                    .overlay(alignment: .center) {
-                        if pausedByUser {
-                            pauseIcon
-                        } else {
-                            if show2xSpeedIndicator {
-                                speed2xIndicator
-                            }
-                        }
-                    }
-                    .onFirstAppear {
-                        setupPlayer()
-                    }
-                    .onAppear {
-                        if player == nil {
-                            setupPlayer()
-                        }
-
-                        if scenePhase == .active, !pausedByUser {
+                if !postVM.showIllegalBlur {
+                    CustomVideoPlayer(player: $player)
+                        .preference(key: OffsetKeyRect.self, value: rect)
+                        .onPreferenceChange(OffsetKeyRect.self) { value in
+                            offsetKeyValue = value
                             playPause(offsetKeyValue)
                         }
-                    }
-                    .onDisappear {
-                        cleanupPlayer()
-                    }
-                    .onChange(of: scenePhase) {
-                        guard !postVM.showSensitiveContentWarning, !postVM.showIllegalBlur else { return }
-
-                        switch scenePhase {
-                            case .active:
-                                if !pausedByUser {
-                                    player?.play()
-                                }
-                            default:
-                                player?.pause()
-                        }
-                    }
-                    .opacity(postVM.showSensitiveContentWarning ? 0.01 : 1)
-
-                Color.clear
-                    .contentShape(.rect)
-                    .onTapGesture(count: 1) {
-                        pausedByUser.toggle()
-
-                        if pausedByUser {
-                            player?.pause()
-                        } else {
-                            player?.play()
-                        }
-                    }
-                    .onLongPressGesture(minimumDuration: 0.2, maximumDistance: 0) {
-                        if !pausedByUser {
-                            HapticManager.shared.fireHaptic(.dataRefresh(intensity: 1))
-                            show2xSpeedIndicator = true
-                            player?.rate = 2
-                        }
-                    } onPressingChanged: { isPressing in
-                        if !pausedByUser {
-                            if !isPressing {
-                                player?.rate = 1
-                                show2xSpeedIndicator = false
+                        .pinchZoom()
+                        .overlay(alignment: .center) {
+                            if showLoadingIndicator {
+                                ProgressView()
+                                    .controlSize(.large)
                             }
                         }
-                    }
-                    .doubleTapToLike {
-                        try await postVM.like()
-                    } onError: { error in
-                        if let error = error as? PostActionError {
-                            showPopup(
-                                text: error.displayMessage,
-                                icon: error.displayIcon
-                            )
-                        } else {
-                            showPopup(
-                                text: error.userFriendlyDescription
-                            )
+                        .overlay(alignment: .center) {
+                            if pausedByUser {
+                                pauseIcon
+                            } else {
+                                if show2xSpeedIndicator {
+                                    speed2xIndicator
+                                }
+                            }
                         }
-                    }
-                    .ifCondition(postVM.showSensitiveContentWarning) {
-                        $0
-                            .allowsHitTesting(false)
-                            .overlay {
-                                if let url = postVM.post.coverURL {
-                                    LazyImage(url: url) { state in
-                                        if let image = state.image {
-                                            image
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fill)
-                                                .blur(radius: 25)
-                                                .allowsHitTesting(false)
-                                        } else {
-                                            Colors.textActive
-                                        }
+                        .onFirstAppear {
+                            setupPlayer()
+                        }
+                        .onAppear {
+                            if player == nil {
+                                setupPlayer()
+                            }
+
+                            if scenePhase == .active, !pausedByUser {
+                                playPause(offsetKeyValue)
+                            }
+                        }
+                        .onDisappear {
+                            cleanupPlayer()
+                        }
+                        .onChange(of: scenePhase) {
+                            guard !postVM.showSensitiveContentWarning, !postVM.showIllegalBlur else { return }
+
+                            switch scenePhase {
+                                case .active:
+                                    if !pausedByUser {
+                                        player?.play()
                                     }
-                                } else {
-                                    Colors.textActive
+                                default:
+                                    player?.pause()
+                            }
+                        }
+                        .opacity(postVM.showSensitiveContentWarning ? 0.01 : 1)
+
+                    Color.clear
+                        .contentShape(.rect)
+                        .onTapGesture(count: 1) {
+                            pausedByUser.toggle()
+
+                            if pausedByUser {
+                                player?.pause()
+                            } else {
+                                player?.play()
+                            }
+                        }
+                        .onLongPressGesture(minimumDuration: 0.2, maximumDistance: 0) {
+                            if !pausedByUser {
+                                HapticManager.shared.fireHaptic(.dataRefresh(intensity: 1))
+                                show2xSpeedIndicator = true
+                                player?.rate = 2
+                            }
+                        } onPressingChanged: { isPressing in
+                            if !pausedByUser {
+                                if !isPressing {
+                                    player?.rate = 1
+                                    show2xSpeedIndicator = false
                                 }
                             }
-                            .overlay {
-                                sensitiveContentWarningForVideoPostView
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                        }
+                        .doubleTapToLike {
+                            try await postVM.like()
+                        } onError: { error in
+                            if let error = error as? PostActionError {
+                                showPopup(
+                                    text: error.displayMessage,
+                                    icon: error.displayIcon
+                                )
+                            } else {
+                                showPopup(
+                                    text: error.userFriendlyDescription
+                                )
                             }
-                            .clipped()
-                    }
+                        }
+                        .ifCondition(postVM.showSensitiveContentWarning) {
+                            $0
+                                .allowsHitTesting(false)
+                                .overlay {
+                                    if let url = postVM.post.coverURL {
+                                        LazyImage(url: url) { state in
+                                            if let image = state.image {
+                                                image
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fill)
+                                                    .blur(radius: 25)
+                                                    .allowsHitTesting(false)
+                                            } else {
+                                                Colors.textActive
+                                            }
+                                        }
+                                    } else {
+                                        Colors.textActive
+                                    }
+                                }
+                                .overlay {
+                                    sensitiveContentWarningForVideoPostView
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                                }
+                                .clipped()
+                        }
+                } else {
+                    Colors.blackDark
+
+                    illegalPostView
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                }
             }
             .overlay(alignment: .top) {
                 PostHeaderView(postVM: postVM, showAppleTranslation: $showAppleTranslation, showFollowButton: true)
@@ -216,12 +223,12 @@ struct ShortVideoView2: View {
                 }
             }
             .overlay(alignment: .bottom) {
-                if showBottomSeekerView {
+                if showBottomSeekerView, !postVM.showIllegalBlur {
                     videoSeekerView()
                 }
             }
             .overlay(alignment: .bottomLeading) {
-                if isDragging, let duration = postVM.post.media.first?.duration {
+                if isDragging, let duration = postVM.post.media.first?.duration, !postVM.showIllegalBlur {
                     seekerThumbnailView(videoDuration: duration)
                 }
             }
@@ -646,6 +653,17 @@ struct ShortVideoView2: View {
             .fixedSize()
         }
         .multilineTextAlignment(.center)
+        .foregroundStyle(Colors.whitePrimary)
+    }
+
+    private var illegalPostView: some View {
+        VStack(alignment: .center, spacing: 10) {
+            Icons.trashBin
+                .iconSize(width: 16)
+
+            Text("This content was removed as illegal")
+                .appFont(.bodyBold)
+        }
         .foregroundStyle(Colors.whitePrimary)
     }
 }

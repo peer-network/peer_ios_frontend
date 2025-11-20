@@ -77,15 +77,17 @@ struct CommentsListView: View {
             .padding(.bottom, 5)
             .padding(.top, 5)
 
-            HStack(alignment: .center, spacing: 10) {
-                if let user = AccountManager.shared.user {
-                    ProfileAvatarView(url: user.imageURL, name: user.username, config: .comment, ignoreCache: true)
-                }
+            if !viewModel.showIllegalBlur {
+                HStack(alignment: .center, spacing: 10) {
+                    if let user = AccountManager.shared.user {
+                        ProfileAvatarView(url: user.imageURL, name: user.username, config: .comment, ignoreCache: true)
+                    }
 
-                commentTextField
+                    commentTextField
+                }
+                .padding(.top, 5)
+                .padding(.horizontal, 10)
             }
-            .padding(.top, 5)
-            .padding(.horizontal, 10)
         }
         .padding(.vertical, 10)
         .onFirstAppear {

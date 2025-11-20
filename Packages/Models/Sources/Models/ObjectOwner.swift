@@ -10,9 +10,9 @@ import Foundation
 
 public struct ObjectOwner: Identifiable, Hashable {
     public let id: String
-    public let username: String
+    public var username: String
     public let slug: Int
-    public let image: String
+    public var image: String
     public var isFollowing: Bool
     public var isFollowed: Bool
 
