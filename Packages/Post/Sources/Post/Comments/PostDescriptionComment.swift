@@ -25,7 +25,7 @@ struct PostDescriptionComment: View {
                 }
                 router.navigate(to: .accountDetail(id: postVM.post.owner.id))
             } label: {
-                Text(postVM.post.owner.username)
+                Text(postVM.showHeaderSensitiveWarning ? "hidden_account" : postVM.post.owner.username)
                     .font(.custom(.bodyBoldItalic))
                     .frame(width: (getRect().width - 20) * 0.2, alignment: .topLeading)
             }

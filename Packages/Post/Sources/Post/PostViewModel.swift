@@ -102,31 +102,37 @@ public final class PostViewModel: ObservableObject {
 
         attributedTitle = post.title.createAttributedString()
 
-        // TODO: REMOVE THIS TESTING SETTERS
-        showSensitiveContentWarning = false
-        showHeaderSensitiveWarning = false
-        showIllegalBlur = true
-        self.post.owner.username = "hidden_account"
-        self.post.owner.image = "hidden_account"
+//        // TODO: REMOVE THIS TESTING SETTERS
+//        showSensitiveContentWarning = false
+//        showHeaderSensitiveWarning = true
+//        showIllegalBlur = false
+//        self.post.owner.username = "hidden_account"
+//        self.post.owner.image = "hidden_account"
 
-//        showIllegalBlur = post.visibilityStatus == .illegal
-//        if !AccountManager.shared.isCurrentUser(id: post.owner.id) {
-//            if post.visibilityStatus == .hidden {
-//                showSensitiveContentWarning = true
-//            } else {
-//                showSensitiveContentWarning = false
-//            }
-//
-//            if post.owner.visibilityStatus == .hidden {
-//                showHeaderSensitiveWarning = true
-//            } else {
-//                showSensitiveContentWarning = false
-//                if post.owner.visibilityStatus == .illegal {
-//                    self.post.owner.username = "hidden_account"
-//                    self.post.owner.image = "hidden_account"
-//                }
-//            }
-//        }
+
+
+
+        showIllegalBlur = post.visibilityStatus == .illegal
+        if !AccountManager.shared.isCurrentUser(id: post.owner.id) {
+            if post.visibilityStatus == .hidden {
+                showSensitiveContentWarning = true
+            } else {
+                showSensitiveContentWarning = false
+            }
+
+            if post.owner.visibilityStatus == .hidden {
+                showHeaderSensitiveWarning = true
+            } else {
+                showHeaderSensitiveWarning = false
+                if post.owner.visibilityStatus == .illegal {
+                    self.post.owner.username = "hidden_account"
+                    self.post.owner.image = "hidden_account"
+                }
+            }
+        } else {
+            showSensitiveContentWarning = false
+            showHeaderSensitiveWarning = false
+        }
 
         if post.contentType == .text {
             fetchTextPostBody()

@@ -32,7 +32,7 @@ struct SingleCommentView: View {
                 dismiss()
                 router.navigate(to: .accountDetail(id: commentVM.comment.user.id))
             } label: {
-                Text(commentVM.comment.user.username)
+                Text(commentVM.comment.user.visibilityStatus == .normal ? commentVM.comment.user.username : "hidden_account")
                     .font(.custom(.bodyBoldItalic))
                     .frame(width: (getRect().width - 20) * 0.2, alignment: .topLeading)
             }
