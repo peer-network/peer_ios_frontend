@@ -31,34 +31,31 @@ struct GemsMainView: View {
     }
 
     private func contentView(balance: WalletBalance, isLoading: Bool) -> some View {
-        VStack(spacing: 32) {
-            Text("Your account")
-                .font(.customFont(weight: .regular, style: .callout))
+        VStack(spacing: 10) {
+            Text("Available balance")
+                .appFont(.smallLabelRegular)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-            VStack(spacing: 10) {
-                HStack(spacing: 10) {
-                    Icons.logoCircleWhite
-                        .iconSize(height: 27)
+            HStack(spacing: 10) {
+                Text("\(balance.amount)")
+                    .contentTransition(.numericText())
+                    .animation(.snappy, value: balance.amount)
+                    .appFont(.extraLargeTitleBold)
+                    .minimumScaleFactor(0.5)
+                    .truncationMode(.tail)
+                    .lineLimit(1)
+                    .skeleton(isRedacted: isLoading ? true : false)
 
-                    Text("\(balance.amount)")
-                        .contentTransition(.numericText())
-                        .animation(.snappy, value: balance.amount)
-                        .font(.customFont(weight: .semiBold, style: .largeTitle))
-                        .minimumScaleFactor(0.5)
-                        .truncationMode(.tail)
-                        .lineLimit(1)
-                        .skeleton(isRedacted: isLoading ? true : false)
-                }
-
-//                balanceExplanationView(balance: balance)
-//                    .font(.customFont(weight: .regular, style: .headline))
-//                    .skeleton(isRedacted: isLoading ? true : false)
+                Icons.logoCircleWhite
+                    .iconSize(height: 27)
             }
-            .multilineTextAlignment(.center)
-            .padding(.bottom, 32)
+
+            //                balanceExplanationView(balance: balance)
+            //                    .font(.customFont(weight: .regular, style: .headline))
+            //                    .skeleton(isRedacted: isLoading ? true : false)
         }
         .foregroundStyle(Colors.whitePrimary)
+        .padding(20)
         .background {
             ZStack {
                 Ellipse()
@@ -76,8 +73,6 @@ struct GemsMainView: View {
             .ignoresSafeArea()
             .allowsHitTesting(false)
         }
-        .padding(20)
-        .background(Colors.inactiveDark)
         .clipShape(RoundedRectangle(cornerRadius: 24))
     }
 
