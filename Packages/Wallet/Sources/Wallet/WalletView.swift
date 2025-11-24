@@ -23,13 +23,21 @@ public struct WalletView: View {
         HeaderContainer(actionsToDisplay: .commentsAndLikes) {
             Text("Wallet")
         } content: {
-            ScrollView {
-                VStack(spacing: 20) {
-                    GemsMainView()
-                    WithdrawalView()
+            ScrollViewReader { scrollProxy in
+                ScrollView {
+                    VStack(spacing: 20) {
+                        GemsMainView()
+                        WithdrawalView()
+                        TransactionsListView() {
+                            withAnimation {
+                                scrollProxy.scrollTo(1, anchor: .top)
+                            }
+                        }
+                        .id(1)
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.top, 20)
                 }
-                .padding(.horizontal, 20)
-                .padding(.top, 20)
             }
             .scrollDismissesKeyboard(.interactively)
             .refreshable {
