@@ -49,10 +49,6 @@ struct GemsMainView: View {
                 Icons.logoCircleWhite
                     .iconSize(height: 27)
             }
-
-            //                balanceExplanationView(balance: balance)
-            //                    .font(.customFont(weight: .regular, style: .headline))
-            //                    .skeleton(isRedacted: isLoading ? true : false)
         }
         .foregroundStyle(Colors.whitePrimary)
         .padding(20)
@@ -79,16 +75,6 @@ struct GemsMainView: View {
             .allowsHitTesting(false)
         }
         .clipShape(RoundedRectangle(cornerRadius: 24))
-    }
-
-    private func balanceExplanationView(balance: WalletBalance) -> some View {
-        VStack(alignment: .center, spacing: 0) {
-            Text("Each token is \(Text(balance.tokenPrice, format: .number.rounded(rule: .up, increment: 0.01)).bold()) €")
-
-            Text("Now you own \(Text(balance.balanceEUR, format: .number.rounded(rule: .up, increment: 0.01)).bold()) €")
-                .contentTransition(.numericText())
-                .animation(.snappy, value: balance.balanceEUR)
-        }
     }
 }
 
