@@ -61,16 +61,21 @@ struct GemsMainView: View {
                 Ellipse()
                     .fill(Gradients.walletBG1)
                     .frame(width: 265, height: 220)
-                    .offset(x: 192, y: -59)
+                    .padding(.bottom, 54)
+                    .padding(.leading, 306)
                     .blur(radius: 10)
 
                 Ellipse()
                     .fill(Gradients.walletBG2)
                     .frame(width: 479, height: 208)
-                    .offset(x: -114, y: 7)
+                    .padding(.top, 66)
+                    .padding(.trailing, 92)
                     .blur(radius: 10)
             }
+            .frame(width: 571, height: 274)
+            .position(x: 171.5, y: 78)
             .ignoresSafeArea()
+            .clipped()
             .allowsHitTesting(false)
         }
         .clipShape(RoundedRectangle(cornerRadius: 24))

@@ -37,7 +37,6 @@ public struct WalletView: View {
                 viewModel.fetchContent()
             }
         }
-        .background(Colors.textActive)
         .environmentObject(viewModel)
         .onFirstAppear {
             viewModel.apiService = apiManager.apiService
