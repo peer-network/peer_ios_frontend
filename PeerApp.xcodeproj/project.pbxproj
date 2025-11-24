@@ -733,8 +733,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.10.0;
-				PRODUCT_BUNDLE_IDENTIFIER = eu.peernetwork.PeerApp;
+				MARKETING_VERSION = 1.10.1;
+				PRODUCT_BUNDLE_IDENTIFIER = eu.peernetwork.PeerApp.Staging;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -774,8 +774,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.10.0;
-				PRODUCT_BUNDLE_IDENTIFIER = eu.peernetwork.PeerApp;
+				MARKETING_VERSION = 1.10.1;
+				PRODUCT_BUNDLE_IDENTIFIER = eu.peernetwork.PeerApp.Staging;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -877,8 +877,8 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.10.0;
-				PRODUCT_BUNDLE_IDENTIFIER = eu.peernetwork.PeerApp.PayloadModification;
+				MARKETING_VERSION = 1.10.1;
+				PRODUCT_BUNDLE_IDENTIFIER = eu.peernetwork.PeerApp.Staging.PayloadModification;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -905,8 +905,8 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.10.0;
-				PRODUCT_BUNDLE_IDENTIFIER = eu.peernetwork.PeerApp.PayloadModification;
+				MARKETING_VERSION = 1.10.1;
+				PRODUCT_BUNDLE_IDENTIFIER = eu.peernetwork.PeerApp.Staging.PayloadModification;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -1007,8 +1007,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.10.0;
-				PRODUCT_BUNDLE_IDENTIFIER = eu.peernetwork.PeerApp;
+				MARKETING_VERSION = 1.10.1;
+				PRODUCT_BUNDLE_IDENTIFIER = eu.peernetwork.PeerApp.Staging;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -1074,8 +1074,8 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.10.0;
-				PRODUCT_BUNDLE_IDENTIFIER = eu.peernetwork.PeerApp.PayloadModification;
+				MARKETING_VERSION = 1.10.1;
+				PRODUCT_BUNDLE_IDENTIFIER = eu.peernetwork.PeerApp.Staging.PayloadModification;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
