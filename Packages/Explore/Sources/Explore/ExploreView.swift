@@ -11,6 +11,7 @@ import Models
 import DesignSystem
 import NukeUI
 import Analytics
+import Post
 
 public struct ExploreView: View {
     @EnvironmentObject private var router: Router
@@ -404,71 +405,8 @@ extension ExploreView {
         LazyVStack(spacing: 20) {
             LazyVGrid(columns: columns, spacing: 1) {
                 ForEach(posts) { post in
-                    if post.contentType == .image, let imageURL = post.mediaURLs.first {
-                        GeometryReader { proxy in
-                            LazyImage(
-                                request: ImageRequest(
-                                    url: imageURL,
-                                    processors: [.resize(size: CGSize(width: 300, height: 300))])
-                            ) { state in
-                                if let image = state.image {
-                                    image
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(width: proxy.size.width, height: proxy.size.width)
-                                        .clipShape(Rectangle())
-                                } else {
-                                    Colors.imageLoadingPlaceholder
-                                }
-                            }
-                            .onTapGesture {
-                                router.navigate(to: .postDetailsWithPost(post: post))
-                            }
-                        }
-                        .clipped()
-                        .aspectRatio(1, contentMode: .fit)
-                        .contentShape(Rectangle())
-                    } else if post.contentType == .video {
-                        GeometryReader { proxy in
-                            LazyImage(
-                                request: ImageRequest(
-                                    url: post.coverURL,
-                                    processors: [.resize(size: CGSize(width: 300, height: 300))])
-                            ) { state in
-                                if let image = state.image {
-                                    image
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(width: proxy.size.width, height: proxy.size.width)
-                                        .clipShape(Rectangle())
-                                } else if (state.error) != nil {
-                                    Colors.black
-                                } else {
-                                    Colors.imageLoadingPlaceholder
-                                }
-                            }
-                        }
-                        .overlay(alignment: .bottom) {
-                            HStack {
-                                Text(getVideoDuration(timeInterval: post.media.first?.duration))
-                                    .font(.custom(.bodyRegular))
-
-                                Spacer()
-                                    .frame(maxWidth: .infinity)
-
-                                Icons.play
-                                    .iconSize(height: 16)
-                            }
-                            .foregroundStyle(Colors.whitePrimary)
-                            .padding(.bottom, 10)
-                            .padding(.horizontal, 10)
-                        }
-                        .clipped()
-                        .aspectRatio(1, contentMode: .fit)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            router.navigate(to: .postDetailsWithPost(post: post))
-                        }
+                    if post.contentType == .image || post.contentType == .video {
+                        PostView(postVM: .init(post: post), displayType: .grid, showFollowButton: false)
                     }
                 }
             }
@@ -496,16 +434,6 @@ extension ExploreView {
                 }
             }
         }
-    }
-
-    private func getVideoDuration(timeInterval: TimeInterval?) -> String {
-        guard let timeInterval else {
-            return ""
-        }
-
-        let minutes = Int(timeInterval) / 60
-        let seconds = Int(timeInterval) % 60
-        return String(format: "%01d:%02d", minutes, seconds)
     }
 
     private var nothingFoundView: some View {

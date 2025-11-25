@@ -29,8 +29,11 @@ public struct RowProfileView<TrailingContent: View>: View {
         case followButton
     }
 
+    @State private var showSensitiveContentWarning: Bool = false
+
     public init(user: RowUser, @ViewBuilder trailingContent: @escaping () -> TrailingContent = { EmptyView() }, dismissAction: (() -> Void)? = nil) {
         self.user = user
+        showSensitiveContentWarning = user.visibilityStatus == .hidden
         self.trailingContent = trailingContent
         self.dismissAction = dismissAction
     }
@@ -63,6 +66,21 @@ public struct RowProfileView<TrailingContent: View>: View {
             .font(.customFont(weight: .regular, style: .footnote))
             .foregroundStyle(Colors.whitePrimary)
             .simultaneousGesture(TapGesture())
+            .ifCondition(showSensitiveContentWarning) {
+                $0
+                    .allowsHitTesting(false)
+                    .blur(radius: 5)
+                    .overlay(alignment: .leading) {
+                        Button {
+                            withAnimation {
+                                showSensitiveContentWarning = false
+                            }
+                        } label: {
+                            sensitiveContentWarningForPostHeaderView
+                                .contentShape(.rect)
+                        }
+                    }
+            }
 
             Spacer()
 
@@ -72,5 +90,28 @@ public struct RowProfileView<TrailingContent: View>: View {
                 trailingContent()
             }
         }
+    }
+
+    private var sensitiveContentWarningForPostHeaderView: some View {
+        HStack(spacing: 10) {
+            Circle()
+                .frame(height: 40)
+                .foregroundStyle(Colors.whitePrimary.opacity(0.2))
+                .overlay {
+                    IconsNew.eyeWithSlash
+                        .iconSize(width: 20)
+                        .foregroundStyle(Colors.whitePrimary)
+                }
+
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Sensitive content")
+                    .appFont(.smallLabelBold)
+
+                Text("Click to see")
+                    .appFont(.smallLabelRegular)
+            }
+        }
+        .foregroundStyle(Colors.whitePrimary)
+        .fixedSize(horizontal: true, vertical: false)
     }
 }

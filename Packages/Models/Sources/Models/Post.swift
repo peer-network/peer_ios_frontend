@@ -68,16 +68,23 @@ public struct Post: Identifiable, Hashable {
         guard
             let contentType = ContentType(rawValue: gqlPost.contenttype),
             let postOwner = ObjectOwner(gqlUser: gqlPost.user),
-            let mediaData = gqlPost.media.data(using: .utf8),
-            let parsedMedia = try? JSONDecoder().decode([MediaItem].self, from: mediaData)
+            let mediaData = gqlPost.media.data(using: .utf8)
         else {
             return nil
+        }
+
+        if ContentVisibilityStatus.normalizedValue(gqlPost.visibilityStatus!.value) != .illegal { // TODO: SAME FOR OTHER INITS
+            guard let parsedMedia = try? JSONDecoder().decode([MediaItem].self, from: mediaData) else {
+                return nil
+            }
+            self.media = parsedMedia
+        } else {
+            self.media = []
         }
 
         self.id = gqlPost.id
         self.contentType = contentType
         self.title = gqlPost.title
-        self.media = parsedMedia
         if !gqlPost.cover.isEmpty,
            let coverData = gqlPost.cover.data(using: .utf8),
            let parsedCover = try? JSONDecoder().decode([MediaItem].self, from: coverData)
