@@ -9,7 +9,8 @@ import SwiftUI
 import DesignSystem
 
 struct TransactionsListView: View {
-    let arrowAction: () -> Void
+    @Binding var isHeaderAtTop: Bool
+    let scrollProxy: ScrollViewProxy
 
     var body: some View {
         VStack(spacing: 0) {
@@ -24,15 +25,34 @@ struct TransactionsListView: View {
                 } header: {
                     transactionHistoryHeaderView
                         .background(Colors.blackDark)
+                        .overlay(
+                            GeometryReader { geo in
+                                Color.clear
+                                    .onChange(of: geo.frame(in: .global).minY) { newValue in
+                                    if newValue < 107 {
+                                        isHeaderAtTop = true
+                                    } else {
+                                        isHeaderAtTop = false
+                                    }
+                                }
+                            }
+                        )
                 }
-
             }
         }
     }
 
     private var transactionHistoryHeaderView: some View {
         Button {
-            arrowAction()
+            if isHeaderAtTop {
+                withAnimation {
+                    scrollProxy.scrollTo(0, anchor: .top)
+                }
+            } else {
+                withAnimation {
+                    scrollProxy.scrollTo(1, anchor: .top)
+                }
+            }
         } label: {
             HStack(spacing: 0) {
                 Text("Transactions")
@@ -45,6 +65,8 @@ struct TransactionsListView: View {
 
                 Icons.arrowDown
                     .iconSize(height: 8)
+                    .rotationEffect(.degrees(isHeaderAtTop ? 180 : 0))
+                    .animation(.easeInOut, value: isHeaderAtTop)
             }
             .foregroundStyle(Colors.whitePrimary)
             .padding(.vertical, 10)

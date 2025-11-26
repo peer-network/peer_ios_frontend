@@ -15,10 +15,10 @@ public struct WalletView: View {
     @EnvironmentObject private var apiManager: APIServiceManager
 
     @StateObject private var viewModel = WalletViewModel()
-    
-    public init() {
-    }
-    
+    @State private var isHeaderAtTop = false
+
+    public init() {}
+
     public var body: some View {
         HeaderContainer(actionsToDisplay: .commentsAndLikes) {
             Text("Wallet")
@@ -27,22 +27,20 @@ public struct WalletView: View {
                 ScrollView {
                     VStack(spacing: 20) {
                         GemsMainView()
+                            .id(0)
                         WithdrawalView()
-                        TransactionsListView() {
-                            withAnimation {
-                                scrollProxy.scrollTo(1, anchor: .top)
-                            }
-                        }
-                        .id(1)
+
+                        TransactionsListView(isHeaderAtTop: $isHeaderAtTop, scrollProxy: scrollProxy)
+                            .id(1)
                     }
                     .padding(.horizontal, 20)
                     .padding(.top, 20)
                 }
-            }
-            .scrollDismissesKeyboard(.interactively)
-            .refreshable {
-                HapticManager.shared.fireHaptic(.dataRefresh(intensity: 0.3))
-                viewModel.fetchContent()
+                .scrollDismissesKeyboard(.interactively)
+                .refreshable {
+                    HapticManager.shared.fireHaptic(.dataRefresh(intensity: 0.3))
+                    viewModel.fetchContent()
+                }
             }
         }
         .environmentObject(viewModel)
@@ -52,10 +50,4 @@ public struct WalletView: View {
         }
         .trackScreen(AppScreen.wallet)
     }
-}
-
-#Preview {
-    WalletView()
-        .environmentObject(APIServiceManager(.mock))
-//        .analyticsService(MockAnalyticsService())
 }
