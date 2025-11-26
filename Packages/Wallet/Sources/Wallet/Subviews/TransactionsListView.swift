@@ -29,12 +29,12 @@ struct TransactionsListView: View {
                             GeometryReader { geo in
                                 Color.clear
                                     .onChange(of: geo.frame(in: .global).minY) { newValue in
-                                    if newValue < 107 {
-                                        isHeaderAtTop = true
-                                    } else {
-                                        isHeaderAtTop = false
+                                        if newValue < 107 {
+                                            isHeaderAtTop = true
+                                        } else {
+                                            isHeaderAtTop = false
+                                        }
                                     }
-                                }
                             }
                         )
                 }
