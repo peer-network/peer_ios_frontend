@@ -13,6 +13,10 @@ public struct Transaction: Identifiable, Hashable {
         case extraLike
         case extraComment
         case dislike
+        case transfer
+        case pinPost
+        case referralReward
+        case dailyMint
     }
 
     public let id: String

@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct TransactionFee: Identifiable, Hashable {
+public struct TransactionFee: Hashable {
     public let total: Decimal
     public let burn: Decimal
     public let peer: Decimal
