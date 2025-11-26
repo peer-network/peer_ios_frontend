@@ -47,6 +47,7 @@ public struct ProfileAvatarView: View {
         public static let profile = FrameConfig(width: 68, height: 68, cornerRadius: 91)
         public static let comment = FrameConfig(width: 35, height: 35, cornerRadius: 91)
         public static let settings = FrameConfig(width: 50, height: 50, cornerRadius: 91)
+        public static let transactionHistory = FrameConfig(width: 55, height: 55, cornerRadius: 91)
     }
     
     private struct AvatarImage: View {

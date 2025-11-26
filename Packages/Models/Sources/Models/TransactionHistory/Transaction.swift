@@ -13,7 +13,8 @@ public struct Transaction: Identifiable, Hashable {
         case extraLike
         case extraComment
         case dislike
-        case transfer
+        case transferTo
+        case transferFrom
         case pinPost
         case referralReward
         case dailyMint
