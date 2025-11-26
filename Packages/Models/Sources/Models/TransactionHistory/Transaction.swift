@@ -8,8 +8,15 @@
 import Foundation
 
 public struct Transaction: Identifiable, Hashable {
+    public enum TransactionType {
+        case extraPost
+        case extraLike
+        case extraComment
+        case dislike
+    }
+
     public let id: String
-    public let type: String
+    public let type: TransactionType
     public let tokenAmount: Decimal
     public let netTokenAmount: Decimal
     public let message: String?
