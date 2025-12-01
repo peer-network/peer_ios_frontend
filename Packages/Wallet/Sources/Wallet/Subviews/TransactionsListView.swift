@@ -9,6 +9,7 @@ import SwiftUI
 import DesignSystem
 
 struct TransactionsListView: View {
+    @ObservedObject var viewModel: WalletViewModel
     @Binding var isHeaderAtTop: Bool
     let scrollProxy: ScrollViewProxy
 
@@ -16,12 +17,7 @@ struct TransactionsListView: View {
         VStack(spacing: 0) {
             LazyVStack(spacing: 10, pinnedViews: .sectionHeaders) {
                 Section {
-                    ForEach(0..<100) { i in
-                        Text("Example \(i)")
-                            .font(.title)
-                            .frame(width: 200, height: 200)
-                            .background(Colors.passwordBarsGreen)
-                    }
+                    transactionsList
                 } header: {
                     transactionHistoryHeaderView
                         .background(Colors.blackDark)
@@ -71,6 +67,35 @@ struct TransactionsListView: View {
             .foregroundStyle(Colors.whitePrimary)
             .padding(.vertical, 10)
             .contentShape(.rect)
+        }
+    }
+
+    @ViewBuilder
+    private var transactionsList: some View {
+        switch viewModel.state {
+            case .loading:
+                Text("PLACEHOLDER ITEMS HERE") // TODO: Implement
+            case .display:
+                if viewModel.transactions.isEmpty {
+                    Text("No transactions yet...") // TODO: Implement
+                } else {
+                    ForEach(viewModel.transactions) { transaction in
+                        TransactionView(transaction: transaction)
+                    }
+
+                    if viewModel.hasMoreTransactions {
+                        NextPageView {
+                            viewModel.fetchTransactionHistory(reset: false)
+                        }
+                    } else {
+                        EmptyView()
+                    }
+                }
+            case .error(let error):
+                ErrorView(title: "Error", description: error.userFriendlyDescription) {
+                    viewModel.fetchTransactionHistory(reset: true)
+                }
+                .padding(20)
         }
     }
 }

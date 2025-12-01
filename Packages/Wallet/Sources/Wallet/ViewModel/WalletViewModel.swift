@@ -20,6 +20,20 @@ final class WalletViewModel: SimpleContentFetcher, ObservableObject {
 
     private var timer: Timer?
 
+    @frozen
+    public enum TransactionHistoryState {
+        case loading
+        case display
+        case error(Error)
+    }
+
+    @Published private(set) var transactionHistoryState = TransactionHistoryState.loading
+    private var currentTransactionHistoryOffset: Int = 0
+    private(set) var hasMoreTransactions: Bool = true
+
+    @Published private(set) var transactions: [Models.Transaction] = []
+    private var transactionHistoryFetchTask: Task<Void, Never>?
+
     init() {
         startTimer()
     }
@@ -77,6 +91,54 @@ final class WalletViewModel: SimpleContentFetcher, ObservableObject {
         let minutes = (timeLeft / 60) % 60
         let seconds = timeLeft % 60
         countdown = String(format: "%02d : %02d : %02d", hours, minutes, seconds)
+    }
+
+    func fetchTransactionHistory(reset: Bool) {
+        if let existingTask = transactionHistoryFetchTask, !existingTask.isCancelled {
+            return
+        }
+
+        if reset {
+            transactions.removeAll()
+            currentTransactionHistoryOffset = 0
+            hasMoreTransactions = true
+        }
+
+        if transactions.isEmpty {
+            transactionHistoryState = .loading
+        }
+
+        transactionHistoryFetchTask = Task {
+            do {
+                let result = await apiService.fetchTransactionsHistory(after: currentTransactionHistoryOffset)
+
+                try Task.checkCancellation()
+
+                switch result {
+                    case .success(let fetchedTransactions):
+                        await MainActor.run {
+                            transactions.append(contentsOf: fetchedTransactions)
+
+                            if fetchedTransactions.count != 20 {
+                                hasMoreTransactions = false
+                            } else {
+                                currentTransactionHistoryOffset += 20
+                            }
+                            transactionHistoryState = .display
+                        }
+                    case .failure(let apiError):
+                        throw apiError
+                }
+            } catch is CancellationError {
+                //                state = .display(posts: posts, hasMore: .hasMore)
+            } catch {
+                await MainActor.run {
+                    transactionHistoryState = .error(error)
+                }
+            }
+
+            transactionHistoryFetchTask = nil
+        }
     }
 
     deinit {

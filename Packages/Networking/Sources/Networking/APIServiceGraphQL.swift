@@ -1259,6 +1259,24 @@ public final class APIServiceGraphQL: APIService {
         }
     }
 
+    public func fetchTransactionsHistory(after offset: Int) async -> Result<[Transaction], APIError> {
+        do {
+            let result = try await qlClient.fetch(query: GetTransactionHistoryQuery(offset: GraphQLNullable<Int>(integerLiteral: offset), limit: 20), cachePolicy: .fetchIgnoringCacheCompletely)
+
+            guard let data = result.transactionHistory.affectedRows else {
+                return .failure(.missingData)
+            }
+
+            let transactions = data.compactMap { value in
+                Models.Transaction(gqlTransaction: value)
+            }
+
+            return .success(transactions)
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
     // MARK: Advertisements
     public func getListOfAds(userID: String?, with contentType: PostContentType, after offset: Int, amount: Int) async -> Result<[Post], APIError> {
         let filterBy: [GraphQLEnum<ContentType>] = contentType.apiValue

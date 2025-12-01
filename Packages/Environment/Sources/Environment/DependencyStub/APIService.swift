@@ -214,6 +214,10 @@ public final class APIServiceStub: APIService {
         .success(())
     }
 
+    public func fetchTransactionsHistory(after offset: Int) async -> Result<[Transaction], APIError> {
+        .failure(.missingData)
+    }
+
     //MARK: Advertisements
     public func getListOfAds(userID: String?, with contentType: PostContentType, after offset: Int, amount: Int) async -> Result<[Post], APIError> {
         .failure(.missingData)

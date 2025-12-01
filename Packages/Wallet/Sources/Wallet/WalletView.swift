@@ -30,7 +30,7 @@ public struct WalletView: View {
                             .id(0)
                         WithdrawalView()
 
-                        TransactionsListView(isHeaderAtTop: $isHeaderAtTop, scrollProxy: scrollProxy)
+                        TransactionsListView(viewModel: viewModel, isHeaderAtTop: $isHeaderAtTop, scrollProxy: scrollProxy)
                             .id(1)
                     }
                     .padding(.horizontal, 20)
@@ -40,6 +40,7 @@ public struct WalletView: View {
                 .refreshable {
                     HapticManager.shared.fireHaptic(.dataRefresh(intensity: 0.3))
                     viewModel.fetchContent()
+                    viewModel.fetchTransactionHistory(reset: true)
                 }
             }
         }
@@ -47,6 +48,7 @@ public struct WalletView: View {
         .onFirstAppear {
             viewModel.apiService = apiManager.apiService
             viewModel.fetchContent()
+            viewModel.fetchTransactionHistory(reset: true)
         }
         .trackScreen(AppScreen.wallet)
     }
