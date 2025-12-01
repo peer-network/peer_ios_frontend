@@ -1,0 +1,6 @@
+{
+  "includes": [
+    "ApolloGQL/apollo-codegen-config-user.json",
+    "ApolloGQL/apollo-codegen-config-guest.json"
+  ]
+}

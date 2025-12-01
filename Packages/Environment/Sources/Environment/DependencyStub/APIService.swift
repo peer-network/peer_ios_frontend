@@ -206,7 +206,7 @@ public final class APIServiceStub: APIService {
     }
     
     //MARK: Wallet
-    public func fetchLiquidityState() async -> Result<Double, APIError> {
+    public func fetchLiquidityState() async -> Result<Decimal, APIError> {
         .success(1000.5)
     }
 

@@ -202,8 +202,8 @@ struct TransferAmountInputView: View {
                 return
             }
 
-            if amount > Int(currentBalance) {
-                self.amount = Int(currentBalance)
+            if amount > (currentBalance as NSDecimalNumber).intValue {
+                self.amount = (currentBalance as NSDecimalNumber).intValue
             }
         }
         .toolbar {

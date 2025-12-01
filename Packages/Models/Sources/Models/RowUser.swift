@@ -223,6 +223,42 @@ public struct RowUser: Identifiable, Hashable {
         self.isFollowed = isFollowed
         self.isFollowing = isFollowing
     }
+
+    public init?(gqlUser: GetTransactionHistoryQuery.Data.TransactionHistory.AffectedRow.Recipient) {
+        guard
+            let id = gqlUser.userid,
+            let username = gqlUser.username,
+            let slug = gqlUser.slug,
+            let image = gqlUser.img
+        else {
+            return nil
+        }
+
+        self.id = id
+        self.username = username
+        self.slug = slug
+        self.image = image
+        self.isFollowed = false
+        self.isFollowing = false
+    }
+
+    public init?(gqlUser: GetTransactionHistoryQuery.Data.TransactionHistory.AffectedRow.Sender) {
+        guard
+            let id = gqlUser.userid,
+            let username = gqlUser.username,
+            let slug = gqlUser.slug,
+            let image = gqlUser.img
+        else {
+            return nil
+        }
+
+        self.id = id
+        self.username = username
+        self.slug = slug
+        self.image = image
+        self.isFollowed = false
+        self.isFollowing = false
+    }
 }
 
 extension RowUser {

@@ -8,10 +8,10 @@
 import Foundation
 
 struct WalletBalance {
-    let amount: Double
-    let tokenPrice: Double
+    let amount: Decimal
+    let tokenPrice: Decimal
 
-    var balanceEUR: Double {
+    var balanceEUR: Decimal {
         amount * tokenPrice
     }
 }

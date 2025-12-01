@@ -17,9 +17,9 @@ public enum ActionFeedbackType {
 
     case dislikeConfirmaion
 
-    case noTokensForLike(Double)
-    case noTokensForComment(Double)
-    case noTokensForDislike(Double)
+    case noTokensForLike(Decimal)
+    case noTokensForComment(Decimal)
+    case noTokensForDislike(Decimal)
 
     public var priceInTokens: Double {
         switch self {
@@ -134,7 +134,7 @@ public enum ActionFeedbackType {
         }
     }
 
-    var currentUserBalance: Double? {
+    var currentUserBalance: Decimal? {
         switch self {
             case .freeLikeConfirmaion:
                 return nil

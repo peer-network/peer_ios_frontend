@@ -1,0 +1,48 @@
+query GetTransactionHistory($offset: Int, $limit: Int) {
+    transactionHistory(
+        limit: $limit
+        offset: $offset
+        sort: NEWEST
+    ) {
+        affectedRows {
+            operationid
+            transactiontype
+            tokenamount
+            netTokenAmount
+            message
+            createdat
+            fees {
+                total
+                burn
+                peer
+                inviter
+            }
+            recipient {
+                userid
+                img
+                username
+                slug
+                biography
+                visibilityStatus
+                hasActiveReports
+                updatedat
+            }
+            sender {
+                userid
+                img
+                username
+                slug
+                biography
+                visibilityStatus
+                hasActiveReports
+                updatedat
+            }
+        }
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
+    }
+}

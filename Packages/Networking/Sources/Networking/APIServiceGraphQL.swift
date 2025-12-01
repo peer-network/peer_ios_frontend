@@ -1217,7 +1217,7 @@ public final class APIServiceGraphQL: APIService {
     }
     
     //MARK: Wallet
-    public func fetchLiquidityState() async -> Result<Double, APIError> {
+    public func fetchLiquidityState() async -> Result<Decimal, APIError> {
         do {
             let result = try await qlClient.fetch(query: GetLiquidityQuery(), cachePolicy: .fetchIgnoringCacheCompletely)
 
@@ -1230,8 +1230,7 @@ public final class APIServiceGraphQL: APIService {
             }
 
             guard
-                let data = result.balance.currentliquidity,
-                let amount = Double(data)
+                let amount = result.balance.currentliquidity
             else {
                 return .failure(.missingData)
             }
