@@ -19,6 +19,7 @@ struct TransactionView: View {
             typeView
 
             titleView
+                .frame(maxWidth: .infinity, alignment: .leading)
 
             amountView
         }

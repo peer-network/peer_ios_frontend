@@ -8,6 +8,7 @@
 import Foundation
 
 public struct Transaction: Identifiable, Hashable {
+
     public enum TransactionType {
         case extraPost
         case extraLike
