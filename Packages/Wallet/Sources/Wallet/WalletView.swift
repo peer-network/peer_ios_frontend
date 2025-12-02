@@ -11,6 +11,9 @@ import Environment
 import Analytics
 
 public struct WalletView: View {
+    @Environment(\.selectedTabScrollToTop) private var selectedTabScrollToTop
+
+    @EnvironmentObject private var router: Router
     @EnvironmentObject private var accountManager: AccountManager
     @EnvironmentObject private var apiManager: APIServiceManager
 
@@ -25,6 +28,7 @@ public struct WalletView: View {
         } content: {
             ScrollViewReader { scrollProxy in
                 ScrollView {
+                    ScrollToView()
                     VStack(spacing: 20) {
                         GemsMainView()
                             .id(0)
@@ -41,6 +45,13 @@ public struct WalletView: View {
                     HapticManager.shared.fireHaptic(.dataRefresh(intensity: 0.3))
                     viewModel.fetchContent()
                     viewModel.fetchTransactionHistory(reset: true)
+                }
+                .onChange(of: selectedTabScrollToTop) {
+                    if selectedTabScrollToTop == 3, router.path.isEmpty {
+                        withAnimation {
+                            scrollProxy.scrollTo(ScrollToView.Constants.scrollToTop, anchor: .top)
+                        }
+                    }
                 }
             }
         }
