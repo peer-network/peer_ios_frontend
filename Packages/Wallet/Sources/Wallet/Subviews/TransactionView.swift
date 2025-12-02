@@ -243,6 +243,7 @@ struct TransactionView: View {
 
                 Icons.logoCircleWhite
                     .iconSize(height: 12.83)
+                    .opacity(amountIsBold ? 1 : 0.5)
             }
         }
     }
