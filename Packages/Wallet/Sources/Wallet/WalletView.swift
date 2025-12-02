@@ -34,7 +34,7 @@ public struct WalletView: View {
                             .id(1)
                     }
                     .padding(.horizontal, 20)
-                    .padding(.top, 20)
+                    .padding(.vertical, 20)
                 }
                 .scrollDismissesKeyboard(.interactively)
                 .refreshable {

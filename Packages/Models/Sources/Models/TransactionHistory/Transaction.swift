@@ -32,6 +32,28 @@ public struct Transaction: Identifiable, Hashable {
     public let recipient: RowUser
     public let fees: TransactionFee?
 
+    public init(
+        id: String,
+        type: TransactionType,
+        tokenAmount: Decimal,
+        netTokenAmount: Decimal,
+        message: String?,
+        createdAt: String,
+        sender: RowUser,
+        recipient: RowUser,
+        fees: TransactionFee?
+    ) {
+        self.id = id
+        self.type = type
+        self.tokenAmount = tokenAmount
+        self.netTokenAmount = netTokenAmount
+        self.message = message
+        self.createdAt = createdAt
+        self.sender = sender
+        self.recipient = recipient
+        self.fees = fees
+    }
+
     public init?(gqlTransaction: GetTransactionHistoryQuery.Data.TransactionHistory.AffectedRow) {
         guard
             let sender = RowUser(gqlUser: gqlTransaction.sender),
@@ -49,5 +71,23 @@ public struct Transaction: Identifiable, Hashable {
         self.sender = sender
         self.recipient = recipient
         self.fees = gqlTransaction.fees == nil ? nil : .init(gqlFee: gqlTransaction.fees!)
+    }
+}
+
+extension Transaction {
+    public static func placeholders(count: Int = 10) -> [Transaction] {
+        return (0..<count).map { _ in
+            Transaction(
+                id: UUID().uuidString,
+                type: .dislike,
+                tokenAmount: 100,
+                netTokenAmount: 100,
+                message: "Placeholder message",
+                createdAt: "10 Jun 2025, 04:20",
+                sender: .placeholders(count: 1).first!,
+                recipient: .placeholders(count: 1).first!,
+                fees: .placeholder()
+            )
+        }
     }
 }

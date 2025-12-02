@@ -7,6 +7,7 @@
 
 import SwiftUI
 import DesignSystem
+import Models
 
 struct TransactionsListView: View {
     @ObservedObject var viewModel: WalletViewModel
@@ -72,14 +73,19 @@ struct TransactionsListView: View {
 
     @ViewBuilder
     private var transactionsList: some View {
-        switch viewModel.state {
+        switch viewModel.transactionHistoryState {
             case .loading:
-                Text("PLACEHOLDER ITEMS HERE") // TODO: Implement
+                ForEach(Models.Transaction.placeholders(count: 15), id: \.id) { transaction in
+                    TransactionView(transaction: transaction)
+                        .contentShape(.rect)
+                        .allowsHitTesting(false)
+                        .skeleton(isRedacted: true)
+                }
             case .display:
                 if viewModel.transactions.isEmpty {
-                    Text("No transactions yet...") // TODO: Implement
+                    noTransactionsView
                 } else {
-                    ForEach(viewModel.transactions) { transaction in
+                    ForEach(viewModel.transactions, id: \.id) { transaction in
                         TransactionView(transaction: transaction)
                     }
 
@@ -96,6 +102,21 @@ struct TransactionsListView: View {
                     viewModel.fetchTransactionHistory(reset: true)
                 }
                 .padding(20)
+        }
+    }
+
+    private var noTransactionsView: some View {
+        VStack(alignment: .center, spacing: 13) {
+            Text("No transactions yet. Create a post to start earning!")
+                .appFont(.bodyRegular)
+                .foregroundStyle(Colors.whiteSecondary)
+                .multilineTextAlignment(.center)
+
+            let buttonConfig = StateButtonConfig(buttonSize: .small, buttonType: .secondary, title: "Create new post")
+            StateButton(config: buttonConfig) {
+                // TODO: Add action to switch tab
+            }
+            .fixedSize()
         }
     }
 }

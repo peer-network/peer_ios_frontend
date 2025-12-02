@@ -10,23 +10,49 @@ import DesignSystem
 import Models
 
 struct TransactionView: View {
+    @Environment(\.redactionReasons) private var reasons
+
     let transaction: Models.Transaction
 
     @State private var expanded: Bool = false
 
     var body: some View {
-        HStack(alignment: .center, spacing: 10) {
-            typeView
+        Button {
+            withAnimation(.easeInOut) {
+                expanded.toggle()
+            }
+        } label: {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(alignment: .center, spacing: 10) {
+                    typeView
 
-            titleView
-                .frame(maxWidth: .infinity, alignment: .leading)
+                    titleView
+                        .frame(maxWidth: .infinity, alignment: .leading)
 
-            amountView
+                    amountView
+                }
+
+                if let fees = transaction.fees {
+                    if expanded {
+                        expandedView(fees: fees)
+                            .foregroundStyle(Colors.whiteSecondary)
+                    }
+                }
+            }
+            .padding(10)
+            .background {
+                RoundedRectangle(cornerRadius: 24)
+                    .foregroundStyle(Colors.inactiveDark)
+            }
+            .clipShape( RoundedRectangle(cornerRadius: 24))
+            .contentShape(.rect)
         }
-        .padding(10)
-        .background {
-            RoundedRectangle(cornerRadius: 24)
-                .foregroundStyle(Colors.inactiveDark)
+        .ifCondition(reasons.contains(.placeholder)) {
+            $0
+                .overlay {
+                    RoundedRectangle(cornerRadius: 24)
+                        .foregroundStyle(Colors.inactiveDark)
+                }
         }
     }
 
@@ -132,7 +158,9 @@ struct TransactionView: View {
 
     private var amountView: some View {
         HStack(spacing: 5) {
-            Text(transaction.tokenAmount.formatted(.number))
+            let amountPrefix = isAmountPositive() ? "+" : "-"
+
+            Text(amountPrefix + "\(transaction.tokenAmount.formatted(.number))")
                 .appFont(.bodyBold)
 
             Icons.logoCircleWhite
@@ -144,5 +172,87 @@ struct TransactionView: View {
                 .animation(.easeInOut, value: expanded)
         }
         .foregroundStyle(Colors.whitePrimary)
+    }
+
+    @ViewBuilder
+    private func expandedView(fees: TransactionFee) -> some View {
+        Capsule()
+            .frame(height: 1)
+            .frame(maxWidth: .infinity)
+            .foregroundStyle(Colors.whiteSecondary)
+
+        Group {
+            textAmountLine(text: "Transaction amount", amount: transaction.tokenAmount, amountIsBold: true)
+
+            textAmountLine(text: "Base amount", amount: transaction.netTokenAmount, amountIsBold: true)
+
+            if let total = fees.total {
+                textAmountLine(text: "Fees included", amount: total, amountIsBold: true)
+            }
+        }
+        .appFont(.bodyRegular)
+        .foregroundStyle(Colors.whitePrimary)
+
+        Group {
+            if let peer = fees.peer {
+                textAmountLine(text: "2% to Peer Bank (platform fee)", amount: peer) // TODO: Take % from Constants
+            }
+
+            if let burn = fees.burn {
+                textAmountLine(text: "1% Burned (removed from supply)", amount: burn) // TODO: Take % from Constants
+            }
+
+            if let inviter = fees.inviter {
+                textAmountLine(text: "1% to your Inviter", amount: inviter) // TODO: Take % from Constants
+            }
+        }
+        .appFont(.smallLabelRegular)
+
+        if let message = transaction.message {
+            Text("Message:")
+                .appFont(.bodyRegular)
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            Text(message)
+                .appFont(.bodyRegular)
+                .foregroundStyle(Colors.whitePrimary)
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(10)
+                .background {
+                    RoundedRectangle(cornerRadius: 20)
+                        .foregroundStyle(Colors.blackDark)
+                }
+        }
+    }
+
+    @ViewBuilder
+    private func textAmountLine(text: String, amount: Decimal, amountIsBold: Bool = false) -> some View {
+        HStack(spacing: 0) {
+            Text(text)
+                .foregroundStyle(Colors.whiteSecondary)
+
+            Spacer()
+                .frame(minWidth: 10)
+                .frame(maxWidth: .infinity)
+                .layoutPriority(-1)
+
+            HStack(spacing: 5) {
+                Text(amount, format: .number)
+                    .bold(amountIsBold)
+
+                Icons.logoCircleWhite
+                    .iconSize(height: 12.83)
+            }
+        }
+    }
+
+    private func isAmountPositive() -> Bool {
+        switch transaction.type {
+            case .extraPost, .extraLike, .extraComment, .dislike, .transferTo, .pinPost:
+                return false
+            case .transferFrom, .referralReward, .dailyMint:
+                return true
+        }
     }
 }
