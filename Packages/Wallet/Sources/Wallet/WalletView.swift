@@ -32,7 +32,8 @@ public struct WalletView: View {
                     VStack(spacing: 20) {
                         GemsMainView()
                             .id(0)
-                        WithdrawalView()
+
+                        transferButton
 
                         TransactionsListView(viewModel: viewModel, isHeaderAtTop: $isHeaderAtTop, scrollProxy: scrollProxy)
                             .id(1)
@@ -62,5 +63,53 @@ public struct WalletView: View {
             viewModel.fetchTransactionHistory(reset: true)
         }
         .trackScreen(AppScreen.wallet)
+    }
+
+    private var transferButton: some View {
+        Button {
+            //
+        } label: {
+            HStack(alignment: .center, spacing: 10) {
+                Circle()
+                    .frame(height: 40)
+                    .overlay {
+                        Icons.arrowDownNormal
+                            .iconSize(height: 14.5)
+                            .foregroundStyle(Colors.whitePrimary)
+                            .rotationEffect(.degrees(225))
+                    }
+
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Transfer")
+                        .appFont(.bodyRegular)
+
+                    Spacer()
+                        .frame(minHeight: 0)
+                        .frame(maxHeight: .infinity)
+                        .layoutPriority(-1)
+
+                    Text("To user")
+                        .appFont(.smallLabelRegular)
+                        .foregroundStyle(Colors.textSuggestions)
+                }
+                .frame(height: 40)
+
+                Spacer()
+                    .frame(minWidth: 0)
+                    .frame(maxWidth: .infinity)
+                    .layoutPriority(-1)
+
+                Icons.arrowNormal
+                    .iconSize(height: 15)
+            }
+            .foregroundStyle(Colors.blackDark)
+            .padding(20)
+            .background {
+                RoundedRectangle(cornerRadius: 25)
+                    .foregroundStyle(Colors.whitePrimary)
+            }
+            .contentShape(.rect)
+        }
+
     }
 }
