@@ -13,7 +13,7 @@ struct GemsMainView: View {
 
     var body: some View {
         Group {
-            switch viewModel.state {
+            switch viewModel.balanceState {
                 case .loading(let placeholder):
                     contentView(balance: placeholder, isLoading: true)
                 case .display(let balance):

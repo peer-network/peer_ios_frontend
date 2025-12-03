@@ -33,6 +33,8 @@ public struct WalletView: View {
                         GemsMainView()
                             .id(0)
 
+                        RecipientPickerView()
+
                         transferButton
 
                         TransactionsListView(viewModel: viewModel, isHeaderAtTop: $isHeaderAtTop, scrollProxy: scrollProxy)
