@@ -142,12 +142,6 @@ struct ContentView: View {
                 }))
             }
         }
-//        .fullScreenCover(isPresented: showIntroBinding) {
-//            OnboardingView(viewModel: OnboardingViewModel(closeButtonType: .skip, tokenomics: appState.getConstants()!.data.tokenomics, dailyFree: appState.getConstants()!.data.dailyFree, minting: appState.getConstants()!.data.minting, dismissAction: { isSkipped in
-//                accountManager.markOnboardingShown(.intro)
-//                analytics.track(OnboardingEvent(skipped: isSkipped))
-//            }))
-//        }
         .ifCondition(appState.getConstants() != nil) {
             $0.fullScreenCover(isPresented: showIntroByUserBinding) {
                 OnboardingView(viewModel: OnboardingViewModel(closeButtonType: .close, tokenomics: appState.getConstants()!.data.tokenomics, dailyFree: appState.getConstants()!.data.dailyFree, minting: appState.getConstants()!.data.minting, dismissAction: { _ in
@@ -155,11 +149,6 @@ struct ContentView: View {
                 }))
             }
         }
-//        .fullScreenCover(isPresented: showIntroByUserBinding) {
-//            OnboardingView(viewModel: OnboardingViewModel(closeButtonType: .close, tokenomics: appState.getConstants()!.data.tokenomics, dailyFree: appState.getConstants()!.data.dailyFree, minting: appState.getConstants()!.data.minting, dismissAction: { _ in
-//                popupManager.isShowingOnboarding = false
-//            }))
-//        }
         .onFirstAppear {
             // Needed to test feedback popups
 //            popupManager._resetFeedbackPromptState()
