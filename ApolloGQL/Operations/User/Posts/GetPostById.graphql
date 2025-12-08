@@ -15,6 +15,7 @@ query GetPostById($postid: ID!) {
             mediadescription
             createdat
             visibilityStatus
+            isHiddenForUsers
             hasActiveReports
             amountlikes
             amountviews
@@ -35,6 +36,7 @@ query GetPostById($postid: ID!) {
                 img
                 visibilityStatus
                 hasActiveReports
+                isHiddenForUsers
                 isfollowed
                 isfollowing
                 isfriend

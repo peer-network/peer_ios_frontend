@@ -77,11 +77,10 @@ struct PostHeaderView: View {
                !accountManager.isCurrentUser(id: postVM.post.owner.id),
                !postVM.post.owner.isFollowed
             {
-                //TODO: exclude logic from Button(just pass correct colors)
                 let vm = FollowButtonViewModel(
                     id: postVM.post.owner.id,
-                    isFollowing: postVM.post.owner.isFollowing,
-                    isFollowed: postVM.post.owner.isFollowed
+                    isFollowing: postVM.post.owner.isFollowed,
+                    isFollowed: postVM.post.owner.isFollowing
                 )
                 FollowButton2(viewModel: vm)
                     .fixedSize(horizontal: true, vertical: false)

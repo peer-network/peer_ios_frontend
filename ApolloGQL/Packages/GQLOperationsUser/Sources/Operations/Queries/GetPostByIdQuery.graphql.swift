@@ -7,7 +7,7 @@ public class GetPostByIdQuery: GraphQLQuery {
   public static let operationName: String = "GetPostById"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetPostById($postid: ID!) { listPosts(postid: $postid, contentFilterBy: MYGRANDMAHATES) { __typename status counter ResponseCode affectedRows { __typename id contenttype title media cover mediadescription createdat visibilityStatus hasActiveReports amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags url user { __typename id username slug img visibilityStatus hasActiveReports isfollowed isfollowing isfriend } } } }"#
+      #"query GetPostById($postid: ID!) { listPosts(postid: $postid, contentFilterBy: MYGRANDMAHATES) { __typename status counter ResponseCode affectedRows { __typename id contenttype title media cover mediadescription createdat visibilityStatus isHiddenForUsers hasActiveReports amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags url user { __typename id username slug img visibilityStatus hasActiveReports isHiddenForUsers isfollowed isfollowing isfriend } } } }"#
     ))
 
   public var postid: ID
@@ -72,7 +72,8 @@ public class GetPostByIdQuery: GraphQLQuery {
           .field("cover", String.self),
           .field("mediadescription", String.self),
           .field("createdat", GQLOperationsUser.Date.self),
-          .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>?.self),
+          .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>.self),
+          .field("isHiddenForUsers", Bool.self),
           .field("hasActiveReports", Bool.self),
           .field("amountlikes", Int.self),
           .field("amountviews", Int.self),
@@ -96,7 +97,8 @@ public class GetPostByIdQuery: GraphQLQuery {
         public var cover: String { __data["cover"] }
         public var mediadescription: String { __data["mediadescription"] }
         public var createdat: GQLOperationsUser.Date { __data["createdat"] }
-        public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>? { __data["visibilityStatus"] }
+        public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }
+        public var isHiddenForUsers: Bool { __data["isHiddenForUsers"] }
         public var hasActiveReports: Bool { __data["hasActiveReports"] }
         public var amountlikes: Int { __data["amountlikes"] }
         public var amountviews: Int { __data["amountviews"] }
@@ -126,8 +128,9 @@ public class GetPostByIdQuery: GraphQLQuery {
             .field("username", String?.self),
             .field("slug", Int?.self),
             .field("img", String?.self),
-            .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>?.self),
+            .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>.self),
             .field("hasActiveReports", Bool.self),
+            .field("isHiddenForUsers", Bool.self),
             .field("isfollowed", Bool?.self),
             .field("isfollowing", Bool?.self),
             .field("isfriend", Bool?.self),
@@ -137,8 +140,9 @@ public class GetPostByIdQuery: GraphQLQuery {
           public var username: String? { __data["username"] }
           public var slug: Int? { __data["slug"] }
           public var img: String? { __data["img"] }
-          public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>? { __data["visibilityStatus"] }
+          public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }
           public var hasActiveReports: Bool { __data["hasActiveReports"] }
+          public var isHiddenForUsers: Bool { __data["isHiddenForUsers"] }
           public var isfollowed: Bool? { __data["isfollowed"] }
           public var isfollowing: Bool? { __data["isfollowing"] }
           public var isfriend: Bool? { __data["isfriend"] }

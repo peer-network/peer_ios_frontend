@@ -13,6 +13,7 @@ query GetProfile($contentFilterBy: ContentFilterType, $userid: ID!) {
             img
             biography
             visibilityStatus
+            isHiddenForUsers
             hasActiveReports
             isfollowed
             isfollowing

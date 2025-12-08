@@ -18,6 +18,7 @@ query SearchUser($contentFilterBy: ContentFilterType, $userid: ID, $username: St
             biography
             visibilityStatus
             hasActiveReports
+            isHiddenForUsers
             createdat
             updatedat
         }

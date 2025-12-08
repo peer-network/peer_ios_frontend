@@ -12,6 +12,8 @@ query GetBlockedUsers($offset: Int, $limit: Int) {
                 username
                 slug
                 visibilityStatus
+                hasActiveReports
+                isHiddenForUsers
             }
         }
     }

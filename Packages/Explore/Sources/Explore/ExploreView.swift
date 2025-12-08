@@ -52,7 +52,7 @@ public struct ExploreView: View {
         HeaderContainer(actionsToDisplay: .commentsAndLikes) {
             Text("Search")
         } content: {
-            VStack(spacing: 10) {
+            VStack(spacing: 0) {
                 searchBar
                     .padding(.horizontal, 10)
 
@@ -60,6 +60,7 @@ public struct ExploreView: View {
                     ScrollView {
                         ScrollToView()
                         searchResultsView
+                            .padding(.top, 10)
                     }
                     .scrollDismissesKeyboard(.interactively)
                     .scrollDisabled(viewModel.isLoading)
@@ -360,14 +361,9 @@ extension ExploreView {
 
         LazyVStack(spacing: 20) {
             ForEach(users) { user in
-                Button {
-                    router.navigate(to: .accountDetail(id: user.id))
-                } label: {
-                    RowUserView(user: user)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .contentShape(Rectangle())
-                }
-                .padding(.horizontal, 20)
+                RowProfileView(user: user)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .contentShape(.rect)
             }
 
             if !viewModel.users.isEmpty, viewModel.hasMore {
@@ -378,6 +374,7 @@ extension ExploreView {
                 }
             }
         }
+        .padding(.horizontal, 20)
     }
 
     private func tagsView(_ tags: [String]) -> some View {

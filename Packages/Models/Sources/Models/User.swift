@@ -23,6 +23,7 @@ public struct User: Identifiable, Hashable {
     public let amountFriends: Int
 
     public let hasActiveReports: Bool
+    public let isHiddenForUsers: Bool
     public let visibilityStatus: ContentVisibilityStatus
 
     public var imageURL: URL? {
@@ -48,6 +49,7 @@ public struct User: Identifiable, Hashable {
         amountFollowing: Int,
         amountFriends: Int,
         hasActiveReports: Bool = false,
+        isHiddenForUsers: Bool = false,
         visibilityStatus: ContentVisibilityStatus = .normal
     ) {
         self.id = id
@@ -63,6 +65,7 @@ public struct User: Identifiable, Hashable {
         self.amountFollowing = amountFollowing
         self.amountFriends = amountFriends
         self.hasActiveReports = hasActiveReports
+        self.isHiddenForUsers = isHiddenForUsers
         self.visibilityStatus = visibilityStatus
     }
 
@@ -99,7 +102,8 @@ public struct User: Identifiable, Hashable {
         self.amountFollowing = amountFollowing
         self.amountFriends = amountFriends
         self.hasActiveReports = gqlUser.hasActiveReports
-        self.visibilityStatus = .normalizedValue(gqlUser.visibilityStatus!.value)
+        self.isHiddenForUsers = gqlUser.isHiddenForUsers
+        self.visibilityStatus = .normalizedValue(gqlUser.visibilityStatus.value)
     }
 }
 

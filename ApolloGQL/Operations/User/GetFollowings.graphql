@@ -14,6 +14,7 @@ query GetFollowings($contentFilterBy: ContentFilterType, $userid: ID, $offset: I
                 slug
                 img
                 visibilityStatus
+                isHiddenForUsers
                 hasActiveReports
                 isfollowed
                 isfollowing

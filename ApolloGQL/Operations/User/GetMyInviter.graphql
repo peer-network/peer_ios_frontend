@@ -10,6 +10,7 @@ query GetMyInviter {
                 img
                 visibilityStatus
                 hasActiveReports
+                isHiddenForUsers
                 isfollowed
                 isfollowing
                 isfriend

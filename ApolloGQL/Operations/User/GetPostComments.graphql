@@ -13,6 +13,7 @@ query GetPostComments($contentFilterBy: ContentFilterType, $postid: ID!, $commen
                 createdat
                 visibilityStatus
                 hasActiveReports
+                isHiddenForUsers
                 amountlikes
                 amountreplies
                 amountreports
@@ -23,6 +24,7 @@ query GetPostComments($contentFilterBy: ContentFilterType, $postid: ID!, $commen
                     slug
                     img
                     visibilityStatus
+                    isHiddenForUsers
                     hasActiveReports
                     isfollowed
                     isfollowing

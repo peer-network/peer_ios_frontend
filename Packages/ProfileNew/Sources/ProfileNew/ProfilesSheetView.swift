@@ -77,11 +77,10 @@ public struct ProfilesSheetView<Fetcher>: View where Fetcher: RelationsFetcher {
                                             isFollowing: user.isFollowing,
                                             isFollowed: user.isFollowed
                                         )
-                                        //                                        FollowButton(viewModel: vm)
                                         FollowButton2(viewModel: vm)
                                             .fixedSize(horizontal: true, vertical: false)
                                     }, dismissAction: nil)
-                                    .contentShape(Rectangle())
+                                    .contentShape(.rect)
                                 }
 
                                 switch hasMore {
@@ -103,6 +102,7 @@ public struct ProfilesSheetView<Fetcher>: View where Fetcher: RelationsFetcher {
                             }
                     }
                 }
+                .padding(.horizontal, 10)
                 .padding(.bottom, 34)
             }
             .scrollIndicators(.hidden)

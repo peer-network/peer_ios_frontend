@@ -39,6 +39,7 @@ public struct Post: Identifiable, Hashable {
     public let advertisement: Advertisement?
 
     public let hasActiveReports: Bool
+    public let isHiddenForUsers: Bool
     public let visibilityStatus: ContentVisibilityStatus
 
     public var mediaURLs: [URL] {
@@ -73,7 +74,7 @@ public struct Post: Identifiable, Hashable {
             return nil
         }
 
-        if ContentVisibilityStatus.normalizedValue(gqlPost.visibilityStatus!.value) != .illegal { // TODO: SAME FOR OTHER INITS
+        if ContentVisibilityStatus.normalizedValue(gqlPost.visibilityStatus.value) != .illegal { // TODO: SAME FOR OTHER INITS
             guard let parsedMedia = try? JSONDecoder().decode([MediaItem].self, from: mediaData) else {
                 return nil
             }
@@ -109,7 +110,8 @@ public struct Post: Identifiable, Hashable {
         self.owner = postOwner
         advertisement = nil
         self.hasActiveReports = gqlPost.hasActiveReports
-        self.visibilityStatus = .normalizedValue(gqlPost.visibilityStatus!.value)
+        self.isHiddenForUsers = gqlPost.isHiddenForUsers
+        self.visibilityStatus = .normalizedValue(gqlPost.visibilityStatus.value)
     }
 
     public init?(gqlPost: GetPostByIdQuery.Data.ListPosts.AffectedRow) {
@@ -150,7 +152,8 @@ public struct Post: Identifiable, Hashable {
         self.owner = postOwner
         advertisement = nil
         self.hasActiveReports = gqlPost.hasActiveReports
-        self.visibilityStatus = .normalizedValue(gqlPost.visibilityStatus!.value)
+        self.isHiddenForUsers = gqlPost.isHiddenForUsers
+        self.visibilityStatus = .normalizedValue(gqlPost.visibilityStatus.value)
     }
 
     public init?(gqlAdvertisement: GetListOfAdsQuery.Data.ListAdvertisementPosts.AffectedRow) {
@@ -193,7 +196,8 @@ public struct Post: Identifiable, Hashable {
         self.owner = postOwner
         advertisement = Advertisement(gqlAdvertisement: gqlAdvertisement)
         self.hasActiveReports = gqlPost.hasActiveReports
-        self.visibilityStatus = .normalizedValue(gqlPost.visibilityStatus!.value)
+        self.isHiddenForUsers = gqlPost.isHiddenForUsers
+        self.visibilityStatus = .normalizedValue(gqlPost.visibilityStatus.value)
     }
 
     public init?(gqlPost: GetAdsHistoryListQuery.Data.AdvertisementHistory.AffectedRows.Advertisement.Post) {
@@ -234,7 +238,8 @@ public struct Post: Identifiable, Hashable {
         self.owner = postOwner
         advertisement = nil
         self.hasActiveReports = gqlPost.hasActiveReports
-        self.visibilityStatus = .normalizedValue(gqlPost.visibilityStatus!.value)
+        self.isHiddenForUsers = gqlPost.isHiddenForUsers
+        self.visibilityStatus = .normalizedValue(gqlPost.visibilityStatus.value)
     }
 
     public init(
@@ -258,6 +263,7 @@ public struct Post: Identifiable, Hashable {
         url: String,
         owner: ObjectOwner,
         hasActiveReports: Bool = false,
+        isHiddenForUsers: Bool = false,
         visibilityStatus: ContentVisibilityStatus = .normal
     ) {
         self.id = id
@@ -281,6 +287,7 @@ public struct Post: Identifiable, Hashable {
         self.owner = owner
         advertisement = nil
         self.hasActiveReports = hasActiveReports
+        self.isHiddenForUsers = isHiddenForUsers
         self.visibilityStatus = visibilityStatus
     }
 }

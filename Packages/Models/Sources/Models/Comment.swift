@@ -20,6 +20,7 @@ public struct Comment: Identifiable, Hashable {
     public let user: ObjectOwner
 
     public let hasActiveReports: Bool
+    public let isHiddenForUsers: Bool
     public let visibilityStatus: ContentVisibilityStatus
 
     public var formattedCreatedAt: String {
@@ -37,6 +38,7 @@ public struct Comment: Identifiable, Hashable {
         createdAt: String,
         user: ObjectOwner,
         hasActiveReports: Bool = false,
+        isHiddenForUsers: Bool = false,
         visibilityStatus: ContentVisibilityStatus = .normal
     ) {
         self.id = id
@@ -49,6 +51,7 @@ public struct Comment: Identifiable, Hashable {
         self.createdAt = createdAt
         self.user = user
         self.hasActiveReports = hasActiveReports
+        self.isHiddenForUsers = isHiddenForUsers
         self.visibilityStatus = visibilityStatus
     }
 
@@ -70,7 +73,8 @@ public struct Comment: Identifiable, Hashable {
         self.createdAt = gqlComment.createdat
         self.user = user
         self.hasActiveReports = gqlComment.hasActiveReports
-        self.visibilityStatus = .normalizedValue(gqlComment.visibilityStatus!.value)
+        self.isHiddenForUsers = gqlComment.isHiddenForUsers
+        self.visibilityStatus = .normalizedValue(gqlComment.visibilityStatus.value)
     }
 
     public init?(gqlComment: CreateCommentMutation.Data.CreateComment.AffectedRow) {
@@ -91,7 +95,8 @@ public struct Comment: Identifiable, Hashable {
         self.createdAt = gqlComment.createdat
         self.user = user
         self.hasActiveReports = gqlComment.hasActiveReports
-        self.visibilityStatus = .normalizedValue(gqlComment.visibilityStatus!.value)
+        self.isHiddenForUsers = gqlComment.isHiddenForUsers
+        self.visibilityStatus = .normalizedValue(gqlComment.visibilityStatus.value)
     }
 }
 

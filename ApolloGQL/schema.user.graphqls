@@ -270,6 +270,7 @@ type AdvertisementHistoryResult {
 type ListedAdvertisementData {
   status: String!
   ResponseCode: String
+  meta: DefaultResponse
   affectedRows: AdvertisementHistoryResult
 }
 
@@ -295,6 +296,7 @@ type ContactusResponsePayload {
 type ListAdvertisementData {
   status: String!
   ResponseCode: String
+  meta: DefaultResponse
   affectedRows: [AdvertisementRow]
 }
 
@@ -306,7 +308,8 @@ type Post {
   cover: String!
   mediadescription: String!
   createdat: Date!
-  visibilityStatus: ContentVisibilityStatus
+  visibilityStatus: ContentVisibilityStatus!
+  isHiddenForUsers: Boolean!
   hasActiveReports: Boolean!
   amountreports: Int!
   amountlikes: Int!
@@ -332,11 +335,13 @@ type Comment {
   parentid: ID
   content: String!
   createdat: Date!
-  visibilityStatus: ContentVisibilityStatus
+  visibilityStatus: ContentVisibilityStatus!
+  isHiddenForUsers: Boolean!
   hasActiveReports: Boolean!
   amountlikes: Int!
   amountreplies: Int!
   amountreports: Int!
+  isreported: Boolean!
   isliked: Boolean!
   user: ProfileUser!
 }
@@ -346,10 +351,12 @@ type ProfileUser {
   username: String
   slug: Int
   img: String
-  visibilityStatus: ContentVisibilityStatus
+  visibilityStatus: ContentVisibilityStatus!
+  isHiddenForUsers: Boolean!
   hasActiveReports: Boolean!
   isfollowed: Boolean
   isfollowing: Boolean
+  isreported: Boolean
   isfriend: Boolean
 }
 
@@ -447,10 +454,12 @@ type Profile {
   slug: Int
   img: String
   biography: String
-  visibilityStatus: ContentVisibilityStatus
+  visibilityStatus: ContentVisibilityStatus!
+  isHiddenForUsers: Boolean!
   hasActiveReports: Boolean!
   isfollowed: Boolean
   isfollowing: Boolean
+  isreported: Boolean
   amountposts: Int
   amounttrending: Int
   amountfollowed: Int
@@ -467,6 +476,7 @@ type Profile {
 type ProfileInfo {
   status: String
   ResponseCode: String
+  meta: DefaultResponse
   affectedRows: Profile
 }
 
@@ -480,7 +490,9 @@ type BlockedUser {
   img: String
   username: String
   slug: Int
-  visibilityStatus: ContentVisibilityStatus
+  hasActiveReports: Boolean!
+  visibilityStatus: ContentVisibilityStatus!
+  isHiddenForUsers: Boolean!
 }
 
 type BlockedUsers {
@@ -596,7 +608,8 @@ type ProfilePostMedia {
   contenttype: String!
   media: String!
   createdat: String
-  visibilityStatus: ContentVisibilityStatus
+  visibilityStatus: ContentVisibilityStatus!
+  isHiddenForUsers: Boolean!
 }
 
 type PostCommentsData {
@@ -610,7 +623,8 @@ type PostCommentsData {
   isliked: Boolean
   user: BasicUserInfo
   subcomments: [PostSubCommentsData]
-  visibilityStatus: ContentVisibilityStatus
+  visibilityStatus: ContentVisibilityStatus!
+  isHiddenForUsers: Boolean!
 }
 
 type PostSubCommentsData {
@@ -624,7 +638,8 @@ type PostSubCommentsData {
   amountreplies: Decimal
   isliked: Boolean
   user: BasicUserInfo
-  visibilityStatus: ContentVisibilityStatus
+  visibilityStatus: ContentVisibilityStatus!
+  isHiddenForUsers: Boolean!
 }
 
 type BasicUserInfo {
@@ -633,7 +648,8 @@ type BasicUserInfo {
   username: String
   slug: Int
   biography: String
-  visibilityStatus: ContentVisibilityStatus
+  visibilityStatus: ContentVisibilityStatus!
+  isHiddenForUsers: Boolean!
   hasActiveReports: Boolean!
   updatedat: Date!
 }
@@ -645,7 +661,8 @@ type User {
   slug: Int
   img: String
   biography: String
-  visibilityStatus: ContentVisibilityStatus
+  visibilityStatus: ContentVisibilityStatus!
+  isHiddenForUsers: Boolean!
   hasActiveReports: Boolean!
   createdat: Date
   updatedat: Date
@@ -686,6 +703,7 @@ type AllUserFriends {
   status: String!
   counter: Int!
   ResponseCode: String
+  meta: DefaultResponse
   affectedRows: [AllUserInfo]
 }
 
@@ -730,7 +748,7 @@ type TargetContent {
 type DefaultResponse {
   status: String!
   RequestId: String
-  ResponseCode: String
+  ResponseCode: String!
   ResponseMessage: String
 }
 
@@ -744,8 +762,6 @@ type ListAdvertisementPostsResponse {
 
 type HelloResponse {
   currentuserid: ID
-  userroles: Int!
-  userRoleString: String!
   currentVersion: String
   wikiLink: String
   lastMergedPullRequestNumber: String
@@ -768,7 +784,7 @@ type ContactusResponse {
 
 type RegisterResponse {
   meta: DefaultResponse
-  status: String!
+  status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   userid: ID
 }
@@ -810,7 +826,7 @@ type ListTodaysInteractionsResponse {
 }
 
 type PostInteractionResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   affectedRows: [ProfileUser!]
@@ -948,6 +964,12 @@ type CommentResponse {
   affectedRows: [Comment]
 }
 
+type CommentListResponse {
+  meta: DefaultResponse
+  counter: Int!
+  affectedRows: [Comment!]
+}
+
 type ReferralInfoResponse {
   meta: DefaultResponse
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
@@ -974,7 +996,7 @@ type GetActionPricesResponse {
 type TokenomicsResponse {
   meta: DefaultResponse
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
-  ResponseCode: Int!
+  ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   actionTokenPrices: ActionPriceResult!
   actionGemsReturns: ActionGemsReturns!
   mintingData: MintingData!
@@ -1056,9 +1078,10 @@ type Query {
   listFollowRelations(contentFilterBy: ContentFilterType, userid: ID, offset: Int, limit: Int): FollowRelationsResponse!
   listFriends(contentFilterBy: ContentFilterType, userid: ID, offset: Int, limit: Int): UserFriendsResponse!
   getUserInfo: UserInfoResponse!
-  listBlockedUsers(offset: Int, limit: Int): BlockedUsersResponse!
+  listBlockedUsers(contentFilterBy: ContentFilterType, offset: Int, limit: Int): BlockedUsersResponse!
   listPosts(filterBy: [PostFilterType!], contentFilterBy: ContentFilterType, IgnorList: IgnoreOption, sortBy: PostSortType, userid: ID, postid: ID, title: String, tag: String, from: Date, to: Date, offset: Int, limit: Int, commentOffset: Int, commentLimit: Int): PostListResponse!
   listAdvertisementPosts(filterBy: [ContentType!], contentFilterBy: ContentFilterType, userid: ID, postid: ID, tag: String, offset: Int, limit: Int, commentOffset: Int, commentLimit: Int): ListAdvertisementPostsResponse!
+  listComments(postid: ID!, contentFilterBy: ContentFilterType, commentOffset: Int, commentLimit: Int): CommentListResponse!
   listChildComments(parent: ID!, offset: Int, limit: Int): CommentResponse!
   listTags(offset: Int, limit: Int): TagSearchResponse!
   searchTags(tagName: String!, offset: Int, limit: Int): TagSearchResponse!

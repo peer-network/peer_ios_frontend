@@ -11,6 +11,7 @@ query GetMyReferredUsers($offset: Int, $limit: Int) {
                 img
                 visibilityStatus
                 hasActiveReports
+                isHiddenForUsers
                 isfollowed
                 isfollowing
                 isfriend

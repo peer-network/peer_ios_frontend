@@ -15,6 +15,7 @@ mutation CreatePost($contentType: ContentType!, $title: String!, $media: [String
             createdat
             visibilityStatus
             hasActiveReports
+            isHiddenForUsers
             amountreports
             amountlikes
             amountviews
@@ -34,6 +35,7 @@ mutation CreatePost($contentType: ContentType!, $title: String!, $media: [String
                 slug
                 img
                 visibilityStatus
+                isHiddenForUsers
                 hasActiveReports
                 isfollowed
                 isfollowing

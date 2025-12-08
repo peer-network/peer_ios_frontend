@@ -7,7 +7,7 @@ public class GetPostCommentsQuery: GraphQLQuery {
   public static let operationName: String = "GetPostComments"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetPostComments($contentFilterBy: ContentFilterType, $postid: ID!, $commentLimit: Int, $commentOffset: Int) { listPosts( postid: $postid commentLimit: $commentLimit commentOffset: $commentOffset contentFilterBy: $contentFilterBy ) { __typename status ResponseCode affectedRows { __typename amountcomments comments { __typename commentid userid postid parentid content createdat visibilityStatus hasActiveReports amountlikes amountreplies amountreports isliked user { __typename id username slug img visibilityStatus hasActiveReports isfollowed isfollowing isfriend } } } } }"#
+      #"query GetPostComments($contentFilterBy: ContentFilterType, $postid: ID!, $commentLimit: Int, $commentOffset: Int) { listPosts( postid: $postid commentLimit: $commentLimit commentOffset: $commentOffset contentFilterBy: $contentFilterBy ) { __typename status ResponseCode affectedRows { __typename amountcomments comments { __typename commentid userid postid parentid content createdat visibilityStatus hasActiveReports isHiddenForUsers amountlikes amountreplies amountreports isliked user { __typename id username slug img visibilityStatus isHiddenForUsers hasActiveReports isfollowed isfollowing isfriend } } } } }"#
     ))
 
   public var contentFilterBy: GraphQLNullable<GraphQLEnum<ContentFilterType>>
@@ -104,8 +104,9 @@ public class GetPostCommentsQuery: GraphQLQuery {
             .field("parentid", GQLOperationsUser.ID?.self),
             .field("content", String.self),
             .field("createdat", GQLOperationsUser.Date.self),
-            .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>?.self),
+            .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>.self),
             .field("hasActiveReports", Bool.self),
+            .field("isHiddenForUsers", Bool.self),
             .field("amountlikes", Int.self),
             .field("amountreplies", Int.self),
             .field("amountreports", Int.self),
@@ -119,8 +120,9 @@ public class GetPostCommentsQuery: GraphQLQuery {
           public var parentid: GQLOperationsUser.ID? { __data["parentid"] }
           public var content: String { __data["content"] }
           public var createdat: GQLOperationsUser.Date { __data["createdat"] }
-          public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>? { __data["visibilityStatus"] }
+          public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }
           public var hasActiveReports: Bool { __data["hasActiveReports"] }
+          public var isHiddenForUsers: Bool { __data["isHiddenForUsers"] }
           public var amountlikes: Int { __data["amountlikes"] }
           public var amountreplies: Int { __data["amountreplies"] }
           public var amountreports: Int { __data["amountreports"] }
@@ -141,7 +143,8 @@ public class GetPostCommentsQuery: GraphQLQuery {
               .field("username", String?.self),
               .field("slug", Int?.self),
               .field("img", String?.self),
-              .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>?.self),
+              .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>.self),
+              .field("isHiddenForUsers", Bool.self),
               .field("hasActiveReports", Bool.self),
               .field("isfollowed", Bool?.self),
               .field("isfollowing", Bool?.self),
@@ -152,7 +155,8 @@ public class GetPostCommentsQuery: GraphQLQuery {
             public var username: String? { __data["username"] }
             public var slug: Int? { __data["slug"] }
             public var img: String? { __data["img"] }
-            public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>? { __data["visibilityStatus"] }
+            public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }
+            public var isHiddenForUsers: Bool { __data["isHiddenForUsers"] }
             public var hasActiveReports: Bool { __data["hasActiveReports"] }
             public var isfollowed: Bool? { __data["isfollowed"] }
             public var isfollowing: Bool? { __data["isfollowing"] }

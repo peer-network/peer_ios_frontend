@@ -26,6 +26,7 @@ query GetListOfAds($userID: ID, $filterBy: [ContentType!], $offset: Int, $limit:
                     isfriend
                     visibilityStatus
                     hasActiveReports
+                    isHiddenForUsers
                 }
             }
             post {
@@ -38,6 +39,7 @@ query GetListOfAds($userID: ID, $filterBy: [ContentType!], $offset: Int, $limit:
                 createdat
                 visibilityStatus
                 hasActiveReports
+                isHiddenForUsers
                 amountlikes
                 amountviews
                 amountcomments
@@ -60,6 +62,7 @@ query GetListOfAds($userID: ID, $filterBy: [ContentType!], $offset: Int, $limit:
                     isfriend
                     visibilityStatus
                     hasActiveReports
+                    isHiddenForUsers
                 }
             }
         }

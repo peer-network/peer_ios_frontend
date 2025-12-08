@@ -39,6 +39,7 @@ query GetAllPosts($filterBy: [PostFilterType!], $contentFilterBy: ContentFilterT
             url
             visibilityStatus
             hasActiveReports
+            isHiddenForUsers
             user {
                 id
                 username
@@ -46,6 +47,7 @@ query GetAllPosts($filterBy: [PostFilterType!], $contentFilterBy: ContentFilterT
                 img
                 visibilityStatus
                 hasActiveReports
+                isHiddenForUsers
                 isfollowed
                 isfollowing
                 isfriend

@@ -7,7 +7,7 @@ public class SearchUserQuery: GraphQLQuery {
   public static let operationName: String = "SearchUser"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query SearchUser($contentFilterBy: ContentFilterType, $userid: ID, $username: String, $offset: Int, $limit: Int) { searchUser( contentFilterBy: $contentFilterBy userid: $userid username: $username offset: $offset limit: $limit ) { __typename status counter ResponseCode affectedRows { __typename id username status slug img biography visibilityStatus hasActiveReports createdat updatedat } } }"#
+      #"query SearchUser($contentFilterBy: ContentFilterType, $userid: ID, $username: String, $offset: Int, $limit: Int) { searchUser( contentFilterBy: $contentFilterBy userid: $userid username: $username offset: $offset limit: $limit ) { __typename status counter ResponseCode affectedRows { __typename id username status slug img biography visibilityStatus hasActiveReports isHiddenForUsers createdat updatedat } } }"#
     ))
 
   public var contentFilterBy: GraphQLNullable<GraphQLEnum<ContentFilterType>>
@@ -95,8 +95,9 @@ public class SearchUserQuery: GraphQLQuery {
           .field("slug", Int?.self),
           .field("img", String?.self),
           .field("biography", String?.self),
-          .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>?.self),
+          .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>.self),
           .field("hasActiveReports", Bool.self),
+          .field("isHiddenForUsers", Bool.self),
           .field("createdat", GQLOperationsUser.Date?.self),
           .field("updatedat", GQLOperationsUser.Date?.self),
         ] }
@@ -107,8 +108,9 @@ public class SearchUserQuery: GraphQLQuery {
         public var slug: Int? { __data["slug"] }
         public var img: String? { __data["img"] }
         public var biography: String? { __data["biography"] }
-        public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>? { __data["visibilityStatus"] }
+        public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }
         public var hasActiveReports: Bool { __data["hasActiveReports"] }
+        public var isHiddenForUsers: Bool { __data["isHiddenForUsers"] }
         public var createdat: GQLOperationsUser.Date? { __data["createdat"] }
         public var updatedat: GQLOperationsUser.Date? { __data["updatedat"] }
       }
