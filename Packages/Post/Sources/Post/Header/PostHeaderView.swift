@@ -203,6 +203,10 @@ struct PostHeaderView: View {
                                                 text: error.displayMessage,
                                                 icon: error.displayIcon
                                             )
+                                        } catch {
+                                            showPopup(
+                                                text: error.userFriendlyDescription
+                                            )
                                         }
                                     }
                                 }
