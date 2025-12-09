@@ -6,11 +6,14 @@
 //
 
 import SwiftUI
+import Environment
 import Models
 import DesignSystem
 import Post
 
 struct AdHistoryAdDetailView: View {
+    @EnvironmentObject private var router: Router
+    
     let ad: SingleAdStats
 
     var body: some View {
@@ -44,8 +47,13 @@ struct AdHistoryAdDetailView: View {
                     .padding(.bottom, 10)
             }
 
-            RowAdPostViewBig(adStats: ad, showDates: false, showModerationBadge: false)
-                .padding(.bottom, 10)
+          Button {
+                router.navigate(to: .postDetailsWithPost(post: ad.post))
+            } label: {
+                RowAdPostViewBig(adStats: ad, showDates: false, showModerationBadge: false)
+                    .contentShape(.rect)
+            }
+            .padding(.bottom, 10)
 
             AdHistoryEarningsView(gemsAmount: ad.gemsEarned)
                 .padding(.bottom, 20)

@@ -230,6 +230,7 @@ struct AdCheckoutView: View {
                     .blur(radius: 10)
             }
             .ignoresSafeArea()
+            .allowsHitTesting(false)
         }
         .background(Colors.blackDark)
         .clipShape(RoundedRectangle(cornerRadius: 20))
