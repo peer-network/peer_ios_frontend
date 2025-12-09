@@ -295,7 +295,7 @@ public struct Post: Identifiable, Hashable {
 extension Post {
     /// ID which is used for UI to identify if a view related to this post should be redrawn
     public var refreshID: String {
-        "\(id)-\(amountLikes)-\(amountDislikes)-\(amountViews)-\(amountComments)-\(isLiked)-\(isDisliked)-\(isViewed)-\(owner.isFollowing)-\(owner.isFollowed)"
+        "\(id)-\(amountLikes)-\(amountDislikes)-\(amountViews)-\(amountComments)-\(isLiked)-\(isDisliked)-\(isViewed)-\(owner.isFollowing)-\(owner.isFollowed)-\(hasActiveReports)"
     }
 }
 

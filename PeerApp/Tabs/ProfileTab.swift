@@ -26,13 +26,13 @@ struct ProfileTab: View {
                         ProfilePageView(userId: userId)
                             .toolbar(.hidden, for: .navigationBar)
                             .withAppRouter(appState: appState, apiServiceManager: apiManager, router: router)
-                            .withSheetDestinations(sheetDestinations: $router.presentedSheet)
+                            .withSheetDestinations(sheetDestinations: $router.presentedSheet, apiServiceManager: apiManager)
                             .id(userId)
                     } else {
                         ProfileView(userId: userId)
                             .toolbar(.hidden, for: .navigationBar)
                             .withAppRouter(appState: appState, apiServiceManager: apiManager, router: router)
-                            .withSheetDestinations(sheetDestinations: $router.presentedSheet)
+                            .withSheetDestinations(sheetDestinations: $router.presentedSheet, apiServiceManager: apiManager)
                             .id(userId)
                     }
                 } else {
