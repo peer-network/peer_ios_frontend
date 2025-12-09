@@ -13,10 +13,12 @@ struct ReportedBadgeView: View {
         HStack(spacing: 7) {
             IconsNew.flag
                 .iconSize(height: 15)
+                .fixedSize(horizontal: true, vertical: false)
 
             Text("Reported")
                 .appFont(.smallLabelRegular)
                 .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
         }
         .foregroundStyle(Colors.redAccent)
         .padding(.vertical, 5)

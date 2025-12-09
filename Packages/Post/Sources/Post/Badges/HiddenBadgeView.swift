@@ -13,10 +13,12 @@ struct HiddenBadgeView: View {
         HStack(spacing: 7) {
             IconsNew.eyeWithSlash
                 .iconSize(height: 15)
+                .fixedSize(horizontal: true, vertical: false)
 
             Text("Hidden")
                 .appFont(.smallLabelRegular)
                 .lineLimit(1)
+                .fixedSize(horizontal: true, vertical: false)
         }
         .foregroundStyle(Colors.whiteSecondary)
         .padding(.vertical, 5)
