@@ -85,7 +85,7 @@ struct SingleCommentView: View {
                                 .foregroundStyle(Colors.whiteSecondary)
                                 .padding(.horizontal, 5)
 
-                            Text("Not visible in the feed")
+                            Text("Hidden")
                                 .appFont(.smallLabelRegular)
                                 .foregroundStyle(Colors.whiteSecondary)
                                 .lineLimit(1)
