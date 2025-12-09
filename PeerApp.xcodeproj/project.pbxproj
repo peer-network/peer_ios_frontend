@@ -32,6 +32,7 @@
 		AC7BD8C22DEDCEEE0094BC9A /* FirebasePerformance in Frameworks */ = {isa = PBXBuildFile; productRef = AC7BD8C12DEDCEEE0094BC9A /* FirebasePerformance */; };
 		AC7BD8C42DEDCEEE0094BC9A /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = AC7BD8C32DEDCEEE0094BC9A /* FirebaseRemoteConfig */; };
 		AC8295F32D876DD700C554D1 /* Explore in Frameworks */ = {isa = PBXBuildFile; productRef = AC8295F22D876DD700C554D1 /* Explore */; };
+		ACA9309B2EE84EE000A11542 /* Post in Frameworks */ = {isa = PBXBuildFile; productRef = ACA9309A2EE84EE000A11542 /* Post */; };
 		ACC373742E3A02580005E5F2 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = ACC373732E3A02580005E5F2 /* FirebaseFirestore */; };
 		ACCAB48D2D81E500001C1041 /* RemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = ACCAB48C2D81E500001C1041 /* RemoteConfig */; };
 		ACE05B192DA90C7900DD6E79 /* VersionHistory in Frameworks */ = {isa = PBXBuildFile; productRef = ACE05B182DA90C7900DD6E79 /* VersionHistory */; };
@@ -189,6 +190,7 @@
 				AC104D652DB7A864005F07F0 /* Analytics in Frameworks */,
 				7EE144D32D1454AB0054FBB2 /* Environment in Frameworks */,
 				AC7BD8BA2DEDCEEE0094BC9A /* FirebaseAnalytics in Frameworks */,
+				ACA9309B2EE84EE000A11542 /* Post in Frameworks */,
 				7E3C09872D130AEF001D8227 /* Networking in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -319,6 +321,7 @@
 				AC7BD8C32DEDCEEE0094BC9A /* FirebaseRemoteConfig */,
 				AC3AEC6D2E2FC6E100CAA9C4 /* FirebaseFunctions */,
 				ACC373732E3A02580005E5F2 /* FirebaseFirestore */,
+				ACA9309A2EE84EE000A11542 /* Post */,
 			);
 			productName = PeerApp;
 			productReference = 7ECF06D72D0C6DA200CA7852 /* PeerApp.app */;
@@ -434,6 +437,7 @@
 				AC10E9862D9C2D0800A72988 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */,
 				AC79340D2DCE4E350069CAEF /* XCRemoteSwiftPackageReference "Swinject" */,
 				AC7BD8B82DEDCEEE0094BC9A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				ACA930992EE84EE000A11542 /* XCLocalSwiftPackageReference "Packages/Post" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7ECF06D82D0C6DA200CA7852 /* Products */;
@@ -1144,6 +1148,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/Networking;
 		};
+		ACA930992EE84EE000A11542 /* XCLocalSwiftPackageReference "Packages/Post" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/Post;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -1279,6 +1287,10 @@
 		AC8295F22D876DD700C554D1 /* Explore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Explore;
+		};
+		ACA9309A2EE84EE000A11542 /* Post */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Post;
 		};
 		ACC373732E3A02580005E5F2 /* FirebaseFirestore */ = {
 			isa = XCSwiftPackageProductDependency;
