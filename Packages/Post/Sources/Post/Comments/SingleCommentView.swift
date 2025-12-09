@@ -79,7 +79,7 @@ struct SingleCommentView: View {
                                 }
                         }
 
-                        if !reasons.contains(.placeholder), AccountManager.shared.isCurrentUser(id: commentVM.comment.user.id), commentVM.comment.visibilityStatus == .hidden {
+                        if !reasons.contains(.placeholder), AccountManager.shared.isCurrentUser(id: commentVM.comment.user.id), commentVM.comment.isHiddenForUsers {
                             IconsNew.eyeWithSlash
                                 .iconSize(width: 9)
                                 .foregroundStyle(Colors.whiteSecondary)
