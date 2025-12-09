@@ -1,9 +1,10 @@
-query GetListOfAds($userID: ID, $filterBy: [ContentType!], $offset: Int, $limit: Int) {
+query GetListOfAds($userID: ID, $filterBy: [ContentType!], $contentFilterBy: ContentFilterType, $offset: Int, $limit: Int) {
 	listAdvertisementPosts(
         userid: $userID
         filterBy: $filterBy
         offset: $offset
         limit: $limit
+        contentFilterBy: $contentFilterBy
     ) {
         status
         ResponseCode

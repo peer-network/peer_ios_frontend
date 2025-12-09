@@ -187,9 +187,13 @@ struct PostActionsView: View {
         HapticManager.shared.fireHaptic(.notification(.success))
         switch action {
             case .like:
-                try await postViewModel.like()
+                if !postViewModel.showIllegalBlur {
+                    try await postViewModel.like()
+                }
             case .dislike:
-                try await postViewModel.dislike()
+                if !postViewModel.showIllegalBlur {
+                    try await postViewModel.dislike()
+                }
             case .comment:
                 postViewModel.showComments()
             case .views:

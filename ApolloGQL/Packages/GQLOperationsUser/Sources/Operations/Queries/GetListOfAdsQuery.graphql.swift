@@ -7,22 +7,25 @@ public class GetListOfAdsQuery: GraphQLQuery {
   public static let operationName: String = "GetListOfAds"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetListOfAds($userID: ID, $filterBy: [ContentType!], $offset: Int, $limit: Int) { listAdvertisementPosts( userid: $userID filterBy: $filterBy offset: $offset limit: $limit ) { __typename status ResponseCode counter affectedRows { __typename advertisement { __typename advertisementid postid advertisementtype startdate enddate createdat user { __typename id username slug img isfollowed isfollowing isfriend visibilityStatus hasActiveReports isHiddenForUsers } } post { __typename id contenttype title media cover mediadescription createdat visibilityStatus hasActiveReports isHiddenForUsers amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags url user { __typename id username slug img isfollowed isfollowing isfriend visibilityStatus hasActiveReports isHiddenForUsers } } } } }"#
+      #"query GetListOfAds($userID: ID, $filterBy: [ContentType!], $contentFilterBy: ContentFilterType, $offset: Int, $limit: Int) { listAdvertisementPosts( userid: $userID filterBy: $filterBy offset: $offset limit: $limit contentFilterBy: $contentFilterBy ) { __typename status ResponseCode counter affectedRows { __typename advertisement { __typename advertisementid postid advertisementtype startdate enddate createdat user { __typename id username slug img isfollowed isfollowing isfriend visibilityStatus hasActiveReports isHiddenForUsers } } post { __typename id contenttype title media cover mediadescription createdat visibilityStatus hasActiveReports isHiddenForUsers amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags url user { __typename id username slug img isfollowed isfollowing isfriend visibilityStatus hasActiveReports isHiddenForUsers } } } } }"#
     ))
 
   public var userID: GraphQLNullable<ID>
   public var filterBy: GraphQLNullable<[GraphQLEnum<ContentType>]>
+  public var contentFilterBy: GraphQLNullable<GraphQLEnum<ContentFilterType>>
   public var offset: GraphQLNullable<Int>
   public var limit: GraphQLNullable<Int>
 
   public init(
     userID: GraphQLNullable<ID>,
     filterBy: GraphQLNullable<[GraphQLEnum<ContentType>]>,
+    contentFilterBy: GraphQLNullable<GraphQLEnum<ContentFilterType>>,
     offset: GraphQLNullable<Int>,
     limit: GraphQLNullable<Int>
   ) {
     self.userID = userID
     self.filterBy = filterBy
+    self.contentFilterBy = contentFilterBy
     self.offset = offset
     self.limit = limit
   }
@@ -30,6 +33,7 @@ public class GetListOfAdsQuery: GraphQLQuery {
   public var __variables: Variables? { [
     "userID": userID,
     "filterBy": filterBy,
+    "contentFilterBy": contentFilterBy,
     "offset": offset,
     "limit": limit
   ] }
@@ -44,7 +48,8 @@ public class GetListOfAdsQuery: GraphQLQuery {
         "userid": .variable("userID"),
         "filterBy": .variable("filterBy"),
         "offset": .variable("offset"),
-        "limit": .variable("limit")
+        "limit": .variable("limit"),
+        "contentFilterBy": .variable("contentFilterBy")
       ]),
     ] }
 

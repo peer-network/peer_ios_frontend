@@ -1269,9 +1269,12 @@ public final class APIServiceGraphQL: APIService {
     public func getListOfAds(userID: String?, with contentType: PostContentType, after offset: Int, amount: Int) async -> Result<[Post], APIError> {
         let filterBy: [GraphQLEnum<ContentType>] = contentType.apiValue
 
+        let offensiveContentFilter =  UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")?.string(forKey: "offensiveContentFilter").flatMap(OffensiveContentFilter.init(rawValue:)) ?? .blocked
+
         let operation = GetListOfAdsQuery(
             userID: userID == nil ? nil : GraphQLNullable(stringLiteral: userID!),
             filterBy: GraphQLNullable<[GraphQLEnum<ContentType>]>.some(filterBy),
+            contentFilterBy: offensiveContentFilter.apiValue,
             offset: GraphQLNullable<Int>(integerLiteral: offset),
             limit: GraphQLNullable<Int>(integerLiteral: amount)
         )
