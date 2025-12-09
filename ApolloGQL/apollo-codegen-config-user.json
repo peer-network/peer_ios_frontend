@@ -1,0 +1,43 @@
+{
+  "schemaNamespace": "GQLOperationsUser",
+
+  "input": {
+    "schemaSearchPaths": [
+      "schema.user.graphqls"
+    ],
+    "operationSearchPaths": [
+      "Operations/User/**/*.graphql"
+    ]
+  },
+
+  "output": {
+    "schemaTypes": {
+      "path": "Packages/GQLOperationsUser",
+      "moduleType": {
+        "swiftPackageManager": {}
+      }
+    },
+    "operations": {
+      "inSchemaModule": {}
+    },
+    "testMocks": {
+      "none": {}
+    }
+  },
+
+  "schemaDownload": {
+    "downloadMethod": {
+      "introspection": {
+        "endpointURL": "https://getpeer.eu/graphql",
+        "httpMethod": { "POST": {} },
+        "includeDeprecatedInputValues": false,
+        "outputFormat": "SDL"
+      }
+    },
+    "headers": {
+      "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJpc3MiOiJwZWVyYXBwLmRlIiwiYXVkIjoicGVlcmFwcC5kZSIsInJvbCI6MCwidWlkIjoiNGNjYTljZmUtNzYyYi00MTZmLThlMTUtNTcxZjRkNjc5OGM5IiwiaWF0IjoxNzY0Nzc0ODUzLCJleHAiOjE3NjUzNzk2NTN9.cg05C8guP-SZxMUVRir5L18kQSRz8NMPfgbbTR_lx3gEBJIjDAQMR8je9Pg4aAERbLsBcplZDN_DxZQmgrnaUoHObtSjIZRPq91hzYTGsRcMGFS6AHHshiXvMrYXfXIlYgsHnTnAor90yCRr5US_Ppyz_tdnyKAmo3SYFzWpvmreTRGAFljynAyZVZAPSaA_vpiWk1PjdJNhlv7T0UOeb5R87W6g0TWZcmNWxsWyC6mGWjeH0lqaARpyhGzZbNccOaDaNOh0QZAa0DtiQYfY3crefwGPhbWPr_mwYywiv6vm051aYxINe049GQRkabT3htVja_1f2dGTKJ_ILaJjCw"
+    },
+    "downloadTimeout": 60,
+    "outputPath": "schema.user.graphqls"
+  }
+}

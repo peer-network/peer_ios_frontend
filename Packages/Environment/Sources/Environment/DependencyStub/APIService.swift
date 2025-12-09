@@ -82,7 +82,7 @@ public final class APIServiceStub: APIService {
         .failure(.missingData)
     }
 
-    public func fetchUserFriends(after offset: Int) async -> Result<[RowUser], APIError> {
+    public func fetchUserFriends(for userID: String, after offset: Int) async -> Result<[RowUser], APIError> {
         .failure(.missingData)
     }
 

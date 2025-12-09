@@ -48,7 +48,7 @@ public protocol APIService: AnyObject {
     func fetchUser(with userId: String) async -> Result<User, APIError>
     func fetchUserFollowers(for userID: String, after offset: Int) async -> Result<[RowUser], APIError>
     func fetchUserFollowings(for userID: String, after offset: Int) async -> Result<[RowUser], APIError>
-    func fetchUserFriends(after offset: Int) async -> Result<[RowUser], APIError>
+    func fetchUserFriends(for userID: String, after offset: Int) async -> Result<[RowUser], APIError>
     func fetchUsers(by query: String, after offset: Int) async -> Result<[RowUser], APIError>
     func fetchDailyFreeLimits() async -> Result<DailyFreeQuota, APIError>
     func followUser(with id: String) async -> Result<Void, APIError>

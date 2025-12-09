@@ -3,5 +3,6 @@ query Hello {
         currentuserid
         currentVersion
         wikiLink
+        companyAccountId
     }
 }

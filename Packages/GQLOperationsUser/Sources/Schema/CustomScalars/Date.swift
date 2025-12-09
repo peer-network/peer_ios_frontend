@@ -7,4 +7,4 @@
 
 import ApolloAPI
 
-public typealias JSON = String
+public typealias Date = String

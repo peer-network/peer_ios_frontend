@@ -30,7 +30,7 @@ public struct APIConfiguration: GQLClientConfigurable {
                        let url = URL(string: urlString) {
                         return url
                     }
-                    return URL(string: "https://getpeer.eu/graphql")! // Fallback
+                    return URL(string: "https://peer-network.eu/graphql")! // Fallback
             }
         }
     }

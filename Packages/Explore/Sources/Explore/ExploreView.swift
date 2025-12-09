@@ -11,6 +11,7 @@ import Models
 import DesignSystem
 import NukeUI
 import Analytics
+import Post
 
 public struct ExploreView: View {
     @EnvironmentObject private var router: Router
@@ -51,7 +52,7 @@ public struct ExploreView: View {
         HeaderContainer(actionsToDisplay: .commentsAndLikes) {
             Text("Search")
         } content: {
-            VStack(spacing: 10) {
+            VStack(spacing: 0) {
                 searchBar
                     .padding(.horizontal, 10)
 
@@ -59,6 +60,7 @@ public struct ExploreView: View {
                     ScrollView {
                         ScrollToView()
                         searchResultsView
+                            .padding(.top, 10)
                     }
                     .scrollDismissesKeyboard(.interactively)
                     .scrollDisabled(viewModel.isLoading)
@@ -77,7 +79,7 @@ public struct ExploreView: View {
             guard !fixedText.isEmpty else {
                 return
             }
-            
+
             debounceSearch(fixedText)
         }
         .onFirstAppear {
@@ -353,20 +355,15 @@ extension ExploreView {
 
     @ViewBuilder
     private func usersListView(_ users: [RowUser]) -> some View {
-//        if !fixedText.isEmpty, users.isEmpty {
-//            nothingFoundView ??
-//        }
+        //        if !fixedText.isEmpty, users.isEmpty {
+        //            nothingFoundView ??
+        //        }
 
         LazyVStack(spacing: 20) {
             ForEach(users) { user in
-                Button {
-                    router.navigate(to: .accountDetail(id: user.id))
-                } label: {
-                    RowUserView(user: user)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .contentShape(Rectangle())
-                }
-                .padding(.horizontal, 20)
+                RowProfileView(user: user)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .contentShape(.rect)
             }
 
             if !viewModel.users.isEmpty, viewModel.hasMore {
@@ -377,6 +374,7 @@ extension ExploreView {
                 }
             }
         }
+        .padding(.horizontal, 20)
     }
 
     private func tagsView(_ tags: [String]) -> some View {
@@ -397,78 +395,15 @@ extension ExploreView {
 
     @ViewBuilder
     private func postsGridView(_ posts: [Post]) -> some View {
-//        if !fixedText.isEmpty, posts.isEmpty {
-//            nothingFoundView ??
-//        }
+        //        if !fixedText.isEmpty, posts.isEmpty {
+        //            nothingFoundView ??
+        //        }
 
         LazyVStack(spacing: 20) {
             LazyVGrid(columns: columns, spacing: 1) {
                 ForEach(posts) { post in
-                    if post.contentType == .image, let imageURL = post.mediaURLs.first {
-                        GeometryReader { proxy in
-                            LazyImage(
-                                request: ImageRequest(
-                                    url: imageURL,
-                                    processors: [.resize(size: CGSize(width: 300, height: 300))])
-                            ) { state in
-                                if let image = state.image {
-                                    image
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(width: proxy.size.width, height: proxy.size.width)
-                                        .clipShape(Rectangle())
-                                } else {
-                                    Colors.imageLoadingPlaceholder
-                                }
-                            }
-                            .onTapGesture {
-                                router.navigate(to: .postDetailsWithPost(post: post))
-                            }
-                        }
-                        .clipped()
-                        .aspectRatio(1, contentMode: .fit)
-                        .contentShape(Rectangle())
-                    } else if post.contentType == .video {
-                        GeometryReader { proxy in
-                            LazyImage(
-                                request: ImageRequest(
-                                    url: post.coverURL,
-                                    processors: [.resize(size: CGSize(width: 300, height: 300))])
-                            ) { state in
-                                if let image = state.image {
-                                    image
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(width: proxy.size.width, height: proxy.size.width)
-                                        .clipShape(Rectangle())
-                                } else if (state.error) != nil {
-                                    Colors.black
-                                } else {
-                                    Colors.imageLoadingPlaceholder
-                                }
-                            }
-                        }
-                        .overlay(alignment: .bottom) {
-                            HStack {
-                                Text(getVideoDuration(timeInterval: post.media.first?.duration))
-                                    .font(.custom(.bodyRegular))
-
-                                Spacer()
-                                    .frame(maxWidth: .infinity)
-
-                                Icons.play
-                                    .iconSize(height: 16)
-                            }
-                            .foregroundStyle(Colors.whitePrimary)
-                            .padding(.bottom, 10)
-                            .padding(.horizontal, 10)
-                        }
-                        .clipped()
-                        .aspectRatio(1, contentMode: .fit)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            router.navigate(to: .postDetailsWithPost(post: post))
-                        }
+                    if post.contentType == .image || post.contentType == .video {
+                        PostView(postVM: .init(post: post), displayType: .grid, showFollowButton: false)
                     }
                 }
             }
@@ -496,16 +431,6 @@ extension ExploreView {
                 }
             }
         }
-    }
-
-    private func getVideoDuration(timeInterval: TimeInterval?) -> String {
-        guard let timeInterval else {
-            return ""
-        }
-
-        let minutes = Int(timeInterval) / 60
-        let seconds = Int(timeInterval) % 60
-        return String(format: "%01d:%02d", minutes, seconds)
     }
 
     private var nothingFoundView: some View {

@@ -7,4 +7,4 @@
 
 import ApolloAPI
 
-public typealias DATEN = String
+public typealias Decimal = String

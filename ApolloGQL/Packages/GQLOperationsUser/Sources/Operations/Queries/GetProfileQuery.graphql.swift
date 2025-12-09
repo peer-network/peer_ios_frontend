@@ -7,7 +7,7 @@ public class GetProfileQuery: GraphQLQuery {
   public static let operationName: String = "GetProfile"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetProfile($contentFilterBy: ContentFilterType, $userid: ID!) { getProfile(contentFilterBy: $contentFilterBy, userid: $userid) { __typename status ResponseCode affectedRows { __typename id username status slug img biography isfollowed isfollowing amountposts amounttrending amountfollowed amountfollower amountfriends amountblocked } } }"#
+      #"query GetProfile($contentFilterBy: ContentFilterType, $userid: ID!) { getProfile(contentFilterBy: $contentFilterBy, userid: $userid) { __typename status ResponseCode affectedRows { __typename id username status slug img biography visibilityStatus isHiddenForUsers hasActiveReports isfollowed isfollowing amountposts amounttrending amountfollowed amountfollower amountfriends amountblocked amountreports } } }"#
     ))
 
   public var contentFilterBy: GraphQLNullable<GraphQLEnum<ContentFilterType>>
@@ -75,6 +75,9 @@ public class GetProfileQuery: GraphQLQuery {
           .field("slug", Int?.self),
           .field("img", String?.self),
           .field("biography", String?.self),
+          .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>.self),
+          .field("isHiddenForUsers", Bool.self),
+          .field("hasActiveReports", Bool.self),
           .field("isfollowed", Bool?.self),
           .field("isfollowing", Bool?.self),
           .field("amountposts", Int?.self),
@@ -83,6 +86,7 @@ public class GetProfileQuery: GraphQLQuery {
           .field("amountfollower", Int?.self),
           .field("amountfriends", Int?.self),
           .field("amountblocked", Int?.self),
+          .field("amountreports", Int?.self),
         ] }
 
         public var id: GQLOperationsUser.ID? { __data["id"] }
@@ -91,6 +95,9 @@ public class GetProfileQuery: GraphQLQuery {
         public var slug: Int? { __data["slug"] }
         public var img: String? { __data["img"] }
         public var biography: String? { __data["biography"] }
+        public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }
+        public var isHiddenForUsers: Bool { __data["isHiddenForUsers"] }
+        public var hasActiveReports: Bool { __data["hasActiveReports"] }
         public var isfollowed: Bool? { __data["isfollowed"] }
         public var isfollowing: Bool? { __data["isfollowing"] }
         public var amountposts: Int? { __data["amountposts"] }
@@ -99,6 +106,7 @@ public class GetProfileQuery: GraphQLQuery {
         public var amountfollower: Int? { __data["amountfollower"] }
         public var amountfriends: Int? { __data["amountfriends"] }
         public var amountblocked: Int? { __data["amountblocked"] }
+        public var amountreports: Int? { __data["amountreports"] }
       }
     }
   }

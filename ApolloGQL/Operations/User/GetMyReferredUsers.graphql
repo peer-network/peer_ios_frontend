@@ -9,8 +9,12 @@ query GetMyReferredUsers($offset: Int, $limit: Int) {
                 username
                 slug
                 img
+                visibilityStatus
+                hasActiveReports
+                isHiddenForUsers
                 isfollowed
                 isfollowing
+                isfriend
             }
         }
     }

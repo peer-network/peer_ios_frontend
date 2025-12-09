@@ -206,44 +206,4 @@ final class ExploreViewModel: ObservableObject {
             state2 = .error(error)
         }
     }
-
-//    // PostsFetcher WOrkaround
-//
-//    var state: FeedList.PostsState = .loading
-//
-//    func fetchPosts(reset: Bool) async {
-//        do {
-//            if reset {
-//                trendindPosts.removeAll()
-//                currentOffsetTrendind = 0
-//                hasMoreTrendind = true
-//            }
-//
-//            if trendindPosts.isEmpty {
-//                state = .loading
-//            }
-//
-//            let result = await apiService.fetchPosts(with: .image, sort: .trending, showHiddenContent: false, filter: .all, in: .week, after: currentOffsetTrendind, for: nil, amount: 18)
-//
-//            try Task.checkCancellation()
-//
-//            switch result {
-//                case .success(let fetchedPosts):
-//                    trendindPosts.append(contentsOf: fetchedPosts)
-//
-//                    if fetchedPosts.count != 18 {
-//                        hasMoreTrendind = false
-//                    } else {
-//                        currentOffsetTrendind += 18
-//                        hasMoreTrendind = true
-//                    }
-//                    state = .display(posts: trendindPosts, hasMore: hasMoreTrendind ? .hasMore : .none)
-//                case .failure(let apiError):
-//                    throw apiError
-//            }
-//        } catch is CancellationError {
-//        } catch {
-//            state = .error(error: error)
-//        }
-//    }
 }
