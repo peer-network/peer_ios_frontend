@@ -107,7 +107,7 @@ struct PostHeaderView: View {
 
                         if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.advertisement == nil {
                             Button {
-                                if postVM.post.visibilityStatus == .hidden {
+                                if postVM.post.isHiddenForUsers {
                                     SystemPopupManager.shared.presentPopup(.postPromotionHidden) {
                                         let flowID = flows.startFlow(
                                             post: postVM.post,

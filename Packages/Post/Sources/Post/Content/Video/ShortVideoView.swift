@@ -343,7 +343,7 @@ struct ShortVideoView2: View {
     private func reelDetailsView() -> some View {
         HStack(alignment: .bottom, spacing: 5) {
             VStack(alignment: .leading, spacing: 10) {
-                if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.visibilityStatus == .hidden {
+                if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.isHiddenForUsers {
                     HiddenBadgeView()
                 } else if postVM.post.hasActiveReports {
                     ReportedBadgeView()

@@ -34,7 +34,7 @@ struct ProfileHeader: View {
                 if !reasons.contains(.placeholder), AccountManager.shared.isCurrentUser(id: user.id) {
                     if user.visibilityStatus == .illegal {
                         ownProfileIllegalView
-                    } else if user.visibilityStatus == .hidden {
+                    } else if user.isHiddenForUsers {
                         ownProfileHiddenView
                             .padding(.horizontal, -20)
                     }

@@ -24,11 +24,6 @@ public struct RowProfileView<TrailingContent: View>: View {
         AccountManager.shared.isCurrentUser(id: user.id)
     }
 
-    enum TrailingContent {
-        case unblockButton
-        case followButton
-    }
-
     @State private var showSensitiveContentWarning: Bool = false
 
     public init(user: RowUser, @ViewBuilder trailingContent: @escaping () -> TrailingContent = { EmptyView() }, dismissAction: (() -> Void)? = nil) {

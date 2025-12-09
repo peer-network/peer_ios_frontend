@@ -40,6 +40,7 @@ public struct ProfilesSheetView<Fetcher>: View where Fetcher: RelationsFetcher {
                 .font(.customFont(weight: .regular, size: .body))
                 .foregroundStyle(Colors.whitePrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, 10)
 
             ScrollView {
                 LazyVStack(spacing: 20) {

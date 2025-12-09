@@ -62,6 +62,28 @@ public struct PostView: View {
                                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                                         }
                                         .clipped()
+                                        .onTapGesture {
+                                            router.navigate(to: .postDetailsWithPost(post: postVM.post))
+                                        }
+                                }
+                                .ifCondition(postVM.showIllegalBlur) {
+                                    $0
+                                        .blur(radius: 7.38)
+                                        .overlay {
+                                            Circle()
+                                                .frame(height: 50)
+                                                .foregroundStyle(Colors.whitePrimary.opacity(0.2))
+                                                .overlay {
+                                                    Icons.trashBin
+                                                        .iconSize(height: 27)
+                                                        .foregroundStyle(Colors.whitePrimary)
+                                                }
+                                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                                        }
+                                        .clipped()
+                                        .onTapGesture {
+                                            router.navigate(to: .postDetailsWithPost(post: postVM.post))
+                                        }
                                 }
                     }
                 case .video:
@@ -85,6 +107,28 @@ public struct PostView: View {
                                                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                                         }
                                         .clipped()
+                                        .onTapGesture {
+                                            router.navigate(to: .postDetailsWithPost(post: postVM.post))
+                                        }
+                                }
+                                .ifCondition(postVM.showIllegalBlur) {
+                                    $0
+                                        .blur(radius: 7.38)
+                                        .overlay {
+                                            Circle()
+                                                .frame(height: 50)
+                                                .foregroundStyle(Colors.whitePrimary.opacity(0.2))
+                                                .overlay {
+                                                    Icons.trashBin
+                                                        .iconSize(height: 27)
+                                                        .foregroundStyle(Colors.whitePrimary)
+                                                }
+                                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                                        }
+                                        .clipped()
+                                        .onTapGesture {
+                                            router.navigate(to: .postDetailsWithPost(post: postVM.post))
+                                        }
                                 }
                     }
                 case .audio:
@@ -94,7 +138,7 @@ public struct PostView: View {
         .onFirstAppear {
             postVM.apiService = apiManager.apiService
         }
-        .ifCondition(reasons != .placeholder && displayType == .list) {
+        .ifCondition(reasons != .placeholder && displayType == .list && !postVM.showIllegalBlur) {
             $0.modifier(ViewVisibilityModifier(viewed: postVM.isViewed, viewAction: {
                 Task {
                     try? await postVM.view()
@@ -166,7 +210,7 @@ public struct PostView: View {
                         .frame(maxWidth: .infinity)
                         .layoutPriority(-1)
 
-                    if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.visibilityStatus == .hidden {
+                    if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.isHiddenForUsers {
                         HiddenBadgeView()
                     } else if postVM.post.hasActiveReports {
                         ReportedBadgeView()
@@ -244,7 +288,7 @@ public struct PostView: View {
                         .frame(maxWidth: .infinity)
                         .layoutPriority(-1)
 
-                    if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.visibilityStatus == .hidden {
+                    if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.isHiddenForUsers {
                         HiddenBadgeView()
                     } else if postVM.post.hasActiveReports {
                         ReportedBadgeView()
@@ -296,7 +340,7 @@ public struct PostView: View {
                         .frame(maxWidth: .infinity)
                         .layoutPriority(-1)
 
-                    if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.visibilityStatus == .hidden {
+                    if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.isHiddenForUsers {
                         HiddenBadgeView()
                     } else if postVM.post.hasActiveReports {
                         ReportedBadgeView()
@@ -385,7 +429,7 @@ public struct PostView: View {
         }
         .clipped()
         .aspectRatio(1, contentMode: .fit)
-        .contentShape(Rectangle())
+        .contentShape(.rect)
         .onTapGesture {
             router.navigate(to: .postDetailsWithPost(post: postVM.post))
         }
