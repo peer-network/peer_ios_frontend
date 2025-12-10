@@ -169,5 +169,15 @@
         "releaseNotes": [
             "Overall improvements and fixes"
         ]
-    }
+    },
+    {
+        "version": "1.11.0",
+        "date": "15 Dec 2025",
+        "releaseNotes": [
+            "Reporting improvements: you can easily report profiles, posts, and comments that break the rules - helping keep Peer safe and respectful for everyone",
+            "Better moderation: our team now has improved internal tools to review and manage reported content more efficiently",
+            "Illegal content handling: we’ve updated how Peer manages illegal content to ensure harmful material is removed quickly and consistently",
+            "Updated EULA: all moderation and content rules have been refreshed and are now clearly stated in our updated EULA"
+        ]
+    },
 ]

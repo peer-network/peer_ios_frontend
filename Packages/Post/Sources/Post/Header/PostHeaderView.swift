@@ -32,12 +32,23 @@ struct PostHeaderView: View {
             Button {
                 router.navigate(to: .accountDetail(id: postVM.post.owner.id))
             } label: {
-                ProfileAvatarView(
-                    url: postVM.post.owner.imageURL,
-                    name: postVM.post.owner.username,
-                    config: .post,
-                    ignoreCache: profileImageIgnoreCache
-                )
+                if postVM.post.owner.visibilityStatus == .illegal {
+                    Circle()
+                        .foregroundStyle(Colors.inactiveDark)
+                        .frame(height: 40)
+                        .overlay {
+                            IconsNew.exclamaitionMarkCircle
+                                .iconSize(height: 16)
+                                .foregroundStyle(Colors.whiteSecondary)
+                        }
+                } else {
+                    ProfileAvatarView(
+                        url: postVM.post.owner.imageURL,
+                        name: postVM.post.owner.username,
+                        config: .post,
+                        ignoreCache: profileImageIgnoreCache
+                    )
+                }
 
                 VStack(alignment: .leading, spacing: 0) {
                     Text(postVM.post.owner.username)
