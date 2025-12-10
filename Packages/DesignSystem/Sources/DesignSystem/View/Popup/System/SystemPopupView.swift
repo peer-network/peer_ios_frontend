@@ -43,7 +43,7 @@ public struct SystemPopupView: View {
                     .padding(.top, 5)
             }
 
-            HStack(spacing: 20) {
+            HStack(spacing: 10) {
                 StateButton(config: type.firstButtonConfig) {
                     cancel?()
                 }

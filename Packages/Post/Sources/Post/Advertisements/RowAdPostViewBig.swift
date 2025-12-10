@@ -15,11 +15,13 @@ public struct RowAdPostViewBig: View {
 
     private let adStats: SingleAdStats
     private let showDates: Bool
+    private let showModerationBadge: Bool
 
-    public init(adStats: SingleAdStats, showDates: Bool) {
+    public init(adStats: SingleAdStats, showDates: Bool, showModerationBadge: Bool) {
         _postVM = .init(wrappedValue: .init(post: adStats.post))
         self.adStats = adStats
         self.showDates = showDates
+        self.showModerationBadge = showModerationBadge
     }
 
     private var mediaURL: URL? {
@@ -53,7 +55,12 @@ public struct RowAdPostViewBig: View {
             .frame(width: imageWidth, height: imageHeight)
             .clipShape(RoundedRectangle(cornerRadius: 15))
             .overlay {
-                contentTypeIcon
+                if postVM.showIllegalBlur {
+                    Icons.trashBin
+                        .iconSize(height: 24)
+                } else {
+                    contentTypeIcon
+                }
             }
             .overlay(alignment: .topLeading) {
                 PinIndicatorViewSmall()
@@ -64,18 +71,42 @@ public struct RowAdPostViewBig: View {
                 Text(postVM.post.title)
                     .appFont(.smallLabelBold)
                     .lineLimit(1)
+                    .ifCondition(postVM.showIllegalBlur) {
+                        $0
+                            .redacted(reason: .placeholder)
+                    }
 
-                if !postVM.post.media.isEmpty, let text = postVM.attributedDescription {
-                    Text(text)
+                if showModerationBadge, postVM.showIllegalBlur {
+                    Text("Removed as illegal")
                         .appFont(.smallLabelRegular)
                         .lineLimit(2)
                         .multilineTextAlignment(.leading)
+                } else {
+                    if !postVM.post.media.isEmpty, let text = postVM.attributedDescription {
+                        Text(text)
+                            .appFont(.smallLabelRegular)
+                            .lineLimit(2)
+                            .multilineTextAlignment(.leading)
+                            .ifCondition(postVM.showIllegalBlur) {
+                                $0
+                                    .redacted(reason: .placeholder)
+                            }
+                    }
                 }
 
                 Spacer()
                     .frame(minHeight: 2)
                     .frame(maxHeight: .infinity)
                     .layoutPriority(-1)
+
+                if showModerationBadge, postVM.post.visibilityStatus == .hidden {
+                    HiddenBadgeDarkView()
+
+                    Spacer()
+                        .frame(minHeight: 2)
+                        .frame(maxHeight: .infinity)
+                        .layoutPriority(-1)
+                }
 
                 HStack(spacing: 0) {
                     if

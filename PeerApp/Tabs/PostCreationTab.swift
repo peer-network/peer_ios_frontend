@@ -23,7 +23,7 @@ struct PostCreationTab: View {
             PostCreationMainView()
                 .toolbar(.hidden, for: .navigationBar)
                 .withAppRouter(appState: appState, apiServiceManager: apiManager, router: router)
-                .withSheetDestinations(sheetDestinations: $router.presentedSheet)
+                .withSheetDestinations(sheetDestinations: $router.presentedSheet, apiServiceManager: apiManager)
                 .onChange(of: selectedTabEmptyPath) {
                     if selectedTabEmptyPath == 2, !router.path.isEmpty {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {

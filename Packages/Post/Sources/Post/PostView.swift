@@ -47,6 +47,44 @@ public struct PostView: View {
                             imagePost()
                         case .grid:
                             imageGridPost()
+                                .ifCondition(postVM.showSensitiveContentWarning) {
+                                    $0
+                                        .blur(radius: 7.38)
+                                        .overlay {
+                                            Circle()
+                                                .frame(height: 50)
+                                                .foregroundStyle(Colors.whitePrimary.opacity(0.2))
+                                                .overlay {
+                                                    IconsNew.eyeWithSlash
+                                                        .iconSize(height: 27)
+                                                        .foregroundStyle(Colors.whitePrimary)
+                                                }
+                                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                                        }
+                                        .clipped()
+                                        .onTapGesture {
+                                            router.navigate(to: .postDetailsWithPost(post: postVM.post))
+                                        }
+                                }
+                                .ifCondition(postVM.showIllegalBlur) {
+                                    $0
+                                        .blur(radius: 7.38)
+                                        .overlay {
+                                            Circle()
+                                                .frame(height: 50)
+                                                .foregroundStyle(Colors.whitePrimary.opacity(0.2))
+                                                .overlay {
+                                                    Icons.trashBin
+                                                        .iconSize(height: 27)
+                                                        .foregroundStyle(Colors.whitePrimary)
+                                                }
+                                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                                        }
+                                        .clipped()
+                                        .onTapGesture {
+                                            router.navigate(to: .postDetailsWithPost(post: postVM.post))
+                                        }
+                                }
                     }
                 case .video:
                     switch displayType {
@@ -54,6 +92,44 @@ public struct PostView: View {
                             videoPost()
                         case .grid:
                             videoGridPost()
+                                .ifCondition(postVM.showSensitiveContentWarning) {
+                                    $0
+                                        .blur(radius: 7.38)
+                                        .overlay {
+                                            Circle()
+                                                .frame(height: 50)
+                                                .foregroundStyle(Colors.whitePrimary.opacity(0.2))
+                                                .overlay {
+                                                    IconsNew.eyeWithSlash
+                                                        .iconSize(height: 27)
+                                                        .foregroundStyle(Colors.whitePrimary)
+                                                }
+                                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                                        }
+                                        .clipped()
+                                        .onTapGesture {
+                                            router.navigate(to: .postDetailsWithPost(post: postVM.post))
+                                        }
+                                }
+                                .ifCondition(postVM.showIllegalBlur) {
+                                    $0
+                                        .blur(radius: 7.38)
+                                        .overlay {
+                                            Circle()
+                                                .frame(height: 50)
+                                                .foregroundStyle(Colors.whitePrimary.opacity(0.2))
+                                                .overlay {
+                                                    Icons.trashBin
+                                                        .iconSize(height: 27)
+                                                        .foregroundStyle(Colors.whitePrimary)
+                                                }
+                                                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                                        }
+                                        .clipped()
+                                        .onTapGesture {
+                                            router.navigate(to: .postDetailsWithPost(post: postVM.post))
+                                        }
+                                }
                     }
                 case .audio:
                     audioPost()
@@ -62,7 +138,7 @@ public struct PostView: View {
         .onFirstAppear {
             postVM.apiService = apiManager.apiService
         }
-        .ifCondition(reasons != .placeholder && displayType == .list) {
+        .ifCondition(reasons != .placeholder && displayType == .list && !postVM.showIllegalBlur) {
             $0.modifier(ViewVisibilityModifier(viewed: postVM.isViewed, viewAction: {
                 Task {
                     try? await postVM.view()
@@ -107,7 +183,22 @@ public struct PostView: View {
         VStack(alignment: .center, spacing: 10) {
             PostHeaderView(postVM: postVM, showAppleTranslation: $showAppleTranslation, showFollowButton: showFollowButton)
 
-            TextContent(postVM: postVM)
+            if postVM.showIllegalBlur {
+                illegalPostView
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .frame(height: 171)
+            } else {
+                TextContent(postVM: postVM)
+                    .ifCondition(postVM.showSensitiveContentWarning) {
+                        $0
+                            .allowsHitTesting(false)
+                            .blur(radius: 15)
+                            .overlay {
+                                sensitiveContentWarningForTextPostView
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+                    }
+            }
 
             if !reasons.contains(.placeholder) {
                 HStack(alignment: .center, spacing: 0) {
@@ -119,12 +210,11 @@ public struct PostView: View {
                         .frame(maxWidth: .infinity)
                         .layoutPriority(-1)
 
-//                    if let advertiser = postVM.post.advertisement?.adOwner.username {
-//                        Text("Pin by ***\(advertiser)***")
-//                            .appFont(.smallLabelRegular)
-//                            .lineLimit(1)
-//                            .foregroundStyle(Colors.whitePrimary)
-//                    }
+                    if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.isHiddenForUsers {
+                        HiddenBadgeView()
+                    } else if postVM.post.hasActiveReports {
+                        ReportedBadgeView()
+                    }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(10)
@@ -136,6 +226,7 @@ public struct PostView: View {
                         .blur(radius: 50)
                         .frame(maxWidth: .infinity, alignment: .trailing)
                         .ignoresSafeArea()
+                        .allowsHitTesting(false)
                 }
             }
         }
@@ -152,21 +243,40 @@ public struct PostView: View {
             PostHeaderView(postVM: postVM, showAppleTranslation: $showAppleTranslation, showFollowButton: showFollowButton)
                 .padding(.horizontal, 20)
 
-            ImagesContent(postVM: postVM)
-                .doubleTapToLike {
-                    try await postVM.like()
-                } onError: { error in
-                    if let error = error as? PostActionError {
-                        showPopup(
-                            text: error.displayMessage,
-                            icon: error.displayIcon
-                        )
-                    } else {
-                        showPopup(
-                            text: error.userFriendlyDescription
-                        )
+            if postVM.showIllegalBlur {
+                illegalPostView
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .frame(height: 150)
+                    .background(Colors.inactiveDark)
+                    .clipShape(RoundedRectangle(cornerRadius: 24))
+                    .padding(.horizontal, 20)
+            } else {
+                ImagesContent(postVM: postVM)
+                    .doubleTapToLike {
+                        try await postVM.like()
+                    } onError: { error in
+                        if let error = error as? PostActionError {
+                            showPopup(
+                                text: error.displayMessage,
+                                icon: error.displayIcon
+                            )
+                        } else {
+                            showPopup(
+                                text: error.userFriendlyDescription
+                            )
+                        }
                     }
-                }
+                    .ifCondition(postVM.showSensitiveContentWarning) {
+                        $0
+                            .allowsHitTesting(false)
+                            .blur(radius: 25)
+                            .overlay {
+                                sensitiveContentWarningForImagePostView
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                            }
+                            .clipped()
+                    }
+            }
 
             if !reasons.contains(.placeholder) {
                 HStack(alignment: .center, spacing: 0) {
@@ -178,12 +288,11 @@ public struct PostView: View {
                         .frame(maxWidth: .infinity)
                         .layoutPriority(-1)
 
-//                    if let advertiser = postVM.post.advertisement?.adOwner.username {
-//                        Text("Pin by ***\(advertiser)***")
-//                            .appFont(.smallLabelRegular)
-//                            .lineLimit(1)
-//                            .foregroundStyle(Colors.whitePrimary)
-//                    }
+                    if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.isHiddenForUsers {
+                        HiddenBadgeView()
+                    } else if postVM.post.hasActiveReports {
+                        ReportedBadgeView()
+                    }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 20)
@@ -200,9 +309,26 @@ public struct PostView: View {
         VStack(alignment: .center, spacing: 10) {
             PostHeaderView(postVM: postVM, showAppleTranslation: $showAppleTranslation, showFollowButton: showFollowButton)
 
-            TextContent(postVM: postVM)
+            if postVM.showIllegalBlur {
+                illegalPostView
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .frame(height: 171)
+            } else {
+                VStack(alignment: .center, spacing: 10) {
+                    TextContent(postVM: postVM)
 
-            AudioContent(postVM: postVM)
+                    AudioContent(postVM: postVM)
+                }
+                .ifCondition(postVM.showSensitiveContentWarning) {
+                    $0
+                        .allowsHitTesting(false)
+                        .blur(radius: 15)
+                        .overlay {
+                            sensitiveContentWarningForTextPostView
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+                }
+            }
 
             if !reasons.contains(.placeholder) {
                 HStack(alignment: .center, spacing: 0) {
@@ -214,12 +340,11 @@ public struct PostView: View {
                         .frame(maxWidth: .infinity)
                         .layoutPriority(-1)
 
-//                    if let advertiser = postVM.post.advertisement?.adOwner.username {
-//                        Text("Pin by ***\(advertiser)***")
-//                            .appFont(.smallLabelRegular)
-//                            .lineLimit(1)
-//                            .foregroundStyle(Colors.whitePrimary)
-//                    }
+                    if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.isHiddenForUsers {
+                        HiddenBadgeView()
+                    } else if postVM.post.hasActiveReports {
+                        ReportedBadgeView()
+                    }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(10)
@@ -227,22 +352,31 @@ public struct PostView: View {
         }
         .padding(10)
         .background {
-            if let url = postVM.post.coverURL {
-                LazyImage(url: url) { state in
-                    if let image = state.image {
-                        image
-                            .resizable()
-                            .scaledToFill()
-                            .overlay {
-                                Gradients.blackHover
-                            }
-                            .allowsHitTesting(false)
-                    } else {
-                        Colors.textActive
+            if !postVM.showIllegalBlur {
+                if let url = postVM.post.coverURL {
+                    LazyImage(url: url) { state in
+                        if let image = state.image {
+                            image
+                                .resizable()
+                                .scaledToFill()
+                                .overlay {
+                                    Gradients.blackHover
+                                }
+                                .ifCondition(postVM.showSensitiveContentWarning) {
+                                    $0
+                                        .blur(radius: 25)
+                                        .clipped()
+                                }
+                                .allowsHitTesting(false)
+                        } else {
+                            Colors.textActive
+                        }
                     }
+                } else {
+                    Colors.textActive
                 }
             } else {
-                Colors.textActive
+                Colors.inactiveDark
             }
         }
         .clipShape(RoundedRectangle(cornerRadius: 24))
@@ -295,7 +429,7 @@ public struct PostView: View {
         }
         .clipped()
         .aspectRatio(1, contentMode: .fit)
-        .contentShape(Rectangle())
+        .contentShape(.rect)
         .onTapGesture {
             router.navigate(to: .postDetailsWithPost(post: postVM.post))
         }
@@ -335,5 +469,85 @@ public struct PostView: View {
         .clipped()
         .aspectRatio(1, contentMode: .fit)
         .contentShape(Rectangle())
+    }
+
+    private var sensitiveContentWarningForTextPostView: some View {
+        HStack(alignment: .center, spacing: 0) {
+            VStack(alignment: .leading, spacing: 0) {
+                Circle()
+                    .frame(height: 50)
+                    .foregroundStyle(Colors.whitePrimary.opacity(0.2))
+                    .overlay {
+                        IconsNew.eyeWithSlash
+                            .iconSize(height: 27)
+                            .foregroundStyle(Colors.whitePrimary)
+                    }
+                    .padding(.bottom, 5)
+
+                Text("Sensitive content")
+                    .appFont(.bodyBold)
+
+                Text("This content may be sensitive or abusive.\nDo you want to view it anyway?")
+                    .appFont(.smallLabelRegular)
+            }
+            .foregroundStyle(Colors.whitePrimary)
+            .fixedSize(horizontal: false, vertical: true)
+
+            Spacer()
+                .frame(minWidth: 10)
+                .frame(maxWidth: .infinity)
+                .layoutPriority(-1)
+
+            let showButtonConfig = StateButtonConfig(buttonSize: .small, buttonType: .teritary, title: "Show")
+            StateButton(config: showButtonConfig) {
+                withAnimation {
+                    postVM.showSensitiveContentWarning = false
+                }
+            }
+            .fixedSize()
+        }
+        .multilineTextAlignment(.leading)
+    }
+
+    private var sensitiveContentWarningForImagePostView: some View {
+        VStack(spacing: 0) {
+            Circle()
+                .frame(height: 50)
+                .foregroundStyle(Colors.whitePrimary.opacity(0.2))
+                .overlay {
+                    IconsNew.eyeWithSlash
+                        .iconSize(height: 27)
+                        .foregroundStyle(Colors.whitePrimary)
+                }
+                .padding(.bottom, 14.02)
+
+            Text("Sensitive content")
+                .appFont(.largeTitleBold)
+
+            Text("This content may be sensitive or abusive.\nDo you want to view it anyway?")
+                .appFont(.bodyRegular)
+                .padding(.bottom, 10)
+
+            let showButtonConfig = StateButtonConfig(buttonSize: .small, buttonType: .teritary, title: "View content")
+            StateButton(config: showButtonConfig) {
+                withAnimation {
+                    postVM.showSensitiveContentWarning = false
+                }
+            }
+            .fixedSize()
+        }
+        .multilineTextAlignment(.center)
+        .foregroundStyle(Colors.whitePrimary)
+    }
+
+    private var illegalPostView: some View {
+        VStack(alignment: .center, spacing: 10) {
+            Icons.trashBin
+                .iconSize(width: 16)
+
+            Text("This content was removed as illegal")
+                .appFont(.bodyBold)
+        }
+        .foregroundStyle(Colors.whitePrimary)
     }
 }

@@ -82,6 +82,7 @@ public struct ProfilePageView: View {
         HeaderPageScrollView {
             profileHeader(user: user, isLoading: isLoading)
                 .padding(.bottom, 15)
+                .padding(.top, 10)
         } labels: {
             PageLabel(title: "Regular", icon: Icons.smile)
             PageLabel(title: "Video", icon: Icons.playRectangle)

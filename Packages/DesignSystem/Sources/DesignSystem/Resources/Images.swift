@@ -108,4 +108,5 @@ public enum IconsNew {
     public static let referral = Image(.icReferral)
     public static let megaphone = Image(.icMegaphone)
     public static let exclamaitionMarkCircle = Image(.icExclamationMarkCircle)
+    public static let flag = Image(.icFlag)
 }

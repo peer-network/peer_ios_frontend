@@ -7,7 +7,7 @@ public class CreatePostMutation: GraphQLMutation {
   public static let operationName: String = "CreatePost"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"mutation CreatePost($contentType: ContentType!, $title: String!, $media: [String!], $mediadescription: String, $tags: [String!], $cover: [String!]) { createPost( action: POST input: { contenttype: $contentType title: $title media: $media mediadescription: $mediadescription tags: $tags cover: $cover } ) { __typename status ResponseCode affectedRows { __typename id contenttype title media cover mediadescription createdat amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags url user { __typename id username slug img isfollowed isfollowing } } } }"#
+      #"mutation CreatePost($contentType: ContentType!, $title: String!, $media: [String!], $mediadescription: String, $tags: [String!], $cover: [String!]) { createPost( action: POST input: { contenttype: $contentType title: $title media: $media mediadescription: $mediadescription tags: $tags cover: $cover } ) { __typename status ResponseCode affectedRows { __typename id contenttype title media cover mediadescription createdat visibilityStatus hasActiveReports isHiddenForUsers amountreports amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags url user { __typename id username slug img visibilityStatus isHiddenForUsers hasActiveReports isfollowed isfollowing isfriend } } } }"#
     ))
 
   public var contentType: GraphQLEnum<ContentType>
@@ -101,6 +101,10 @@ public class CreatePostMutation: GraphQLMutation {
           .field("cover", String.self),
           .field("mediadescription", String.self),
           .field("createdat", GQLOperationsUser.Date.self),
+          .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>.self),
+          .field("hasActiveReports", Bool.self),
+          .field("isHiddenForUsers", Bool.self),
+          .field("amountreports", Int.self),
           .field("amountlikes", Int.self),
           .field("amountviews", Int.self),
           .field("amountcomments", Int.self),
@@ -123,6 +127,10 @@ public class CreatePostMutation: GraphQLMutation {
         public var cover: String { __data["cover"] }
         public var mediadescription: String { __data["mediadescription"] }
         public var createdat: GQLOperationsUser.Date { __data["createdat"] }
+        public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }
+        public var hasActiveReports: Bool { __data["hasActiveReports"] }
+        public var isHiddenForUsers: Bool { __data["isHiddenForUsers"] }
+        public var amountreports: Int { __data["amountreports"] }
         public var amountlikes: Int { __data["amountlikes"] }
         public var amountviews: Int { __data["amountviews"] }
         public var amountcomments: Int { __data["amountcomments"] }
@@ -151,16 +159,24 @@ public class CreatePostMutation: GraphQLMutation {
             .field("username", String?.self),
             .field("slug", Int?.self),
             .field("img", String?.self),
+            .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>.self),
+            .field("isHiddenForUsers", Bool.self),
+            .field("hasActiveReports", Bool.self),
             .field("isfollowed", Bool?.self),
             .field("isfollowing", Bool?.self),
+            .field("isfriend", Bool?.self),
           ] }
 
           public var id: GQLOperationsUser.ID { __data["id"] }
           public var username: String? { __data["username"] }
           public var slug: Int? { __data["slug"] }
           public var img: String? { __data["img"] }
+          public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }
+          public var isHiddenForUsers: Bool { __data["isHiddenForUsers"] }
+          public var hasActiveReports: Bool { __data["hasActiveReports"] }
           public var isfollowed: Bool? { __data["isfollowed"] }
           public var isfollowing: Bool? { __data["isfollowing"] }
+          public var isfriend: Bool? { __data["isfriend"] }
         }
       }
     }

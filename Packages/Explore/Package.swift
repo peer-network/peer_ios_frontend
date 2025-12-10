@@ -17,6 +17,8 @@ let package = Package(
         .package(name: "DesignSystem", path: "../DesignSystem"),
         .package(name: "Environment", path: "../Environment"),
         .package(name: "Networking", path: "../Networking"),
+        .package(name: "Models", path: "../Models"),
+        .package(name: "Post", path: "../Post"),
         .package(name: "GQLOperationsUser", path: "../GQLOperationsUser")
     ],
     targets: [
@@ -26,6 +28,8 @@ let package = Package(
                 .product(name: "DesignSystem", package: "DesignSystem"),
                 .product(name: "Environment", package: "Environment"),
                 .product(name: "Networking", package: "Networking"),
+                .product(name: "Models", package: "Models"),
+                .product(name: "Post", package: "Post"),
                 .product(name: "GQLOperationsUser", package: "GQLOperationsUser")
             ]
         ),

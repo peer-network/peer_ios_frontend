@@ -22,6 +22,10 @@ public struct User: Identifiable, Hashable {
     public let amountFollowing: Int
     public let amountFriends: Int
 
+    public let hasActiveReports: Bool
+    public let isHiddenForUsers: Bool
+    public let visibilityStatus: ContentVisibilityStatus
+
     public var imageURL: URL? {
         guard image != "" else { return nil }
         return URL(string: "\(Constants.mediaURL)\(image)")
@@ -43,7 +47,10 @@ public struct User: Identifiable, Hashable {
         isFollowing: Bool,
         amountFollowers: Int,
         amountFollowing: Int,
-        amountFriends: Int
+        amountFriends: Int,
+        hasActiveReports: Bool = false,
+        isHiddenForUsers: Bool = false,
+        visibilityStatus: ContentVisibilityStatus = .normal
     ) {
         self.id = id
         self.username = username
@@ -57,6 +64,9 @@ public struct User: Identifiable, Hashable {
         self.amountFollowers = amountFollowers
         self.amountFollowing = amountFollowing
         self.amountFriends = amountFriends
+        self.hasActiveReports = hasActiveReports
+        self.isHiddenForUsers = isHiddenForUsers
+        self.visibilityStatus = visibilityStatus
     }
 
     //TODO: Replace Apollo struct with raw params
@@ -91,6 +101,9 @@ public struct User: Identifiable, Hashable {
         self.amountFollowers = amountFollowers
         self.amountFollowing = amountFollowing
         self.amountFriends = amountFriends
+        self.hasActiveReports = gqlUser.hasActiveReports
+        self.isHiddenForUsers = gqlUser.isHiddenForUsers
+        self.visibilityStatus = .normalizedValue(gqlUser.visibilityStatus.value)
     }
 }
 

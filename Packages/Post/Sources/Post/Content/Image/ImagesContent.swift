@@ -50,9 +50,9 @@ struct ImagesContent: View {
                                     )
                                     .clipShape(Rectangle())
                                     .pinchZoom()
-                                    .onTapGesture {
-                                        tapAction(for: index)
-                                    }
+//                                    .onTapGesture {
+//                                        tapAction(for: index)
+//                                    }
                             } else {
                                 ProgressView()
                                     .progressViewStyle(.circular)
@@ -61,9 +61,6 @@ struct ImagesContent: View {
 //                                    .skeleton(isRedacted: true)
                             }
                         }
-//                        .processors([
-//                            ImageProcessors.Resize(size: CGSize(width: UIScreen.main.scale * UIScreen.main.bounds.width, height: UIScreen.main.scale *imageHeight))
-//                        ])
                     }
                 }
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .automatic))

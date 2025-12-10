@@ -405,12 +405,13 @@ public final class APIServiceGraphQL: APIService {
         }
     }
 
-    public func fetchUserFriends(after offset: Int) async -> Result<[RowUser], APIError> {
+    public func fetchUserFriends(for userID: String, after offset: Int) async -> Result<[RowUser], APIError> {
         do {
             let offensiveContentFilter =  UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")?.string(forKey: "offensiveContentFilter").flatMap(OffensiveContentFilter.init(rawValue:)) ?? .blocked
 
             let operation = GetFriendsQuery(
                 contentFilterBy: offensiveContentFilter.apiValue,
+                userid: GraphQLNullable(stringLiteral: userID),
                 offset: GraphQLNullable<Int>(integerLiteral: offset),
                 limit: 20
             )
@@ -1042,7 +1043,9 @@ public final class APIServiceGraphQL: APIService {
 
     public func getPostInteractions(with id: String, type: PostInteraction, after offset: Int) async -> Result<[RowUser], APIError> {
         do {
-            let result = try await qlClient.fetch(query: PostInteractionsQuery(getOnly: type.apiValue, postOrCommentId: id, offset: GraphQLNullable<Int>(integerLiteral: offset), limit: GraphQLNullable<Int>(integerLiteral: 20)), cachePolicy: .fetchIgnoringCacheCompletely)
+            let offensiveContentFilter =  UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")?.string(forKey: "offensiveContentFilter").flatMap(OffensiveContentFilter.init(rawValue:)) ?? .blocked
+
+            let result = try await qlClient.fetch(query: PostInteractionsQuery(getOnly: type.apiValue, postOrCommentId: id, offset: GraphQLNullable<Int>(integerLiteral: offset), limit: GraphQLNullable<Int>(integerLiteral: 20), contentFilterBy: offensiveContentFilter.apiValue), cachePolicy: .fetchIgnoringCacheCompletely)
 
             guard result.isResponseCodeSuccess else {
                 if let errorCode = result.getResponseCode {
@@ -1164,7 +1167,9 @@ public final class APIServiceGraphQL: APIService {
 
     public func getCommentInteractions(with id: String, after offset: Int) async -> Result<[RowUser], APIError> {
         do {
-            let result = try await qlClient.fetch(query: PostInteractionsQuery(getOnly: .case(.commentlike), postOrCommentId: id, offset: GraphQLNullable<Int>(integerLiteral: offset), limit: GraphQLNullable<Int>(integerLiteral: 20)), cachePolicy: .fetchIgnoringCacheCompletely)
+            let offensiveContentFilter =  UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")?.string(forKey: "offensiveContentFilter").flatMap(OffensiveContentFilter.init(rawValue:)) ?? .blocked
+
+            let result = try await qlClient.fetch(query: PostInteractionsQuery(getOnly: .case(.commentlike), postOrCommentId: id, offset: GraphQLNullable<Int>(integerLiteral: offset), limit: GraphQLNullable<Int>(integerLiteral: 20), contentFilterBy: offensiveContentFilter.apiValue), cachePolicy: .fetchIgnoringCacheCompletely)
 
             guard result.isResponseCodeSuccess else {
                 if let errorCode = result.getResponseCode {
@@ -1264,9 +1269,12 @@ public final class APIServiceGraphQL: APIService {
     public func getListOfAds(userID: String?, with contentType: PostContentType, after offset: Int, amount: Int) async -> Result<[Post], APIError> {
         let filterBy: [GraphQLEnum<ContentType>] = contentType.apiValue
 
+        let offensiveContentFilter =  UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")?.string(forKey: "offensiveContentFilter").flatMap(OffensiveContentFilter.init(rawValue:)) ?? .blocked
+
         let operation = GetListOfAdsQuery(
             userID: userID == nil ? nil : GraphQLNullable(stringLiteral: userID!),
             filterBy: GraphQLNullable<[GraphQLEnum<ContentType>]>.some(filterBy),
+            contentFilterBy: offensiveContentFilter.apiValue,
             offset: GraphQLNullable<Int>(integerLiteral: offset),
             limit: GraphQLNullable<Int>(integerLiteral: amount)
         )

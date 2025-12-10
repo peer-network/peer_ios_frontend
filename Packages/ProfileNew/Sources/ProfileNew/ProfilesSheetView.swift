@@ -40,7 +40,7 @@ public struct ProfilesSheetView<Fetcher>: View where Fetcher: RelationsFetcher {
                 .font(.customFont(weight: .regular, size: .body))
                 .foregroundStyle(Colors.whitePrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.bottom, 10)
+                .padding(.horizontal, 10)
 
             ScrollView {
                 LazyVStack(spacing: 20) {
@@ -77,11 +77,10 @@ public struct ProfilesSheetView<Fetcher>: View where Fetcher: RelationsFetcher {
                                             isFollowing: user.isFollowing,
                                             isFollowed: user.isFollowed
                                         )
-                                        //                                        FollowButton(viewModel: vm)
                                         FollowButton2(viewModel: vm)
                                             .fixedSize(horizontal: true, vertical: false)
                                     }, dismissAction: nil)
-                                    .contentShape(Rectangle())
+                                    .contentShape(.rect)
                                 }
 
                                 switch hasMore {
@@ -103,7 +102,9 @@ public struct ProfilesSheetView<Fetcher>: View where Fetcher: RelationsFetcher {
                             }
                     }
                 }
+                .padding(.horizontal, 10)
                 .padding(.bottom, 34)
+                .padding(.top, 10)
             }
             .scrollIndicators(.hidden)
         }

@@ -12,30 +12,32 @@ struct TextContent: View {
     @ObservedObject var postVM: PostViewModel
 
     var body: some View {
-        titleTextView
-            .font(.customFont(weight: .bold, size: .title))
-            .foregroundStyle(Colors.whitePrimary)
-            .frame(maxWidth: .infinity, alignment: .leading)
-
-        if !postVM.post.media.isEmpty, let text = postVM.attributedDescription {
-            CollapsibleText(text, lineLimit: 8)
-                .font(.customFont(style: .body))
+        VStack(alignment: .leading, spacing: 10) {
+            titleTextView
+                .font(.customFont(weight: .bold, size: .title))
                 .foregroundStyle(Colors.whitePrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)
-//            VStack(spacing: 0) {
-//                Text(text)
-//                    .font(.customFont(style: .body))
-//                    .foregroundStyle(Colors.whitePrimary)
-//                    .lineLimit(postVM.lineLimit)
-//                    .frame(maxWidth: .infinity, alignment: .leading)
-//                    .ifCondition(postVM.shouldShowCollapseButton) {
-//                        $0.onTapGesture {
-//                            postVM.isCollapsed.toggle()
-//                        }
-//                    }
-//
-//                collapseButton()
-//            }
+
+            if !postVM.post.media.isEmpty, let text = postVM.attributedDescription {
+                CollapsibleText(text, lineLimit: 8)
+                    .font(.customFont(style: .body))
+                    .foregroundStyle(Colors.whitePrimary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                //            VStack(spacing: 0) {
+                //                Text(text)
+                //                    .font(.customFont(style: .body))
+                //                    .foregroundStyle(Colors.whitePrimary)
+                //                    .lineLimit(postVM.lineLimit)
+                //                    .frame(maxWidth: .infinity, alignment: .leading)
+                //                    .ifCondition(postVM.shouldShowCollapseButton) {
+                //                        $0.onTapGesture {
+                //                            postVM.isCollapsed.toggle()
+                //                        }
+                //                    }
+                //
+                //                collapseButton()
+                //            }
+            }
         }
     }
 

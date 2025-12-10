@@ -55,11 +55,7 @@ struct FollowersHeader: View {
                 case .followings:
                     router.presentedSheet = .following(userId: userId)
                 case .friends:
-                    if userId == AccountManager.shared.userId {
-                        router.presentedSheet = .friends(userId: userId)
-                    } else {
-                        break
-                    }
+                    router.presentedSheet = .friends(userId: userId)
             }
         } label: {
             VStack(spacing: 0) {

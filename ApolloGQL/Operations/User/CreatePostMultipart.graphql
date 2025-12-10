@@ -13,6 +13,10 @@ mutation CreatePostMultipart($contentType: ContentType!, $title: String!, $uploa
             cover
             mediadescription
             createdat
+            visibilityStatus
+            isHiddenForUsers
+            hasActiveReports
+            amountreports
             amountlikes
             amountviews
             amountcomments
@@ -30,8 +34,12 @@ mutation CreatePostMultipart($contentType: ContentType!, $title: String!, $uploa
                 username
                 slug
                 img
+                visibilityStatus
+                isHiddenForUsers
+                hasActiveReports
                 isfollowed
                 isfollowing
+                isfriend
             }
         }
     }

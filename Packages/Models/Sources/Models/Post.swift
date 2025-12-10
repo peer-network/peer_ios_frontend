@@ -38,6 +38,10 @@ public struct Post: Identifiable, Hashable {
 
     public let advertisement: Advertisement?
 
+    public let hasActiveReports: Bool
+    public let isHiddenForUsers: Bool
+    public let visibilityStatus: ContentVisibilityStatus
+
     public var mediaURLs: [URL] {
         media.compactMap {
             URL(string: "\(Constants.mediaURL)\($0.path)")
@@ -65,16 +69,23 @@ public struct Post: Identifiable, Hashable {
         guard
             let contentType = ContentType(rawValue: gqlPost.contenttype),
             let postOwner = ObjectOwner(gqlUser: gqlPost.user),
-            let mediaData = gqlPost.media.data(using: .utf8),
-            let parsedMedia = try? JSONDecoder().decode([MediaItem].self, from: mediaData)
+            let mediaData = gqlPost.media.data(using: .utf8)
         else {
             return nil
+        }
+
+        if ContentVisibilityStatus.normalizedValue(gqlPost.visibilityStatus.value) != .illegal { // TODO: SAME FOR OTHER INITS
+            guard let parsedMedia = try? JSONDecoder().decode([MediaItem].self, from: mediaData) else {
+                return nil
+            }
+            self.media = parsedMedia
+        } else {
+            self.media = []
         }
 
         self.id = gqlPost.id
         self.contentType = contentType
         self.title = gqlPost.title
-        self.media = parsedMedia
         if !gqlPost.cover.isEmpty,
            let coverData = gqlPost.cover.data(using: .utf8),
            let parsedCover = try? JSONDecoder().decode([MediaItem].self, from: coverData)
@@ -98,6 +109,9 @@ public struct Post: Identifiable, Hashable {
         self.url = gqlPost.url
         self.owner = postOwner
         advertisement = nil
+        self.hasActiveReports = gqlPost.hasActiveReports
+        self.isHiddenForUsers = gqlPost.isHiddenForUsers
+        self.visibilityStatus = .normalizedValue(gqlPost.visibilityStatus.value)
     }
 
     public init?(gqlPost: GetPostByIdQuery.Data.ListPosts.AffectedRow) {
@@ -137,6 +151,9 @@ public struct Post: Identifiable, Hashable {
         self.url = gqlPost.url
         self.owner = postOwner
         advertisement = nil
+        self.hasActiveReports = gqlPost.hasActiveReports
+        self.isHiddenForUsers = gqlPost.isHiddenForUsers
+        self.visibilityStatus = .normalizedValue(gqlPost.visibilityStatus.value)
     }
 
     public init?(gqlAdvertisement: GetListOfAdsQuery.Data.ListAdvertisementPosts.AffectedRow) {
@@ -178,6 +195,9 @@ public struct Post: Identifiable, Hashable {
         self.url = gqlPost.url
         self.owner = postOwner
         advertisement = Advertisement(gqlAdvertisement: gqlAdvertisement)
+        self.hasActiveReports = gqlPost.hasActiveReports
+        self.isHiddenForUsers = gqlPost.isHiddenForUsers
+        self.visibilityStatus = .normalizedValue(gqlPost.visibilityStatus.value)
     }
 
     public init?(gqlPost: GetAdsHistoryListQuery.Data.AdvertisementHistory.AffectedRows.Advertisement.Post) {
@@ -217,6 +237,9 @@ public struct Post: Identifiable, Hashable {
         self.url = gqlPost.url
         self.owner = postOwner
         advertisement = nil
+        self.hasActiveReports = gqlPost.hasActiveReports
+        self.isHiddenForUsers = gqlPost.isHiddenForUsers
+        self.visibilityStatus = .normalizedValue(gqlPost.visibilityStatus.value)
     }
 
     public init(
@@ -238,7 +261,10 @@ public struct Post: Identifiable, Hashable {
         isSaved: Bool,
         tags: [String],
         url: String,
-        owner: ObjectOwner
+        owner: ObjectOwner,
+        hasActiveReports: Bool = false,
+        isHiddenForUsers: Bool = false,
+        visibilityStatus: ContentVisibilityStatus = .normal
     ) {
         self.id = id
         self.contentType = contentType
@@ -260,13 +286,16 @@ public struct Post: Identifiable, Hashable {
         self.url = url
         self.owner = owner
         advertisement = nil
+        self.hasActiveReports = hasActiveReports
+        self.isHiddenForUsers = isHiddenForUsers
+        self.visibilityStatus = visibilityStatus
     }
 }
 
 extension Post {
     /// ID which is used for UI to identify if a view related to this post should be redrawn
     public var refreshID: String {
-        "\(id)-\(amountLikes)-\(amountDislikes)-\(amountViews)-\(amountComments)-\(isLiked)-\(isDisliked)-\(isViewed)-\(owner.isFollowing)-\(owner.isFollowed)-\(advertisement?.id)"
+        "\(id)-\(amountLikes)-\(amountDislikes)-\(amountViews)-\(amountComments)-\(isLiked)-\(isDisliked)-\(isViewed)-\(owner.isFollowing)-\(owner.isFollowed)-\(advertisement?.id)-\(hasActiveReports)"
     }
 }
 
