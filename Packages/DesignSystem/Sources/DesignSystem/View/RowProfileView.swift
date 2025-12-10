@@ -41,8 +41,20 @@ public struct RowProfileView<TrailingContent: View>: View {
                 router.navigate(to: .accountDetail(id: user.id))
             } label: {
                 HStack(spacing: 0) {
-                    ProfileAvatarView(url: user.imageURL, name: user.username, config: .rowUser, ignoreCache: profileImageIgnoreCache)
+                    if user.visibilityStatus == .illegal {
+                        Circle()
+                            .foregroundStyle(Colors.inactiveDark)
+                            .frame(height: 40)
+                            .overlay {
+                                IconsNew.exclamaitionMarkCircle
+                                    .iconSize(height: 16)
+                                    .foregroundStyle(Colors.whiteSecondary)
+                            }
                         .padding(.trailing, 10)
+                    } else {
+                        ProfileAvatarView(url: user.imageURL, name: user.username, config: .rowUser, ignoreCache: profileImageIgnoreCache)
+                            .padding(.trailing, 10)
+                    }
 
                     VStack(alignment: .leading, spacing: 0) {
                         Text(user.username)
