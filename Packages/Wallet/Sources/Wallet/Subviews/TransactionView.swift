@@ -61,7 +61,7 @@ struct TransactionView: View {
         let spacing: CGFloat = transaction.message == nil ? 2 : 0
 
         VStack(alignment: .leading, spacing: spacing) {
-            Text(title)
+            titleTextView
                 .appFont(.bodyBold)
                 .foregroundStyle(Colors.whitePrimary)
 
@@ -184,6 +184,7 @@ struct TransactionView: View {
                 .animation(.easeInOut, value: expanded)
         }
         .foregroundStyle(Colors.whitePrimary)
+        .lineLimit(1)
     }
 
     @ViewBuilder
@@ -262,6 +263,8 @@ struct TransactionView: View {
                     .opacity(amountIsBold ? 1 : 0.5)
             }
         }
+        .lineLimit(1)
+        .truncationMode(.tail)
     }
 
     private func isAmountPositive() -> Bool {
@@ -273,30 +276,36 @@ struct TransactionView: View {
         }
     }
 
-    private var title: String {
+    private var titleTextView: some View {
         switch transaction.type {
             case .extraPost:
-                "Extra post"
+                AnyView(Text("Extra post"))
             case .extraLike:
-                "Extra like"
+                AnyView(Text("Extra like"))
             case .extraComment:
-                "Extra comment"
+                AnyView(Text("Extra comment"))
             case .dislike:
-                "Dislike"
+                AnyView(Text("Dislike"))
             case .transferTo:
-                "To @\(transaction.recipient.username)"
+                AnyView(HStack(spacing: 0) {
+                    Text("To ***@\(transaction.recipient.username)***").appFont(.bodyBold)
+                    Text("#\(String(transaction.recipient.slug))").foregroundStyle(Colors.whiteSecondary).appFont(.bodyRegular)
+                })
             case .transferFrom:
-                "From @\(transaction.recipient.username)"
+                AnyView(HStack(spacing: 0) {
+                    Text("From ***@\(transaction.sender.username)***").appFont(.bodyBold)
+                    Text("#\(String(transaction.sender.slug))").foregroundStyle(Colors.whiteSecondary).appFont(.bodyRegular)
+                })
             case .pinPost:
-                "Pinned post promo"
+                AnyView(Text("Pinned post promo"))
             case .referralReward:
-                "Referral reward"
+                AnyView(Text("Referral reward"))
             case .shop:
-                "Peer Shop"
+                AnyView(Text("Peer Shop"))
             case .dailyMint:
-                "Daily Mint"
+                AnyView(Text("Daily Mint"))
             case .unknown:
-                "Unknown"
+                AnyView(Text("Unknown"))
         }
     }
 }
