@@ -68,13 +68,17 @@ struct TransactionView: View {
             Text(transaction.createdAt)
                 .appFont(.smallLabelRegular)
 
-            if let message = transaction.message {
+            if
+                transaction.type == .transferTo || transaction.type == .transferFrom,
+                let message = transaction.message,
+                !message.isEmpty
+            {
                 Text(message)
                     .appFont(.smallLabelBold)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
             }
         }
+        .lineLimit(1)
+        .truncationMode(.tail)
         .foregroundStyle(Colors.whiteSecondary)
     }
 
@@ -216,7 +220,11 @@ struct TransactionView: View {
         }
         .appFont(.smallLabelRegular)
 
-        if let message = transaction.message, !message.isEmpty {
+        if
+            transaction.type == .transferTo || transaction.type == .transferFrom,
+            let message = transaction.message,
+            !message.isEmpty
+        {
             Text("Message:")
                 .appFont(.bodyRegular)
                 .frame(maxWidth: .infinity, alignment: .leading)
