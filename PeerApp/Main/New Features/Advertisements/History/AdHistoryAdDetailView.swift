@@ -127,7 +127,7 @@ struct AdHistoryAdDetailView: View {
             return nil
         }
 
-        dateFormatter.dateFormat = "d MMM yyyy HH:mm"
+        dateFormatter.dateFormat = "d MMM yyyy, HH:mm"
         dateFormatter.timeZone = TimeZone.current
 
         return dateFormatter.string(from: date)

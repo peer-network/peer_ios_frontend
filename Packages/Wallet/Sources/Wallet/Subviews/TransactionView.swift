@@ -65,7 +65,7 @@ struct TransactionView: View {
                 .appFont(.bodyBold)
                 .foregroundStyle(Colors.whitePrimary)
 
-            Text(transaction.createdAt)
+            Text(convertUTCToLocalDate(transaction.createdAt) ?? "Undefined date")
                 .appFont(.smallLabelRegular)
 
             if
@@ -307,5 +307,21 @@ struct TransactionView: View {
             case .unknown:
                 AnyView(Text("Unknown"))
         }
+    }
+
+    private func convertUTCToLocalDate(_ utcDateString: String) -> String? {
+        let dateFormatter = DateFormatter()
+
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSSSSS"
+        dateFormatter.timeZone = TimeZone(identifier: "UTC")
+
+        guard let date = dateFormatter.date(from: utcDateString) else {
+            return nil
+        }
+
+        dateFormatter.dateFormat = "d MMM yyyy, HH:mm"
+        dateFormatter.timeZone = TimeZone.current
+
+        return dateFormatter.string(from: date)
     }
 }
