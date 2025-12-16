@@ -109,4 +109,5 @@ public enum IconsNew {
     public static let megaphone = Image(.icMegaphone)
     public static let exclamaitionMarkCircle = Image(.icExclamationMarkCircle)
     public static let clockAndMoney = Image(.icClockAndMoney)
+    public static let shop = Image(.icShop)
 }

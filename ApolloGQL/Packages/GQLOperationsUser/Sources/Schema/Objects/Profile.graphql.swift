@@ -4,8 +4,8 @@
 import ApolloAPI
 
 public extension Objects {
-  static let TransactionHistotyItem = ApolloAPI.Object(
-    typename: "TransactionHistotyItem",
+  static let Profile = ApolloAPI.Object(
+    typename: "Profile",
     implementedInterfaces: [],
     keyFields: nil
   )

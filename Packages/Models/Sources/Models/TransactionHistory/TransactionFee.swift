@@ -9,16 +9,16 @@ import Foundation
 import GQLOperationsUser
 
 public struct TransactionFee: Hashable {
-    public let total: Decimal?
-    public let burn: Decimal?
-    public let peer: Decimal?
-    public let inviter: Decimal?
+    public let total: Foundation.Decimal?
+    public let burn: Foundation.Decimal?
+    public let peer: Foundation.Decimal?
+    public let inviter: Foundation.Decimal?
 
     public init(
-        total: Decimal?,
-        burn: Decimal?,
-        peer: Decimal?,
-        inviter: Decimal?
+        total: Foundation.Decimal?,
+        burn: Foundation.Decimal?,
+        peer: Foundation.Decimal?,
+        inviter: Foundation.Decimal?
     ) {
         self.total = total
         self.burn = burn

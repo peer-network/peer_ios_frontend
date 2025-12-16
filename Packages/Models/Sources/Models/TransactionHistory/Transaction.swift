@@ -19,7 +19,34 @@ public struct Transaction: Identifiable, Hashable {
         case transferFrom
         case pinPost
         case referralReward
+        case shop
         case dailyMint
+        case unknown
+
+        public static func normalizedValue(from apiValue: TransactionCategory, amount: Foundation.Decimal) -> TransactionType {
+            switch apiValue {
+                case .p2PTransfer:
+                    if amount >= 0 {
+                        return .transferFrom
+                    } else {
+                        return .transferTo
+                    }
+                case .adPinned:
+                    return .pinPost
+                case .postCreate:
+                    return .extraPost
+                case .like:
+                    return .extraLike
+                case .dislike:
+                    return .dislike
+                case .comment:
+                    return .extraComment
+                case .tokenMint:
+                    return .dailyMint
+                case .shopPurchase:
+                    return .shop
+            }
+        }
     }
 
     public let id: String
@@ -35,8 +62,8 @@ public struct Transaction: Identifiable, Hashable {
     public init(
         id: String,
         type: TransactionType,
-        tokenAmount: Decimal,
-        netTokenAmount: Decimal,
+        tokenAmount: Foundation.Decimal,
+        netTokenAmount: Foundation.Decimal,
         message: String?,
         createdAt: String,
         sender: RowUser,
@@ -63,9 +90,13 @@ public struct Transaction: Identifiable, Hashable {
         }
 
         self.id = gqlTransaction.operationid
-        self.type = .dislike
-        self.tokenAmount = gqlTransaction.tokenamount
-        self.netTokenAmount = gqlTransaction.netTokenAmount
+        if let gqlType = gqlTransaction.transactionCategory?.value {
+            self.type = TransactionType.normalizedValue(from: gqlType, amount: gqlTransaction.netTokenAmount)
+        } else {
+            self.type = .unknown
+        }
+        self.tokenAmount = abs(gqlTransaction.tokenamount)
+        self.netTokenAmount = abs(gqlTransaction.netTokenAmount)
         self.message = gqlTransaction.message
         self.createdAt = gqlTransaction.createdat
         self.sender = sender

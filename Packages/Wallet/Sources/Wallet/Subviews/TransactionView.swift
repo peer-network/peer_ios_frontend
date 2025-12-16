@@ -61,7 +61,7 @@ struct TransactionView: View {
         let spacing: CGFloat = transaction.message == nil ? 2 : 0
 
         VStack(alignment: .leading, spacing: spacing) {
-            Text("Title here")
+            Text(title)
                 .appFont(.bodyBold)
                 .foregroundStyle(Colors.whitePrimary)
 
@@ -115,7 +115,7 @@ struct TransactionView: View {
                     name: transaction.recipient.username,
                     config: .transactionHistory,
                     ignoreCache: true
-                )
+                ) // TODO: Add illegal and blured overlays
             case .pinPost:
                 Icons.pin
                     .iconSize(height: 24)
@@ -128,13 +128,21 @@ struct TransactionView: View {
                 IconsNew.clockAndMoney
                     .iconSize(height: 24)
                     .foregroundStyle(Colors.whitePrimary)
+            case .shop:
+                IconsNew.shop
+                    .iconSize(height: 24)
+                    .foregroundStyle(Colors.whitePrimary)
+            case .unknown:
+                IconsNew.exclamaitionMarkCircle
+                    .iconSize(height: 24)
+                    .foregroundStyle(Colors.whitePrimary)
         }
     }
 
     @ViewBuilder
     private var arrowIcon: some View {
         switch transaction.type {
-            case .extraPost, .extraLike, .extraComment, .dislike, .transferTo, .pinPost:
+            case .extraPost, .extraLike, .extraComment, .dislike, .transferTo, .pinPost, .shop, .unknown:
                 Circle()
                     .frame(height: 20)
                     .foregroundStyle(Colors.hashtag)
@@ -208,7 +216,7 @@ struct TransactionView: View {
         }
         .appFont(.smallLabelRegular)
 
-        if let message = transaction.message {
+        if let message = transaction.message, !message.isEmpty {
             Text("Message:")
                 .appFont(.bodyRegular)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -250,10 +258,37 @@ struct TransactionView: View {
 
     private func isAmountPositive() -> Bool {
         switch transaction.type {
-            case .extraPost, .extraLike, .extraComment, .dislike, .transferTo, .pinPost:
+            case .extraPost, .extraLike, .extraComment, .dislike, .transferTo, .pinPost, .shop:
                 return false
-            case .transferFrom, .referralReward, .dailyMint:
+            case .transferFrom, .referralReward, .dailyMint, .unknown:
                 return true
+        }
+    }
+
+    private var title: String {
+        switch transaction.type {
+            case .extraPost:
+                "Extra post"
+            case .extraLike:
+                "Extra like"
+            case .extraComment:
+                "Extra comment"
+            case .dislike:
+                "Dislike"
+            case .transferTo:
+                "To @\(transaction.recipient.username)"
+            case .transferFrom:
+                "From @\(transaction.recipient.username)"
+            case .pinPost:
+                "Pinned post promo"
+            case .referralReward:
+                "Referral reward"
+            case .shop:
+                "Peer Shop"
+            case .dailyMint:
+                "Daily Mint"
+            case .unknown:
+                "Unknown"
         }
     }
 }

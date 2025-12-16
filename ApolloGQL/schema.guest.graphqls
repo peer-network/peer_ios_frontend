@@ -11,6 +11,25 @@ directive @import(
   module: String!
 ) repeatable on QUERY | MUTATION | SUBSCRIPTION | FRAGMENT_DEFINITION
 
+"""Attach extra information to a given type."""
+directive @typePolicy(
+  """
+  A selection set containing fields used to compute the cache key of an object. Referenced fields must have non-nullable scalar types. Order is important.
+  """
+  keyFields: String!
+) on OBJECT | INTERFACE
+
+"""
+A directive used by Apollo iOS to map query input data to cache keys of objects.
+"""
+directive @fieldPolicy(
+  """The field you are setting the @fieldPolicy for."""
+  forField: String!
+
+  """Set of fields used to compute the cache key."""
+  keyArgs: String!
+) repeatable on OBJECT | INTERFACE
+
 """
 Directs the executor to defer this fragment when the `if` argument is true or undefined.
 """
@@ -147,13 +166,45 @@ enum DayFilterType {
   D3
   D4
   D5
+  D6
+  D7
   W0
   M0
   Y0
 }
 
+enum TransactionCategory {
+  P2P_TRANSFER
+  AD_PINNED
+  POST_CREATE
+  LIKE
+  DISLIKE
+  COMMENT
+  TOKEN_MINT
+  SHOP_PURCHASE
+}
+
 enum OnboardingType {
   INTROONBOARDING
+}
+
+enum ModerationStatus {
+  waiting_for_review
+  hidden
+  restored
+  illegal
+}
+
+enum ModerationContentType {
+  post
+  comment
+  user
+}
+
+enum ContentVisibilityStatus {
+  NORMAL
+  HIDDEN
+  ILLEGAL
 }
 
 input AdvertisementHistoryFilter {
@@ -183,23 +234,6 @@ input PostInput {
   uploadedFiles: String
 }
 
-input ChatInput {
-  name: String!
-  image: String
-  recipients: [String!]!
-}
-
-input UpdateChatInput {
-  chatid: ID!
-  name: String
-  image: String
-}
-
-input ChatParticipantsInput {
-  chatid: ID!
-  recipients: [String!]!
-}
-
 input FeedInput {
   feedid: ID!
   title: String!
@@ -211,6 +245,26 @@ input FeedInput {
 input UserPreferencesInput {
   contentFilteringSeverityLevel: ContentFilterType
   shownOnboardings: [OnboardingType!]
+}
+
+type TransactionHistoryItem {
+  operationid: String!
+  transactionCategory: TransactionCategory
+  transactiontype: String!
+  tokenamount: Decimal!
+  netTokenAmount: Decimal!
+  message: String
+  createdat: String!
+  sender: BasicUserInfo!
+  recipient: BasicUserInfo!
+  fees: TransactionFeeSummary
+}
+
+type TransactionFeeSummary {
+  total: Decimal
+  burn: Decimal
+  peer: Decimal
+  inviter: Decimal
 }
 
 type AdvertisementPost {
@@ -265,7 +319,8 @@ type AdvertisementHistoryResult {
 
 type ListedAdvertisementData {
   status: String!
-  ResponseCode: String
+  ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
+  meta: DefaultResponse!
   affectedRows: AdvertisementHistoryResult
 }
 
@@ -290,7 +345,8 @@ type ContactusResponsePayload {
 
 type ListAdvertisementData {
   status: String!
-  ResponseCode: String
+  ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
+  meta: DefaultResponse!
   affectedRows: [AdvertisementRow]
 }
 
@@ -302,6 +358,10 @@ type Post {
   cover: String!
   mediadescription: String!
   createdat: Date!
+  visibilityStatus: ContentVisibilityStatus!
+  isHiddenForUsers: Boolean!
+  hasActiveReports: Boolean!
+  amountreports: Int!
   amountlikes: Int!
   amountviews: Int!
   amountcomments: Int!
@@ -325,8 +385,13 @@ type Comment {
   parentid: ID
   content: String!
   createdat: Date!
+  visibilityStatus: ContentVisibilityStatus!
+  isHiddenForUsers: Boolean!
+  hasActiveReports: Boolean!
   amountlikes: Int!
   amountreplies: Int!
+  amountreports: Int!
+  isreported: Boolean!
   isliked: Boolean!
   user: ProfileUser!
 }
@@ -336,8 +401,14 @@ type ProfileUser {
   username: String
   slug: Int
   img: String
-  isfollowed: Boolean
-  isfollowing: Boolean
+  visibilityStatus: ContentVisibilityStatus!
+  isHiddenForUsers: Boolean!
+  hasActiveReports: Boolean!
+  isfollowed: Boolean @deprecated(reason: "Use iFollowThisUser / thisUserFollowsMe")
+  isfollowing: Boolean @deprecated(reason: "Use iFollowThisUser / thisUserFollowsMe")
+  iFollowThisUser: Boolean!
+  thisUserFollowsMe: Boolean!
+  isreported: Boolean
   isfriend: Boolean
 }
 
@@ -363,11 +434,15 @@ type Transaction {
   transferaction: String!
   message: String!
   createdat: String!
+  sender: BasicUserInfo!
+  recipient: BasicUserInfo!
 }
 
 type TransferToken {
-  tokenSend: Decimal
-  tokensSubstractedFromWallet: Decimal
+  tokenSend: Decimal @deprecated(reason: "Use tokenSendFormatted")
+  tokensSubstractedFromWallet: Decimal @deprecated(reason: "Use tokensSubstractedFromWalletFormatted")
+  tokenSendFormatted: String!
+  tokensSubstractedFromWalletFormatted: String!
   createdat: String
 }
 
@@ -399,17 +474,18 @@ type LogWins {
 }
 
 type UserLogWins {
-  status: String
+  status: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   counter: Int!
-  ResponseCode: String
+  ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   affectedRows: [LogWins]
-  meta: DefaultResponse
+  meta: DefaultResponse!
 }
 
 type UserInfo {
   userid: ID!
   liquidity: Decimal!
   amountposts: Int!
+  amountreports: Int!
   amountblocked: Int!
   amountfollower: Int!
   amountfollowed: Int!
@@ -425,32 +501,6 @@ type CommentInfo {
   comments: Int!
 }
 
-type Chat {
-  id: ID!
-  image: String!
-  name: String!
-  createdat: Date
-  updatedat: Date
-  chatmessages: [ChatMessage!]!
-  chatparticipants: [ChatParticipant!]!
-}
-
-type ChatMessage {
-  id: ID!
-  senderid: ID!
-  chatid: ID!
-  content: String!
-  createdat: Date!
-}
-
-type ChatParticipant {
-  userid: ID!
-  img: String!
-  username: String!
-  slug: Int!
-  hasaccess: Int!
-}
-
 type Profile {
   id: ID
   username: String
@@ -458,23 +508,31 @@ type Profile {
   slug: Int
   img: String
   biography: String
-  isfollowed: Boolean
-  isfollowing: Boolean
+  visibilityStatus: ContentVisibilityStatus!
+  isHiddenForUsers: Boolean!
+  hasActiveReports: Boolean!
+  isfollowed: Boolean @deprecated(reason: "Use iFollowThisUser / thisUserFollowsMe")
+  isfollowing: Boolean @deprecated(reason: "Use iFollowThisUser / thisUserFollowsMe")
+  iFollowThisUser: Boolean!
+  thisUserFollowsMe: Boolean!
+  isreported: Boolean
   amountposts: Int
   amounttrending: Int
   amountfollowed: Int
   amountfollower: Int
   amountfriends: Int
   amountblocked: Int
-  imageposts: [ProfilePostMedia!]
-  textposts: [ProfilePostMedia!]
-  videoposts: [ProfilePostMedia!]
-  audioposts: [ProfilePostMedia!]
+  amountreports: Int
+  imageposts: [ProfilePostMedia!] @deprecated(reason: "use listPosts by userid")
+  textposts: [ProfilePostMedia!] @deprecated(reason: "use listPosts by userid")
+  videoposts: [ProfilePostMedia!] @deprecated(reason: "use listPosts by userid")
+  audioposts: [ProfilePostMedia!] @deprecated(reason: "use listPosts by userid")
 }
 
 type ProfileInfo {
-  status: String
-  ResponseCode: String
+  status: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
+  ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
+  meta: DefaultResponse!
   affectedRows: Profile
 }
 
@@ -488,6 +546,9 @@ type BlockedUser {
   img: String
   username: String
   slug: Int
+  hasActiveReports: Boolean!
+  visibilityStatus: ContentVisibilityStatus!
+  isHiddenForUsers: Boolean!
 }
 
 type BlockedUsers {
@@ -523,9 +584,9 @@ type MintingData {
 }
 
 type CurrentLiquidity {
-  status: String
-  ResponseCode: String
-  meta: DefaultResponse
+  status: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
+  ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
+  meta: DefaultResponse!
   currentliquidity: Decimal
 }
 
@@ -536,6 +597,8 @@ type DailyGemStatusData {
   d3: Decimal
   d4: Decimal
   d5: Decimal
+  d6: Decimal
+  d7: Decimal
   w0: Decimal
   m0: Decimal
   y0: Decimal
@@ -601,6 +664,8 @@ type ProfilePostMedia {
   contenttype: String!
   media: String!
   createdat: String
+  visibilityStatus: ContentVisibilityStatus!
+  isHiddenForUsers: Boolean!
 }
 
 type PostCommentsData {
@@ -614,6 +679,8 @@ type PostCommentsData {
   isliked: Boolean
   user: BasicUserInfo
   subcomments: [PostSubCommentsData]
+  visibilityStatus: ContentVisibilityStatus!
+  isHiddenForUsers: Boolean!
 }
 
 type PostSubCommentsData {
@@ -627,6 +694,8 @@ type PostSubCommentsData {
   amountreplies: Decimal
   isliked: Boolean
   user: BasicUserInfo
+  visibilityStatus: ContentVisibilityStatus!
+  isHiddenForUsers: Boolean!
 }
 
 type BasicUserInfo {
@@ -635,6 +704,9 @@ type BasicUserInfo {
   username: String
   slug: Int
   biography: String
+  visibilityStatus: ContentVisibilityStatus!
+  isHiddenForUsers: Boolean!
+  hasActiveReports: Boolean!
   updatedat: Date!
 }
 
@@ -645,6 +717,9 @@ type User {
   slug: Int
   img: String
   biography: String
+  visibilityStatus: ContentVisibilityStatus!
+  isHiddenForUsers: Boolean!
+  hasActiveReports: Boolean!
   createdat: Date
   updatedat: Date
 }
@@ -673,18 +748,6 @@ type PostInfo {
   comments: Int!
 }
 
-type ChatMessageInfo {
-  messid: ID
-  chatid: ID
-  userid: ID
-  content: String
-  createdat: Date
-}
-
-type ChatInfo {
-  chatid: ID
-}
-
 type AllUserInfo {
   followerid: ID
   followername: String
@@ -695,19 +758,63 @@ type AllUserInfo {
 type AllUserFriends {
   status: String!
   counter: Int!
-  ResponseCode: String
+  ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
+  meta: DefaultResponse!
   affectedRows: [AllUserInfo]
+}
+
+type ModerationStatsResponse {
+  status: String!
+  ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
+  affectedRows: ModerationStats
+  meta: DefaultResponse!
+}
+
+type ModerationStats {
+  AmountAwaitingReview: Int!
+  AmountHidden: Int!
+  AmountRestored: Int!
+  AmountIllegal: Int!
+}
+
+type ModerationItemListResponse {
+  status: String!
+  ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
+  affectedRows: [ModerationItem!]!
+  meta: DefaultResponse!
+}
+
+type ModerationItem {
+  moderationTicketId: ID!
+  targetContentId: ID!
+  targettype: String!
+  reportscount: Int!
+  status: String!
+  createdat: String!
+  targetcontent: TargetContent!
+  reporters: [BasicUserInfo!]!
+}
+
+type TargetContent {
+  post: Post
+  comment: Comment
+  user: BasicUserInfo
 }
 
 type DefaultResponse {
   status: String!
   RequestId: String
-  ResponseCode: String
+  ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   ResponseMessage: String
 }
 
-type ListAdvertisementPostsResponse {
+type TransactionHistoryResponse {
   meta: DefaultResponse
+  affectedRows: [TransactionHistoryItem!]
+}
+
+type ListAdvertisementPostsResponse {
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   counter: Int!
@@ -723,35 +830,35 @@ type HelloResponse {
 }
 
 type ReferralResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   affectedRows: ReferralInfo
 }
 
 type ContactusResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   affectedRows: ContactusResponsePayload
 }
 
 type RegisterResponse {
-  meta: DefaultResponse
-  status: String!
+  meta: DefaultResponse!
+  status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   userid: ID
 }
 
 type ResetPasswordRequestResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   nextAttemptAt: String
 }
 
 type AuthPayload {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   accessToken: String
@@ -759,35 +866,35 @@ type AuthPayload {
 }
 
 type TransactionResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   affectedRows: [Transaction!]
 }
 
 type TransferTokenResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   affectedRows: TransferToken!
 }
 
 type ListTodaysInteractionsResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   affectedRows: TodaysInteractionsData
 }
 
 type PostInteractionResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   affectedRows: [ProfileUser!]
 }
 
 type GetDailyResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   affectedRows: [DailyFreeResponse]
@@ -800,86 +907,63 @@ type DailyFreeResponse {
 }
 
 type PostEligibilityResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   eligibilityToken: String!
 }
 
 type UserInfoResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   affectedRows: UserInfo
 }
 
 type PostInfoResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   affectedRows: PostInfo
 }
 
 type CommentInfoResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   affectedRows: CommentInfo
 }
 
-type ChatResponse {
-  meta: DefaultResponse
-  status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
-  counter: Int!
-  ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
-  affectedRows: [Chat!]
-}
-
 type FollowStatusResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   isfollowing: Boolean
 }
 
 type UserPreferencesResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   affectedRows: UserPreferences
 }
 
 type AddPostResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   affectedRows: PostInfo
 }
 
-type AddChatResponse {
-  meta: DefaultResponse
-  status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
-  ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
-  affectedRows: ChatInfo
-}
-
-type AddChatmessageResponse {
-  meta: DefaultResponse
-  status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
-  counter: Int!
-  ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
-  affectedRows: [ChatMessageInfo]
-}
-
 type BasicUserInfoResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   affectedRows: BasicUserInfo
 }
 
 type UserFriendsResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   counter: Int!
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
@@ -887,7 +971,7 @@ type UserFriendsResponse {
 }
 
 type FollowRelationsResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   counter: Int!
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
@@ -895,7 +979,7 @@ type FollowRelationsResponse {
 }
 
 type BlockedUsersResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   counter: Int!
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
@@ -903,7 +987,7 @@ type BlockedUsersResponse {
 }
 
 type UserListResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   counter: Int!
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
@@ -911,7 +995,7 @@ type UserListResponse {
 }
 
 type TagSearchResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   counter: Int!
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
@@ -919,14 +1003,14 @@ type TagSearchResponse {
 }
 
 type PostResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   affectedRows: Post
 }
 
 type PostListResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   counter: Int!
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
@@ -934,15 +1018,21 @@ type PostListResponse {
 }
 
 type CommentResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   counter: Int!
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   affectedRows: [Comment]
 }
 
+type CommentListResponse {
+  meta: DefaultResponse!
+  counter: Int!
+  affectedRows: [Comment!]
+}
+
 type ReferralInfoResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   referralUuid: ID
@@ -950,7 +1040,7 @@ type ReferralInfoResponse {
 }
 
 type ReferralListResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   counter: Int!
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
@@ -958,37 +1048,37 @@ type ReferralListResponse {
 }
 
 type GetActionPricesResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   affectedRows: ActionPriceResult!
 }
 
 type TokenomicsResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
-  ResponseCode: Int!
+  ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   actionTokenPrices: ActionPriceResult!
   actionGemsReturns: ActionGemsReturns!
   mintingData: MintingData!
 }
 
 type DailyGemStatusResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   affectedRows: DailyGemStatusData
 }
 
 type DailyGemsResultsResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   affectedRows: DailyGemsResultsData
 }
 
 type GemstersResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   counter: Int!
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
@@ -996,14 +1086,14 @@ type GemstersResponse {
 }
 
 type GemsterResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   affectedRows: DailyGemStatusData
 }
 
 type LiquidityPoolResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   counter: Int!
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
@@ -1011,7 +1101,7 @@ type LiquidityPoolResponse {
 }
 
 type TestingPoolResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   counter: Int!
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
@@ -1019,7 +1109,7 @@ type TestingPoolResponse {
 }
 
 type PostCommentsResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   counter: Int!
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
@@ -1027,14 +1117,14 @@ type PostCommentsResponse {
 }
 
 type PercentBeforeTransactionResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   affectedRows: PercentBeforeTransactionData
 }
 
 type RefreshMarketCapResponse {
-  meta: DefaultResponse
+  meta: DefaultResponse!
   status: String! @deprecated(reason: "use meta.status . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   affectedRows: RefreshMarketCapData
@@ -1051,7 +1141,7 @@ type Mutation {
   login(email: String!, password: String!): AuthPayload!
   requestPasswordReset(email: String!): ResetPasswordRequestResponse!
   resetPasswordTokenVerify(token: String!): DefaultResponse!
-  resetPassword(token: String!, password: String!): DefaultResponse
+  resetPassword(token: String!, password: String!): DefaultResponse!
   refreshToken(refreshToken: String!): AuthPayload!
   verifyReferralString(referralString: String!): ReferralResponse!
   contactus(name: String!, email: String!, message: String!): ContactusResponse!

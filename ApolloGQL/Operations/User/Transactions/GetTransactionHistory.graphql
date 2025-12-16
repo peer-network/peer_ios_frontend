@@ -6,6 +6,7 @@ query GetTransactionHistory($offset: Int, $limit: Int) {
     ) {
         affectedRows {
             operationid
+            transactionCategory
             transactiontype
             tokenamount
             netTokenAmount
@@ -24,6 +25,7 @@ query GetTransactionHistory($offset: Int, $limit: Int) {
                 slug
                 biography
                 visibilityStatus
+                isHiddenForUsers
                 hasActiveReports
                 updatedat
             }
@@ -34,6 +36,7 @@ query GetTransactionHistory($offset: Int, $limit: Int) {
                 slug
                 biography
                 visibilityStatus
+                isHiddenForUsers
                 hasActiveReports
                 updatedat
             }

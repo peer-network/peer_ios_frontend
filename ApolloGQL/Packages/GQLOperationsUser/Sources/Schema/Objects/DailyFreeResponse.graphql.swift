@@ -1,0 +1,12 @@
+// @generated
+// This file was automatically generated and should not be edited.
+
+import ApolloAPI
+
+public extension Objects {
+  static let DailyFreeResponse = ApolloAPI.Object(
+    typename: "DailyFreeResponse",
+    implementedInterfaces: [],
+    keyFields: nil
+  )
+}
