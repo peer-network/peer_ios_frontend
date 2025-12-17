@@ -27,8 +27,27 @@ public struct TransferView: View {
             ScrollView {
                 content
                     .padding(20)
+                    .padding(.bottom, ButtonSize.large.height + 20)
             }
             .scrollDismissesKeyboard(.interactively)
+            .overlay(alignment: .bottom) {
+                let btnConfig = StateButtonConfig(buttonSize: .small, buttonType: .secondary, title: "Continue")
+
+                StateButton(config: btnConfig, action: {}) //
+                    .padding(.bottom, 20)
+                    .padding(.horizontal, 20)
+                    .background(
+                        LinearGradient(
+                            stops: [
+                                Gradient.Stop(color: Color(red: 0.15, green: 0.15, blue: 0.15).opacity(0), location: 0.00),
+                                Gradient.Stop(color: Color(red: 0.15, green: 0.15, blue: 0.15), location: 1.00),
+                            ],
+                            startPoint: UnitPoint(x: 0.5, y: 0),
+                            endPoint: UnitPoint(x: 0.5, y: 1)
+                    )
+                )
+                    .ignoresSafeArea(.keyboard)
+            }
         }
         .onFirstAppear {
             focusedField = .recipientSearch
