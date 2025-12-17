@@ -110,4 +110,6 @@ public enum IconsNew {
     public static let exclamaitionMarkCircle = Image(.icExclamationMarkCircle)
     public static let clockAndMoney = Image(.icClockAndMoney)
     public static let shop = Image(.icShop)
+    public static let bubbleLines = Image(.icBubbleLines)
+    public static let placeholder = Image(.icPlaceholder)
 }

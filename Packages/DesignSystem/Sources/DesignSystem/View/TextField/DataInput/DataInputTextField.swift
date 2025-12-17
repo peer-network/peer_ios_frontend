@@ -71,10 +71,10 @@ public struct DataInputTextField<Value: Hashable>: View {
     }
 
     public var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: 10) {
             if let leadingIcon {
                 leadingIcon
-                    .iconSize(width: 20, height: 20)
+                    .iconSize(width: 24, height: 24)
                     .foregroundStyle(Colors.hashtag)
             }
 
@@ -117,7 +117,7 @@ public struct DataInputTextField<Value: Hashable>: View {
                 .accessibilityLabel(showPassword ? "Hide password" : "Show password")
             } else if let trailingIcon {
                 trailingIcon
-                    .iconSize(width: 22, height: 22)
+                    .iconSize(width: 24, height: 24)
                     .foregroundStyle(Colors.whitePrimary)
             }
         }

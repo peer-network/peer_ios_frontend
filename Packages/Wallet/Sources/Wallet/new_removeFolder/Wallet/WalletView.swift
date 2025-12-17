@@ -33,15 +33,12 @@ public struct WalletView: View {
                         GemsMainView()
                             .id(0)
 
-                        RecipientPickerView()
-
                         transferButton
 
                         TransactionsListView(viewModel: viewModel, isHeaderAtTop: $isHeaderAtTop, scrollProxy: scrollProxy)
                             .id(1)
                     }
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 20)
+                    .padding(20)
                 }
                 .scrollDismissesKeyboard(.interactively)
                 .refreshable {
