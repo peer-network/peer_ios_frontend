@@ -18,16 +18,19 @@ struct RecipientPickerView: View {
     @FocusState private var focusedField: FocusField?
 
     var body: some View {
-        DataInputTextField(text: $text, placeholder: "Search user...", maxLength: 100, focusState: $focusedField, focusEquals: .recipient)
-            .padding(20)
-            .toolbar {
-                ToolbarItemGroup(placement: .keyboard) {
-                    Spacer()
-
-                    Button("Done") {
-                        focusedField = nil
-                    }
-                }
+        DataInputTextField(
+            trailingIcon: Icons.magnifyingglass,
+            text: $text,
+            placeholder: "Search user...",
+            maxLength: 100,
+            focusState: $focusedField,
+            focusEquals: .recipient,
+            returnKeyType: .search,
+            toolbarButtonTitle: "Done",
+            onToolbarButtonTap: {
+                focusedField = nil
             }
+        )
+        .padding(20)
     }
 }

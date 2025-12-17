@@ -9,13 +9,8 @@ import Foundation
 
 struct WalletBalance {
     let amount: Decimal
-    let tokenPrice: Decimal
-
-    var balanceEUR: Decimal {
-        amount * tokenPrice
-    }
 }
 
 extension WalletBalance {
-    static let placeholder = WalletBalance(amount: 8000, tokenPrice: 0.1)
+    static let placeholder = WalletBalance(amount: 8000)
 }

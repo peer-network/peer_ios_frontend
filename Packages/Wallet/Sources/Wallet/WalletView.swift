@@ -69,7 +69,7 @@ public struct WalletView: View {
 
     private var transferButton: some View {
         Button {
-            //
+            router.navigate(to: .transferV2)
         } label: {
             HStack(alignment: .center, spacing: 10) {
                 Circle()

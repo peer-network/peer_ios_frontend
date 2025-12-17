@@ -48,6 +48,9 @@ extension View {
                 case .transfer(let recipient, let amount):
                     TransferPageView(recipient: recipient, amount: amount)
                         .toolbar(.hidden, for: .navigationBar)
+                case .transferV2:
+                    Color.green
+                        .toolbar(.hidden, for: .navigationBar)
                 case .changePassword:
                     EditPasswordView { newPassword, currentPassword in
 #if DEBUG

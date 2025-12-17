@@ -42,7 +42,7 @@ final class WalletViewModel: ObservableObject {
 
             switch result {
                 case .success(let amount):
-                    let walletBalance = WalletBalance(amount: amount, tokenPrice: 0.1)
+                    let walletBalance = WalletBalance(amount: amount)
                     balance = walletBalance
                     balanceState = .display(content: walletBalance)
                 case .failure(let apiError):
@@ -88,7 +88,7 @@ final class WalletViewModel: ObservableObject {
                         throw apiError
                 }
             } catch is CancellationError {
-                //                state = .display(posts: posts, hasMore: .hasMore)
+
             } catch {
                 await MainActor.run {
                     transactionHistoryState = .error(error)

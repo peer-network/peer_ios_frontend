@@ -16,6 +16,7 @@ public enum RouterDestination: Hashable {
     case hashTag(tag: String)
     case versionHistory
     case transfer(recipient: RowUser, amount: Int)
+    case transferV2
     case changePassword
     case changeEmail
     case changeUsername
