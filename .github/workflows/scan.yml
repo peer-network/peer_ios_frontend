@@ -11,6 +11,47 @@ on:
       - development
 
 jobs:
+  auto_label:
+    name: Auto Label PR
+    if: github.event_name == 'pull_request'
+    uses: peer-network/.github/.github/workflows/auto-label.yml@main
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      mode: soft
+      label_config: |
+        {
+          ".github/workflows/.*": "ci",
+          ".githooks/.*": "ci",
+
+          ".security/.*": "security",
+
+          "ApolloGQL/.*": "graphql",
+
+          "Packages/.*": "ios",
+          "PeerApp/.*": "ios",
+          "PayloadModification/.*": "ios",
+
+          "PeerAppTests/.*": "tests",
+          "PeerAppUITests/.*": "tests",
+
+          "PeerApp/Assets.xcassets/.*": "assets",
+          "Packages/.*/Resources/.*": "assets",
+          "PeerApp/Embeds/.*": "assets",
+
+          "fastlane/.*": "ci",
+
+          "PeerApp.xcodeproj/.*": "build",
+          ".*\\.xcconfig$": "build",
+          "Package.swift": "build",
+          ".*\\.xcscheme$": "build",
+
+          "^Gemfile$": "build",
+          "^Gemfile.lock$": "build",
+
+          "README.*": "documentation"
+        }
+
   auto_update_branch:
     name: Auto-Update PR Branch
     uses: peer-network/.github/.github/workflows/auto-update-pr.yml@main
