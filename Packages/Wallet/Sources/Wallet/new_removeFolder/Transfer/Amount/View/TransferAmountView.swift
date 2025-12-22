@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Environment
 import Foundation
 import DesignSystem
 
@@ -14,13 +15,18 @@ struct TransferAmountView<Value: Hashable>: View {
     let focusEquals: Value?
 
     let balance: Decimal
+    let tokenomics: ConstantsConfig.Tokenomics
     let onSubmit: ((Decimal) -> Void)?
 
     @State private var text: String = ""
     @State private var isUpdatingText = false
 
+    @State private var committedAmount: Decimal? = nil
+
     private let minAmount: Decimal = Decimal(string: "0.00000001", locale: Locale(identifier: "en_US_POSIX"))!
     private let maxFractionDigits = 8
+
+    @State private var expandDistribution: Bool = false
 
     var body: some View {
         VStack(spacing: 10) {
@@ -40,11 +46,41 @@ struct TransferAmountView<Value: Hashable>: View {
                 keyboardType: .decimalPad,
                 toolbarButtonTitle: "Done",
                 onToolbarButtonTap: {
-                    focusState = nil            // dismiss keyboard
-                    commit()                    // clamp + submit
+                    focusState = nil
+                    commit(animated: true)
                 }
             )
+
+            if let amount = committedAmount {
+                let model = TransferFeesModel(
+                    amount: amount,
+                    tokenomics: tokenomics,
+                    hasInviter: AccountManager.shared.inviter != nil,
+                    maxFractionDigits: maxFractionDigits
+                )
+
+                TransferFeesView(model: model)
+                    .padding(.bottom, 10)
+
+                HStack(spacing: 0) {
+                    Text("Total")
+                        .appFont(.bodyRegular)
+
+                    Spacer(minLength: 10)
+
+                    HStack(spacing: 5) {
+                        Text(formatDecimal(model.totalWithFees))
+                            .appFont(.largeTitleBold)
+                            .numericTextIfAvailable()
+
+                        Icons.logoCircleWhite
+                            .iconSize(height: 15)
+                    }
+                }
+                .transition(.opacity.combined(with: .move(edge: .top)))
+            }
         }
+        .lineLimit(1)
         .padding(20)
         .background {
             RoundedRectangle(cornerRadius: 24)
@@ -60,33 +96,45 @@ struct TransferAmountView<Value: Hashable>: View {
         }
         // When focus is lost (keyboard dismissed by any means): commit.
         .onChange(of: focusState) { newFocus in
-            // If we *were* focused and now we're not, commit.
             if newFocus != focusEquals {
-                commit()
+                commit(animated: true)
             }
         }
+        .animation(.easeInOut(duration: 0.22), value: committedAmount != nil)
     }
 
     // MARK: - Commit behavior (best UX)
-    private func commit() {
+    private func commit(animated: Bool) {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { return }
+        guard !trimmed.isEmpty else {
+            withAnimation(animated ? .easeInOut(duration: 0.18) : nil) {
+                committedAmount = nil
+                expandDistribution = false
+            }
+            return
+        }
 
         // If "0" (or "0.0...") was entered -> clear
         if let dec = parseDecimal(trimmed), dec == 0 {
             setTextPreservingEditFeel("")
+            withAnimation(animated ? .easeInOut(duration: 0.18) : nil) {
+                committedAmount = nil
+                expandDistribution = false
+            }
             return
         }
 
         guard let dec = parseDecimal(trimmed) else { return }
 
         let clamped = clamp(dec)
-
-        // Write back a nicely formatted value
         let formatted = formatDecimal(clamped)
 
         if formatted != text {
             setTextPreservingEditFeel(formatted)
+        }
+
+        withAnimation(animated ? .easeInOut(duration: 0.18) : nil) {
+            committedAmount = clamped
         }
 
         onSubmit?(clamped)
@@ -138,19 +186,71 @@ struct TransferAmountView<Value: Hashable>: View {
     }
 
     private func formatDecimal(_ value: Decimal) -> String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
+        let formatter = TransferAmountFormatters.numberFormatter
         formatter.locale = Locale.current
         formatter.maximumFractionDigits = maxFractionDigits
-        formatter.minimumFractionDigits = 0
-        formatter.usesGroupingSeparator = false
         return formatter.string(from: value as NSDecimalNumber) ?? "\(value)"
     }
 
     private func setTextPreservingEditFeel(_ newText: String) {
-        // For most custom textfields this is fine; cursor preservation depends on the implementation.
         isUpdatingText = true
         text = newText
         isUpdatingText = false
+    }
+
+    private var peerFee: (percent: Int, amount: Decimal) {
+        let rate = Decimal(tokenomics.fees.peer)
+        let amount = (committedAmount ?? 0) * rate
+        return (percent: percentInt(from: rate),
+                amount: rounded(amount, scale: maxFractionDigits))
+    }
+
+    private var inviterFee: (percent: Int, amount: Decimal) {
+        let rate = Decimal(tokenomics.fees.invitation)
+        let amount = (committedAmount ?? 0) * rate
+        return (percent: percentInt(from: rate),
+                amount: rounded(amount, scale: maxFractionDigits))
+    }
+
+    private var burnFee: (percent: Int, amount: Decimal) {
+        let rate = Decimal(tokenomics.fees.burn)
+        let amount = (committedAmount ?? 0) * rate
+        return (percent: percentInt(from: rate),
+                amount: rounded(amount, scale: maxFractionDigits))
+    }
+
+    private func rounded(_ value: Decimal, scale: Int) -> Decimal {
+        var v = value
+        var result = Decimal()
+        NSDecimalRound(&result, &v, scale, .plain)
+        return result
+    }
+
+    private func percentInt(from rate: Decimal) -> Int {
+        let p = rounded(rate * 100, scale: 0)
+        return NSDecimalNumber(decimal: p).intValue
+    }
+
+    private var hasInviter: Bool {
+        AccountManager.shared.inviter != nil
+    }
+
+    private var totalFeeRate: Decimal {
+        Decimal(
+            tokenomics.fees.peer
+            + tokenomics.fees.burn
+            + (hasInviter ? tokenomics.fees.invitation : 0)
+        )
+    }
+
+    private var totalFee: (percent: Int, amount: Decimal) {
+        let base = committedAmount ?? 0
+        let amount = rounded(base * totalFeeRate, scale: maxFractionDigits)
+        return (percent: percentInt(from: totalFeeRate), amount: amount)
+    }
+
+    private var totalWithFees: Decimal {
+        let base = committedAmount ?? 0
+        return rounded(base + totalFee.amount, scale: maxFractionDigits)
     }
 }

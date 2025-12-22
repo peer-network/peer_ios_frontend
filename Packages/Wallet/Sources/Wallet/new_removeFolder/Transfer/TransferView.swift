@@ -13,6 +13,7 @@ import DesignSystem
 public struct TransferView: View {
     @EnvironmentObject private var router: Router
     @EnvironmentObject private var apiManager: APIServiceManager
+    @EnvironmentObject private var appState: AppState
 
     @frozen
     public enum FocusField {
@@ -79,12 +80,12 @@ public struct TransferView: View {
                 transferVM.recipient = user
             }
 
-            TransferAmountView(focusState: $focusedField, focusEquals: .amount, balance: transferVM.currentBalance) { amount in
+            TransferAmountView(focusState: $focusedField, focusEquals: .amount, balance: transferVM.currentBalance, tokenomics: appState.getConstants()!.data.tokenomics) { amount in
                 transferVM.amount = amount
             }
 
-            TransferMessageView(focusState: $focusedField, focusEquals: .message) {
-                //
+            TransferMessageView(focusState: $focusedField, focusEquals: .message) { message in
+                transferVM.message = message
             }
         }
     }

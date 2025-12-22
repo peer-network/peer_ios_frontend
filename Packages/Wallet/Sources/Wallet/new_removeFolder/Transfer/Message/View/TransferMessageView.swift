@@ -12,7 +12,7 @@ struct TransferMessageView<Value: Hashable>: View {
     @Binding var focusState: Value?
     let focusEquals: Value?
 
-    let onSubmit: (() -> Void)?
+    let onSubmit: ((String) -> Void)?
 
     @State private var text: String = ""
 
@@ -44,6 +44,9 @@ struct TransferMessageView<Value: Hashable>: View {
                     focusState = nil
                 }
             )
+            .onChange(of: text) {
+                onSubmit?(text)
+            }
         }
         .padding(20)
         .background {

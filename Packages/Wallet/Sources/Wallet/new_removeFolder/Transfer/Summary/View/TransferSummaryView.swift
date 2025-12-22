@@ -14,6 +14,7 @@ import Foundation
 public struct TransferSummaryView: View {
     @EnvironmentObject private var router: Router
     @EnvironmentObject private var apiManager: APIServiceManager
+    @EnvironmentObject private var appState: AppState
 
     @StateObject private var transferSummaryVM: TransferSummaryVM
 
@@ -31,6 +32,13 @@ public struct TransferSummaryView: View {
                         balanceView
 
                         recipientView(recipient: transferSummaryVM.recipient)
+                            .padding(20)
+                            .background {
+                                RoundedRectangle(cornerRadius: 30)
+                                    .foregroundStyle(Colors.inactiveDark)
+                            }
+
+                        transferAmountView()
                             .padding(20)
                             .background {
                                 RoundedRectangle(cornerRadius: 30)
@@ -121,19 +129,58 @@ public struct TransferSummaryView: View {
             Spacer(minLength: 5)
 
             Text("@\(recipient.username)")
-                .appFont(.smallLabelBoldItalic)
+                .appFont(.bodyBoldItalic)
                 .foregroundStyle(Colors.whitePrimary)
                 .padding(.trailing, 2)
 
             Text("#\(String(recipient.slug))")
-                .appFont(.smallLabelRegular)
+                .appFont(.bodyRegular)
                 .foregroundStyle(Colors.whiteSecondary)
         }
         .lineLimit(1)
     }
 
     private func transferAmountView() -> some View {
-        Text("123213")
+        let model = TransferFeesModel(
+            amount: transferSummaryVM.amount,
+            tokenomics: appState.getConstants()!.data.tokenomics,
+            hasInviter: AccountManager.shared.inviter != nil,
+            maxFractionDigits: 8
+        )
+
+        return VStack(spacing: 10) {
+            HStack(spacing: 0) {
+                Text("Total amount")
+                    .appFont(.smallLabelBold)
+
+                Spacer(minLength: 5)
+
+                HStack(spacing: 5) {
+                    Text(formatDecimal(model.totalWithFees))
+                        .appFont(.largeTitleBold)
+                        .numericTextIfAvailable()
+
+                    Icons.logoCircleWhite
+                        .iconSize(height: 15)
+                }
+            }
+            .frame(height: 50)
+            .padding(.horizontal, 16)
+            .background {
+                RoundedRectangle(cornerRadius: 24)
+                    .foregroundStyle(Colors.blackDark)
+            }
+
+            TransferFeesView(model: model)
+        }
+        .lineLimit(1)
+    }
+
+    private func formatDecimal(_ value: Decimal) -> String {
+        let f = TransferAmountFormatters.numberFormatter
+        f.locale = Locale.current
+        f.maximumFractionDigits = 8
+        return f.string(from: value as NSDecimalNumber) ?? "\(value)"
     }
 
     private func messageView(text: String) -> some View {
