@@ -9,7 +9,7 @@ import SwiftUI
 import DesignSystem
 
 struct TransferMessageView<Value: Hashable>: View {
-    @FocusState.Binding var focusState: Value?
+    @Binding var focusState: Value?
     let focusEquals: Value?
 
     let onSubmit: (() -> Void)?
@@ -30,6 +30,7 @@ struct TransferMessageView<Value: Hashable>: View {
             .frame(maxWidth: .infinity, alignment: .leading)
 
             BorderedTextFieldCharsCount(
+                backgroundColor: Colors.blackDark,
                 text: $text,
                 hashtags: .constant([]),
                 minHeight: 90,
@@ -37,7 +38,11 @@ struct TransferMessageView<Value: Hashable>: View {
                 maxLength: 500,
                 allowNewLines: false,
                 focusState: $focusState,
-                focusEquals: focusEquals
+                focusEquals: focusEquals,
+                toolbarButtonTitle: "Done",
+                onToolbarButtonTap: {
+                    focusState = nil
+                }
             )
         }
         .padding(20)

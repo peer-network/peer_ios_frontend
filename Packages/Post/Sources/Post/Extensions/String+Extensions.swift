@@ -54,7 +54,7 @@ extension String {
         }
 
         // Then process hashtags
-        let hashtagPattern = "#[\\p{L}\\p{N}_]{3,50}"
+        let hashtagPattern = "#[\\p{L}\\p{N}_]{2,53}"
         if let hashtagRegex = try? NSRegularExpression(pattern: hashtagPattern) {
             let nsRange = NSRange(self.startIndex..<self.endIndex, in: self)
 

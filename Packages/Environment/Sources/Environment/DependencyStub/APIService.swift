@@ -210,7 +210,7 @@ public final class APIServiceStub: APIService {
         .success(1000.5)
     }
 
-    public func transferTokens(to id: String, amount: Double, message: String?) async -> Result<Void, APIError> {
+    public func transferTokens(to id: String, amount: Foundation.Decimal, message: String?) async -> Result<Void, APIError> {
         .success(())
     }
 

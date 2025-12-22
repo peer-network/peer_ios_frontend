@@ -27,6 +27,8 @@ public extension SystemPopupType {
                 return IconsNew.exclamaitionMarkCircle
             case .reportComment:
                 return IconsNew.exclamaitionMarkCircle
+            case .transferSuccess:
+                return IconsNew.checkCircle2
         }
     }
 
@@ -48,6 +50,8 @@ public extension SystemPopupType {
                 return Colors.redAccent
             case .reportComment:
                 return Colors.redAccent
+            case .transferSuccess:
+                return Colors.passwordBarsGreen
         }
     }
 
@@ -69,6 +73,8 @@ public extension SystemPopupType {
                 return Colors.redAccent.opacity(0.2)
             case .reportComment:
                 return Colors.redAccent.opacity(0.2)
+            case .transferSuccess:
+                return Colors.passwordBarsGreen.opacity(0.2)
         }
     }
 
@@ -90,6 +96,8 @@ public extension SystemPopupType {
                 return "Are you sure you want to report this post?"
             case .reportComment:
                 return "Are you sure you want to report this comment?"
+            case .transferSuccess:
+                return "Completed"
         }
     }
 
@@ -111,6 +119,8 @@ public extension SystemPopupType {
                 return Colors.redAccent
             case .reportComment:
                 return Colors.redAccent
+            case .transferSuccess:
+                return Colors.passwordBarsGreen
         }
     }
 
@@ -132,10 +142,12 @@ public extension SystemPopupType {
                 return nil
             case .reportComment:
                 return nil
+            case .transferSuccess:
+                return "Your transfer was sent successfully."
         }
     }
 
-    public var firstButtonConfig: StateButtonConfig {
+    public var firstButtonConfig: StateButtonConfig? {
         switch self {
             case .error:
                 return .init(buttonSize: .small, buttonType: .teritary, title: "Cancel")
@@ -153,10 +165,12 @@ public extension SystemPopupType {
                 return .init(buttonSize: .small, buttonType: .teritary, title: "Cancel")
             case .reportComment:
                 return .init(buttonSize: .small, buttonType: .teritary, title: "Cancel")
+            case .transferSuccess:
+                return nil
         }
     }
 
-    public var secondButtonConfig: StateButtonConfig {
+    public var secondButtonConfig: StateButtonConfig? {
         switch self {
             case .error:
                 return .init(buttonSize: .small, buttonType: .secondary, title: "Try again")
@@ -174,6 +188,8 @@ public extension SystemPopupType {
                 return .init(buttonSize: .small, buttonType: .secondary, title: "Report")
             case .reportComment:
                 return .init(buttonSize: .small, buttonType: .secondary, title: "Report")
+            case .transferSuccess:
+                return .init(buttonSize: .small, buttonType: .primary, title: "Got it")
         }
     }
 }

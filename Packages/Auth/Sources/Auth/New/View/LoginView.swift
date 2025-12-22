@@ -21,8 +21,8 @@ struct LoginView: View {
         case password
     }
     
-    @FocusState private var focusedField: FocusField?
-    
+    @State private var focusedField: FocusField?
+
     var body: some View {
         pageContent
     }
@@ -90,18 +90,20 @@ struct LoginView: View {
             leadingIcon: IconsNew.envelope,
             text: $authVM.loginEmail,
             placeholder: "E-mail",
-            maxLength: 999, // MARK: Take it from Constants
+            maxLength: 999,
             focusState: $focusedField,
             focusEquals: .email,
             keyboardType: .emailAddress,
             textContentType: .username,
             autocorrectionDisabled: true,
             autocapitalization: .none,
-            returnKeyType: .next) {
+            returnKeyType: .next,
+            onSubmit: {
                 focusedField = .password
             }
+        )
     }
-    
+
     private var passwordTextField: some View {
         DataInputTextField(
             leadingIcon: IconsNew.lock,

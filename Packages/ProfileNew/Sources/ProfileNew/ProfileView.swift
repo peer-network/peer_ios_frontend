@@ -20,7 +20,10 @@ public struct ProfileView: View {
     @EnvironmentObject private var apiManager: APIServiceManager
     
     @StateObject private var viewModel: ProfileViewModel
-    
+    @StateObject private var regularFeedVM: RegularFeedVM
+    @StateObject private var audioFeedVM: AudioFeedViewModel
+    @StateObject private var videoFeedVM: VideoFeedViewModel
+
     @State private var feedPage: FeedPage = .normalFeed
     
     @State private var showAvatarPicker: Bool = false
@@ -30,6 +33,9 @@ public struct ProfileView: View {
     
     public init(userId: String) {
         _viewModel = .init(wrappedValue: .init(userId: userId))
+        _regularFeedVM = .init(wrappedValue: .init(userId: userId))
+        _audioFeedVM = .init(wrappedValue: .init(userId: userId))
+        _videoFeedVM = .init(wrappedValue: .init(userId: userId))
     }
     
     public var body: some View {
@@ -104,22 +110,22 @@ public struct ProfileView: View {
                 } else {
                     switch feedPage {
                         case .normalFeed:
-                            NormalFeedView(userId: user.id)
-                                .skeleton(isRedacted: isLoading ? true : false)
+                            RegularFeedView(viewModel: regularFeedVM)
                         case .videoFeed:
-                            EmptyView()
+                            VideoFeedView(viewModel: videoFeedVM)
                         case .audioFeed:
-                            AudioFeedView(userId: user.id)
-                                .skeleton(isRedacted: isLoading ? true : false)
+                            AudioFeedView(viewModel: audioFeedVM)
                     }
                 }
             }
         }
         .refreshable {
-            HapticManager.shared.fireHaptic(.dataRefresh(intensity: 0.3))
-            async let result1: () = viewModel.fetchUser()
-            async let result2: () = viewModel.fetchBio()
-            (_, _) = await (result1, result2)
+            await viewModel.fetchUser()
+            await viewModel.fetchBio()
+
+            regularFeedVM.fetchPosts(reset: true)
+            audioFeedVM.fetchPosts(reset: true)
+            videoFeedVM.fetchPosts(reset: true)
         }
     }
     
@@ -146,46 +152,6 @@ public struct ProfileView: View {
         ProfileHeader(user: user, bio: viewModel.fetchedBio, showAvatarPicker: $showAvatarPicker)
             .padding(.horizontal, 20)
             .skeleton(isRedacted: isLoading ? true : false)
-    }
-    
-    private struct NormalFeedView: View {
-        @EnvironmentObject private var apiManager: APIServiceManager
-        @StateObject private var normalFeedVM: NormalFeedViewModel
-        
-        init(userId: String) {
-            _normalFeedVM = .init(wrappedValue: .init(userId: userId))
-        }
-        
-        var body: some View {
-            LazyVStack(alignment: .center, spacing: 20) {
-                PostsListView(fetcher: normalFeedVM, displayType: .list, showFollowButton: false)
-                    .onFirstAppear {
-                        normalFeedVM.apiService = apiManager.apiService
-                        normalFeedVM.fetchPosts(reset: true)
-                    }
-            }
-            .padding(.bottom, 10)
-        }
-    }
-    
-    private struct AudioFeedView: View {
-        @EnvironmentObject private var apiManager: APIServiceManager
-        @StateObject private var audioFeedVM: AudioFeedViewModel
-        
-        init(userId: String) {
-            _audioFeedVM = .init(wrappedValue: .init(userId: userId))
-        }
-        
-        var body: some View {
-            LazyVStack(alignment: .center, spacing: 20) {
-                PostsListView(fetcher: audioFeedVM, displayType: .list, showFollowButton: false)
-                    .onFirstAppear {
-                        audioFeedVM.apiService = apiManager.apiService
-                        audioFeedVM.fetchPosts(reset: true)
-                    }
-            }
-            .padding(.vertical, 10)
-        }
     }
 }
 

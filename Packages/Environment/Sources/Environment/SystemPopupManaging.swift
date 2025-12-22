@@ -18,6 +18,8 @@ public enum SystemPopupType {
     case reportUser
     case reportPost
     case reportComment
+
+    case transferSuccess
 }
 
 /// Protocol defining the interface for system popup management

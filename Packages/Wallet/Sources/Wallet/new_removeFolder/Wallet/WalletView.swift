@@ -66,7 +66,9 @@ public struct WalletView: View {
 
     private var transferButton: some View {
         Button {
-            router.navigate(to: .transferV2)
+            if let balance = viewModel.balance?.amount {
+                router.navigate(to: .transferV2(balance: balance))
+            }
         } label: {
             HStack(alignment: .center, spacing: 10) {
                 Circle()

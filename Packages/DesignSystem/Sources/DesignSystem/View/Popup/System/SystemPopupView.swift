@@ -44,12 +44,16 @@ public struct SystemPopupView: View {
             }
 
             HStack(spacing: 20) {
-                StateButton(config: type.firstButtonConfig) {
-                    cancel?()
+                if let firstButtonConfig = type.firstButtonConfig {
+                    StateButton(config: firstButtonConfig) {
+                        cancel?()
+                    }
                 }
 
-                StateButton(config: type.secondButtonConfig) {
-                    confirmation()
+                if let secondButtonConfig = type.secondButtonConfig {
+                    StateButton(config: secondButtonConfig) {
+                        confirmation()
+                    }
                 }
             }
             .padding(.top, 20)

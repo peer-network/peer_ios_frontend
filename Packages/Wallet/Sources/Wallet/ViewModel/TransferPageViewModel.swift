@@ -47,18 +47,18 @@ final class TransferPageViewModel: ObservableObject {
         Task { [weak self] in
             guard let self else { return }
 
-            let result = await apiService.transferTokens(to: recipient.id, amount: Double(amount), message: nil)
-
-            switch result {
-                case .success:
-                    withAnimation(.easeInOut(duration: 0.2)) {
-                        self.screenState = .done
-                    }
-                case .failure(let error):
-                    withAnimation(.easeInOut(duration: 0.2)) {
-                        self.screenState = .failed(error: error)
-                    }
-            }
+//            let result = await apiService.transferTokens(to: recipient.id, amount: Double(amount), message: nil)
+//
+//            switch result {
+//                case .success:
+//                    withAnimation(.easeInOut(duration: 0.2)) {
+//                        self.screenState = .done
+//                    }
+//                case .failure(let error):
+//                    withAnimation(.easeInOut(duration: 0.2)) {
+//                        self.screenState = .failed(error: error)
+//                    }
+//            }
         }
     }
 }
