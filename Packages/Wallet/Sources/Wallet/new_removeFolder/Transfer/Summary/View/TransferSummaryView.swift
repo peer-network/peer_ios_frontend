@@ -7,24 +7,18 @@
 
 import SwiftUI
 import DesignSystem
+import Environment
 import Models
 import Foundation
 
 public struct TransferSummaryView: View {
-    private let balance: Foundation.Decimal
-    private let recipient: RowUser
-    private let amount: Foundation.Decimal
-    private let message: String?
-    private let onClose: () -> Void
-    private let onSubmit: () -> Void
+    @EnvironmentObject private var router: Router
+    @EnvironmentObject private var apiManager: APIServiceManager
 
-    public init(balance: Foundation.Decimal, recipient: RowUser, amount: Foundation.Decimal, message: String?, onClose: @escaping () -> Void, onSubmit: @escaping () -> Void) {
-        self.balance = balance
-        self.recipient = recipient
-        self.amount = amount
-        self.message = message
-        self.onClose = onClose
-        self.onSubmit = onSubmit
+    @StateObject private var transferSummaryVM: TransferSummaryVM
+
+    public init(balance: Foundation.Decimal, recipient: RowUser, amount: Foundation.Decimal, message: String?) {
+        _transferSummaryVM = .init(wrappedValue: .init(currentBalance: balance, recipient: recipient, amount: amount, message: message))
     }
 
     public var body: some View {
@@ -36,14 +30,14 @@ public struct TransferSummaryView: View {
                     VStack(spacing: 10) {
                         balanceView
 
-                        recipientView(recipient: recipient)
+                        recipientView(recipient: transferSummaryVM.recipient)
                             .padding(20)
                             .background {
                                 RoundedRectangle(cornerRadius: 30)
                                     .foregroundStyle(Colors.inactiveDark)
                             }
 
-                        if let message {
+                        if let message = transferSummaryVM.message {
                             messageView(text: message)
                                 .padding(20)
                                 .background {
@@ -52,8 +46,43 @@ public struct TransferSummaryView: View {
                                 }
                         }
                     }
+                    .padding(20)
+                    .padding(.bottom, ButtonSize.small.height + 20)
                 }
                 .scrollIndicators(.hidden)
+
+                HStack(spacing: 10) {
+                    let btnConfig1 = StateButtonConfig(buttonSize: .small, buttonType: .teritary, title: "Back")
+                    StateButton(config: btnConfig1) {
+                        router.path.removeLast()
+                    }
+
+                    let btnConfig2 = StateButtonConfig(buttonSize: .small, buttonType: .primary, title: "Submit transfer")
+                    AsyncStateButton(config: btnConfig2) {
+                        await transferSummaryVM.send()
+                    }
+                }
+                .padding(.bottom, 20)
+                .padding(.horizontal, 20)
+                .background(
+                    LinearGradient(
+                        stops: [
+                            Gradient.Stop(color: Color(red: 0.15, green: 0.15, blue: 0.15).opacity(0), location: 0.00),
+                            Gradient.Stop(color: Color(red: 0.15, green: 0.15, blue: 0.15), location: 1.00),
+                        ],
+                        startPoint: UnitPoint(x: 0.5, y: 0),
+                        endPoint: UnitPoint(x: 0.5, y: 1)
+                    )
+                )
+                .frame(maxHeight: .infinity, alignment: .bottom)
+                .ignoresSafeArea(.keyboard)
+            }
+        }
+        .onFirstAppear {
+            transferSummaryVM.apiService = apiManager.apiService
+            transferSummaryVM.popupService = SystemPopupManager.shared
+            transferSummaryVM.onTransferCompleted = {
+                self.router.emptyPath()
             }
         }
     }
@@ -65,7 +94,7 @@ public struct TransferSummaryView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             HStack(spacing: 10) {
-                Text("\(balance)")
+                Text("\(transferSummaryVM.currentBalance)")
                     .appFont(.extraLargeTitleBold)
                     .minimumScaleFactor(0.5)
                     .truncationMode(.tail)

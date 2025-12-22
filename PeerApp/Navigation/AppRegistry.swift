@@ -49,10 +49,10 @@ extension View {
                     TransferPageView(recipient: recipient, amount: amount)
                         .toolbar(.hidden, for: .navigationBar)
                 case .transferV2(let balance):
-                    TransferView(balance: balance, onTransferCompleted: {router.emptyPath()})
+                    TransferView(balance: balance)
                         .toolbar(.hidden, for: .navigationBar)
                 case .transferSummary(let balance, let recipient, let amount, let message):
-                    TransferSummaryView(balance: balance, recipient: recipient, amount: amount, message: message, onClose: {router.path.removeLast()}, onSubmit: {})
+                    TransferSummaryView(balance: balance, recipient: recipient, amount: amount, message: message)
                         .toolbar(.hidden, for: .navigationBar)
                 case .changePassword:
                     EditPasswordView { newPassword, currentPassword in

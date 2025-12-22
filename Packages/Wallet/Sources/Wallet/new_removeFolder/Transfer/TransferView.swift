@@ -11,6 +11,7 @@ import Environment
 import DesignSystem
 
 public struct TransferView: View {
+    @EnvironmentObject private var router: Router
     @EnvironmentObject private var apiManager: APIServiceManager
 
     @frozen
@@ -24,8 +25,8 @@ public struct TransferView: View {
 
     @StateObject private var transferVM: TransferVM
 
-    public init(balance: Foundation.Decimal, onTransferCompleted: @escaping () -> Void) {
-        _transferVM = .init(wrappedValue: .init(balance: balance, onTransferCompleted: onTransferCompleted))
+    public init(balance: Foundation.Decimal) {
+        _transferVM = .init(wrappedValue: .init(balance: balance))
     }
 
     public var body: some View {
@@ -36,14 +37,20 @@ public struct TransferView: View {
                 ScrollView {
                     content
                         .padding(20)
-                        .padding(.bottom, ButtonSize.large.height + 20)
+                        .padding(.bottom, ButtonSize.small.height + 20)
                 }
                 .scrollDismissesKeyboard(.interactively)
                 .scrollIndicators(.hidden)
 
                 let btnConfig = StateButtonConfig(buttonSize: .small, buttonType: .secondary, title: "Continue")
-                AsyncStateButton(config: btnConfig) {
-                    await transferVM.send()
+                StateButton(config: btnConfig) {
+                    guard
+                        let recipient = transferVM.recipient,
+                        let amount = transferVM.amount
+                    else {
+                        return
+                    }
+                    router.navigate(to: .transferSummary(balance: transferVM.currentBalance, recipient: recipient, amount: amount, message: transferVM.message))
                 }
                 .disabled(!transferVM.canDoTransfer)
                 .padding(.bottom, 20)
@@ -61,10 +68,6 @@ public struct TransferView: View {
                 .frame(maxHeight: .infinity, alignment: .bottom)
                 .ignoresSafeArea(.keyboard)
             }
-        }
-        .onFirstAppear {
-            transferVM.apiService = apiManager.apiService
-            transferVM.popupService = SystemPopupManager.shared
         }
     }
 
