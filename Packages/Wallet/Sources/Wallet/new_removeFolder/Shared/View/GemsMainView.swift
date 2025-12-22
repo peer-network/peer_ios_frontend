@@ -37,7 +37,7 @@ struct GemsMainView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             HStack(spacing: 10) {
-                Text("\(balance.amount)")
+                Text("\(formatDecimal(balance.amount))")
                     .contentTransition(.numericText())
                     .animation(.snappy, value: balance.amount)
                     .appFont(.extraLargeTitleBold)
@@ -75,6 +75,13 @@ struct GemsMainView: View {
             .allowsHitTesting(false)
         }
         .clipShape(RoundedRectangle(cornerRadius: 24))
+    }
+
+    private func formatDecimal(_ value: Decimal) -> String {
+        let formatter = TransferAmountFormatters.numberFormatter
+        formatter.locale = Locale.current
+        formatter.maximumFractionDigits = 8
+        return formatter.string(from: value as NSDecimalNumber) ?? "\(value)"
     }
 }
 
