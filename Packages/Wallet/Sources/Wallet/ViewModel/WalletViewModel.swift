@@ -43,6 +43,9 @@ final class WalletViewModel: ObservableObject {
             switch result {
                 case .success(let amount):
                     let walletBalance = WalletBalance(amount: amount)
+                    if balance?.amount != walletBalance.amount {
+                        fetchTransactionHistory(reset: true)
+                    }
                     balance = walletBalance
                     balanceState = .display(content: walletBalance)
                 case .failure(let apiError):

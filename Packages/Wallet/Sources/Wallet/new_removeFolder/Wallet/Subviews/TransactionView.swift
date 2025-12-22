@@ -8,9 +8,12 @@
 import SwiftUI
 import DesignSystem
 import Models
+import Environment
 
 struct TransactionView: View {
     @Environment(\.redactionReasons) private var reasons
+
+    @EnvironmentObject private var appState: AppState
 
     let transaction: Models.Transaction
 
@@ -172,7 +175,7 @@ struct TransactionView: View {
         HStack(spacing: 5) {
             let amountPrefix = isAmountPositive() ? "+" : "-"
 
-            Text(amountPrefix + "\(transaction.tokenAmount.formatted(.number))")
+            Text(amountPrefix + "\(formatDecimal(transaction.tokenAmount))")
                 .appFont(.bodyBold)
 
             Icons.logoCircleWhite
@@ -208,15 +211,15 @@ struct TransactionView: View {
 
         Group {
             if let peer = fees.peer {
-                textAmountLine(text: "2% to Peer Bank (platform fee)", amount: peer) // TODO: Take % from Constants
+                textAmountLine(text: "\(Int(appState.getConstants()!.data.tokenomics.fees.peer * 100))% to Peer Bank (platform fee)", amount: peer)
             }
 
             if let burn = fees.burn {
-                textAmountLine(text: "1% Burned (removed from supply)", amount: burn) // TODO: Take % from Constants
+                textAmountLine(text: "\(Int(appState.getConstants()!.data.tokenomics.fees.burn * 100))% Burned (removed from supply)", amount: burn)
             }
 
             if let inviter = fees.inviter {
-                textAmountLine(text: "1% to your Inviter", amount: inviter) // TODO: Take % from Constants
+                textAmountLine(text: "\(Int(appState.getConstants()!.data.tokenomics.fees.invitation * 100))% to your Inviter", amount: inviter)
             }
         }
         .appFont(.smallLabelRegular)
@@ -255,7 +258,7 @@ struct TransactionView: View {
                 .layoutPriority(-1)
 
             HStack(spacing: 5) {
-                Text(amount, format: .number)
+                Text(formatDecimal(amount))
                     .bold(amountIsBold)
 
                 Icons.logoCircleWhite
@@ -323,5 +326,12 @@ struct TransactionView: View {
         dateFormatter.timeZone = TimeZone.current
 
         return dateFormatter.string(from: date)
+    }
+
+    private func formatDecimal(_ value: Decimal) -> String {
+        let formatter = TransferAmountFormatters.numberFormatter
+        formatter.locale = Locale.current
+        formatter.maximumFractionDigits = 10
+        return formatter.string(from: value as NSDecimalNumber) ?? "\(value)"
     }
 }
