@@ -116,10 +116,17 @@ struct TransactionView: View {
                 Icons.heartBrokeFill
                     .iconSize(height: 24)
                     .foregroundStyle(Colors.redAccent)
-            case .transferTo, .transferFrom:
+            case .transferTo:
                 ProfileAvatarView(
                     url: transaction.recipient.imageURL,
                     name: transaction.recipient.username,
+                    config: .transactionHistory,
+                    ignoreCache: true
+                ) // TODO: Add illegal and blured overlays
+            case .transferFrom:
+                ProfileAvatarView(
+                    url: transaction.sender.imageURL,
+                    name: transaction.sender.username,
                     config: .transactionHistory,
                     ignoreCache: true
                 ) // TODO: Add illegal and blured overlays
