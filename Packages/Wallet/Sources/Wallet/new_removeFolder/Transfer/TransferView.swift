@@ -97,7 +97,7 @@ public struct TransferView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             HStack(spacing: 10) {
-                Text("\(transferVM.currentBalance)")
+                Text("\(formatDecimal(transferVM.currentBalance))")
                     .appFont(.extraLargeTitleBold)
                     .minimumScaleFactor(0.5)
                     .truncationMode(.tail)
@@ -132,5 +132,12 @@ public struct TransferView: View {
             .allowsHitTesting(false)
         }
         .clipShape(RoundedRectangle(cornerRadius: 24))
+    }
+
+    private func formatDecimal(_ value: Decimal) -> String {
+        let formatter = TransferAmountFormatters.numberFormatter
+        formatter.locale = Locale.current
+        formatter.maximumFractionDigits = 10
+        return formatter.string(from: value as NSDecimalNumber) ?? "\(value)"
     }
 }

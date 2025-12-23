@@ -25,6 +25,7 @@ struct TransferAmountView<Value: Hashable>: View {
 
     private let minAmount: Decimal = Decimal(string: "0.00000001", locale: Locale(identifier: "en_US_POSIX"))!
     private let maxFractionDigits = 8
+    private let maxFractionDigitsForFees = 10
 
     @State private var expandDistribution: Bool = false
 
@@ -56,7 +57,7 @@ struct TransferAmountView<Value: Hashable>: View {
                     amount: amount,
                     tokenomics: tokenomics,
                     hasInviter: AccountManager.shared.inviter != nil,
-                    maxFractionDigits: maxFractionDigits
+                    maxFractionDigits: maxFractionDigitsForFees
                 )
 
                 TransferFeesView(model: model)
@@ -69,7 +70,7 @@ struct TransferAmountView<Value: Hashable>: View {
                     Spacer(minLength: 10)
 
                     HStack(spacing: 5) {
-                        Text(formatDecimal(model.totalWithFees))
+                        Text(formatDecimal10(model.totalWithFees))
                             .appFont(.largeTitleBold)
                             .numericTextIfAvailable()
 
@@ -192,6 +193,13 @@ struct TransferAmountView<Value: Hashable>: View {
         return formatter.string(from: value as NSDecimalNumber) ?? "\(value)"
     }
 
+    private func formatDecimal10(_ value: Decimal) -> String {
+        let formatter = TransferAmountFormatters.numberFormatter
+        formatter.locale = Locale.current
+        formatter.maximumFractionDigits = maxFractionDigitsForFees
+        return formatter.string(from: value as NSDecimalNumber) ?? "\(value)"
+    }
+
     private func setTextPreservingEditFeel(_ newText: String) {
         isUpdatingText = true
         text = newText
@@ -202,21 +210,21 @@ struct TransferAmountView<Value: Hashable>: View {
         let rate = Decimal(tokenomics.fees.peer)
         let amount = (committedAmount ?? 0) * rate
         return (percent: percentInt(from: rate),
-                amount: rounded(amount, scale: maxFractionDigits))
+                amount: rounded(amount, scale: maxFractionDigitsForFees))
     }
 
     private var inviterFee: (percent: Int, amount: Decimal) {
         let rate = Decimal(tokenomics.fees.invitation)
         let amount = (committedAmount ?? 0) * rate
         return (percent: percentInt(from: rate),
-                amount: rounded(amount, scale: maxFractionDigits))
+                amount: rounded(amount, scale: maxFractionDigitsForFees))
     }
 
     private var burnFee: (percent: Int, amount: Decimal) {
         let rate = Decimal(tokenomics.fees.burn)
         let amount = (committedAmount ?? 0) * rate
         return (percent: percentInt(from: rate),
-                amount: rounded(amount, scale: maxFractionDigits))
+                amount: rounded(amount, scale: maxFractionDigitsForFees))
     }
 
     private func rounded(_ value: Decimal, scale: Int) -> Decimal {
@@ -245,12 +253,12 @@ struct TransferAmountView<Value: Hashable>: View {
 
     private var totalFee: (percent: Int, amount: Decimal) {
         let base = committedAmount ?? 0
-        let amount = rounded(base * totalFeeRate, scale: maxFractionDigits)
+        let amount = rounded(base * totalFeeRate, scale: maxFractionDigitsForFees)
         return (percent: percentInt(from: totalFeeRate), amount: amount)
     }
 
     private var totalWithFees: Decimal {
         let base = committedAmount ?? 0
-        return rounded(base + totalFee.amount, scale: maxFractionDigits)
+        return rounded(base + totalFee.amount, scale: maxFractionDigitsForFees)
     }
 }

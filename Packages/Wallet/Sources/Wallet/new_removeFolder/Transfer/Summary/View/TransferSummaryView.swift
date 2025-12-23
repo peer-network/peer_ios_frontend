@@ -102,7 +102,7 @@ public struct TransferSummaryView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             HStack(spacing: 10) {
-                Text("\(transferSummaryVM.currentBalance)")
+                Text("\(formatDecimal(transferSummaryVM.currentBalance))")
                     .appFont(.extraLargeTitleBold)
                     .minimumScaleFactor(0.5)
                     .truncationMode(.tail)
@@ -145,7 +145,7 @@ public struct TransferSummaryView: View {
             amount: transferSummaryVM.amount,
             tokenomics: appState.getConstants()!.data.tokenomics,
             hasInviter: AccountManager.shared.inviter != nil,
-            maxFractionDigits: 8
+            maxFractionDigits: 10
         )
 
         return VStack(spacing: 10) {
@@ -179,7 +179,7 @@ public struct TransferSummaryView: View {
     private func formatDecimal(_ value: Decimal) -> String {
         let f = TransferAmountFormatters.numberFormatter
         f.locale = Locale.current
-        f.maximumFractionDigits = 8
+        f.maximumFractionDigits = 10
         return f.string(from: value as NSDecimalNumber) ?? "\(value)"
     }
 

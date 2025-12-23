@@ -80,7 +80,7 @@ struct GemsMainView: View {
     private func formatDecimal(_ value: Decimal) -> String {
         let formatter = TransferAmountFormatters.numberFormatter
         formatter.locale = Locale.current
-        formatter.maximumFractionDigits = 8
+        formatter.maximumFractionDigits = 10
         return formatter.string(from: value as NSDecimalNumber) ?? "\(value)"
     }
 }
