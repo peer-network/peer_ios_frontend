@@ -38,7 +38,9 @@ final class TransferSummaryVM: ObservableObject {
                 }
             case .failure(let apiError):
                 popupService.presentPopup(.error(text: apiError.userFriendlyMessage)) {
-                    //
+                    Task {
+                        await self.send()
+                    }
                 }
         }
     }
