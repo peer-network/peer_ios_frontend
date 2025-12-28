@@ -155,32 +155,31 @@ struct TransactionView: View {
 
     @ViewBuilder
     private var arrowIcon: some View {
-        switch transaction.type {
-            case .extraPost, .extraLike, .extraComment, .dislike, .transferTo, .pinPost, .shop, .unknown:
-                Circle()
-                    .frame(height: 20)
-                    .foregroundStyle(Colors.hashtag)
-                    .overlay {
-                        IconsNew.arrowRight
-                            .iconSize(height: 7)
-                            .foregroundStyle(Colors.whitePrimary)
-                    }
-            case .transferFrom, .referralReward, .dailyMint:
-                Circle()
-                    .frame(height: 20)
-                    .foregroundStyle(Colors.hashtag)
-                    .overlay {
-                        IconsNew.arrowRight
-                            .iconSize(height: 7)
-                            .foregroundStyle(Colors.whitePrimary)
-                            .rotationEffect(.degrees(180))
-                    }
+        if isAmountPositive() {
+            Circle()
+                .frame(height: 20)
+                .foregroundStyle(Colors.hashtag)
+                .overlay {
+                    IconsNew.arrowRight
+                        .iconSize(height: 7)
+                        .foregroundStyle(Colors.whitePrimary)
+                        .rotationEffect(.degrees(180))
+                }
+        } else {
+            Circle()
+                .frame(height: 20)
+                .foregroundStyle(Colors.hashtag)
+                .overlay {
+                    IconsNew.arrowRight
+                        .iconSize(height: 7)
+                        .foregroundStyle(Colors.whitePrimary)
+                }
         }
     }
 
     private var amountView: some View {
         HStack(spacing: 5) {
-            let amountPrefix = isAmountPositive() ? "+" : "-"
+            let amountPrefix = isAmountPositive() ? "+" : ""
 
             Text(amountPrefix + "\(formatDecimal(transaction.tokenAmount))")
                 .appFont(.bodyBold)
@@ -265,7 +264,7 @@ struct TransactionView: View {
                 .layoutPriority(-1)
 
             HStack(spacing: 5) {
-                Text(formatDecimal(amount))
+                Text(formatDecimal(abs(amount)))
                     .bold(amountIsBold)
 
                 Icons.logoCircleWhite
@@ -278,12 +277,7 @@ struct TransactionView: View {
     }
 
     private func isAmountPositive() -> Bool {
-        switch transaction.type {
-            case .extraPost, .extraLike, .extraComment, .dislike, .transferTo, .pinPost, .shop:
-                return false
-            case .transferFrom, .referralReward, .dailyMint, .unknown:
-                return true
-        }
+        transaction.tokenAmount > 0 ? true : false
     }
 
     private var titleTextView: some View {

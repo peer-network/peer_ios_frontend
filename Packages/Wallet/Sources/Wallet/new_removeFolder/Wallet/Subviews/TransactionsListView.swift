@@ -15,26 +15,24 @@ struct TransactionsListView: View {
     let scrollProxy: ScrollViewProxy
 
     var body: some View {
-        VStack(spacing: 0) {
-            LazyVStack(spacing: 10, pinnedViews: .sectionHeaders) {
-                Section {
-                    transactionsList
-                } header: {
-                    transactionHistoryHeaderView
-                        .background(Colors.blackDark)
-                        .overlay(
-                            GeometryReader { geo in
-                                Color.clear
-                                    .onChange(of: geo.frame(in: .global).minY) { newValue in
-                                        if newValue < 107 {
-                                            isHeaderAtTop = true
-                                        } else {
-                                            isHeaderAtTop = false
-                                        }
+        LazyVStack(spacing: 10, pinnedViews: .sectionHeaders) {
+            Section {
+                transactionsList
+            } header: {
+                transactionHistoryHeaderView
+                    .background(Colors.blackDark)
+                    .overlay(
+                        GeometryReader { geo in
+                            Color.clear
+                                .onChange(of: geo.frame(in: .global).minY) { newValue in
+                                    if newValue < 107 {
+                                        isHeaderAtTop = true
+                                    } else {
+                                        isHeaderAtTop = false
                                     }
-                            }
-                        )
-                }
+                                }
+                        }
+                    )
             }
         }
     }

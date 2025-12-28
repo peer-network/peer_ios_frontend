@@ -95,8 +95,8 @@ public struct Transaction: Identifiable, Hashable {
         } else {
             self.type = .unknown
         }
-        self.tokenAmount = abs(gqlTransaction.tokenamount)
-        self.netTokenAmount = abs(gqlTransaction.netTokenAmount)
+        self.tokenAmount = gqlTransaction.tokenamount
+        self.netTokenAmount = gqlTransaction.netTokenAmount
         self.message = gqlTransaction.message
         self.createdAt = gqlTransaction.createdat
         self.sender = sender
