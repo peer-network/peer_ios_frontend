@@ -117,19 +117,67 @@ struct TransactionView: View {
                     .iconSize(height: 24)
                     .foregroundStyle(Colors.redAccent)
             case .transferTo:
-                ProfileAvatarView(
-                    url: transaction.recipient.imageURL,
-                    name: transaction.recipient.username,
-                    config: .transactionHistory,
-                    ignoreCache: true
-                ) // TODO: Add illegal and blured overlays
+                Group {
+                    if transaction.recipient.visibilityStatus == .illegal {
+                        Circle()
+                            .foregroundStyle(Colors.blackDark)
+                            .frame(height: 55)
+                            .overlay {
+                                IconsNew.exclamaitionMarkCircle
+                                    .iconSize(height: 30)
+                                    .foregroundStyle(Colors.whiteSecondary)
+                            }
+                    } else {
+                        ProfileAvatarView(
+                            url: transaction.recipient.imageURL,
+                            name: transaction.recipient.username,
+                            config: .transactionHistory,
+                            ignoreCache: true
+                        )
+                        .ifCondition(transaction.recipient.visibilityStatus == .hidden) {
+                            $0
+                                .blur(radius: 4)
+                                .overlay {
+                                    IconsNew.eyeWithSlash
+                                        .iconSize(width: 24)
+                                        .foregroundStyle(Colors.whitePrimary)
+                                }
+                        }
+                        .frame(width: 55, height: 55)
+                        .clipShape(Circle())
+                    }
+                }
             case .transferFrom:
-                ProfileAvatarView(
-                    url: transaction.sender.imageURL,
-                    name: transaction.sender.username,
-                    config: .transactionHistory,
-                    ignoreCache: true
-                ) // TODO: Add illegal and blured overlays
+                Group {
+                    if transaction.sender.visibilityStatus == .illegal {
+                        Circle()
+                            .foregroundStyle(Colors.blackDark)
+                            .frame(height: 55)
+                            .overlay {
+                                IconsNew.exclamaitionMarkCircle
+                                    .iconSize(height: 30)
+                                    .foregroundStyle(Colors.whiteSecondary)
+                            }
+                    } else {
+                            ProfileAvatarView(
+                                url: transaction.sender.imageURL,
+                                name: transaction.sender.username,
+                                config: .transactionHistory,
+                                ignoreCache: true
+                            )
+                            .ifCondition(transaction.sender.visibilityStatus == .hidden) {
+                                $0
+                                    .blur(radius: 4)
+                                    .overlay {
+                                        IconsNew.eyeWithSlash
+                                            .iconSize(width: 24)
+                                            .foregroundStyle(Colors.whitePrimary)
+                                    }
+                            }
+                            .frame(width: 55, height: 55)
+                            .clipShape(Circle())
+                    }
+                }
             case .pinPost:
                 Icons.pin
                     .iconSize(height: 24)
@@ -292,12 +340,14 @@ struct TransactionView: View {
                 AnyView(Text("Dislike"))
             case .transferTo:
                 AnyView(HStack(spacing: 1.57) {
-                    Text("To ***@\(transaction.recipient.username)***").appFont(.bodyBold)
+                    let username = transaction.recipient.visibilityStatus == .hidden ? "hidden" : transaction.recipient.username
+                    Text("To ***@\(username)***").appFont(.bodyBold)
                     Text("#\(String(transaction.recipient.slug))").foregroundStyle(Colors.whiteSecondary).appFont(.bodyRegular)
                 })
             case .transferFrom:
                 AnyView(HStack(spacing: 1.57) {
-                    Text("From ***@\(transaction.sender.username)***").appFont(.bodyBold)
+                    let username = transaction.sender.visibilityStatus == .hidden ? "hidden" : transaction.sender.username
+                    Text("From ***@\(username)***").appFont(.bodyBold)
                     Text("#\(String(transaction.sender.slug))").foregroundStyle(Colors.whiteSecondary).appFont(.bodyRegular)
                 })
             case .pinPost:

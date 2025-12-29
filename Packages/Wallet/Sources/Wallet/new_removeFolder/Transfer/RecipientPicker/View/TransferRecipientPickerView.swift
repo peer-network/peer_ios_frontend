@@ -60,6 +60,7 @@ struct TransferRecipientPickerView<Value: Hashable>: View {
                 maxLength: 100,
                 focusState: $focusState,
                 focusEquals: focusEquals,
+                autocorrectionDisabled: true,
                 returnKeyType: .search,
                 toolbarButtonTitle: "Done",
                 onToolbarButtonTap: {
