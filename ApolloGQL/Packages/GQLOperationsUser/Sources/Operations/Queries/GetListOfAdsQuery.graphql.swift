@@ -52,6 +52,9 @@ public class GetListOfAdsQuery: GraphQLQuery {
         "contentFilterBy": .variable("contentFilterBy")
       ]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      GetListOfAdsQuery.Data.self
+    ] }
 
     public var listAdvertisementPosts: ListAdvertisementPosts { __data["listAdvertisementPosts"] }
 
@@ -69,6 +72,9 @@ public class GetListOfAdsQuery: GraphQLQuery {
         .field("ResponseCode", String?.self),
         .field("counter", Int.self),
         .field("affectedRows", [AffectedRow]?.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        GetListOfAdsQuery.Data.ListAdvertisementPosts.self
       ] }
 
       @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")
@@ -91,6 +97,9 @@ public class GetListOfAdsQuery: GraphQLQuery {
           .field("advertisement", Advertisement.self),
           .field("post", Post.self),
         ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          GetListOfAdsQuery.Data.ListAdvertisementPosts.AffectedRow.self
+        ] }
 
         public var advertisement: Advertisement { __data["advertisement"] }
         public var post: Post { __data["post"] }
@@ -112,6 +121,9 @@ public class GetListOfAdsQuery: GraphQLQuery {
             .field("enddate", GQLOperationsUser.Date.self),
             .field("createdat", GQLOperationsUser.Date.self),
             .field("user", User.self),
+          ] }
+          public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+            GetListOfAdsQuery.Data.ListAdvertisementPosts.AffectedRow.Advertisement.self
           ] }
 
           public var advertisementid: GQLOperationsUser.ID { __data["advertisementid"] }
@@ -143,12 +155,17 @@ public class GetListOfAdsQuery: GraphQLQuery {
               .field("hasActiveReports", Bool.self),
               .field("isHiddenForUsers", Bool.self),
             ] }
+            public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+              GetListOfAdsQuery.Data.ListAdvertisementPosts.AffectedRow.Advertisement.User.self
+            ] }
 
             public var id: GQLOperationsUser.ID { __data["id"] }
             public var username: String? { __data["username"] }
             public var slug: Int? { __data["slug"] }
             public var img: String? { __data["img"] }
+            @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
             public var isfollowed: Bool? { __data["isfollowed"] }
+            @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
             public var isfollowing: Bool? { __data["isfollowing"] }
             public var isfriend: Bool? { __data["isfriend"] }
             public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }
@@ -190,6 +207,9 @@ public class GetListOfAdsQuery: GraphQLQuery {
             .field("tags", [String?].self),
             .field("url", String.self),
             .field("user", User.self),
+          ] }
+          public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+            GetListOfAdsQuery.Data.ListAdvertisementPosts.AffectedRow.Post.self
           ] }
 
           public var id: GQLOperationsUser.ID { __data["id"] }
@@ -237,12 +257,17 @@ public class GetListOfAdsQuery: GraphQLQuery {
               .field("hasActiveReports", Bool.self),
               .field("isHiddenForUsers", Bool.self),
             ] }
+            public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+              GetListOfAdsQuery.Data.ListAdvertisementPosts.AffectedRow.Post.User.self
+            ] }
 
             public var id: GQLOperationsUser.ID { __data["id"] }
             public var username: String? { __data["username"] }
             public var slug: Int? { __data["slug"] }
             public var img: String? { __data["img"] }
+            @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
             public var isfollowed: Bool? { __data["isfollowed"] }
+            @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
             public var isfollowing: Bool? { __data["isfollowing"] }
             public var isfriend: Bool? { __data["isfriend"] }
             public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }

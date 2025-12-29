@@ -7,7 +7,7 @@ public class CreatePostMutation: GraphQLMutation {
   public static let operationName: String = "CreatePost"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"mutation CreatePost($contentType: ContentType!, $title: String!, $media: [String!], $mediadescription: String, $tags: [String!], $cover: [String!]) { createPost( action: POST input: { contenttype: $contentType title: $title media: $media mediadescription: $mediadescription tags: $tags cover: $cover } ) { __typename status ResponseCode affectedRows { __typename id contenttype title media cover mediadescription createdat visibilityStatus hasActiveReports amountreports amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags url user { __typename id username slug img visibilityStatus hasActiveReports isfollowed isfollowing isfriend } } } }"#
+      #"mutation CreatePost($contentType: ContentType!, $title: String!, $media: [String!], $mediadescription: String, $tags: [String!], $cover: [String!]) { createPost( action: POST input: { contenttype: $contentType title: $title media: $media mediadescription: $mediadescription tags: $tags cover: $cover } ) { __typename status ResponseCode affectedRows { __typename id contenttype title media cover mediadescription createdat visibilityStatus hasActiveReports isHiddenForUsers amountreports amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags url user { __typename id username slug img visibilityStatus isHiddenForUsers hasActiveReports isfollowed isfollowing isfriend } } } }"#
     ))
 
   public var contentType: GraphQLEnum<ContentType>
@@ -60,6 +60,9 @@ public class CreatePostMutation: GraphQLMutation {
         ]
       ]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      CreatePostMutation.Data.self
+    ] }
 
     public var createPost: CreatePost { __data["createPost"] }
 
@@ -76,6 +79,9 @@ public class CreatePostMutation: GraphQLMutation {
         .field("status", String.self),
         .field("ResponseCode", String?.self),
         .field("affectedRows", AffectedRows?.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        CreatePostMutation.Data.CreatePost.self
       ] }
 
       @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")
@@ -103,6 +109,7 @@ public class CreatePostMutation: GraphQLMutation {
           .field("createdat", GQLOperationsUser.Date.self),
           .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>.self),
           .field("hasActiveReports", Bool.self),
+          .field("isHiddenForUsers", Bool.self),
           .field("amountreports", Int.self),
           .field("amountlikes", Int.self),
           .field("amountviews", Int.self),
@@ -118,6 +125,9 @@ public class CreatePostMutation: GraphQLMutation {
           .field("url", String.self),
           .field("user", User.self),
         ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          CreatePostMutation.Data.CreatePost.AffectedRows.self
+        ] }
 
         public var id: GQLOperationsUser.ID { __data["id"] }
         public var contenttype: String { __data["contenttype"] }
@@ -128,6 +138,7 @@ public class CreatePostMutation: GraphQLMutation {
         public var createdat: GQLOperationsUser.Date { __data["createdat"] }
         public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }
         public var hasActiveReports: Bool { __data["hasActiveReports"] }
+        public var isHiddenForUsers: Bool { __data["isHiddenForUsers"] }
         public var amountreports: Int { __data["amountreports"] }
         public var amountlikes: Int { __data["amountlikes"] }
         public var amountviews: Int { __data["amountviews"] }
@@ -158,10 +169,14 @@ public class CreatePostMutation: GraphQLMutation {
             .field("slug", Int?.self),
             .field("img", String?.self),
             .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>.self),
+            .field("isHiddenForUsers", Bool.self),
             .field("hasActiveReports", Bool.self),
             .field("isfollowed", Bool?.self),
             .field("isfollowing", Bool?.self),
             .field("isfriend", Bool?.self),
+          ] }
+          public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+            CreatePostMutation.Data.CreatePost.AffectedRows.User.self
           ] }
 
           public var id: GQLOperationsUser.ID { __data["id"] }
@@ -169,8 +184,11 @@ public class CreatePostMutation: GraphQLMutation {
           public var slug: Int? { __data["slug"] }
           public var img: String? { __data["img"] }
           public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }
+          public var isHiddenForUsers: Bool { __data["isHiddenForUsers"] }
           public var hasActiveReports: Bool { __data["hasActiveReports"] }
+          @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
           public var isfollowed: Bool? { __data["isfollowed"] }
+          @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
           public var isfollowing: Bool? { __data["isfollowing"] }
           public var isfriend: Bool? { __data["isfriend"] }
         }

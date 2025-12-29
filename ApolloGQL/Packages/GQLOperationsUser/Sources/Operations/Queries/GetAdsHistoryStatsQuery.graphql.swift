@@ -26,6 +26,9 @@ public class GetAdsHistoryStatsQuery: GraphQLQuery {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("advertisementHistory", AdvertisementHistory.self, arguments: ["filter": ["userId": .variable("userId")]]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      GetAdsHistoryStatsQuery.Data.self
+    ] }
 
     public var advertisementHistory: AdvertisementHistory { __data["advertisementHistory"] }
 
@@ -43,8 +46,12 @@ public class GetAdsHistoryStatsQuery: GraphQLQuery {
         .field("ResponseCode", String?.self),
         .field("affectedRows", AffectedRows?.self),
       ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        GetAdsHistoryStatsQuery.Data.AdvertisementHistory.self
+      ] }
 
       public var status: String { __data["status"] }
+      @available(*, deprecated, message: "use meta.ResponseCode . this field will be removed after 15 October`.")
       public var responseCode: String? { __data["ResponseCode"] }
       public var affectedRows: AffectedRows? { __data["affectedRows"] }
 
@@ -59,6 +66,9 @@ public class GetAdsHistoryStatsQuery: GraphQLQuery {
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("stats", Stats?.self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          GetAdsHistoryStatsQuery.Data.AdvertisementHistory.AffectedRows.self
         ] }
 
         public var stats: Stats? { __data["stats"] }
@@ -82,6 +92,9 @@ public class GetAdsHistoryStatsQuery: GraphQLQuery {
             .field("amountComments", Int.self),
             .field("amountDislikes", Int.self),
             .field("amountReports", Int.self),
+          ] }
+          public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+            GetAdsHistoryStatsQuery.Data.AdvertisementHistory.AffectedRows.Stats.self
           ] }
 
           public var tokenSpent: Double { __data["tokenSpent"] }

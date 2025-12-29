@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let DefaultResponse = ApolloAPI.Object(
     typename: "DefaultResponse",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

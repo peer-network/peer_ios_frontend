@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let TagSearchResponse = ApolloAPI.Object(
     typename: "TagSearchResponse",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

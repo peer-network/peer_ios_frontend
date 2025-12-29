@@ -1222,7 +1222,7 @@ public final class APIServiceGraphQL: APIService {
     }
     
     //MARK: Wallet
-    public func fetchLiquidityState() async -> Result<Double, APIError> {
+    public func fetchLiquidityState() async -> Result<Decimal, APIError> {
         do {
             let result = try await qlClient.fetch(query: GetLiquidityQuery(), cachePolicy: .fetchIgnoringCacheCompletely)
 
@@ -1235,8 +1235,7 @@ public final class APIServiceGraphQL: APIService {
             }
 
             guard
-                let data = result.balance.currentliquidity,
-                let amount = Double(data)
+                let amount = result.balance.currentliquidity
             else {
                 return .failure(.missingData)
             }
@@ -1247,9 +1246,9 @@ public final class APIServiceGraphQL: APIService {
         }
     }
 
-    public func transferTokens(to id: String, amount: Int) async -> Result<Void, APIError> {
+    public func transferTokens(to id: String, amount: Foundation.Decimal, message: String?) async -> Result<Void, APIError> {
         do {
-            let result = try await qlClient.mutate(mutation: TransferTokensMutation(recipient: id, numberoftokens: amount))
+            let result = try await qlClient.mutate(mutation: TransferTokensMutation(recipient: id, numberoftokens: amount, message: message != nil ? GraphQLNullable(stringLiteral: message!) : nil))
 
             guard result.isResponseCodeSuccess else {
                 if let errorCode = result.getResponseCode {
@@ -1260,6 +1259,24 @@ public final class APIServiceGraphQL: APIService {
             }
 
             return .success(())
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
+    public func fetchTransactionsHistory(after offset: Int) async -> Result<[Transaction], APIError> {
+        do {
+            let result = try await qlClient.fetch(query: GetTransactionHistoryQuery(offset: GraphQLNullable<Int>(integerLiteral: offset), limit: 20), cachePolicy: .fetchIgnoringCacheCompletely)
+
+            guard let data = result.transactionHistory.affectedRows else {
+                return .failure(.missingData)
+            }
+
+            let transactions = data.compactMap { value in
+                Models.Transaction(gqlTransaction: value)
+            }
+
+            return .success(transactions)
         } catch {
             return .failure(.unknownError(error: error))
         }

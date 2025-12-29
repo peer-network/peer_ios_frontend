@@ -7,7 +7,7 @@ public class GetMyReferredUsersQuery: GraphQLQuery {
   public static let operationName: String = "GetMyReferredUsers"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetMyReferredUsers($offset: Int, $limit: Int) { referralList(offset: $offset, limit: $limit) { __typename status counter ResponseCode affectedRows { __typename iInvited { __typename id username slug img visibilityStatus hasActiveReports isfollowed isfollowing isfriend } } } }"#
+      #"query GetMyReferredUsers($offset: Int, $limit: Int) { referralList(offset: $offset, limit: $limit) { __typename status counter ResponseCode affectedRows { __typename iInvited { __typename id username slug img visibilityStatus hasActiveReports isHiddenForUsers isfollowed isfollowing isfriend } } } }"#
     ))
 
   public var offset: GraphQLNullable<Int>
@@ -37,6 +37,9 @@ public class GetMyReferredUsersQuery: GraphQLQuery {
         "limit": .variable("limit")
       ]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      GetMyReferredUsersQuery.Data.self
+    ] }
 
     public var referralList: ReferralList { __data["referralList"] }
 
@@ -54,6 +57,9 @@ public class GetMyReferredUsersQuery: GraphQLQuery {
         .field("counter", Int.self),
         .field("ResponseCode", String?.self),
         .field("affectedRows", AffectedRows.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        GetMyReferredUsersQuery.Data.ReferralList.self
       ] }
 
       @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")
@@ -75,6 +81,9 @@ public class GetMyReferredUsersQuery: GraphQLQuery {
           .field("__typename", String.self),
           .field("iInvited", [IInvited].self),
         ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          GetMyReferredUsersQuery.Data.ReferralList.AffectedRows.self
+        ] }
 
         public var iInvited: [IInvited] { __data["iInvited"] }
 
@@ -94,9 +103,13 @@ public class GetMyReferredUsersQuery: GraphQLQuery {
             .field("img", String?.self),
             .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>.self),
             .field("hasActiveReports", Bool.self),
+            .field("isHiddenForUsers", Bool.self),
             .field("isfollowed", Bool?.self),
             .field("isfollowing", Bool?.self),
             .field("isfriend", Bool?.self),
+          ] }
+          public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+            GetMyReferredUsersQuery.Data.ReferralList.AffectedRows.IInvited.self
           ] }
 
           public var id: GQLOperationsUser.ID { __data["id"] }
@@ -105,7 +118,10 @@ public class GetMyReferredUsersQuery: GraphQLQuery {
           public var img: String? { __data["img"] }
           public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }
           public var hasActiveReports: Bool { __data["hasActiveReports"] }
+          public var isHiddenForUsers: Bool { __data["isHiddenForUsers"] }
+          @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
           public var isfollowed: Bool? { __data["isfollowed"] }
+          @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
           public var isfollowing: Bool? { __data["isfollowing"] }
           public var isfriend: Bool? { __data["isfriend"] }
         }

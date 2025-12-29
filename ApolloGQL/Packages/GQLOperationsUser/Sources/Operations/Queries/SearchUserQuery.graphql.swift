@@ -52,6 +52,9 @@ public class SearchUserQuery: GraphQLQuery {
         "limit": .variable("limit")
       ]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      SearchUserQuery.Data.self
+    ] }
 
     @available(*, deprecated, message: "Use listUsersV2.")
     public var searchUser: SearchUser { __data["searchUser"] }
@@ -70,6 +73,9 @@ public class SearchUserQuery: GraphQLQuery {
         .field("counter", Int.self),
         .field("ResponseCode", String?.self),
         .field("affectedRows", [AffectedRow?]?.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        SearchUserQuery.Data.SearchUser.self
       ] }
 
       @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")
@@ -100,6 +106,9 @@ public class SearchUserQuery: GraphQLQuery {
           .field("isHiddenForUsers", Bool.self),
           .field("createdat", GQLOperationsUser.Date?.self),
           .field("updatedat", GQLOperationsUser.Date?.self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          SearchUserQuery.Data.SearchUser.AffectedRow.self
         ] }
 
         public var id: GQLOperationsUser.ID? { __data["id"] }

@@ -47,6 +47,9 @@ public class GetFriendsQuery: GraphQLQuery {
         "limit": .variable("limit")
       ]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      GetFriendsQuery.Data.self
+    ] }
 
     public var listFriends: ListFriends { __data["listFriends"] }
 
@@ -63,6 +66,9 @@ public class GetFriendsQuery: GraphQLQuery {
         .field("status", String.self),
         .field("ResponseCode", String?.self),
         .field("affectedRows", [AffectedRow?]?.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        GetFriendsQuery.Data.ListFriends.self
       ] }
 
       @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")
@@ -90,6 +96,9 @@ public class GetFriendsQuery: GraphQLQuery {
           .field("isHiddenForUsers", Bool.self),
           .field("hasActiveReports", Bool.self),
           .field("updatedat", GQLOperationsUser.Date.self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          GetFriendsQuery.Data.ListFriends.AffectedRow.self
         ] }
 
         public var userid: GQLOperationsUser.ID? { __data["userid"] }

@@ -20,6 +20,9 @@ public class GetMyReferralInfoQuery: GraphQLQuery {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("getReferralInfo", GetReferralInfo.self),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      GetMyReferralInfoQuery.Data.self
+    ] }
 
     public var getReferralInfo: GetReferralInfo { __data["getReferralInfo"] }
 
@@ -37,6 +40,9 @@ public class GetMyReferralInfoQuery: GraphQLQuery {
         .field("ResponseCode", String?.self),
         .field("referralUuid", GQLOperationsUser.ID?.self),
         .field("referralLink", String?.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        GetMyReferralInfoQuery.Data.GetReferralInfo.self
       ] }
 
       @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")

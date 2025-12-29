@@ -16,13 +16,13 @@ public final class AdViewModel: ObservableObject {
 
     public let post: Post
     public let tokenomics: ConstantsConfig.Tokenomics
-    public private(set) var balance: Double = 0
+    public private(set) var balance: Decimal = 0
 
     public let onGoToProfile: () -> Void
     public let onGoToPost: () -> Void
 
     public var hasEnoughTokens: Bool {
-        balance > tokenomics.actionTokenPrices.advertisementPinned
+        balance > Decimal(tokenomics.actionTokenPrices.advertisementPinned)
     }
 
     public var adPrice: Double {

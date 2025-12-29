@@ -265,6 +265,48 @@ public struct RowUser: Identifiable, Hashable {
         self.isHiddenForUsers = gqlUser.isHiddenForUsers
         self.visibilityStatus = .normalizedValue(gqlUser.visibilityStatus.value)
     }
+
+    public init?(gqlUser: GetTransactionHistoryQuery.Data.TransactionHistory.AffectedRow.Recipient) {
+        guard
+            let id = gqlUser.userid,
+            let username = gqlUser.username,
+            let slug = gqlUser.slug,
+            let image = gqlUser.img
+        else {
+            return nil
+        }
+
+        self.id = id
+        self.username = username
+        self.slug = slug
+        self.image = image
+        self.isFollowed = false
+        self.isFollowing = false
+        self.hasActiveReports = gqlUser.hasActiveReports
+        self.isHiddenForUsers = gqlUser.isHiddenForUsers
+        self.visibilityStatus = .normalizedValue(gqlUser.visibilityStatus.value)
+    }
+
+    public init?(gqlUser: GetTransactionHistoryQuery.Data.TransactionHistory.AffectedRow.Sender) {
+        guard
+            let id = gqlUser.userid,
+            let username = gqlUser.username,
+            let slug = gqlUser.slug,
+            let image = gqlUser.img
+        else {
+            return nil
+        }
+
+        self.id = id
+        self.username = username
+        self.slug = slug
+        self.image = image
+        self.isFollowed = false
+        self.isFollowing = false
+        self.hasActiveReports = gqlUser.hasActiveReports
+        self.isHiddenForUsers = gqlUser.isHiddenForUsers
+        self.visibilityStatus = .normalizedValue(gqlUser.visibilityStatus.value)
+    }
 }
 
 extension RowUser {

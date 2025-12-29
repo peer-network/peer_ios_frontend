@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let BlockedUsers = ApolloAPI.Object(
     typename: "BlockedUsers",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

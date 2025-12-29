@@ -37,6 +37,9 @@ public class LoginMutation: GraphQLMutation {
         "password": .variable("password")
       ]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      LoginMutation.Data.self
+    ] }
 
     public var login: Login { __data["login"] }
 
@@ -54,6 +57,9 @@ public class LoginMutation: GraphQLMutation {
         .field("ResponseCode", String?.self),
         .field("accessToken", String?.self),
         .field("refreshToken", String?.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        LoginMutation.Data.Login.self
       ] }
 
       @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")

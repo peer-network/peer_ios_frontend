@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let Profile = ApolloAPI.Object(
     typename: "Profile",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

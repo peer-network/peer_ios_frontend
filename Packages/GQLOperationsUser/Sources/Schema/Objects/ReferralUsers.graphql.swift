@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let ReferralUsers = ApolloAPI.Object(
     typename: "ReferralUsers",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

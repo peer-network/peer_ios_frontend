@@ -52,6 +52,9 @@ public class PostInteractionsQuery: GraphQLQuery {
         "contentFilterBy": .variable("contentFilterBy")
       ]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      PostInteractionsQuery.Data.self
+    ] }
 
     public var postInteractions: PostInteractions? { __data["postInteractions"] }
 
@@ -68,6 +71,9 @@ public class PostInteractionsQuery: GraphQLQuery {
         .field("status", String.self),
         .field("ResponseCode", String?.self),
         .field("affectedRows", [AffectedRow]?.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        PostInteractionsQuery.Data.PostInteractions.self
       ] }
 
       @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")
@@ -97,6 +103,9 @@ public class PostInteractionsQuery: GraphQLQuery {
           .field("isfollowing", Bool?.self),
           .field("isfriend", Bool?.self),
         ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          PostInteractionsQuery.Data.PostInteractions.AffectedRow.self
+        ] }
 
         public var id: GQLOperationsUser.ID { __data["id"] }
         public var username: String? { __data["username"] }
@@ -105,7 +114,9 @@ public class PostInteractionsQuery: GraphQLQuery {
         public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }
         public var isHiddenForUsers: Bool { __data["isHiddenForUsers"] }
         public var hasActiveReports: Bool { __data["hasActiveReports"] }
+        @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
         public var isfollowed: Bool? { __data["isfollowed"] }
+        @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
         public var isfollowing: Bool? { __data["isfollowing"] }
         public var isfriend: Bool? { __data["isfriend"] }
       }

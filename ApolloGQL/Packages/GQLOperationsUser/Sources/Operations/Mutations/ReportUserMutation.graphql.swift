@@ -26,6 +26,9 @@ public class ReportUserMutation: GraphQLMutation {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("reportUser", ReportUser.self, arguments: ["userid": .variable("userid")]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      ReportUserMutation.Data.self
+    ] }
 
     public var reportUser: ReportUser { __data["reportUser"] }
 
@@ -40,11 +43,15 @@ public class ReportUserMutation: GraphQLMutation {
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("status", String.self),
-        .field("ResponseCode", String.self),
+        .field("ResponseCode", String?.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        ReportUserMutation.Data.ReportUser.self
       ] }
 
       public var status: String { __data["status"] }
-      public var responseCode: String { __data["ResponseCode"] }
+      @available(*, deprecated, message: "use meta.ResponseCode . this field will be removed after 15 October`.")
+      public var responseCode: String? { __data["ResponseCode"] }
     }
   }
 }

@@ -118,7 +118,7 @@ public final class NormalFeedViewModel: ObservableObject, PostsFetcher {
     }
 
     private func fetchAdvertisements() async throws -> [Post] {
-        let result = await apiService.getListOfAds(userID: nil, with: .regular, after: currentOffsetAds, amount: Constants.postsFetchLimit)
+        let result = await apiService.getListOfAds(userID: userId, with: .regular, after: currentOffsetAds, amount: Constants.postsFetchLimit)
 
         try Task.checkCancellation()
 

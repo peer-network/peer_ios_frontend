@@ -20,6 +20,9 @@ public class GetDailyFreeQuery: GraphQLQuery {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("getDailyFreeStatus", GetDailyFreeStatus.self),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      GetDailyFreeQuery.Data.self
+    ] }
 
     public var getDailyFreeStatus: GetDailyFreeStatus { __data["getDailyFreeStatus"] }
 
@@ -36,6 +39,9 @@ public class GetDailyFreeQuery: GraphQLQuery {
         .field("status", String.self),
         .field("ResponseCode", String?.self),
         .field("affectedRows", [AffectedRow?]?.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        GetDailyFreeQuery.Data.GetDailyFreeStatus.self
       ] }
 
       @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")
@@ -57,6 +63,9 @@ public class GetDailyFreeQuery: GraphQLQuery {
           .field("name", String.self),
           .field("used", Int.self),
           .field("available", Int.self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          GetDailyFreeQuery.Data.GetDailyFreeStatus.AffectedRow.self
         ] }
 
         public var name: String { __data["name"] }

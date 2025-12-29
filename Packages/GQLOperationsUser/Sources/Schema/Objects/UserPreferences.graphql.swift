@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let UserPreferences = ApolloAPI.Object(
     typename: "UserPreferences",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

@@ -26,6 +26,9 @@ public class FollowUserMutation: GraphQLMutation {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("toggleUserFollowStatus", ToggleUserFollowStatus.self, arguments: ["userid": .variable("userid")]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      FollowUserMutation.Data.self
+    ] }
 
     public var toggleUserFollowStatus: ToggleUserFollowStatus { __data["toggleUserFollowStatus"] }
 
@@ -42,6 +45,9 @@ public class FollowUserMutation: GraphQLMutation {
         .field("status", String.self),
         .field("ResponseCode", String?.self),
         .field("isfollowing", Bool?.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        FollowUserMutation.Data.ToggleUserFollowStatus.self
       ] }
 
       @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")

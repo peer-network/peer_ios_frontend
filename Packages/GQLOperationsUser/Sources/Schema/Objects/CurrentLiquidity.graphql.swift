@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let CurrentLiquidity = ApolloAPI.Object(
     typename: "CurrentLiquidity",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let AuthPayload = ApolloAPI.Object(
     typename: "AuthPayload",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

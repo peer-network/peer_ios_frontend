@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let ResetPasswordRequestResponse = ApolloAPI.Object(
     typename: "ResetPasswordRequestResponse",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

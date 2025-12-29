@@ -7,22 +7,25 @@ public class GetListOfAdsQuery: GraphQLQuery {
   public static let operationName: String = "GetListOfAds"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetListOfAds($userID: ID, $filterBy: [ContentType!], $offset: Int, $limit: Int) { listAdvertisementPosts( userid: $userID filterBy: $filterBy offset: $offset limit: $limit ) { __typename status ResponseCode counter affectedRows { __typename advertisement { __typename advertisementid postid advertisementtype startdate enddate createdat user { __typename id username slug img isfollowed isfollowing isfriend visibilityStatus hasActiveReports } } post { __typename id contenttype title media cover mediadescription createdat visibilityStatus hasActiveReports amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags url user { __typename id username slug img isfollowed isfollowing isfriend visibilityStatus hasActiveReports } } } } }"#
+      #"query GetListOfAds($userID: ID, $filterBy: [ContentType!], $contentFilterBy: ContentFilterType, $offset: Int, $limit: Int) { listAdvertisementPosts( userid: $userID filterBy: $filterBy offset: $offset limit: $limit contentFilterBy: $contentFilterBy ) { __typename status ResponseCode counter affectedRows { __typename advertisement { __typename advertisementid postid advertisementtype startdate enddate createdat user { __typename id username slug img isfollowed isfollowing isfriend visibilityStatus hasActiveReports isHiddenForUsers } } post { __typename id contenttype title media cover mediadescription createdat visibilityStatus hasActiveReports isHiddenForUsers amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags url user { __typename id username slug img isfollowed isfollowing isfriend visibilityStatus hasActiveReports isHiddenForUsers } } } } }"#
     ))
 
   public var userID: GraphQLNullable<ID>
   public var filterBy: GraphQLNullable<[GraphQLEnum<ContentType>]>
+  public var contentFilterBy: GraphQLNullable<GraphQLEnum<ContentFilterType>>
   public var offset: GraphQLNullable<Int>
   public var limit: GraphQLNullable<Int>
 
   public init(
     userID: GraphQLNullable<ID>,
     filterBy: GraphQLNullable<[GraphQLEnum<ContentType>]>,
+    contentFilterBy: GraphQLNullable<GraphQLEnum<ContentFilterType>>,
     offset: GraphQLNullable<Int>,
     limit: GraphQLNullable<Int>
   ) {
     self.userID = userID
     self.filterBy = filterBy
+    self.contentFilterBy = contentFilterBy
     self.offset = offset
     self.limit = limit
   }
@@ -30,6 +33,7 @@ public class GetListOfAdsQuery: GraphQLQuery {
   public var __variables: Variables? { [
     "userID": userID,
     "filterBy": filterBy,
+    "contentFilterBy": contentFilterBy,
     "offset": offset,
     "limit": limit
   ] }
@@ -44,8 +48,12 @@ public class GetListOfAdsQuery: GraphQLQuery {
         "userid": .variable("userID"),
         "filterBy": .variable("filterBy"),
         "offset": .variable("offset"),
-        "limit": .variable("limit")
+        "limit": .variable("limit"),
+        "contentFilterBy": .variable("contentFilterBy")
       ]),
+    ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      GetListOfAdsQuery.Data.self
     ] }
 
     public var listAdvertisementPosts: ListAdvertisementPosts { __data["listAdvertisementPosts"] }
@@ -64,6 +72,9 @@ public class GetListOfAdsQuery: GraphQLQuery {
         .field("ResponseCode", String?.self),
         .field("counter", Int.self),
         .field("affectedRows", [AffectedRow]?.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        GetListOfAdsQuery.Data.ListAdvertisementPosts.self
       ] }
 
       @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")
@@ -86,6 +97,9 @@ public class GetListOfAdsQuery: GraphQLQuery {
           .field("advertisement", Advertisement.self),
           .field("post", Post.self),
         ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          GetListOfAdsQuery.Data.ListAdvertisementPosts.AffectedRow.self
+        ] }
 
         public var advertisement: Advertisement { __data["advertisement"] }
         public var post: Post { __data["post"] }
@@ -107,6 +121,9 @@ public class GetListOfAdsQuery: GraphQLQuery {
             .field("enddate", GQLOperationsUser.Date.self),
             .field("createdat", GQLOperationsUser.Date.self),
             .field("user", User.self),
+          ] }
+          public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+            GetListOfAdsQuery.Data.ListAdvertisementPosts.AffectedRow.Advertisement.self
           ] }
 
           public var advertisementid: GQLOperationsUser.ID { __data["advertisementid"] }
@@ -136,17 +153,24 @@ public class GetListOfAdsQuery: GraphQLQuery {
               .field("isfriend", Bool?.self),
               .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>.self),
               .field("hasActiveReports", Bool.self),
+              .field("isHiddenForUsers", Bool.self),
+            ] }
+            public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+              GetListOfAdsQuery.Data.ListAdvertisementPosts.AffectedRow.Advertisement.User.self
             ] }
 
             public var id: GQLOperationsUser.ID { __data["id"] }
             public var username: String? { __data["username"] }
             public var slug: Int? { __data["slug"] }
             public var img: String? { __data["img"] }
+            @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
             public var isfollowed: Bool? { __data["isfollowed"] }
+            @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
             public var isfollowing: Bool? { __data["isfollowing"] }
             public var isfriend: Bool? { __data["isfriend"] }
             public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }
             public var hasActiveReports: Bool { __data["hasActiveReports"] }
+            public var isHiddenForUsers: Bool { __data["isHiddenForUsers"] }
           }
         }
 
@@ -169,6 +193,7 @@ public class GetListOfAdsQuery: GraphQLQuery {
             .field("createdat", GQLOperationsUser.Date.self),
             .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>.self),
             .field("hasActiveReports", Bool.self),
+            .field("isHiddenForUsers", Bool.self),
             .field("amountlikes", Int.self),
             .field("amountviews", Int.self),
             .field("amountcomments", Int.self),
@@ -183,6 +208,9 @@ public class GetListOfAdsQuery: GraphQLQuery {
             .field("url", String.self),
             .field("user", User.self),
           ] }
+          public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+            GetListOfAdsQuery.Data.ListAdvertisementPosts.AffectedRow.Post.self
+          ] }
 
           public var id: GQLOperationsUser.ID { __data["id"] }
           public var contenttype: String { __data["contenttype"] }
@@ -193,6 +221,7 @@ public class GetListOfAdsQuery: GraphQLQuery {
           public var createdat: GQLOperationsUser.Date { __data["createdat"] }
           public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }
           public var hasActiveReports: Bool { __data["hasActiveReports"] }
+          public var isHiddenForUsers: Bool { __data["isHiddenForUsers"] }
           public var amountlikes: Int { __data["amountlikes"] }
           public var amountviews: Int { __data["amountviews"] }
           public var amountcomments: Int { __data["amountcomments"] }
@@ -226,17 +255,24 @@ public class GetListOfAdsQuery: GraphQLQuery {
               .field("isfriend", Bool?.self),
               .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>.self),
               .field("hasActiveReports", Bool.self),
+              .field("isHiddenForUsers", Bool.self),
+            ] }
+            public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+              GetListOfAdsQuery.Data.ListAdvertisementPosts.AffectedRow.Post.User.self
             ] }
 
             public var id: GQLOperationsUser.ID { __data["id"] }
             public var username: String? { __data["username"] }
             public var slug: Int? { __data["slug"] }
             public var img: String? { __data["img"] }
+            @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
             public var isfollowed: Bool? { __data["isfollowed"] }
+            @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
             public var isfollowing: Bool? { __data["isfollowing"] }
             public var isfriend: Bool? { __data["isfriend"] }
             public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }
             public var hasActiveReports: Bool { __data["hasActiveReports"] }
+            public var isHiddenForUsers: Bool { __data["isHiddenForUsers"] }
           }
         }
       }

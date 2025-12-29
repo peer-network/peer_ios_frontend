@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let GetDailyResponse = ApolloAPI.Object(
     typename: "GetDailyResponse",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

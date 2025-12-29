@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let PostEligibilityResponse = ApolloAPI.Object(
     typename: "PostEligibilityResponse",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

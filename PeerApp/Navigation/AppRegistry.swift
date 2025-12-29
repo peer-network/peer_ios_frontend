@@ -48,6 +48,12 @@ extension View {
                 case .transfer(let recipient, let amount):
                     TransferPageView(recipient: recipient, amount: amount)
                         .toolbar(.hidden, for: .navigationBar)
+                case .transferV2(let balance):
+                    TransferView(balance: balance)
+                        .toolbar(.hidden, for: .navigationBar)
+                case .transferSummary(let balance, let recipient, let amount, let message):
+                    TransferSummaryView(balance: balance, recipient: recipient, amount: amount, message: message)
+                        .toolbar(.hidden, for: .navigationBar)
                 case .changePassword:
                     EditPasswordView { newPassword, currentPassword in
 #if DEBUG
@@ -114,7 +120,7 @@ extension View {
                         .toolbar(.hidden, for: .navigationBar)
                 case .promotePost(let flowID, let step):
                     PromotePostStepView(flowID: flowID, step: step)
-                           .toolbar(.hidden, for: .navigationBar)
+                        .toolbar(.hidden, for: .navigationBar)
                 case .adsHistoryOverview:
                     AdHistoryOverviewView(viewModel: .init(apiService: apiServiceManager.apiService))
                         .toolbar(.hidden, for: .navigationBar)
@@ -152,20 +158,6 @@ extension View {
                         .presentationDetents([.fraction(0.75), .large])
                         .presentationContentInteraction(.resizes)
                         .withEnvironments()
-//                case .comments(postVM: PostViewModel):
-//                    CommentsView(post: post)
-//                        .presentationDragIndicator(.hidden)
-//                        .presentationCornerRadius(24)
-//                        .ifCondition(!isBackgroundWhite) {
-//                            $0.presentationBackground(.ultraThinMaterial)
-//                        }
-//                        .ifCondition(isBackgroundWhite) {
-//                            $0.presentationBackground(Colors.whitePrimary)
-//                        }
-//                        .presentationDetents([.fraction(0.75), .large])
-//                        .presentationContentInteraction(.resizes)
-//                        .environment(\.isBackgroundWhite, isBackgroundWhite ? true : false)
-//                        .withEnvironments()
                 case .shareImage(let image, let post):
                     ActivityView(image: image, post: post)
                         .withEnvironments()

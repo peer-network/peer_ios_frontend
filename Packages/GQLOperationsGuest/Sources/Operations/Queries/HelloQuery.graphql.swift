@@ -20,6 +20,9 @@ public class HelloQuery: GraphQLQuery {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("hello", Hello?.self),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      HelloQuery.Data.self
+    ] }
 
     public var hello: Hello? { __data["hello"] }
 
@@ -37,6 +40,9 @@ public class HelloQuery: GraphQLQuery {
         .field("currentVersion", String?.self),
         .field("wikiLink", String?.self),
         .field("companyAccountId", GQLOperationsGuest.ID?.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        HelloQuery.Data.Hello.self
       ] }
 
       public var currentuserid: GQLOperationsGuest.ID? { __data["currentuserid"] }

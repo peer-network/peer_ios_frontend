@@ -20,6 +20,9 @@ public class GetUserInfoQuery: GraphQLQuery {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("getUserInfo", GetUserInfo.self),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      GetUserInfoQuery.Data.self
+    ] }
 
     public var getUserInfo: GetUserInfo { __data["getUserInfo"] }
 
@@ -36,6 +39,9 @@ public class GetUserInfoQuery: GraphQLQuery {
         .field("status", String.self),
         .field("ResponseCode", String?.self),
         .field("affectedRows", AffectedRows?.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        GetUserInfoQuery.Data.GetUserInfo.self
       ] }
 
       @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")
@@ -65,6 +71,9 @@ public class GetUserInfoQuery: GraphQLQuery {
           .field("updatedat", GQLOperationsUser.Date?.self),
           .field("userPreferences", UserPreferences?.self),
         ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          GetUserInfoQuery.Data.GetUserInfo.AffectedRows.self
+        ] }
 
         public var userid: GQLOperationsUser.ID { __data["userid"] }
         public var liquidity: GQLOperationsUser.Decimal { __data["liquidity"] }
@@ -89,6 +98,9 @@ public class GetUserInfoQuery: GraphQLQuery {
             .field("__typename", String.self),
             .field("contentFilteringSeverityLevel", GraphQLEnum<GQLOperationsUser.ContentFilterType>?.self),
             .field("onboardingsWereShown", [GraphQLEnum<GQLOperationsUser.OnboardingType>].self),
+          ] }
+          public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+            GetUserInfoQuery.Data.GetUserInfo.AffectedRows.UserPreferences.self
           ] }
 
           public var contentFilteringSeverityLevel: GraphQLEnum<GQLOperationsUser.ContentFilterType>? { __data["contentFilteringSeverityLevel"] }

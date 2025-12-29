@@ -7,7 +7,7 @@ public class GetPostCommentsQuery: GraphQLQuery {
   public static let operationName: String = "GetPostComments"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetPostComments($contentFilterBy: ContentFilterType, $postid: ID!, $commentLimit: Int, $commentOffset: Int) { listPosts( postid: $postid commentLimit: $commentLimit commentOffset: $commentOffset contentFilterBy: $contentFilterBy ) { __typename status ResponseCode affectedRows { __typename amountcomments comments { __typename commentid userid postid parentid content createdat visibilityStatus hasActiveReports amountlikes amountreplies amountreports isliked user { __typename id username slug img visibilityStatus hasActiveReports isfollowed isfollowing isfriend } } } } }"#
+      #"query GetPostComments($contentFilterBy: ContentFilterType, $postid: ID!, $commentLimit: Int, $commentOffset: Int) { listPosts( postid: $postid commentLimit: $commentLimit commentOffset: $commentOffset contentFilterBy: $contentFilterBy ) { __typename status ResponseCode affectedRows { __typename amountcomments comments { __typename commentid userid postid parentid content createdat visibilityStatus hasActiveReports isHiddenForUsers amountlikes amountreplies amountreports isliked user { __typename id username slug img visibilityStatus isHiddenForUsers hasActiveReports isfollowed isfollowing isfriend } } } } }"#
     ))
 
   public var contentFilterBy: GraphQLNullable<GraphQLEnum<ContentFilterType>>
@@ -47,6 +47,9 @@ public class GetPostCommentsQuery: GraphQLQuery {
         "contentFilterBy": .variable("contentFilterBy")
       ]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      GetPostCommentsQuery.Data.self
+    ] }
 
     public var listPosts: ListPosts { __data["listPosts"] }
 
@@ -63,6 +66,9 @@ public class GetPostCommentsQuery: GraphQLQuery {
         .field("status", String.self),
         .field("ResponseCode", String?.self),
         .field("affectedRows", [AffectedRow]?.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        GetPostCommentsQuery.Data.ListPosts.self
       ] }
 
       @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")
@@ -83,6 +89,9 @@ public class GetPostCommentsQuery: GraphQLQuery {
           .field("__typename", String.self),
           .field("amountcomments", Int.self),
           .field("comments", [Comment].self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          GetPostCommentsQuery.Data.ListPosts.AffectedRow.self
         ] }
 
         public var amountcomments: Int { __data["amountcomments"] }
@@ -106,11 +115,15 @@ public class GetPostCommentsQuery: GraphQLQuery {
             .field("createdat", GQLOperationsUser.Date.self),
             .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>.self),
             .field("hasActiveReports", Bool.self),
+            .field("isHiddenForUsers", Bool.self),
             .field("amountlikes", Int.self),
             .field("amountreplies", Int.self),
             .field("amountreports", Int.self),
             .field("isliked", Bool.self),
             .field("user", User.self),
+          ] }
+          public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+            GetPostCommentsQuery.Data.ListPosts.AffectedRow.Comment.self
           ] }
 
           public var commentid: GQLOperationsUser.ID { __data["commentid"] }
@@ -121,6 +134,7 @@ public class GetPostCommentsQuery: GraphQLQuery {
           public var createdat: GQLOperationsUser.Date { __data["createdat"] }
           public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }
           public var hasActiveReports: Bool { __data["hasActiveReports"] }
+          public var isHiddenForUsers: Bool { __data["isHiddenForUsers"] }
           public var amountlikes: Int { __data["amountlikes"] }
           public var amountreplies: Int { __data["amountreplies"] }
           public var amountreports: Int { __data["amountreports"] }
@@ -142,10 +156,14 @@ public class GetPostCommentsQuery: GraphQLQuery {
               .field("slug", Int?.self),
               .field("img", String?.self),
               .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>.self),
+              .field("isHiddenForUsers", Bool.self),
               .field("hasActiveReports", Bool.self),
               .field("isfollowed", Bool?.self),
               .field("isfollowing", Bool?.self),
               .field("isfriend", Bool?.self),
+            ] }
+            public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+              GetPostCommentsQuery.Data.ListPosts.AffectedRow.Comment.User.self
             ] }
 
             public var id: GQLOperationsUser.ID { __data["id"] }
@@ -153,8 +171,11 @@ public class GetPostCommentsQuery: GraphQLQuery {
             public var slug: Int? { __data["slug"] }
             public var img: String? { __data["img"] }
             public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }
+            public var isHiddenForUsers: Bool { __data["isHiddenForUsers"] }
             public var hasActiveReports: Bool { __data["hasActiveReports"] }
+            @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
             public var isfollowed: Bool? { __data["isfollowed"] }
+            @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
             public var isfollowing: Bool? { __data["isfollowing"] }
             public var isfriend: Bool? { __data["isfriend"] }
           }

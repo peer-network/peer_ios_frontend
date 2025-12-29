@@ -29,6 +29,9 @@ public class PromotePostPinnedMutation: GraphQLMutation {
         "advertisePlan": "PINNED"
       ]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      PromotePostPinnedMutation.Data.self
+    ] }
 
     public var advertisePostPinned: AdvertisePostPinned { __data["advertisePostPinned"] }
 
@@ -46,8 +49,12 @@ public class PromotePostPinnedMutation: GraphQLMutation {
         .field("ResponseCode", String?.self),
         .field("affectedRows", [AffectedRow?]?.self),
       ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        PromotePostPinnedMutation.Data.AdvertisePostPinned.self
+      ] }
 
       public var status: String { __data["status"] }
+      @available(*, deprecated, message: "use meta.ResponseCode . this field will be removed after 15 October`.")
       public var responseCode: String? { __data["ResponseCode"] }
       public var affectedRows: [AffectedRow?]? { __data["affectedRows"] }
 
@@ -62,6 +69,9 @@ public class PromotePostPinnedMutation: GraphQLMutation {
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("timeframeEnd", GQLOperationsUser.Date.self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          PromotePostPinnedMutation.Data.AdvertisePostPinned.AffectedRow.self
         ] }
 
         public var timeframeEnd: GQLOperationsUser.Date { __data["timeframeEnd"] }
