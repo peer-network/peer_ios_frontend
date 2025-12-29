@@ -7,64 +7,7 @@
 
 import SwiftUI
 import DesignSystem
-
-enum AppTab: Int, Identifiable, CaseIterable {
-    case feed
-    case explore
-    case newPost
-    case wallet
-    case profile
-
-    var id: Int {
-        rawValue
-    }
-    
-    @ViewBuilder
-    func makeContentView() -> some View {
-        switch self {
-            case .feed:
-                FeedTab()
-            case .explore:
-                ExploreTab()
-            case .newPost:
-                PostCreationTab()
-            case .profile:
-                ProfileTab()
-            case .wallet:
-                WalletTab()
-        }
-    }
-    
-    var icon: Image {
-        switch self {
-            case .feed:
-                Icons.house
-            case .explore:
-                Icons.magnifyingglass
-            case .profile:
-                Icons.person
-            case .newPost:
-                Icons.plustSquare
-            case .wallet:
-                Icons.wallet
-        }
-    }
-
-    var iconFilled: Image {
-        switch self {
-            case .feed:
-                Icons.houseFill
-            case .explore:
-                Icons.magnifyingglassFill
-            case .profile:
-                Icons.personFill
-            case .newPost:
-                Icons.plustSquareFill
-            case .wallet:
-                Icons.walletFill
-        }
-    }
-}
+import Environment
 
 final class AppTabManager: ObservableObject {
     enum TabEntries: String {

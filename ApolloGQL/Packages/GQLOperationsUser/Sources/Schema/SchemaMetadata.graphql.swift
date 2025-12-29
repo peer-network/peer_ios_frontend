@@ -1,0 +1,79 @@
+// @generated
+// This file was automatically generated and should not be edited.
+
+import ApolloAPI
+
+public protocol SelectionSet: ApolloAPI.SelectionSet & ApolloAPI.RootSelectionSet
+where Schema == GQLOperationsUser.SchemaMetadata {}
+
+public protocol InlineFragment: ApolloAPI.SelectionSet & ApolloAPI.InlineFragment
+where Schema == GQLOperationsUser.SchemaMetadata {}
+
+public protocol MutableSelectionSet: ApolloAPI.MutableRootSelectionSet
+where Schema == GQLOperationsUser.SchemaMetadata {}
+
+public protocol MutableInlineFragment: ApolloAPI.MutableSelectionSet & ApolloAPI.InlineFragment
+where Schema == GQLOperationsUser.SchemaMetadata {}
+
+public enum SchemaMetadata: ApolloAPI.SchemaMetadata {
+  public static let configuration: any ApolloAPI.SchemaConfiguration.Type = SchemaConfiguration.self
+
+  public static func objectType(forTypename typename: String) -> ApolloAPI.Object? {
+    switch typename {
+    case "AdvCreator": return GQLOperationsUser.Objects.AdvCreator
+    case "Advertisement": return GQLOperationsUser.Objects.Advertisement
+    case "AdvertisementHistoryResult": return GQLOperationsUser.Objects.AdvertisementHistoryResult
+    case "AdvertisementPost": return GQLOperationsUser.Objects.AdvertisementPost
+    case "AdvertisementRow": return GQLOperationsUser.Objects.AdvertisementRow
+    case "BasicUserInfo": return GQLOperationsUser.Objects.BasicUserInfo
+    case "BlockedUser": return GQLOperationsUser.Objects.BlockedUser
+    case "BlockedUsers": return GQLOperationsUser.Objects.BlockedUsers
+    case "BlockedUsersResponse": return GQLOperationsUser.Objects.BlockedUsersResponse
+    case "Comment": return GQLOperationsUser.Objects.Comment
+    case "CommentResponse": return GQLOperationsUser.Objects.CommentResponse
+    case "CurrentLiquidity": return GQLOperationsUser.Objects.CurrentLiquidity
+    case "DailyFreeResponse": return GQLOperationsUser.Objects.DailyFreeResponse
+    case "DefaultResponse": return GQLOperationsUser.Objects.DefaultResponse
+    case "FollowRelations": return GQLOperationsUser.Objects.FollowRelations
+    case "FollowRelationsResponse": return GQLOperationsUser.Objects.FollowRelationsResponse
+    case "FollowStatusResponse": return GQLOperationsUser.Objects.FollowStatusResponse
+    case "GetDailyResponse": return GQLOperationsUser.Objects.GetDailyResponse
+    case "HelloResponse": return GQLOperationsUser.Objects.HelloResponse
+    case "ListAdvertisementData": return GQLOperationsUser.Objects.ListAdvertisementData
+    case "ListAdvertisementPostsResponse": return GQLOperationsUser.Objects.ListAdvertisementPostsResponse
+    case "ListedAdvertisementData": return GQLOperationsUser.Objects.ListedAdvertisementData
+    case "Mutation": return GQLOperationsUser.Objects.Mutation
+    case "Post": return GQLOperationsUser.Objects.Post
+    case "PostEligibilityResponse": return GQLOperationsUser.Objects.PostEligibilityResponse
+    case "PostInteractionResponse": return GQLOperationsUser.Objects.PostInteractionResponse
+    case "PostListResponse": return GQLOperationsUser.Objects.PostListResponse
+    case "PostResponse": return GQLOperationsUser.Objects.PostResponse
+    case "Profile": return GQLOperationsUser.Objects.Profile
+    case "ProfileInfo": return GQLOperationsUser.Objects.ProfileInfo
+    case "ProfileUser": return GQLOperationsUser.Objects.ProfileUser
+    case "Query": return GQLOperationsUser.Objects.Query
+    case "ReferralInfoResponse": return GQLOperationsUser.Objects.ReferralInfoResponse
+    case "ReferralListResponse": return GQLOperationsUser.Objects.ReferralListResponse
+    case "ReferralUsers": return GQLOperationsUser.Objects.ReferralUsers
+    case "Tag": return GQLOperationsUser.Objects.Tag
+    case "TagSearchResponse": return GQLOperationsUser.Objects.TagSearchResponse
+    case "TotalAdvertisementHistoryStats": return GQLOperationsUser.Objects.TotalAdvertisementHistoryStats
+    case "TransactionFeeSummary": return GQLOperationsUser.Objects.TransactionFeeSummary
+    case "TransactionHistoryItem": return GQLOperationsUser.Objects.TransactionHistoryItem
+    case "TransactionHistoryResponse": return GQLOperationsUser.Objects.TransactionHistoryResponse
+    case "TransferTokenResponse": return GQLOperationsUser.Objects.TransferTokenResponse
+    case "User": return GQLOperationsUser.Objects.User
+    case "UserFriendsResponse": return GQLOperationsUser.Objects.UserFriendsResponse
+    case "UserInfo": return GQLOperationsUser.Objects.UserInfo
+    case "UserInfoResponse": return GQLOperationsUser.Objects.UserInfoResponse
+    case "UserListResponse": return GQLOperationsUser.Objects.UserListResponse
+    case "UserPreferences": return GQLOperationsUser.Objects.UserPreferences
+    case "UserPreferencesResponse": return GQLOperationsUser.Objects.UserPreferencesResponse
+    default: return nil
+    }
+  }
+}
+
+public enum Objects {}
+public enum Interfaces {}
+public enum Unions {}

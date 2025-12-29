@@ -282,6 +282,9 @@ public struct RowUser: Identifiable, Hashable {
         self.image = image
         self.isFollowed = false
         self.isFollowing = false
+        self.hasActiveReports = gqlUser.hasActiveReports
+        self.isHiddenForUsers = gqlUser.isHiddenForUsers
+        self.visibilityStatus = .normalizedValue(gqlUser.visibilityStatus.value)
     }
 
     public init?(gqlUser: GetTransactionHistoryQuery.Data.TransactionHistory.AffectedRow.Sender) {
@@ -300,6 +303,9 @@ public struct RowUser: Identifiable, Hashable {
         self.image = image
         self.isFollowed = false
         self.isFollowing = false
+        self.hasActiveReports = gqlUser.hasActiveReports
+        self.isHiddenForUsers = gqlUser.isHiddenForUsers
+        self.visibilityStatus = .normalizedValue(gqlUser.visibilityStatus.value)
     }
 }
 

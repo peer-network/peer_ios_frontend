@@ -8,8 +8,11 @@
 import SwiftUI
 import DesignSystem
 import Models
+import Environment
 
 struct TransactionsListView: View {
+    @Environment(\.tabSwitch) private var tabSwitch
+
     @ObservedObject var viewModel: WalletViewModel
     @Binding var isHeaderAtTop: Bool
     let scrollProxy: ScrollViewProxy
@@ -110,9 +113,9 @@ struct TransactionsListView: View {
                 .foregroundStyle(Colors.whiteSecondary)
                 .multilineTextAlignment(.center)
 
-            let buttonConfig = StateButtonConfig(buttonSize: .small, buttonType: .secondary, title: "Create new post")
+            let buttonConfig = StateButtonConfig(buttonSize: .small, buttonType: .secondary, title: "Create new post", icon: Icons.arrowNormal, iconPlacement: .trailing)
             StateButton(config: buttonConfig) {
-                // TODO: Add action to switch tab
+                tabSwitch(.newPost)
             }
             .fixedSize()
         }

@@ -187,7 +187,6 @@
 				AC104D652DB7A864005F07F0 /* Analytics in Frameworks */,
 				7EE144D32D1454AB0054FBB2 /* Environment in Frameworks */,
 				AC7BD8BA2DEDCEEE0094BC9A /* FirebaseAnalytics in Frameworks */,
-				ACA9309B2EE84EE000A11542 /* Post in Frameworks */,
 				7E3C09872D130AEF001D8227 /* Networking in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1141,10 +1140,6 @@
 		7E2EEA6F2D1991A10022B381 /* XCLocalSwiftPackageReference "Packages/Networking" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/Networking;
-		};
-		ACA930992EE84EE000A11542 /* XCLocalSwiftPackageReference "Packages/Post" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = Packages/Post;
 		};
 /* End XCLocalSwiftPackageReference section */
 

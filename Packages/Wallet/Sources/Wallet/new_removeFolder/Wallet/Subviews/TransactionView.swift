@@ -291,12 +291,12 @@ struct TransactionView: View {
             case .dislike:
                 AnyView(Text("Dislike"))
             case .transferTo:
-                AnyView(HStack(spacing: 0) {
+                AnyView(HStack(spacing: 1.57) {
                     Text("To ***@\(transaction.recipient.username)***").appFont(.bodyBold)
                     Text("#\(String(transaction.recipient.slug))").foregroundStyle(Colors.whiteSecondary).appFont(.bodyRegular)
                 })
             case .transferFrom:
-                AnyView(HStack(spacing: 0) {
+                AnyView(HStack(spacing: 1.57) {
                     Text("From ***@\(transaction.sender.username)***").appFont(.bodyBold)
                     Text("#\(String(transaction.sender.slug))").foregroundStyle(Colors.whiteSecondary).appFont(.bodyRegular)
                 })

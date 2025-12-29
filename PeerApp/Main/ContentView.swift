@@ -80,6 +80,9 @@ struct ContentView: View {
         .withSheetDestinations(sheetDestinations: $appRouter.presentedSheet, apiServiceManager: apiManager)
         .environment(\.selectedTabScrollToTop, selectedTabScrollToTop)
         .environment(\.selectedTabEmptyPath, selectedTabEmptyPath)
+        .environment(\.tabSwitch, TabSwitchAction { tab in
+            withAnimation { updateTab(with: tab) }
+        })
         .ignoresSafeArea(.keyboard)
         .overlay {
             if let popupActionType = popupManager.currentActionFeedbackType {
