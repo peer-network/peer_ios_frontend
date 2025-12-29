@@ -30,12 +30,12 @@ struct CommentsListView: View {
                 .foregroundStyle(Colors.whitePrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.bottom, 5)
-                .padding(.leading, 10)
+                .padding(.leading, 20)
 
             ScrollView {
                 LazyVStack(spacing: 10) {
                     PostDescriptionComment(postVM: viewModel, isInFeed: false)
-                        .padding(.horizontal, 10)
+                        .padding(.horizontal, 20)
 
                     switch viewModel.state {
                         case .loading:
@@ -45,7 +45,7 @@ struct CommentsListView: View {
                                     .allowsHitTesting(false)
                                     .skeleton(isRedacted: true)
                             }
-                            .padding(.horizontal, 10)
+                            .padding(.horizontal, 20)
                         case .display:
                             if viewModel.comments.isEmpty {
                                 Text("No comments yet...")
@@ -53,7 +53,7 @@ struct CommentsListView: View {
                             } else {
                                 ForEach(viewModel.comments) { comment in
                                     SingleCommentView(comment: comment)
-                                        .padding(.horizontal, 10)
+                                        .padding(.horizontal, 20)
                                 }
 
                                 if viewModel.hasMoreComments {
@@ -77,17 +77,20 @@ struct CommentsListView: View {
             .padding(.bottom, 5)
             .padding(.top, 5)
 
-            if !viewModel.showIllegalBlur {
-                HStack(alignment: .center, spacing: 10) {
-                    if let user = AccountManager.shared.user {
-                        ProfileAvatarView(url: user.imageURL, name: user.username, config: .comment, ignoreCache: true)
-                    }
+          if !viewModel.showIllegalBlur {
+            HStack(alignment: .center, spacing: 20) {
+                if let user = AccountManager.shared.user {
+                    ProfileAvatarView(url: user.imageURL, name: user.username, config: .comment, ignoreCache: true)
+                }
 
                     commentTextField
                 }
                 .padding(.top, 5)
                 .padding(.horizontal, 10)
+          }
             }
+            .padding(.top, 5)
+            .padding(.horizontal, 20)
         }
         .padding(.vertical, 10)
         .onFirstAppear {
@@ -119,29 +122,20 @@ struct CommentsListView: View {
         .contentShape(Rectangle())
     }
 
+    @ViewBuilder
     private var sendCommentButton: some View {
-        Button {
-            Task {
-                do {
-                    try await viewModel.checkCommentRequirements()
-                } catch {
-                    showPopup(
-                        text: error.userFriendlyDescription
-                    )
-                }
+        let btnCfg = StateButtonConfig(buttonSize: .small, buttonType: .primary, title: "", icon: Icons.arrowNormal, iconPlacement: .trailing)
+        AsyncStateButton(config: btnCfg) {
+            do {
+                try await viewModel.checkCommentRequirements()
+            } catch {
+                showPopup(
+                    text: error.userFriendlyDescription
+                )
             }
-        } label: {
-            Circle()
-                .foregroundStyle(Gradients.activeButtonBlue)
-                .frame(width: 33, height: 33)
-                .overlay {
-                    Icons.arrowDownNormal
-                        .iconSize(height: 22)
-                        .rotationEffect(.degrees(270))
-                        .foregroundStyle(Colors.whitePrimary)
-                }
         }
         .disabled(viewModel.commentText.isEmpty)
+        .fixedSize()
     }
 
     private var contextMenu: some View {

@@ -131,8 +131,8 @@ iOSInjectionProject/
 
 
 
-ApolloGQL/apolloconfig.user.json
-ApolloGQL/apolloconfig.guest.json
+ApolloGQL/apollo-codegen-config-guest.json
+ApolloGQL/apollo-codegen-config-user.json
 
 PeerApp/GoogleService-Info.plist
 Scripts/*.sh

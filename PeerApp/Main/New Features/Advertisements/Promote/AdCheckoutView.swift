@@ -109,9 +109,9 @@ struct AdCheckoutView: View {
                         .frame(maxWidth: .infinity)
                         .layoutPriority(-1)
 
-                        Icons.arrowDown
-                            .iconSize(height: 8)
-                            .rotationEffect(expandDistribution ? .degrees(180) : .degrees(0))
+                    Icons.arrowDown
+                        .iconSize(height: 8)
+                        .rotationEffect(expandDistribution ? .degrees(180) : .degrees(0))
                 }
                 .contentShape(.rect)
             }

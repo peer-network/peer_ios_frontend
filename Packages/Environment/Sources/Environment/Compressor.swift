@@ -51,7 +51,8 @@ public final class Compressor {
                     }
                     
                     if data.count > maxSize {
-                        continuation.resume(throwing: CompressorError.noData)
+//                        continuation.resume(throwing: CompressorError.noData) TODO: Handle errors somehow
+                        continuation.resume(returning: data)
                     } else {
                         continuation.resume(returning: data)
                     }

@@ -1,9 +1,0 @@
-mutation TransferTokens($recipient: ID!, $numberoftokens: Int!) {
-    resolveTransfer(
-        recipient: $recipient
-        numberoftokens: $numberoftokens
-    ) {
-        status
-        ResponseCode
-    }
-}

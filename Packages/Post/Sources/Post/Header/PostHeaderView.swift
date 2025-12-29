@@ -86,7 +86,7 @@ struct PostHeaderView: View {
             if showFollowButton,
                !redactionReasons.contains(.placeholder),
                !accountManager.isCurrentUser(id: postVM.post.owner.id),
-               !postVM.post.owner.isFollowed
+               !postVM.post.owner.isFollowing
             {
                 let vm = FollowButtonViewModel(
                     id: postVM.post.owner.id,
