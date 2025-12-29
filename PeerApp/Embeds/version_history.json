@@ -179,5 +179,14 @@
             "Illegal content handling: we’ve updated how Peer manages illegal content to ensure harmful material is removed quickly and consistently",
             "Updated EULA: all moderation and content rules have been refreshed and are now clearly stated in our updated EULA"
         ]
+    },
+    {
+        "version": "1.12.0",
+        "date": "30 Dec 2025",
+        "releaseNotes": [
+            "Transaction History: view your transactions with detailed breakdowns, timestamps, and messages where applicable. Note: First version. Daily Mint and older transactions coming soon",
+            "Token Transfers with messages: add an optional note when sending Peer Tokens - emojis included",
+            "Updated transfer flow: Clear summaries, better validations, and improved error handling for a smoother experience"
+        ]
     }
 ]

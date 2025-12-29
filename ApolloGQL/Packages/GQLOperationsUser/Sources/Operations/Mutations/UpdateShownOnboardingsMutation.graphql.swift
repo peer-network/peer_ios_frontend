@@ -26,6 +26,9 @@ public class UpdateShownOnboardingsMutation: GraphQLMutation {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("updateUserPreferences", UpdateUserPreferences.self, arguments: ["userPreferences": ["shownOnboardings": .variable("shownOnboardings")]]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      UpdateShownOnboardingsMutation.Data.self
+    ] }
 
     public var updateUserPreferences: UpdateUserPreferences { __data["updateUserPreferences"] }
 
@@ -42,6 +45,9 @@ public class UpdateShownOnboardingsMutation: GraphQLMutation {
         .field("status", String.self),
         .field("ResponseCode", String?.self),
         .field("affectedRows", AffectedRows?.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        UpdateShownOnboardingsMutation.Data.UpdateUserPreferences.self
       ] }
 
       @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")
@@ -61,6 +67,9 @@ public class UpdateShownOnboardingsMutation: GraphQLMutation {
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("onboardingsWereShown", [GraphQLEnum<GQLOperationsUser.OnboardingType>].self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          UpdateShownOnboardingsMutation.Data.UpdateUserPreferences.AffectedRows.self
         ] }
 
         public var onboardingsWereShown: [GraphQLEnum<GQLOperationsUser.OnboardingType>] { __data["onboardingsWereShown"] }

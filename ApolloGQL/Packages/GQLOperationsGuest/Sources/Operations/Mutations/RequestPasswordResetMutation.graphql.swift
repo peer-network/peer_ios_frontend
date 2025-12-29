@@ -26,6 +26,9 @@ public class RequestPasswordResetMutation: GraphQLMutation {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("requestPasswordReset", RequestPasswordReset.self, arguments: ["email": .variable("email")]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      RequestPasswordResetMutation.Data.self
+    ] }
 
     public var requestPasswordReset: RequestPasswordReset { __data["requestPasswordReset"] }
 
@@ -42,6 +45,9 @@ public class RequestPasswordResetMutation: GraphQLMutation {
         .field("status", String.self),
         .field("ResponseCode", String?.self),
         .field("nextAttemptAt", String?.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        RequestPasswordResetMutation.Data.RequestPasswordReset.self
       ] }
 
       @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")

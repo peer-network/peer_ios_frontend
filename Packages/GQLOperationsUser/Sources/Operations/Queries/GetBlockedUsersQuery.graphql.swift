@@ -7,7 +7,7 @@ public class GetBlockedUsersQuery: GraphQLQuery {
   public static let operationName: String = "GetBlockedUsers"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetBlockedUsers($offset: Int, $limit: Int) { listBlockedUsers(offset: $offset, limit: $limit) { __typename status ResponseCode affectedRows { __typename iBlocked { __typename userid img username slug visibilityStatus } } } }"#
+      #"query GetBlockedUsers($offset: Int, $limit: Int) { listBlockedUsers(offset: $offset, limit: $limit) { __typename status ResponseCode affectedRows { __typename iBlocked { __typename userid img username slug visibilityStatus hasActiveReports isHiddenForUsers } } } }"#
     ))
 
   public var offset: GraphQLNullable<Int>
@@ -37,6 +37,9 @@ public class GetBlockedUsersQuery: GraphQLQuery {
         "limit": .variable("limit")
       ]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      GetBlockedUsersQuery.Data.self
+    ] }
 
     public var listBlockedUsers: ListBlockedUsers { __data["listBlockedUsers"] }
 
@@ -53,6 +56,9 @@ public class GetBlockedUsersQuery: GraphQLQuery {
         .field("status", String.self),
         .field("ResponseCode", String?.self),
         .field("affectedRows", AffectedRows?.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        GetBlockedUsersQuery.Data.ListBlockedUsers.self
       ] }
 
       @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")
@@ -73,6 +79,9 @@ public class GetBlockedUsersQuery: GraphQLQuery {
           .field("__typename", String.self),
           .field("iBlocked", [IBlocked]?.self),
         ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          GetBlockedUsersQuery.Data.ListBlockedUsers.AffectedRows.self
+        ] }
 
         public var iBlocked: [IBlocked]? { __data["iBlocked"] }
 
@@ -91,6 +100,11 @@ public class GetBlockedUsersQuery: GraphQLQuery {
             .field("username", String?.self),
             .field("slug", Int?.self),
             .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>.self),
+            .field("hasActiveReports", Bool.self),
+            .field("isHiddenForUsers", Bool.self),
+          ] }
+          public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+            GetBlockedUsersQuery.Data.ListBlockedUsers.AffectedRows.IBlocked.self
           ] }
 
           public var userid: String? { __data["userid"] }
@@ -98,6 +112,8 @@ public class GetBlockedUsersQuery: GraphQLQuery {
           public var username: String? { __data["username"] }
           public var slug: Int? { __data["slug"] }
           public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }
+          public var hasActiveReports: Bool { __data["hasActiveReports"] }
+          public var isHiddenForUsers: Bool { __data["isHiddenForUsers"] }
         }
       }
     }

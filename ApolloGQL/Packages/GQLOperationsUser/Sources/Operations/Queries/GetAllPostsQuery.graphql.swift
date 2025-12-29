@@ -97,6 +97,9 @@ public class GetAllPostsQuery: GraphQLQuery {
         "userid": .variable("userid")
       ]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      GetAllPostsQuery.Data.self
+    ] }
 
     public var listPosts: ListPosts { __data["listPosts"] }
 
@@ -113,6 +116,9 @@ public class GetAllPostsQuery: GraphQLQuery {
         .field("status", String.self),
         .field("ResponseCode", String?.self),
         .field("affectedRows", [AffectedRow]?.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        GetAllPostsQuery.Data.ListPosts.self
       ] }
 
       @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")
@@ -154,6 +160,9 @@ public class GetAllPostsQuery: GraphQLQuery {
           .field("hasActiveReports", Bool.self),
           .field("isHiddenForUsers", Bool.self),
           .field("user", User.self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          GetAllPostsQuery.Data.ListPosts.AffectedRow.self
         ] }
 
         public var id: GQLOperationsUser.ID { __data["id"] }
@@ -201,6 +210,9 @@ public class GetAllPostsQuery: GraphQLQuery {
             .field("isfollowing", Bool?.self),
             .field("isfriend", Bool?.self),
           ] }
+          public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+            GetAllPostsQuery.Data.ListPosts.AffectedRow.User.self
+          ] }
 
           public var id: GQLOperationsUser.ID { __data["id"] }
           public var username: String? { __data["username"] }
@@ -209,7 +221,9 @@ public class GetAllPostsQuery: GraphQLQuery {
           public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }
           public var hasActiveReports: Bool { __data["hasActiveReports"] }
           public var isHiddenForUsers: Bool { __data["isHiddenForUsers"] }
+          @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
           public var isfollowed: Bool? { __data["isfollowed"] }
+          @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
           public var isfollowing: Bool? { __data["isfollowing"] }
           public var isfriend: Bool? { __data["isfriend"] }
         }

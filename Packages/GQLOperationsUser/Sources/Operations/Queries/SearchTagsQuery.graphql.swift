@@ -42,6 +42,9 @@ public class SearchTagsQuery: GraphQLQuery {
         "limit": .variable("limit")
       ]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      SearchTagsQuery.Data.self
+    ] }
 
     public var searchTags: SearchTags { __data["searchTags"] }
 
@@ -59,6 +62,9 @@ public class SearchTagsQuery: GraphQLQuery {
         .field("counter", Int.self),
         .field("ResponseCode", String?.self),
         .field("affectedRows", [AffectedRow?]?.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        SearchTagsQuery.Data.SearchTags.self
       ] }
 
       @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")
@@ -79,6 +85,9 @@ public class SearchTagsQuery: GraphQLQuery {
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("name", String.self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          SearchTagsQuery.Data.SearchTags.AffectedRow.self
         ] }
 
         public var name: String { __data["name"] }

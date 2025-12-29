@@ -7,7 +7,7 @@ public class GetMyInviterQuery: GraphQLQuery {
   public static let operationName: String = "GetMyInviter"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetMyInviter { referralList { __typename status ResponseCode affectedRows { __typename invitedBy { __typename id username slug img visibilityStatus hasActiveReports isfollowed isfollowing isfriend } } } }"#
+      #"query GetMyInviter { referralList { __typename status ResponseCode affectedRows { __typename invitedBy { __typename id username slug img visibilityStatus hasActiveReports isHiddenForUsers isfollowed isfollowing isfriend } } } }"#
     ))
 
   public init() {}
@@ -19,6 +19,9 @@ public class GetMyInviterQuery: GraphQLQuery {
     public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.Query }
     public static var __selections: [ApolloAPI.Selection] { [
       .field("referralList", ReferralList.self),
+    ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      GetMyInviterQuery.Data.self
     ] }
 
     public var referralList: ReferralList { __data["referralList"] }
@@ -36,6 +39,9 @@ public class GetMyInviterQuery: GraphQLQuery {
         .field("status", String.self),
         .field("ResponseCode", String?.self),
         .field("affectedRows", AffectedRows.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        GetMyInviterQuery.Data.ReferralList.self
       ] }
 
       @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")
@@ -56,6 +62,9 @@ public class GetMyInviterQuery: GraphQLQuery {
           .field("__typename", String.self),
           .field("invitedBy", InvitedBy?.self),
         ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          GetMyInviterQuery.Data.ReferralList.AffectedRows.self
+        ] }
 
         public var invitedBy: InvitedBy? { __data["invitedBy"] }
 
@@ -75,9 +84,13 @@ public class GetMyInviterQuery: GraphQLQuery {
             .field("img", String?.self),
             .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>.self),
             .field("hasActiveReports", Bool.self),
+            .field("isHiddenForUsers", Bool.self),
             .field("isfollowed", Bool?.self),
             .field("isfollowing", Bool?.self),
             .field("isfriend", Bool?.self),
+          ] }
+          public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+            GetMyInviterQuery.Data.ReferralList.AffectedRows.InvitedBy.self
           ] }
 
           public var id: GQLOperationsUser.ID { __data["id"] }
@@ -86,7 +99,10 @@ public class GetMyInviterQuery: GraphQLQuery {
           public var img: String? { __data["img"] }
           public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }
           public var hasActiveReports: Bool { __data["hasActiveReports"] }
+          public var isHiddenForUsers: Bool { __data["isHiddenForUsers"] }
+          @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
           public var isfollowed: Bool? { __data["isfollowed"] }
+          @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
           public var isfollowing: Bool? { __data["isfollowing"] }
           public var isfriend: Bool? { __data["isfriend"] }
         }

@@ -149,7 +149,7 @@ public final class PostViewModel: ObservableObject {
 // MARK: - Post Actions
 
 extension PostViewModel {
-    private func fetchBalance() async throws(APIError) -> Double {
+    private func fetchBalance() async throws(APIError) -> Decimal {
         let result = await apiService.fetchLiquidityState()
 
         switch result {
@@ -184,7 +184,7 @@ extension PostViewModel {
             let balance = try await fetchBalance()
 
             // Check if user has enough tokens for paid like
-            guard balance >= ActionFeedbackType.noFreeLikes.priceInTokens else {
+            guard balance >= Decimal(ActionFeedbackType.noFreeLikes.priceInTokens) else {
                 PopupManager.shared.showActionFeedback(type: .noTokensForLike(balance)) {
                     PopupManager.shared.hideActionFeedbackPopup()
                 } cancel: {
@@ -270,7 +270,7 @@ extension PostViewModel {
         if enablePostActionsConfirmation {
             let balance = try await fetchBalance()
 
-            guard balance >= ActionFeedbackType.dislikeConfirmaion.priceInTokens else {
+            guard balance >= Decimal(ActionFeedbackType.dislikeConfirmaion.priceInTokens) else {
                 PopupManager.shared.showActionFeedback(type: .noTokensForDislike(balance)) {
                     PopupManager.shared.hideActionFeedbackPopup()
                 } cancel: {
@@ -471,7 +471,7 @@ extension PostViewModel {
             let balance = try await fetchBalance()
 
             // Check if user has enough tokens for paid comment
-            guard balance >= ActionFeedbackType.noFreeComments.priceInTokens else {
+            guard balance >= Decimal(ActionFeedbackType.noFreeComments.priceInTokens) else {
                 showCommentsSheet = false
                 PopupManager.shared.showActionFeedback(type: .noTokensForComment(balance)) {
                     PopupManager.shared.hideActionFeedbackPopup()

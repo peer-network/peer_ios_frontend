@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let TotalAdvertisementHistoryStats = ApolloAPI.Object(
     typename: "TotalAdvertisementHistoryStats",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

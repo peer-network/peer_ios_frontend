@@ -6,6 +6,7 @@
 //
 
 import GQLOperationsUser
+import Foundation
 
 public enum APIError: Error {
     case unknownError(error: Error)
@@ -109,8 +110,9 @@ public protocol APIService: AnyObject {
     func fetchTags(with query: String) async -> Result<[String], APIError>
     
     //MARK: Wallet
-    func fetchLiquidityState() async -> Result<Double, APIError>
-    func transferTokens(to id: String, amount: Int) async -> Result<Void, APIError>
+    func fetchLiquidityState() async -> Result<Decimal, APIError>
+    func transferTokens(to id: String, amount: Foundation.Decimal, message: String?) async -> Result<Void, APIError>
+    func fetchTransactionsHistory(after offset: Int) async -> Result<[Models.Transaction], APIError>
 
     // MARK: Ads
     func getListOfAds(userID: String?, with contentType: PostContentType, after offset: Int, amount: Int) async -> Result<[Post], APIError>

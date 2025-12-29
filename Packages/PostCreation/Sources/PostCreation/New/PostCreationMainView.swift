@@ -37,7 +37,7 @@ public struct PostCreationMainView: View {
         case title
         case description
     }
-    @FocusState private var focusedField: FocusField?
+    @State private var focusedField: FocusField?
 
     @State private var titleText: String = ""
     @State private var descriptionText: String = ""
@@ -107,7 +107,11 @@ public struct PostCreationMainView: View {
                                     maxLength: postType == .text ? 20000 : 500,
                                     allowNewLines: true,
                                     focusState: $focusedField,
-                                    focusEquals: .description
+                                    focusEquals: .description,
+                                    toolbarButtonTitle: "Done",
+                                    onToolbarButtonTap: {
+                                        focusedField = nil
+                                    }
                                 )
 
                                 if !postCreationVM.error.isEmpty {

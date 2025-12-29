@@ -47,6 +47,9 @@ public class RegisterMutation: GraphQLMutation {
         "referralUuid": .variable("referralUuid")
       ]]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      RegisterMutation.Data.self
+    ] }
 
     public var register: Register { __data["register"] }
 
@@ -63,6 +66,9 @@ public class RegisterMutation: GraphQLMutation {
         .field("status", String.self),
         .field("ResponseCode", String?.self),
         .field("userid", GQLOperationsGuest.ID?.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        RegisterMutation.Data.Register.self
       ] }
 
       @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")

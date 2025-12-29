@@ -95,7 +95,7 @@ final class PostCreationViewModel: NSObject, ObservableObject {
                 .underlineColor: UIColor.clear,
             ],
             range: NSMakeRange(0, postText.string.utf16.count))
-        let hashtagPattern = "#[\\p{L}\\p{N}_]{3,50}"
+        let hashtagPattern = "#[\\p{L}\\p{N}_]{2,53}"
         let urlPattern = #"(?i)\b((https?|ftp):\/\/)?(([\w-]+\.)+[a-z]{2,})(:\d+)?(\/[^\s?#]*)?(\?[^\s#]*)?(#[^\s]*)?\b"#
 
         do {

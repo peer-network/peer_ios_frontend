@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Foundation
 import Models
 
 public enum RouterDestination: Hashable {
@@ -16,6 +17,8 @@ public enum RouterDestination: Hashable {
     case hashTag(tag: String)
     case versionHistory
     case transfer(recipient: RowUser, amount: Int)
+    case transferV2(balance: Foundation.Decimal)
+    case transferSummary(balance: Foundation.Decimal, recipient: RowUser, amount: Foundation.Decimal, message: String?)
     case changePassword
     case changeEmail
     case changeUsername

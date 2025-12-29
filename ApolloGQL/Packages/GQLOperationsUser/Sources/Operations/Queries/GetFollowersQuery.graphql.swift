@@ -47,6 +47,9 @@ public class GetFollowersQuery: GraphQLQuery {
         "limit": .variable("limit")
       ]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      GetFollowersQuery.Data.self
+    ] }
 
     public var listFollowRelations: ListFollowRelations { __data["listFollowRelations"] }
 
@@ -63,6 +66,9 @@ public class GetFollowersQuery: GraphQLQuery {
         .field("status", String.self),
         .field("ResponseCode", String?.self),
         .field("affectedRows", AffectedRows?.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        GetFollowersQuery.Data.ListFollowRelations.self
       ] }
 
       @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")
@@ -82,6 +88,9 @@ public class GetFollowersQuery: GraphQLQuery {
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("followers", [Follower]?.self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          GetFollowersQuery.Data.ListFollowRelations.AffectedRows.self
         ] }
 
         public var followers: [Follower]? { __data["followers"] }
@@ -107,6 +116,9 @@ public class GetFollowersQuery: GraphQLQuery {
             .field("isfollowing", Bool?.self),
             .field("isfriend", Bool?.self),
           ] }
+          public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+            GetFollowersQuery.Data.ListFollowRelations.AffectedRows.Follower.self
+          ] }
 
           public var id: GQLOperationsUser.ID { __data["id"] }
           public var username: String? { __data["username"] }
@@ -115,7 +127,9 @@ public class GetFollowersQuery: GraphQLQuery {
           public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }
           public var isHiddenForUsers: Bool { __data["isHiddenForUsers"] }
           public var hasActiveReports: Bool { __data["hasActiveReports"] }
+          @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
           public var isfollowed: Bool? { __data["isfollowed"] }
+          @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
           public var isfollowing: Bool? { __data["isfollowing"] }
           public var isfriend: Bool? { __data["isfriend"] }
         }

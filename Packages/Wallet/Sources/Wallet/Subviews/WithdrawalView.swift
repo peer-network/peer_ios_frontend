@@ -22,10 +22,12 @@ struct WithdrawalView: View {
                 case .inputAmount:
                     Group {
                         transferHeader
+
                         if let recipient = viewModel.recipient {
                             RowUserView(user: recipient)
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
+
                         TransferAmountInputView()
 
                         Text("A fee of \(viewModel.feePercents)% applies")
@@ -73,48 +75,55 @@ struct WithdrawalView: View {
 struct TransferTileView: View {
     @EnvironmentObject private var viewModel: TransferViewModel
 
-    @State private var isExpanded = false
     @State private var showRecipientPicker: Bool = false
 
     var body: some View {
-        VStack(spacing: 10) {
-            Button {
-                withAnimation {
-                    isExpanded.toggle()
-                }
-            } label: {
-                HStack(alignment: .center, spacing: 10) {
-                    Circle()
-                        .frame(height: 40)
-                        .overlay {
-                            Icons.arrowDownNormal
-                                .iconSize(height: 14.5)
-                                .foregroundStyle(Colors.whitePrimary)
-                                .rotationEffect(.degrees(225))
-                        }
+        Button {
+            //
+        } label: {
+            HStack(alignment: .center, spacing: 10) {
+                Circle()
+                    .frame(height: 40)
+                    .overlay {
+                        Icons.arrowDownNormal
+                            .iconSize(height: 14.5)
+                            .foregroundStyle(Colors.whitePrimary)
+                            .rotationEffect(.degrees(225))
+                    }
 
+                VStack(alignment: .leading, spacing: 0) {
                     Text("Transfer")
-                        .font(.customFont(weight: .regular, style: .footnote))
+                        .appFont(.bodyRegular)
 
                     Spacer()
+                        .frame(minHeight: 0)
+                        .frame(maxHeight: .infinity)
+                        .layoutPriority(-1)
 
-                    Icons.arrowDown
-                        .iconSize(height: 6)
-                        .rotationEffect(.degrees(isExpanded ? 180 : 0))
+                    Text("To user")
+                        .appFont(.smallLabelRegular)
+                        .foregroundStyle(Colors.textSuggestions)
                 }
-                .contentShape(Rectangle())
-            }
+                .frame(height: 40)
 
-            if isExpanded {
-                chooseRecipientButton
+                Spacer()
+                    .frame(minWidth: 0)
+                    .frame(maxWidth: .infinity)
+                    .layoutPriority(-1)
+
+                Icons.arrowDownNormal
+                    .iconSize(height: 15)
+                    .rotationEffect(.degrees(-90))
             }
+            .foregroundStyle(Colors.blackDark)
+            .padding(20)
+            .background {
+                RoundedRectangle(cornerRadius: 25)
+                    .foregroundStyle(Colors.whitePrimary)
+            }
+            .contentShape(.rect)
         }
-        .foregroundStyle(Colors.blackDark)
-        .padding(20)
-        .background {
-            RoundedRectangle(cornerRadius: 25)
-                .foregroundStyle(Colors.whitePrimary)
-        }
+
         .sheet(isPresented: $showRecipientPicker) {
             RecipientPickerSheet { user in
                 withAnimation(.easeInOut(duration: 0.2)) {
@@ -127,34 +136,6 @@ struct TransferTileView: View {
             .presentationDetents([.large])
             .presentationContentInteraction(.resizes)
         }
-    }
-
-    @ViewBuilder
-    private var chooseRecipientButton: some View {
-//        let config = StateButtonConfig(buttonSize: .large, buttonType: .custom(textColor: Colors.blackDark, fillColor: Colors.textActive), title: "Choose recipient", icon: Icons.plus, iconPlacement: .trailing)
-//
-//        StateButton(config: config) {
-//            showRecipientPicker = true
-//        }
-
-        Button {
-            showRecipientPicker = true
-        } label: {
-            HStack(spacing: 10) {
-                Text("Choose recipient")
-                    .font(.customFont(weight: .bold, style: .footnote))
-
-                Icons.plus
-                    .iconSize(height: 11)
-            }
-            .frame(maxWidth: .infinity, alignment: .center)
-            .frame(height: 40)
-            .background {
-                RoundedRectangle(cornerRadius: 25)
-                    .strokeBorder(lineWidth: 1)
-            }
-        }
-        .foregroundStyle(Colors.blackDark)
     }
 }
 
@@ -221,8 +202,8 @@ struct TransferAmountInputView: View {
                 return
             }
 
-            if amount > Int(currentBalance) {
-                self.amount = Int(currentBalance)
+            if amount > (currentBalance as NSDecimalNumber).intValue {
+                self.amount = (currentBalance as NSDecimalNumber).intValue
             }
         }
         .toolbar {

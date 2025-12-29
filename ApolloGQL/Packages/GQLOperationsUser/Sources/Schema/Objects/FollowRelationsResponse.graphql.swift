@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let FollowRelationsResponse = ApolloAPI.Object(
     typename: "FollowRelationsResponse",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

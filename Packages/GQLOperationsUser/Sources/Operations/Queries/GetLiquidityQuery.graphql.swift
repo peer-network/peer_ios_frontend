@@ -20,6 +20,9 @@ public class GetLiquidityQuery: GraphQLQuery {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("balance", Balance.self),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      GetLiquidityQuery.Data.self
+    ] }
 
     public var balance: Balance { __data["balance"] }
 
@@ -37,8 +40,13 @@ public class GetLiquidityQuery: GraphQLQuery {
         .field("ResponseCode", String?.self),
         .field("currentliquidity", GQLOperationsUser.Decimal?.self),
       ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        GetLiquidityQuery.Data.Balance.self
+      ] }
 
+      @available(*, deprecated, message: "use meta.ResponseCode . this field will be removed after 15 October`.")
       public var status: String? { __data["status"] }
+      @available(*, deprecated, message: "use meta.ResponseCode . this field will be removed after 15 October`.")
       public var responseCode: String? { __data["ResponseCode"] }
       public var currentliquidity: GQLOperationsUser.Decimal? { __data["currentliquidity"] }
     }

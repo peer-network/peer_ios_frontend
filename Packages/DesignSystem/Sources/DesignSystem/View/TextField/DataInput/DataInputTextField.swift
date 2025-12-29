@@ -8,14 +8,17 @@
 import SwiftUI
 
 public struct DataInputTextField<Value: Hashable>: View {
+    let backgroundColor: Color
     let leadingIcon: Image?
+    let trailingIcon: Image?
     @Binding var text: String
     let placeholder: String
     let maxLength: Int
     let isSecure: Bool
     let isEditable: Bool
 
-    @FocusState.Binding var focusState: Value?
+    // Use a plain Binding (works with UIKit representable)
+    @Binding var focusState: Value?
     let focusEquals: Value?
 
     let keyboardType: UIKeyboardType
@@ -26,10 +29,61 @@ public struct DataInputTextField<Value: Hashable>: View {
 
     let onSubmit: (() -> Void)?
 
+    let toolbarButtonTitle: String?
+    let onToolbarButtonTap: (() -> Void)?
+
     @State private var showPassword: Bool = false
 
+    // Primary initializer
     public init(
+        backgroundColor: Color = Colors.inactiveDark,
         leadingIcon: Image? = nil,
+        trailingIcon: Image? = nil,
+        text: Binding<String>,
+        placeholder: String,
+        maxLength: Int,
+        isSecure: Bool = false,
+        isEditable: Bool = true,
+        focusState: Binding<Value?>,
+        focusEquals: Value?,
+        keyboardType: UIKeyboardType = .default,
+        textContentType: UITextContentType? = nil,
+        autocorrectionDisabled: Bool = false,
+        autocapitalization: UITextAutocapitalizationType = .sentences,
+        returnKeyType: UIReturnKeyType = .default,
+        onSubmit: (() -> Void)? = nil,
+        toolbarButtonTitle: String? = nil,
+        onToolbarButtonTap: (() -> Void)? = nil
+    ) {
+        self.backgroundColor = backgroundColor
+        self.leadingIcon = leadingIcon
+        self.trailingIcon = trailingIcon
+        self._text = text
+        self.placeholder = placeholder
+        self.maxLength = maxLength
+        self.isSecure = isSecure
+        self.isEditable = isEditable
+
+        self._focusState = focusState
+        self.focusEquals = focusEquals
+
+        self.keyboardType = keyboardType
+        self.textContentType = textContentType
+        self.autocorrectionDisabled = autocorrectionDisabled
+        self.autocapitalization = autocapitalization
+        self.returnKeyType = returnKeyType
+
+        self.onSubmit = onSubmit
+        self.toolbarButtonTitle = toolbarButtonTitle
+        self.onToolbarButtonTap = onToolbarButtonTap
+    }
+
+    // Compatibility initializer (so existing call sites that pass FocusState.Binding still compile)
+    // Note: Focus behavior will still be driven by UIKit; call sites should prefer @State for the focus value.
+    public init(
+        backgroundColor: Color = Colors.inactiveDark,
+        leadingIcon: Image? = nil,
+        trailingIcon: Image? = nil,
         text: Binding<String>,
         placeholder: String,
         maxLength: Int,
@@ -42,22 +96,33 @@ public struct DataInputTextField<Value: Hashable>: View {
         autocorrectionDisabled: Bool = false,
         autocapitalization: UITextAutocapitalizationType = .sentences,
         returnKeyType: UIReturnKeyType = .default,
-        onSubmit: (() -> Void)? = nil
+        onSubmit: (() -> Void)? = nil,
+        toolbarButtonTitle: String? = nil,
+        onToolbarButtonTap: (() -> Void)? = nil
     ) {
-        self.leadingIcon = leadingIcon
-        self._text = text
-        self.placeholder = placeholder
-        self.maxLength = maxLength
-        self.isSecure = isSecure
-        self.isEditable = isEditable
-        self._focusState = focusState
-        self.focusEquals = focusEquals
-        self.keyboardType = keyboardType
-        self.textContentType = textContentType
-        self.autocorrectionDisabled = autocorrectionDisabled
-        self.autocapitalization = autocapitalization
-        self.returnKeyType = returnKeyType
-        self.onSubmit = onSubmit
+        self.init(
+            backgroundColor: backgroundColor,
+            leadingIcon: leadingIcon,
+            trailingIcon: trailingIcon,
+            text: text,
+            placeholder: placeholder,
+            maxLength: maxLength,
+            isSecure: isSecure,
+            isEditable: isEditable,
+            focusState: Binding(
+                get: { focusState.wrappedValue },
+                set: { focusState.wrappedValue = $0 }
+            ),
+            focusEquals: focusEquals,
+            keyboardType: keyboardType,
+            textContentType: textContentType,
+            autocorrectionDisabled: autocorrectionDisabled,
+            autocapitalization: autocapitalization,
+            returnKeyType: returnKeyType,
+            onSubmit: onSubmit,
+            toolbarButtonTitle: toolbarButtonTitle,
+            onToolbarButtonTap: onToolbarButtonTap
+        )
     }
 
     public var body: some View {
@@ -81,15 +146,14 @@ public struct DataInputTextField<Value: Hashable>: View {
                 autocorrectionDisabled: autocorrectionDisabled,
                 autocapitalization: autocapitalization,
                 returnKeyType: returnKeyType,
-                onSubmit: onSubmit
+                onSubmit: onSubmit,
+                toolbarButtonTitle: toolbarButtonTitle,
+                onToolbarButtonTap: onToolbarButtonTap
             )
-            .focused($focusState, equals: isEditable ? focusEquals : nil)
 
             if isSecure && !text.isEmpty {
                 Button {
-                    withAnimation(nil) {
-                        showPassword.toggle()
-                    }
+                    withAnimation(nil) { showPassword.toggle() }
                 } label: {
                     Group {
                         if showPassword {
@@ -105,20 +169,22 @@ public struct DataInputTextField<Value: Hashable>: View {
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(showPassword ? "Hide password" : "Show password")
+            } else if let trailingIcon {
+                trailingIcon
+                    .iconSize(width: 22, height: 22)
+                    .foregroundStyle(Colors.whitePrimary)
             }
         }
         .frame(height: 52)
         .padding(.horizontal, 16)
-        .background {
-            Colors.inactiveDark
-        }
+        .background { backgroundColor }
         .clipShape(RoundedRectangle(cornerRadius: 32))
-        .shadow(color: .black.opacity(0.05), radius: 1, x: 0, y: 1)
         .contentShape(.rect)
-        .onTapGesture {
-            if isEditable {
+        .simultaneousGesture(
+            TapGesture().onEnded {
+                guard isEditable else { return }
                 focusState = focusEquals
             }
-        }
+        )
     }
 }

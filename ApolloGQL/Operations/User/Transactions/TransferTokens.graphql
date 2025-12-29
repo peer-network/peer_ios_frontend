@@ -1,0 +1,10 @@
+mutation TransferTokens($recipient: ID!, $numberoftokens: Decimal!, $message: String) {
+    resolveTransferV2(
+        recipient: $recipient
+        numberoftokens: $numberoftokens
+        message: $message
+    ) {
+        status
+        ResponseCode
+    }
+}

@@ -26,6 +26,9 @@ public class VerifyReferralCodeMutation: GraphQLMutation {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("verifyReferralString", VerifyReferralString.self, arguments: ["referralString": .variable("code")]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      VerifyReferralCodeMutation.Data.self
+    ] }
 
     public var verifyReferralString: VerifyReferralString { __data["verifyReferralString"] }
 
@@ -41,6 +44,9 @@ public class VerifyReferralCodeMutation: GraphQLMutation {
         .field("__typename", String.self),
         .field("status", String.self),
         .field("ResponseCode", String?.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        VerifyReferralCodeMutation.Data.VerifyReferralString.self
       ] }
 
       @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")

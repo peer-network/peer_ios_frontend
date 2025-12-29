@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let Advertisement = ApolloAPI.Object(
     typename: "Advertisement",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

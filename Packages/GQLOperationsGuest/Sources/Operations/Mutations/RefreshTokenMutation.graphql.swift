@@ -26,6 +26,9 @@ public class RefreshTokenMutation: GraphQLMutation {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("refreshToken", RefreshToken.self, arguments: ["refreshToken": .variable("refreshToken")]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      RefreshTokenMutation.Data.self
+    ] }
 
     public var refreshToken: RefreshToken { __data["refreshToken"] }
 
@@ -43,6 +46,9 @@ public class RefreshTokenMutation: GraphQLMutation {
         .field("ResponseCode", String?.self),
         .field("accessToken", String?.self),
         .field("refreshToken", String?.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        RefreshTokenMutation.Data.RefreshToken.self
       ] }
 
       @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")

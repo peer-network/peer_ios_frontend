@@ -20,6 +20,9 @@ public class GetMediaUploadTokenQuery: GraphQLQuery {
     public static var __selections: [ApolloAPI.Selection] { [
       .field("postEligibility", PostEligibility.self),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      GetMediaUploadTokenQuery.Data.self
+    ] }
 
     public var postEligibility: PostEligibility { __data["postEligibility"] }
 
@@ -36,6 +39,9 @@ public class GetMediaUploadTokenQuery: GraphQLQuery {
         .field("status", String.self),
         .field("ResponseCode", String?.self),
         .field("eligibilityToken", String.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        GetMediaUploadTokenQuery.Data.PostEligibility.self
       ] }
 
       @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")

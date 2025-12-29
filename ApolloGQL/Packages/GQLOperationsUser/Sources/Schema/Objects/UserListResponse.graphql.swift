@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let UserListResponse = ApolloAPI.Object(
     typename: "UserListResponse",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

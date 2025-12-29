@@ -14,7 +14,7 @@ let package = Package(
     .library(name: "GQLOperationsUser", targets: ["GQLOperationsUser"]),
   ],
   dependencies: [
-    .package(url: "https://github.com/apollographql/apollo-ios.git", from: "1.0.0"),
+    .package(url: "https://github.com/apollographql/apollo-ios", exact: "1.25.3"),
   ],
   targets: [
     .target(

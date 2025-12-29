@@ -7,7 +7,7 @@ public class GetProfileQuery: GraphQLQuery {
   public static let operationName: String = "GetProfile"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetProfile($contentFilterBy: ContentFilterType, $userid: ID!) { getProfile(contentFilterBy: $contentFilterBy, userid: $userid) { __typename status ResponseCode affectedRows { __typename id username status slug img biography visibilityStatus hasActiveReports isfollowed isfollowing amountposts amounttrending amountfollowed amountfollower amountfriends amountblocked amountreports } } }"#
+      #"query GetProfile($contentFilterBy: ContentFilterType, $userid: ID!) { getProfile(contentFilterBy: $contentFilterBy, userid: $userid) { __typename status ResponseCode affectedRows { __typename id username status slug img biography visibilityStatus isHiddenForUsers hasActiveReports isfollowed isfollowing amountposts amounttrending amountfollowed amountfollower amountfriends amountblocked amountreports } } }"#
     ))
 
   public var contentFilterBy: GraphQLNullable<GraphQLEnum<ContentFilterType>>
@@ -37,6 +37,9 @@ public class GetProfileQuery: GraphQLQuery {
         "userid": .variable("userid")
       ]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      GetProfileQuery.Data.self
+    ] }
 
     public var getProfile: GetProfile { __data["getProfile"] }
 
@@ -54,8 +57,13 @@ public class GetProfileQuery: GraphQLQuery {
         .field("ResponseCode", String?.self),
         .field("affectedRows", AffectedRows?.self),
       ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        GetProfileQuery.Data.GetProfile.self
+      ] }
 
+      @available(*, deprecated, message: "use meta.ResponseCode . this field will be removed after 15 October`.")
       public var status: String? { __data["status"] }
+      @available(*, deprecated, message: "use meta.ResponseCode . this field will be removed after 15 October`.")
       public var responseCode: String? { __data["ResponseCode"] }
       public var affectedRows: AffectedRows? { __data["affectedRows"] }
 
@@ -76,6 +84,7 @@ public class GetProfileQuery: GraphQLQuery {
           .field("img", String?.self),
           .field("biography", String?.self),
           .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>.self),
+          .field("isHiddenForUsers", Bool.self),
           .field("hasActiveReports", Bool.self),
           .field("isfollowed", Bool?.self),
           .field("isfollowing", Bool?.self),
@@ -87,6 +96,9 @@ public class GetProfileQuery: GraphQLQuery {
           .field("amountblocked", Int?.self),
           .field("amountreports", Int?.self),
         ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          GetProfileQuery.Data.GetProfile.AffectedRows.self
+        ] }
 
         public var id: GQLOperationsUser.ID? { __data["id"] }
         public var username: String? { __data["username"] }
@@ -95,8 +107,11 @@ public class GetProfileQuery: GraphQLQuery {
         public var img: String? { __data["img"] }
         public var biography: String? { __data["biography"] }
         public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }
+        public var isHiddenForUsers: Bool { __data["isHiddenForUsers"] }
         public var hasActiveReports: Bool { __data["hasActiveReports"] }
+        @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
         public var isfollowed: Bool? { __data["isfollowed"] }
+        @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
         public var isfollowing: Bool? { __data["isfollowing"] }
         public var amountposts: Int? { __data["amountposts"] }
         public var amounttrending: Int? { __data["amounttrending"] }

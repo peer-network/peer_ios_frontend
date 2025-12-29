@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let AdvCreator = ApolloAPI.Object(
     typename: "AdvCreator",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

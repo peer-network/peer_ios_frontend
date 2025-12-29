@@ -7,7 +7,7 @@ public class GetAllPostsQuery: GraphQLQuery {
   public static let operationName: String = "GetAllPosts"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetAllPosts($filterBy: [PostFilterType!], $contentFilterBy: ContentFilterType, $ignoreOption: IgnoreOption, $sortBy: PostSortType, $title: String, $tag: String, $from: Date, $to: Date, $offset: Int, $limit: Int, $commentOffset: Int, $commentLimit: Int, $postid: ID, $userid: ID) { listPosts( filterBy: $filterBy contentFilterBy: $contentFilterBy IgnorList: $ignoreOption commentLimit: $commentLimit commentOffset: $commentOffset limit: $limit offset: $offset to: $to from: $from tag: $tag title: $title sortBy: $sortBy postid: $postid userid: $userid ) { __typename status ResponseCode affectedRows { __typename id contenttype title media cover mediadescription createdat amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags url visibilityStatus hasActiveReports user { __typename id username slug img visibilityStatus hasActiveReports isfollowed isfollowing isfriend } } } }"#
+      #"query GetAllPosts($filterBy: [PostFilterType!], $contentFilterBy: ContentFilterType, $ignoreOption: IgnoreOption, $sortBy: PostSortType, $title: String, $tag: String, $from: Date, $to: Date, $offset: Int, $limit: Int, $commentOffset: Int, $commentLimit: Int, $postid: ID, $userid: ID) { listPosts( filterBy: $filterBy contentFilterBy: $contentFilterBy IgnorList: $ignoreOption commentLimit: $commentLimit commentOffset: $commentOffset limit: $limit offset: $offset to: $to from: $from tag: $tag title: $title sortBy: $sortBy postid: $postid userid: $userid ) { __typename status ResponseCode affectedRows { __typename id contenttype title media cover mediadescription createdat amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags url visibilityStatus hasActiveReports isHiddenForUsers user { __typename id username slug img visibilityStatus hasActiveReports isHiddenForUsers isfollowed isfollowing isfriend } } } }"#
     ))
 
   public var filterBy: GraphQLNullable<[GraphQLEnum<PostFilterType>]>
@@ -97,6 +97,9 @@ public class GetAllPostsQuery: GraphQLQuery {
         "userid": .variable("userid")
       ]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      GetAllPostsQuery.Data.self
+    ] }
 
     public var listPosts: ListPosts { __data["listPosts"] }
 
@@ -113,6 +116,9 @@ public class GetAllPostsQuery: GraphQLQuery {
         .field("status", String.self),
         .field("ResponseCode", String?.self),
         .field("affectedRows", [AffectedRow]?.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        GetAllPostsQuery.Data.ListPosts.self
       ] }
 
       @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")
@@ -152,7 +158,11 @@ public class GetAllPostsQuery: GraphQLQuery {
           .field("url", String.self),
           .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>.self),
           .field("hasActiveReports", Bool.self),
+          .field("isHiddenForUsers", Bool.self),
           .field("user", User.self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          GetAllPostsQuery.Data.ListPosts.AffectedRow.self
         ] }
 
         public var id: GQLOperationsUser.ID { __data["id"] }
@@ -176,6 +186,7 @@ public class GetAllPostsQuery: GraphQLQuery {
         public var url: String { __data["url"] }
         public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }
         public var hasActiveReports: Bool { __data["hasActiveReports"] }
+        public var isHiddenForUsers: Bool { __data["isHiddenForUsers"] }
         public var user: User { __data["user"] }
 
         /// ListPosts.AffectedRow.User
@@ -194,9 +205,13 @@ public class GetAllPostsQuery: GraphQLQuery {
             .field("img", String?.self),
             .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>.self),
             .field("hasActiveReports", Bool.self),
+            .field("isHiddenForUsers", Bool.self),
             .field("isfollowed", Bool?.self),
             .field("isfollowing", Bool?.self),
             .field("isfriend", Bool?.self),
+          ] }
+          public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+            GetAllPostsQuery.Data.ListPosts.AffectedRow.User.self
           ] }
 
           public var id: GQLOperationsUser.ID { __data["id"] }
@@ -205,7 +220,10 @@ public class GetAllPostsQuery: GraphQLQuery {
           public var img: String? { __data["img"] }
           public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }
           public var hasActiveReports: Bool { __data["hasActiveReports"] }
+          public var isHiddenForUsers: Bool { __data["isHiddenForUsers"] }
+          @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
           public var isfollowed: Bool? { __data["isfollowed"] }
+          @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
           public var isfollowing: Bool? { __data["isfollowing"] }
           public var isfriend: Bool? { __data["isfriend"] }
         }

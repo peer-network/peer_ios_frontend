@@ -6,6 +6,7 @@ import ApolloAPI
 public extension Objects {
   static let CommentResponse = ApolloAPI.Object(
     typename: "CommentResponse",
-    implementedInterfaces: []
+    implementedInterfaces: [],
+    keyFields: nil
   )
 }

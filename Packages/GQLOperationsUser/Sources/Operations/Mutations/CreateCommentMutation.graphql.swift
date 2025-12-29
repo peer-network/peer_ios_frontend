@@ -7,7 +7,7 @@ public class CreateCommentMutation: GraphQLMutation {
   public static let operationName: String = "CreateComment"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"mutation CreateComment($postid: ID!, $parentid: ID, $content: String!) { createComment( action: COMMENT postid: $postid parentid: $parentid content: $content ) { __typename status ResponseCode affectedRows { __typename commentid userid postid parentid content createdat visibilityStatus hasActiveReports amountlikes amountreplies amountreports isliked user { __typename id username slug img visibilityStatus hasActiveReports isfollowed isfollowing isfriend } } } }"#
+      #"mutation CreateComment($postid: ID!, $parentid: ID, $content: String!) { createComment( action: COMMENT postid: $postid parentid: $parentid content: $content ) { __typename status ResponseCode affectedRows { __typename commentid userid postid parentid content createdat visibilityStatus hasActiveReports isHiddenForUsers amountlikes amountreplies amountreports isliked user { __typename id username slug img visibilityStatus hasActiveReports isHiddenForUsers isfollowed isfollowing isfriend } } } }"#
     ))
 
   public var postid: ID
@@ -43,6 +43,9 @@ public class CreateCommentMutation: GraphQLMutation {
         "content": .variable("content")
       ]),
     ] }
+    public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+      CreateCommentMutation.Data.self
+    ] }
 
     public var createComment: CreateComment { __data["createComment"] }
 
@@ -59,6 +62,9 @@ public class CreateCommentMutation: GraphQLMutation {
         .field("status", String.self),
         .field("ResponseCode", String?.self),
         .field("affectedRows", [AffectedRow?]?.self),
+      ] }
+      public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+        CreateCommentMutation.Data.CreateComment.self
       ] }
 
       @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")
@@ -85,11 +91,15 @@ public class CreateCommentMutation: GraphQLMutation {
           .field("createdat", GQLOperationsUser.Date.self),
           .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>.self),
           .field("hasActiveReports", Bool.self),
+          .field("isHiddenForUsers", Bool.self),
           .field("amountlikes", Int.self),
           .field("amountreplies", Int.self),
           .field("amountreports", Int.self),
           .field("isliked", Bool.self),
           .field("user", User.self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          CreateCommentMutation.Data.CreateComment.AffectedRow.self
         ] }
 
         public var commentid: GQLOperationsUser.ID { __data["commentid"] }
@@ -100,6 +110,7 @@ public class CreateCommentMutation: GraphQLMutation {
         public var createdat: GQLOperationsUser.Date { __data["createdat"] }
         public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }
         public var hasActiveReports: Bool { __data["hasActiveReports"] }
+        public var isHiddenForUsers: Bool { __data["isHiddenForUsers"] }
         public var amountlikes: Int { __data["amountlikes"] }
         public var amountreplies: Int { __data["amountreplies"] }
         public var amountreports: Int { __data["amountreports"] }
@@ -122,9 +133,13 @@ public class CreateCommentMutation: GraphQLMutation {
             .field("img", String?.self),
             .field("visibilityStatus", GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus>.self),
             .field("hasActiveReports", Bool.self),
+            .field("isHiddenForUsers", Bool.self),
             .field("isfollowed", Bool?.self),
             .field("isfollowing", Bool?.self),
             .field("isfriend", Bool?.self),
+          ] }
+          public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+            CreateCommentMutation.Data.CreateComment.AffectedRow.User.self
           ] }
 
           public var id: GQLOperationsUser.ID { __data["id"] }
@@ -133,7 +148,10 @@ public class CreateCommentMutation: GraphQLMutation {
           public var img: String? { __data["img"] }
           public var visibilityStatus: GraphQLEnum<GQLOperationsUser.ContentVisibilityStatus> { __data["visibilityStatus"] }
           public var hasActiveReports: Bool { __data["hasActiveReports"] }
+          public var isHiddenForUsers: Bool { __data["isHiddenForUsers"] }
+          @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
           public var isfollowed: Bool? { __data["isfollowed"] }
+          @available(*, deprecated, message: "Use iFollowThisUser / thisUserFollowsMe")
           public var isfollowing: Bool? { __data["isfollowing"] }
           public var isfriend: Bool? { __data["isfriend"] }
         }
