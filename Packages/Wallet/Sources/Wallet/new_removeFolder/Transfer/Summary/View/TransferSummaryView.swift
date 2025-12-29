@@ -29,6 +29,11 @@ public struct TransferSummaryView: View {
             ZStack(alignment: .bottom) {
                 ScrollView {
                     VStack(spacing: 10) {
+                        Text("Summary")
+                            .appFont(.largeTitleRegular)
+                            .foregroundStyle(Colors.whitePrimary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+
                         balanceView
 
                         recipientView(recipient: transferSummaryVM.recipient)
@@ -55,6 +60,7 @@ public struct TransferSummaryView: View {
                         }
                     }
                     .padding(20)
+                    .padding(.top, -10)
                     .padding(.bottom, ButtonSize.small.height + 20)
                 }
                 .scrollIndicators(.hidden)
@@ -97,7 +103,7 @@ public struct TransferSummaryView: View {
 
     private var balanceView: some View {
         VStack(spacing: 10) {
-            Text("Remaining balance")
+            Text("Available balance")
                 .appFont(.smallLabelRegular)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
