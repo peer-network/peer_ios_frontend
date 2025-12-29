@@ -73,9 +73,15 @@ public struct ProfileView: View {
         }
         .onFirstAppear {
             viewModel.apiService = apiManager.apiService
+            regularFeedVM.apiService = apiManager.apiService
+            audioFeedVM.apiService = apiManager.apiService
+            videoFeedVM.apiService = apiManager.apiService
             Task {
                 await viewModel.fetchUser()
                 await viewModel.fetchBio()
+                regularFeedVM.fetchPosts(reset: true)
+                audioFeedVM.fetchPosts(reset: true)
+                videoFeedVM.fetchPosts(reset: true)
             }
         }
         .trackScreen(AppScreen.profile)
