@@ -29,6 +29,7 @@
 		AC7BD8C02DEDCEEE0094BC9A /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = AC7BD8BF2DEDCEEE0094BC9A /* FirebaseMessaging */; };
 		AC7BD8C22DEDCEEE0094BC9A /* FirebasePerformance in Frameworks */ = {isa = PBXBuildFile; productRef = AC7BD8C12DEDCEEE0094BC9A /* FirebasePerformance */; };
 		AC7BD8C42DEDCEEE0094BC9A /* FirebaseRemoteConfig in Frameworks */ = {isa = PBXBuildFile; productRef = AC7BD8C32DEDCEEE0094BC9A /* FirebaseRemoteConfig */; };
+		AC816CBF2F02D8C700A75C11 /* Shop in Frameworks */ = {isa = PBXBuildFile; productRef = AC816CBE2F02D8C700A75C11 /* Shop */; };
 		AC8295F32D876DD700C554D1 /* Explore in Frameworks */ = {isa = PBXBuildFile; productRef = AC8295F22D876DD700C554D1 /* Explore */; };
 		ACBA76862EDDB2E6002C5703 /* Apollo in Frameworks */ = {isa = PBXBuildFile; productRef = ACBA76852EDDB2E6002C5703 /* Apollo */; };
 		ACBA76882EDDB2E6002C5703 /* ApolloAPI in Frameworks */ = {isa = PBXBuildFile; productRef = ACBA76872EDDB2E6002C5703 /* ApolloAPI */; };
@@ -93,6 +94,7 @@
 		7EEBA9C02D4CDC97001B6E76 /* FeedNew */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FeedNew; path = Packages/FeedNew; sourceTree = "<group>"; };
 		AC6041E62DDB18B200D8DD5B /* Post */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Post; path = Packages/Post; sourceTree = "<group>"; };
 		AC6041E72DDB3FFB00D8DD5B /* FeedList */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = FeedList; path = Packages/FeedList; sourceTree = "<group>"; };
+		AC816CBC2F02D7A000A75C11 /* Shop */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Shop; path = Packages/Shop; sourceTree = "<group>"; };
 		AC8295F12D876DAD00C554D1 /* Explore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Explore; path = Packages/Explore; sourceTree = "<group>"; };
 		ACCAB48A2D81DE23001C1041 /* Analytics */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Analytics; path = Packages/Analytics; sourceTree = "<group>"; };
 		ACCAB48B2D81E07E001C1041 /* RemoteConfig */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = RemoteConfig; path = Packages/RemoteConfig; sourceTree = "<group>"; };
@@ -183,6 +185,7 @@
 				AC8295F32D876DD700C554D1 /* Explore in Frameworks */,
 				AC7BD8C42DEDCEEE0094BC9A /* FirebaseRemoteConfig in Frameworks */,
 				AC3AEC6E2E2FC6E100CAA9C4 /* FirebaseFunctions in Frameworks */,
+				AC816CBF2F02D8C700A75C11 /* Shop in Frameworks */,
 				7EEBA9C22D4CF2BF001B6E76 /* FeedNew in Frameworks */,
 				AC104D652DB7A864005F07F0 /* Analytics in Frameworks */,
 				7EE144D32D1454AB0054FBB2 /* Environment in Frameworks */,
@@ -238,6 +241,7 @@
 				ACDF9D152D9A84B700832C1E /* PostCreation */,
 				ACDF9D162D9A84B700832C1E /* ProfileNew */,
 				ACCAB48B2D81E07E001C1041 /* RemoteConfig */,
+				AC816CBC2F02D7A000A75C11 /* Shop */,
 				7ED27FE42D4BC6A000A6EFE0 /* TokenKeychainManager */,
 				ACE05B1C2DA92B0300DD6E79 /* VersionHistory */,
 				7E0ECFB32D412C4300A99A5A /* Wallet */,
@@ -315,6 +319,7 @@
 				ACC373732E3A02580005E5F2 /* FirebaseFirestore */,
 				ACBA76852EDDB2E6002C5703 /* Apollo */,
 				ACBA76872EDDB2E6002C5703 /* ApolloAPI */,
+				AC816CBE2F02D8C700A75C11 /* Shop */,
 			);
 			productName = PeerApp;
 			productReference = 7ECF06D72D0C6DA200CA7852 /* PeerApp.app */;
@@ -431,6 +436,7 @@
 				AC79340D2DCE4E350069CAEF /* XCRemoteSwiftPackageReference "Swinject" */,
 				AC7BD8B82DEDCEEE0094BC9A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				ACBA76842EDDB2E6002C5703 /* XCRemoteSwiftPackageReference "apollo-ios" */,
+				AC816CBD2F02D8C700A75C11 /* XCLocalSwiftPackageReference "Packages/Shop" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7ECF06D82D0C6DA200CA7852 /* Products */;
@@ -1141,6 +1147,10 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = Packages/Networking;
 		};
+		AC816CBD2F02D8C700A75C11 /* XCLocalSwiftPackageReference "Packages/Shop" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages/Shop;
+		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCRemoteSwiftPackageReference section */
@@ -1272,6 +1282,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = AC7BD8B82DEDCEEE0094BC9A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseRemoteConfig;
+		};
+		AC816CBE2F02D8C700A75C11 /* Shop */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Shop;
 		};
 		AC8295F22D876DD700C554D1 /* Explore */ = {
 			isa = XCSwiftPackageProductDependency;

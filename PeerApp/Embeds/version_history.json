@@ -188,5 +188,14 @@
             "Token Transfers with messages: add an optional note when sending Peer Tokens - emojis included",
             "Updated transfer flow: Clear summaries, better validations, and improved error handling for a smoother experience"
         ]
+    },
+    {
+        "version": "1.13.0",
+        "date": "30 Dec 2025",
+        "releaseNotes": [
+            "Peer Shop: discover official Peer merch and exchange Peer Tokens for real-world goodies",
+            "Improved search: search is now at the top with filters for easier discovery",
+            "Feed filters: see only content from peers who follow you back"
+        ]
     }
 ]

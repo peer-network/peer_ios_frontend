@@ -1,5 +1,5 @@
 //
-//  ExploreTab.swift
+//  ShopTab.swift
 //  PeerApp
 //
 //  Created by Artem Vasin on 07.03.25.
@@ -7,9 +7,9 @@
 
 import SwiftUI
 import Environment
-import Explore
+import Shop
 
-struct ExploreTab: View {
+struct ShopTab: View {
     @Environment(\.selectedTabEmptyPath) private var selectedTabEmptyPath
 
     @EnvironmentObject private var appState: AppState
@@ -19,12 +19,12 @@ struct ExploreTab: View {
 
     var body: some View {
         NavigationStack(path: $router.path) {
-            ExploreView()
+            ShopPageView()
                 .toolbar(.hidden, for: .navigationBar)
                 .withAppRouter(appState: appState, apiServiceManager: apiManager, router: router)
                 .withSheetDestinations(sheetDestinations: $router.presentedSheet, apiServiceManager: apiManager)
                 .onChange(of: selectedTabEmptyPath) {
-                    if selectedTabEmptyPath == 1, !router.path.isEmpty {
+                    if selectedTabEmptyPath == 3, !router.path.isEmpty {
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                             router.emptyPath()
                         }

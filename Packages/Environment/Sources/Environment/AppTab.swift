@@ -9,9 +9,9 @@ import Foundation
 
 public enum AppTab: Int, Identifiable, CaseIterable {
     case feed
-    case explore
     case newPost
     case wallet
+    case shop
     case profile
 
     public var id: Int { rawValue }

@@ -47,7 +47,7 @@ public struct WalletView: View {
                     viewModel.fetchTransactionHistory(reset: true)
                 }
                 .onChange(of: selectedTabScrollToTop) {
-                    if selectedTabScrollToTop == 3, router.path.isEmpty {
+                    if selectedTabScrollToTop == 2, router.path.isEmpty {
                         withAnimation {
                             scrollProxy.scrollTo(ScrollToView.Constants.scrollToTop, anchor: .top)
                         }
