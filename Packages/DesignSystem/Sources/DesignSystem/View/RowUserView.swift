@@ -22,8 +22,19 @@ public struct RowUserView: View {
 
     public var body: some View {
         HStack(spacing: 0) {
-            ProfileAvatarView(url: user.imageURL, name: user.username, config: .rowUser, ignoreCache: profileImageIgnoreCache)
-                .padding(.trailing, 10)
+            if user.visibilityStatus == .illegal {
+                Circle()
+                    .foregroundStyle(Colors.inactiveDark)
+                    .frame(height: 40)
+                    .overlay {
+                        IconsNew.exclamaitionMarkCircle
+                            .iconSize(height: 16)
+                            .foregroundStyle(Colors.whiteSecondary)
+                    }
+            } else {
+                ProfileAvatarView(url: user.imageURL, name: user.username, config: .rowUser, ignoreCache: profileImageIgnoreCache)
+                    .padding(.trailing, 10)
+            }
 
             Text(user.username)
                 .font(.customFont(weight: .boldItalic, style: .callout))

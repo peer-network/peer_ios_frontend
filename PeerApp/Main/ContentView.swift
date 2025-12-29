@@ -15,6 +15,7 @@ struct ContentView: View {
     @Environment(\.openURL) private var openURL
     @Environment(\.analytics) private var analytics
 
+    @EnvironmentObject private var apiManager: APIServiceManager
     @EnvironmentObject private var audioManager: AudioSessionManager
     @EnvironmentObject private var appState: AppState
 
@@ -76,7 +77,7 @@ struct ContentView: View {
                 tabBarView
             }
         }
-        .withSheetDestinations(sheetDestinations: $appRouter.presentedSheet)
+        .withSheetDestinations(sheetDestinations: $appRouter.presentedSheet, apiServiceManager: apiManager)
         .environment(\.selectedTabScrollToTop, selectedTabScrollToTop)
         .environment(\.selectedTabEmptyPath, selectedTabEmptyPath)
         .ignoresSafeArea(.keyboard)

@@ -25,7 +25,7 @@ struct PostDescriptionComment: View {
                 }
                 router.navigate(to: .accountDetail(id: postVM.post.owner.id))
             } label: {
-                Text(postVM.post.owner.username)
+                Text(postVM.showHeaderSensitiveWarning ? "hidden_account" : postVM.post.owner.username)
                     .font(.custom(.bodyBoldItalic))
                     .frame(width: (getRect().width - 20) * 0.2, alignment: .topLeading)
             }
@@ -36,6 +36,11 @@ struct PostDescriptionComment: View {
                         .font(.custom(.bodyBold))
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .layoutPriority(-1)
+                        .ifCondition(postVM.showSensitiveContentWarning || postVM.showIllegalBlur) {
+                            $0
+                                .allowsHitTesting(false)
+                                .redacted(reason: .placeholder)
+                        }
 
                     Text(postVM.post.formattedCreatedAtShort)
                         .font(.custom(.smallLabelRegular))
@@ -44,13 +49,18 @@ struct PostDescriptionComment: View {
 
                 if !postVM.post.media.isEmpty, let text = postVM.attributedDescription {
                     CollapsibleText(text, lineLimit: 3)
+                        .ifCondition(postVM.showSensitiveContentWarning || postVM.showIllegalBlur) {
+                            $0
+                                .allowsHitTesting(false)
+                                .redacted(reason: .placeholder)
+                        }
                 }
 
                 if isInFeed, postVM.amountComments > 0 {
                     Button {
                         postVM.showComments()
                     } label: {
-                        Text("^[\(postVM.amountComments) comment](inflect: true) more...")
+                        Text("^[\(postVM.amountComments) comment](inflect: true)...")
                             .foregroundStyle(Colors.whiteSecondary)
                             .contentShape(.rect)
                     }
@@ -71,15 +81,6 @@ struct PostDescriptionComment: View {
         }
     }
 }
-
-
-
-
-
-
-
-
-import SwiftUI
 
 struct CollapsibleTextView: View {
     let attributedText: AttributedString

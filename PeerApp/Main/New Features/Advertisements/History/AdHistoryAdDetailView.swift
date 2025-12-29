@@ -39,10 +39,18 @@ struct AdHistoryAdDetailView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.bottom, 10)
 
-            Button {
+            if ad.post.visibilityStatus == .hidden {
+                HiddenBadgeLongView()
+                    .padding(.bottom, 10)
+            } else if ad.post.visibilityStatus == .illegal {
+                IllegalBadgeLongView()
+                    .padding(.bottom, 10)
+            }
+
+          Button {
                 router.navigate(to: .postDetailsWithPost(post: ad.post))
             } label: {
-                RowAdPostViewBig(adStats: ad, showDates: false)
+                RowAdPostViewBig(adStats: ad, showDates: false, showModerationBadge: false)
                     .contentShape(.rect)
             }
             .padding(.bottom, 10)
@@ -131,5 +139,51 @@ struct AdHistoryAdDetailView: View {
         dateFormatter.timeZone = TimeZone.current
 
         return dateFormatter.string(from: date)
+    }
+}
+
+struct HiddenBadgeLongView: View {
+    var body: some View {
+        HStack(spacing: 0) {
+            IconsNew.eyeWithSlash
+                .iconSize(height: 15)
+                .padding(.trailing, 7)
+
+            Text("Hidden")
+                .appFont(.smallLabelRegular)
+                .lineLimit(1)
+
+            Spacer()
+                .frame(minHeight: 2)
+                .frame(maxHeight: .infinity)
+                .layoutPriority(-1)
+
+            Text("This post is shown as sensitive content")
+                .appFont(.smallLabelRegular)
+                .lineLimit(1)
+        }
+        .foregroundStyle(Colors.whiteSecondary)
+        .padding(.vertical, 5)
+        .padding(.horizontal, 10)
+        .background {
+            RoundedRectangle(cornerRadius: 24)
+                .foregroundStyle(Colors.inactiveDark)
+        }
+    }
+}
+
+struct IllegalBadgeLongView: View {
+    var body: some View {
+        Text("The post is removed as illegal")
+            .appFont(.smallLabelRegular)
+            .lineLimit(1)
+            .foregroundStyle(Colors.whiteSecondary)
+            .frame(maxWidth: .infinity, alignment: .center)
+            .padding(.vertical, 5)
+            .padding(.horizontal, 10)
+            .background {
+                RoundedRectangle(cornerRadius: 24)
+                    .foregroundStyle(Colors.inactiveDark)
+            }
     }
 }

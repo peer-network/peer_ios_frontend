@@ -168,7 +168,7 @@ public final class RelationsViewModel: ObservableObject, RelationsFetcher {
 
         fetchFriendsTask = Task {
             do {
-                let result = await apiService.fetchUserFriends(after: currentOffsetFriends)
+                let result = await apiService.fetchUserFriends(for: userId, after: currentOffsetFriends)
 
                 try Task.checkCancellation()
 

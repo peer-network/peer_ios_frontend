@@ -8,8 +8,12 @@ query GetMyInviter {
                 username
                 slug
                 img
+                visibilityStatus
+                hasActiveReports
+                isHiddenForUsers
                 isfollowed
                 isfollowing
+                isfriend
             }
         }
     }

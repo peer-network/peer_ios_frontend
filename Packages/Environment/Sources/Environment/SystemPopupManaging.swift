@@ -11,6 +11,8 @@ public enum SystemPopupType {
     case error(text: String)
     
     case postPromotion
+    case postPromotionHidden
+    case postPromotionReview
     case postPromotionStarted(endDate: String)
     
     case logout

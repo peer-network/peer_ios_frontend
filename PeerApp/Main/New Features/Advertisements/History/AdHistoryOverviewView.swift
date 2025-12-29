@@ -163,7 +163,7 @@ struct AdHistoryOverviewView: View {
                     Button {
                         router.navigate(to: .adsHistoryDetails(ad: ad))
                     } label: {
-                        RowAdPostViewBig(adStats: ad, showDates: true)
+                        RowAdPostViewBig(adStats: ad, showDates: true, showModerationBadge: true)
                             .contentShape(.rect)
                     }
                 }

@@ -18,7 +18,7 @@ public final class PostViewModel: ObservableObject {
     @AppStorage("enablePostActionsConfirmation", store: UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")) private var enablePostActionsConfirmation = true
 
     // MARK: Post properties
-    public let post: Post
+    public var post: Post
 
     @Published public private(set) var isLiked: Bool
     @Published public private(set) var isViewed: Bool
@@ -81,6 +81,11 @@ public final class PostViewModel: ObservableObject {
 
     @Published var showShareSheet = false
 
+    @Published var showSensitiveContentWarning: Bool
+    public let showIllegalBlur: Bool
+
+    @Published var showHeaderSensitiveWarning: Bool
+
     public init(post: Post) {
         self.post = post
 
@@ -96,6 +101,24 @@ public final class PostViewModel: ObservableObject {
         amountComments = post.amountComments
 
         attributedTitle = post.title.createAttributedString()
+
+        showIllegalBlur = post.visibilityStatus == .illegal
+        if !AccountManager.shared.isCurrentUser(id: post.owner.id) {
+            if post.visibilityStatus == .hidden {
+                showSensitiveContentWarning = true
+            } else {
+                showSensitiveContentWarning = false
+            }
+
+            if post.owner.visibilityStatus == .hidden {
+                showHeaderSensitiveWarning = true
+            } else {
+                showHeaderSensitiveWarning = false
+            }
+        } else {
+            showSensitiveContentWarning = false
+            showHeaderSensitiveWarning = false
+        }
 
         if post.contentType == .text {
             fetchTextPostBody()

@@ -12,8 +12,12 @@ query CommentLikes($commentId: ID!, $offset: Int, $limit: Int) {
             username
             slug
             img
+            visibilityStatus
+            hasActiveReports
+            isHiddenForUsers
             isfollowed
             isfollowing
+            isfriend
         }
     }
 }

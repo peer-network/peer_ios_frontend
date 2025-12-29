@@ -56,6 +56,7 @@ public struct HeaderPageScrollView<Header: View, Pages: View>: View {
     @State private var mainScrollDisabled: Bool = false
     @State private var mainScrollPhase: ScrollPhase = .idle
     @State private var mainScrollGeometry: ScrollGeometry = .init()
+    @State private var isSyncingScrollViews = false
 
     public var body: some View {
         GeometryReader {
@@ -169,7 +170,7 @@ public struct HeaderPageScrollView<Header: View, Pages: View>: View {
         }, action: { oldValue, newValue in
             scrollGeometries[index] = newValue
 
-            if newValue.offsetY < 0 {
+            if newValue.offsetY < 0, oldValue.offsetY >= 0 {
                 resetScrollViews(label)
             }
         })
@@ -260,24 +261,39 @@ public struct HeaderPageScrollView<Header: View, Pages: View>: View {
     func resetScrollViews(_ from: PageLabel) {
         for index in labels.indices {
             let label = labels[index]
+            guard label.title != from.title else { continue }
 
-            if label.title != from.title {
-                scrollPositions[index].scrollTo(y: 0)
-            }
+            // Only scroll if we are not already at 0
+            let currentOffset = scrollGeometries[index].offsetY
+            guard abs(currentOffset) > 0.5 else { continue }
+
+            scrollPositions[index].scrollTo(y: 0)
         }
     }
 
     /// Update Other scrollviews to match up with the current scroll view till reaching it's header height
     func updateOtherScrollViews(_ from: PageLabel, to: CGFloat) {
+        // Avoid re-entrant sync loops
+        guard !isSyncingScrollViews else { return }
+        isSyncingScrollViews = true
+
         for index in labels.indices {
             let label = labels[index]
-            let offset = scrollGeometries[index].offsetY
+            guard label.title != from.title else { continue }
 
-            let wantsUpdate = offset < headerHeight || to < headerHeight
+            let currentOffset = scrollGeometries[index].offsetY
+            let wantsUpdate = (currentOffset < headerHeight || to < headerHeight)
 
-            if wantsUpdate && label.title != from.title {
+            // Only actually scroll when there is a visible difference
+            if wantsUpdate && abs(currentOffset - to) > 0.5 {
                 scrollPositions[index].scrollTo(y: to)
             }
+        }
+
+        // Release the lock on the next runloop tick so the UI
+        // can finish any programmatic scrolling caused above.
+        DispatchQueue.main.async {
+            isSyncingScrollViews = false
         }
     }
 }

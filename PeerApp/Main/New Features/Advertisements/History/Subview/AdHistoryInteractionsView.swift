@@ -48,7 +48,7 @@ struct AdHistoryInteractionsView: View {
 
             Spacer()
                 .overlay {
-                    interactionView(icon: Icons.heart, name: "Reports", count: reports)
+                    interactionView(icon: IconsNew.exclamaitionMarkCircle, name: "Reports", count: reports)
                 }
         }
         .frame(height: 100)

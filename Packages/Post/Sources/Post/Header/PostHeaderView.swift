@@ -32,12 +32,23 @@ struct PostHeaderView: View {
             Button {
                 router.navigate(to: .accountDetail(id: postVM.post.owner.id))
             } label: {
-                ProfileAvatarView(
-                    url: postVM.post.owner.imageURL,
-                    name: postVM.post.owner.username,
-                    config: .post,
-                    ignoreCache: profileImageIgnoreCache
-                )
+                if postVM.post.owner.visibilityStatus == .illegal {
+                    Circle()
+                        .foregroundStyle(Colors.inactiveDark)
+                        .frame(height: 40)
+                        .overlay {
+                            IconsNew.exclamaitionMarkCircle
+                                .iconSize(height: 16)
+                                .foregroundStyle(Colors.whiteSecondary)
+                        }
+                } else {
+                    ProfileAvatarView(
+                        url: postVM.post.owner.imageURL,
+                        name: postVM.post.owner.username,
+                        config: .post,
+                        ignoreCache: profileImageIgnoreCache
+                    )
+                }
 
                 VStack(alignment: .leading, spacing: 0) {
                     Text(postVM.post.owner.username)
@@ -50,6 +61,21 @@ struct PostHeaderView: View {
                 .lineLimit(1)
                 .foregroundStyle(Colors.whitePrimary)
                 .contentShape(.rect)
+            }
+            .ifCondition(postVM.showHeaderSensitiveWarning) {
+                $0
+                    .allowsHitTesting(false)
+                    .blur(radius: 5)
+                    .overlay(alignment: .leading) {
+                        Button {
+                            withAnimation {
+                                postVM.showHeaderSensitiveWarning = false
+                            }
+                        } label: {
+                            sensitiveContentWarningForPostHeaderView
+                                .contentShape(.rect)
+                        }
+                    }
             }
 
             Spacer()
@@ -64,8 +90,8 @@ struct PostHeaderView: View {
             {
                 let vm = FollowButtonViewModel(
                     id: postVM.post.owner.id,
-                    isFollowing: postVM.post.owner.isFollowing,
-                    isFollowed: postVM.post.owner.isFollowed
+                    isFollowing: postVM.post.owner.isFollowed,
+                    isFollowed: postVM.post.owner.isFollowing
                 )
                 FollowButton2(viewModel: vm)
                     .fixedSize(horizontal: true, vertical: false)
@@ -74,99 +100,167 @@ struct PostHeaderView: View {
             if postVM.post.advertisement != nil {
                 PinIndicatorView()
             }
-
-            Menu {
-                Section {
-                    Button {
-                        postVM.showShareSheet = true
-                    } label: {
-                        Label("Share", systemImage: "square.and.arrow.up")
-                    }
-
-                    Button {
-                        showAppleTranslation = true
-                    } label: {
-                        Label("Translate", systemImage: "captions.bubble")
-                    }
-
-                    if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.advertisement == nil {
-                        Button {
-                            SystemPopupManager.shared.presentPopup(.postPromotion) {
-                                let flowID = flows.startFlow(
-                                    post: postVM.post,
-                                    apiService: apiManager.apiService,
-                                    tokenomics: appState.getConstants()!.data.tokenomics,
-                                    popupManager: SystemPopupManager.shared,
-                                    onGoToProfile: {
-                                        router.navigate(to: .accountDetail(id: postVM.post.owner.id))
-                                    },
-                                    onGoToPost: {
-                                        router.navigate(to: .postDetailsWithPostId(id: postVM.post.id))
-                                    },
-                                    onFinish: { [weak router] in
-                                        // Dismiss entire flow; we pop to wherever we want.
-                                    }
-                                )
-                                router.path.append(.promotePost(flowID: flowID, step: .config))
-                            }
-
-                        } label: {
-                            Label("Boost post", systemImage: "megaphone")
-                        }
-                    }
-                }
-
-                if !AccountManager.shared.isCurrentUser(id: postVM.post.owner.id) {
+            
+            if !postVM.showIllegalBlur {
+                Menu {
                     Section {
-                        Button(role: .destructive) {
-                            Task {
-                                do {
-                                    let isBlocked = try await postVM.blockContent()
-                                    if isBlocked {
-                                        showPopup(text: "User was blocked.")
-                                    } else {
-                                        showPopup(text: "User was unblocked.")
-                                    }
-                                } catch {
-                                    showPopup(
-                                        text: error.userFriendlyDescription
-                                    )
-                                }
-                            }
+                        Button {
+                            postVM.showShareSheet = true
                         } label: {
-                            Label("Toggle User Block", systemImage: "person.slash.fill")
+                            Label("Share", systemImage: "square.and.arrow.up")
                         }
 
-                        Button(role: .destructive) {
-                            SystemPopupManager.shared.presentPopup(.reportPost) {
+                        Button {
+                            showAppleTranslation = true
+                        } label: {
+                            Label("Translate", systemImage: "captions.bubble")
+                        }
+
+                        if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.advertisement == nil {
+                            Button {
+                                if postVM.post.isHiddenForUsers {
+                                    SystemPopupManager.shared.presentPopup(.postPromotionHidden) {
+                                        let flowID = flows.startFlow(
+                                            post: postVM.post,
+                                            apiService: apiManager.apiService,
+                                            tokenomics: appState.getConstants()!.data.tokenomics,
+                                            popupManager: SystemPopupManager.shared,
+                                            onGoToProfile: {
+                                                router.navigate(to: .accountDetail(id: postVM.post.owner.id))
+                                            },
+                                            onGoToPost: {
+                                                router.navigate(to: .postDetailsWithPostId(id: postVM.post.id))
+                                            },
+                                            onFinish: { [weak router] in
+                                                // Dismiss entire flow; we pop to wherever we want.
+                                            }
+                                        )
+                                        router.path.append(.promotePost(flowID: flowID, step: .config))
+                                    }
+                                } else if postVM.post.hasActiveReports {
+                                    SystemPopupManager.shared.presentPopup(.postPromotionReview) {
+                                        let flowID = flows.startFlow(
+                                            post: postVM.post,
+                                            apiService: apiManager.apiService,
+                                            tokenomics: appState.getConstants()!.data.tokenomics,
+                                            popupManager: SystemPopupManager.shared,
+                                            onGoToProfile: {
+                                                router.navigate(to: .accountDetail(id: postVM.post.owner.id))
+                                            },
+                                            onGoToPost: {
+                                                router.navigate(to: .postDetailsWithPostId(id: postVM.post.id))
+                                            },
+                                            onFinish: { [weak router] in
+                                                // Dismiss entire flow; we pop to wherever we want.
+                                            }
+                                        )
+                                        router.path.append(.promotePost(flowID: flowID, step: .config))
+                                    }
+                                } else {
+                                    SystemPopupManager.shared.presentPopup(.postPromotion) {
+                                        let flowID = flows.startFlow(
+                                            post: postVM.post,
+                                            apiService: apiManager.apiService,
+                                            tokenomics: appState.getConstants()!.data.tokenomics,
+                                            popupManager: SystemPopupManager.shared,
+                                            onGoToProfile: {
+                                                router.navigate(to: .accountDetail(id: postVM.post.owner.id))
+                                            },
+                                            onGoToPost: {
+                                                router.navigate(to: .postDetailsWithPostId(id: postVM.post.id))
+                                            },
+                                            onFinish: { [weak router] in
+                                                // Dismiss entire flow; we pop to wherever we want.
+                                            }
+                                        )
+                                        router.path.append(.promotePost(flowID: flowID, step: .config))
+                                    }
+                                }
+                            } label: {
+                                Label("Boost post", systemImage: "megaphone")
+                            }
+                        }
+                    }
+
+                    if !AccountManager.shared.isCurrentUser(id: postVM.post.owner.id) {
+                        Section {
+                            Button(role: .destructive) {
                                 Task {
                                     do {
-                                        try await postVM.report()
-                                        showPopup(text: "Post was reported.")
-                                    } catch let error as PostActionError {
+                                        let isBlocked = try await postVM.blockContent()
+                                        if isBlocked {
+                                            showPopup(text: "User was blocked.")
+                                        } else {
+                                            showPopup(text: "User was unblocked.")
+                                        }
+                                    } catch {
                                         showPopup(
-                                            text: error.displayMessage,
-                                            icon: error.displayIcon
+                                            text: error.userFriendlyDescription
                                         )
                                     }
                                 }
+                            } label: {
+                                Label("Toggle User Block", systemImage: "person.slash.fill")
                             }
-                        } label: {
-                            Label("Report Post", systemImage: "exclamationmark.circle")
+
+                            Button(role: .destructive) {
+                                SystemPopupManager.shared.presentPopup(.reportPost) {
+                                    Task {
+                                        do {
+                                            try await postVM.report()
+                                            showPopup(text: "Post was reported.")
+                                        } catch let error as PostActionError {
+                                            showPopup(
+                                                text: error.displayMessage,
+                                                icon: error.displayIcon
+                                            )
+                                        } catch {
+                                            showPopup(
+                                                text: error.userFriendlyDescription
+                                            )
+                                        }
+                                    }
+                                }
+                            } label: {
+                                Label("Report Post", systemImage: "exclamationmark.circle")
+                            }
                         }
                     }
+                } label: {
+                    Icons.ellipsis
+                        .iconSize(width: 16)
+                        .padding(.horizontal, 10)
+                        .frame(height: 40)
+                        .contentShape(.rect)
                 }
-            } label: {
-                Icons.ellipsis
-                    .iconSize(width: 16)
-                    .padding(.horizontal, 10)
-                    .frame(height: 40)
-                    .contentShape(.rect)
+                .menuStyle(.button)
+                .buttonStyle(PostActionButtonStyle(isOn: false, tintColor: nil, defaultColor: Colors.whitePrimary))
+                .contentShape(.rect)
             }
-            .menuStyle(.button)
-            .buttonStyle(PostActionButtonStyle(isOn: false, tintColor: nil, defaultColor: Colors.whitePrimary))
-            .contentShape(.rect)
         }
+    }
+
+    private var sensitiveContentWarningForPostHeaderView: some View {
+        HStack(spacing: 10) {
+            Circle()
+                .frame(height: 40)
+                .foregroundStyle(Colors.whitePrimary.opacity(0.2))
+                .overlay {
+                    IconsNew.eyeWithSlash
+                        .iconSize(width: 20)
+                        .foregroundStyle(Colors.whitePrimary)
+                }
+
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Sensitive content")
+                    .appFont(.smallLabelBold)
+
+                Text("Click to see")
+                    .appFont(.smallLabelRegular)
+            }
+        }
+        .foregroundStyle(Colors.whitePrimary)
+        .fixedSize(horizontal: true, vertical: false)
     }
 }
 

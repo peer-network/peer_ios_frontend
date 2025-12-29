@@ -15,6 +15,10 @@ public extension SystemPopupType {
                 return IconsNew.exclamaitionMarkCircle
             case .postPromotion:
                 return IconsNew.megaphone
+            case .postPromotionHidden:
+                return IconsNew.exclamaitionMarkCircle
+            case .postPromotionReview:
+                return IconsNew.exclamaitionMarkCircle
             case .postPromotionStarted:
                 return IconsNew.checkCircle2
             case .logout:
@@ -38,6 +42,10 @@ public extension SystemPopupType {
                 return Colors.redAccent
             case .postPromotion:
                 return Colors.whitePrimary
+            case .postPromotionHidden:
+                return Colors.redAccent
+            case .postPromotionReview:
+                return Colors.redAccent
             case .postPromotionStarted:
                 return Colors.passwordBarsGreen
             case .logout:
@@ -61,6 +69,10 @@ public extension SystemPopupType {
                 return Colors.redAccent.opacity(0.2)
             case .postPromotion:
                 return Colors.version
+            case .postPromotionHidden:
+                return Colors.redAccent.opacity(0.2)
+            case .postPromotionReview:
+                return Colors.redAccent.opacity(0.2)
             case .postPromotionStarted:
                 return Colors.passwordBarsGreen.opacity(0.2)
             case .logout:
@@ -81,9 +93,13 @@ public extension SystemPopupType {
     public var title: String {
         switch self {
             case .error:
-                return "Something went wrong."
+                return "Something went wrong"
             case .postPromotion:
                 return "Ready to shine?"
+            case .postPromotionHidden:
+                return "Your post is currently hidden"
+            case .postPromotionReview:
+                return "Your post is under review"
             case .postPromotionStarted:
                 return "Your post promotion has started."
             case .logout:
@@ -107,6 +123,10 @@ public extension SystemPopupType {
                 return Colors.redAccent
             case .postPromotion:
                 return Colors.whitePrimary
+            case .postPromotionHidden:
+                return Colors.redAccent
+            case .postPromotionReview:
+                return Colors.redAccent
             case .postPromotionStarted:
                 return Colors.passwordBarsGreen
             case .logout:
@@ -130,6 +150,10 @@ public extension SystemPopupType {
                 return text
             case .postPromotion:
                 return "Your post will go to the top of the feed. Once confirmed, it can’t be cancelled."
+            case .postPromotionHidden:
+                return "Your post has been reported and is temporarily hidden. Your promotion won’t be visible for all."
+            case .postPromotionReview:
+                return "Heads up: Your post was reported. When reviewed, its promotion might be hidden."
             case .postPromotionStarted(let date):
                 return "Your post is now pinned and will expire on **\(date)** (24 hours from now)"
             case .logout:
@@ -152,6 +176,10 @@ public extension SystemPopupType {
             case .error:
                 return .init(buttonSize: .small, buttonType: .teritary, title: "Cancel")
             case .postPromotion:
+                return .init(buttonSize: .small, buttonType: .teritary, title: "Cancel")
+            case .postPromotionHidden:
+                return .init(buttonSize: .small, buttonType: .teritary, title: "Cancel")
+            case .postPromotionReview:
                 return .init(buttonSize: .small, buttonType: .teritary, title: "Cancel")
             case .postPromotionStarted:
                 return .init(buttonSize: .small, buttonType: .teritary, title: "Go to profile")
@@ -176,6 +204,10 @@ public extension SystemPopupType {
                 return .init(buttonSize: .small, buttonType: .secondary, title: "Try again")
             case .postPromotion:
                 return .init(buttonSize: .small, buttonType: .primary, title: "Promote")
+            case .postPromotionHidden:
+                return .init(buttonSize: .small, buttonType: .secondary, title: "Promote anyway")
+            case .postPromotionReview:
+                return .init(buttonSize: .small, buttonType: .secondary, title: "Promote anyway")
             case .postPromotionStarted:
                 return .init(buttonSize: .small, buttonType: .primary, title: "Go to post")
             case .logout:

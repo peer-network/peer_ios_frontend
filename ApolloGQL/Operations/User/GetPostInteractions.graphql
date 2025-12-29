@@ -1,9 +1,10 @@
-query PostInteractions($getOnly: GetOnly!, $postOrCommentId: ID!, $offset: Int, $limit: Int) {
+query PostInteractions($getOnly: GetOnly!, $postOrCommentId: ID!, $offset: Int, $limit: Int, $contentFilterBy: ContentFilterType) {
 	postInteractions(
         getOnly: $getOnly
         postOrCommentId: $postOrCommentId
         offset: $offset
         limit: $limit
+        contentFilterBy: $contentFilterBy
     ) {
         status
         ResponseCode
@@ -12,8 +13,12 @@ query PostInteractions($getOnly: GetOnly!, $postOrCommentId: ID!, $offset: Int, 
             username
             slug
             img
+            visibilityStatus
+            isHiddenForUsers
+            hasActiveReports
             isfollowed
             isfollowing
+            isfriend
         }
     }
 }

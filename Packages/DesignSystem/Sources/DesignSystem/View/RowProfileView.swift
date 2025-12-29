@@ -24,13 +24,11 @@ public struct RowProfileView<TrailingContent: View>: View {
         AccountManager.shared.isCurrentUser(id: user.id)
     }
 
-    enum TrailingContent {
-        case unblockButton
-        case followButton
-    }
+    @State private var showSensitiveContentWarning: Bool = false
 
     public init(user: RowUser, @ViewBuilder trailingContent: @escaping () -> TrailingContent = { EmptyView() }, dismissAction: (() -> Void)? = nil) {
         self.user = user
+        showSensitiveContentWarning = user.visibilityStatus == .hidden
         self.trailingContent = trailingContent
         self.dismissAction = dismissAction
     }
@@ -43,8 +41,20 @@ public struct RowProfileView<TrailingContent: View>: View {
                 router.navigate(to: .accountDetail(id: user.id))
             } label: {
                 HStack(spacing: 0) {
-                    ProfileAvatarView(url: user.imageURL, name: user.username, config: .rowUser, ignoreCache: profileImageIgnoreCache)
+                    if user.visibilityStatus == .illegal {
+                        Circle()
+                            .foregroundStyle(Colors.inactiveDark)
+                            .frame(height: 40)
+                            .overlay {
+                                IconsNew.exclamaitionMarkCircle
+                                    .iconSize(height: 16)
+                                    .foregroundStyle(Colors.whiteSecondary)
+                            }
                         .padding(.trailing, 10)
+                    } else {
+                        ProfileAvatarView(url: user.imageURL, name: user.username, config: .rowUser, ignoreCache: profileImageIgnoreCache)
+                            .padding(.trailing, 10)
+                    }
 
                     VStack(alignment: .leading, spacing: 0) {
                         Text(user.username)
@@ -63,6 +73,21 @@ public struct RowProfileView<TrailingContent: View>: View {
             .font(.customFont(weight: .regular, style: .footnote))
             .foregroundStyle(Colors.whitePrimary)
             .simultaneousGesture(TapGesture())
+            .ifCondition(showSensitiveContentWarning) {
+                $0
+                    .allowsHitTesting(false)
+                    .blur(radius: 5)
+                    .overlay(alignment: .leading) {
+                        Button {
+                            withAnimation {
+                                showSensitiveContentWarning = false
+                            }
+                        } label: {
+                            sensitiveContentWarningForPostHeaderView
+                                .contentShape(.rect)
+                        }
+                    }
+            }
 
             Spacer()
 
@@ -72,5 +97,28 @@ public struct RowProfileView<TrailingContent: View>: View {
                 trailingContent()
             }
         }
+    }
+
+    private var sensitiveContentWarningForPostHeaderView: some View {
+        HStack(spacing: 10) {
+            Circle()
+                .frame(height: 40)
+                .foregroundStyle(Colors.whitePrimary.opacity(0.2))
+                .overlay {
+                    IconsNew.eyeWithSlash
+                        .iconSize(width: 20)
+                        .foregroundStyle(Colors.whitePrimary)
+                }
+
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Sensitive content")
+                    .appFont(.smallLabelBold)
+
+                Text("Click to see")
+                    .appFont(.smallLabelRegular)
+            }
+        }
+        .foregroundStyle(Colors.whitePrimary)
+        .fixedSize(horizontal: true, vertical: false)
     }
 }

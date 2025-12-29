@@ -1,9 +1,10 @@
-query GetListOfAds($userID: ID, $filterBy: [ContentType!], $offset: Int, $limit: Int) {
+query GetListOfAds($userID: ID, $filterBy: [ContentType!], $contentFilterBy: ContentFilterType, $offset: Int, $limit: Int) {
 	listAdvertisementPosts(
         userid: $userID
         filterBy: $filterBy
         offset: $offset
         limit: $limit
+        contentFilterBy: $contentFilterBy
     ) {
         status
         ResponseCode
@@ -24,6 +25,9 @@ query GetListOfAds($userID: ID, $filterBy: [ContentType!], $offset: Int, $limit:
                     isfollowed
                     isfollowing
                     isfriend
+                    visibilityStatus
+                    hasActiveReports
+                    isHiddenForUsers
                 }
             }
             post {
@@ -34,6 +38,9 @@ query GetListOfAds($userID: ID, $filterBy: [ContentType!], $offset: Int, $limit:
                 cover
                 mediadescription
                 createdat
+                visibilityStatus
+                hasActiveReports
+                isHiddenForUsers
                 amountlikes
                 amountviews
                 amountcomments
@@ -54,6 +61,9 @@ query GetListOfAds($userID: ID, $filterBy: [ContentType!], $offset: Int, $limit:
                     isfollowed
                     isfollowing
                     isfriend
+                    visibilityStatus
+                    hasActiveReports
+                    isHiddenForUsers
                 }
             }
         }

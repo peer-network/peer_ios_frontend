@@ -131,19 +131,11 @@ extension View {
         }
     }
 
-    func withSheetDestinations(sheetDestinations: Binding<SheetDestination?>) -> some View {
+    func withSheetDestinations(sheetDestinations: Binding<SheetDestination?>, apiServiceManager: APIServiceManager) -> some View {
         sheet(item: sheetDestinations) { destination in
-            //TODO: should be injected, not created here
-#if DEBUG
-            let testConfig = APIConfiguration(endpoint: .custom)
-            let apiManager = APIServiceManager(.normal(config: testConfig))
-#else
-            let apiManager = APIServiceManager()
-#endif
-
             switch destination {
                 case .following(let userId):
-                    ProfilesSheetView(type: .following, fetcher: RelationsViewModel(userId: userId, apiService: apiManager.apiService))
+                    ProfilesSheetView(type: .following, fetcher: RelationsViewModel(userId: userId, apiService: apiServiceManager.apiService))
                         .presentationDragIndicator(.hidden)
                         .presentationCornerRadius(24)
                         .presentationBackground(Colors.blackDark)
@@ -151,7 +143,7 @@ extension View {
                         .presentationContentInteraction(.resizes)
                         .withEnvironments()
                 case .followers(let userId):
-                    ProfilesSheetView(type: .followers, fetcher: RelationsViewModel(userId: userId, apiService: apiManager.apiService))
+                    ProfilesSheetView(type: .followers, fetcher: RelationsViewModel(userId: userId, apiService: apiServiceManager.apiService))
                         .presentationDragIndicator(.hidden)
                         .presentationCornerRadius(24)
                         .presentationBackground(Colors.blackDark)
@@ -159,7 +151,7 @@ extension View {
                         .presentationContentInteraction(.resizes)
                         .withEnvironments()
                 case .friends(let userId):
-                    ProfilesSheetView(type: .friends, fetcher: RelationsViewModel(userId: userId, apiService: apiManager.apiService))
+                    ProfilesSheetView(type: .friends, fetcher: RelationsViewModel(userId: userId, apiService: apiServiceManager.apiService))
                         .presentationDragIndicator(.hidden)
                         .presentationCornerRadius(24)
                         .presentationBackground(Colors.blackDark)

@@ -14,16 +14,24 @@ mutation CreateComment($postid: ID!, $parentid: ID, $content: String!) {
             parentid
             content
             createdat
+            visibilityStatus
+            hasActiveReports
+            isHiddenForUsers
             amountlikes
             amountreplies
+            amountreports
             isliked
             user {
                 id
                 username
                 slug
                 img
+                visibilityStatus
+                hasActiveReports
+                isHiddenForUsers
                 isfollowed
                 isfollowing
+                isfriend
             }
         }
     }

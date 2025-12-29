@@ -102,7 +102,7 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                     Text("Your daily free actions")
                         .appFont(.bodyRegular)
                         .padding()
-                        .presentationBackground(Colors.blackDark)
+                        .presentationBackground(Colors.inactiveDark)
                         .presentationCompactAdaptation(.popover)
                 }
 

@@ -12,6 +12,9 @@ query GetProfile($contentFilterBy: ContentFilterType, $userid: ID!) {
             slug
             img
             biography
+            visibilityStatus
+            isHiddenForUsers
+            hasActiveReports
             isfollowed
             isfollowing
             amountposts
@@ -20,6 +23,7 @@ query GetProfile($contentFilterBy: ContentFilterType, $userid: ID!) {
             amountfollower
             amountfriends
             amountblocked
+            amountreports
         }
     }
 }
