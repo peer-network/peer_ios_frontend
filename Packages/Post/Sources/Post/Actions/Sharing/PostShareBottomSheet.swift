@@ -10,9 +10,13 @@ import Models
 import DesignSystem
 import Environment
 
-struct PostShareBottomSheet: View {
+public struct PostShareBottomSheet: View {
     @ObservedObject var viewModel: PostViewModel
 
+    public init(viewModel: PostViewModel) {
+        self.viewModel = viewModel
+    }
+    
     public var body: some View {
         VStack(alignment: .center, spacing: 20) {
             Capsule()

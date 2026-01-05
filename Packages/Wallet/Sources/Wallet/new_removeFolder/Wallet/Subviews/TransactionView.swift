@@ -57,6 +57,7 @@ struct TransactionView: View {
                         .foregroundStyle(Colors.inactiveDark)
                 }
         }
+        .geometryGroup()
     }
 
     @ViewBuilder

@@ -9,10 +9,10 @@ import SwiftUI
 import DesignSystem
 import Environment
 
-struct PostActionsView: View {
+public struct PostActionsView: View {
     @EnvironmentObject private var router: Router
 
-    enum ActionsLayout {
+    public enum ActionsLayout {
         case horizontal
         case vertical
     }
@@ -24,8 +24,13 @@ struct PostActionsView: View {
     let layout: ActionsLayout
     
     @ObservedObject var postViewModel: PostViewModel
-    
-    var body: some View {
+
+    public init(layout: ActionsLayout, postViewModel: PostViewModel) {
+        self.layout = layout
+        self.postViewModel = postViewModel
+    }
+
+    public var body: some View {
         actionButtonsView
     }
     

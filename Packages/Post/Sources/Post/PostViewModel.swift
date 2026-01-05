@@ -58,7 +58,7 @@ public final class PostViewModel: ObservableObject {
     @Published private(set) var comments: [Comment] = []
     private var commentsFetchTask: Task<Void, Never>?
 
-    @Published var showCommentsSheet: Bool = false
+    @Published public var showCommentsSheet: Bool = false
     @Published var commentText = ""
 
     // MARK: Interactions sheet properties
@@ -76,10 +76,10 @@ public final class PostViewModel: ObservableObject {
     @Published private(set) var interactions: [RowUser] = []
     private var interactionsFetchTask: Task<Void, Never>?
 
-    @Published var showInteractionsSheet: Bool = false
+    @Published public var showInteractionsSheet: Bool = false
     @Published var interactionsTypeForSheet: InteractionType = .likes
 
-    @Published var showShareSheet = false
+    @Published public var showShareSheet = false
 
     @Published var showSensitiveContentWarning: Bool
     public let showIllegalBlur: Bool

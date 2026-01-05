@@ -12,12 +12,16 @@ import DesignSystem
 import Environment
 import Models
 
-struct ImagesContent: View {
+public struct ImagesContent: View {
     @Environment(\.redactionReasons) private var reasons
 
     @EnvironmentObject private var quickLook: QuickLook
 
     @ObservedObject var postVM: PostViewModel
+
+    public init(postVM: PostViewModel) {
+        self.postVM = postVM
+    }
 
     private var aspectRatio: CGFloat {
         guard let firstMedia = postVM.post.media.first else { return 1.0 }
@@ -28,7 +32,7 @@ struct ImagesContent: View {
         UIScreen.main.bounds.width * aspectRatio
     }
 
-    var body: some View {
+    public var body: some View {
         if reasons.contains(.placeholder) {
             Colors.imageLoadingPlaceholder
                 .frame(

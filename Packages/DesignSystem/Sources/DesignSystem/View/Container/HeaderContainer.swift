@@ -58,7 +58,7 @@ public struct HeaderContainer<Header: View, Content: View>: View {
 
                 Spacer()
 
-                HStack(alignment: .center, spacing: 15) {
+                HStack(alignment: .center, spacing: 10) {
                     switch actionsToDisplay {
                         case .commentsAndLikes:
                             HStack(alignment: .center, spacing: 5) {

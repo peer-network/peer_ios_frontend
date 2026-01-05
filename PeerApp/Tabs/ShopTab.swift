@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Environment
-import Shop
 
 struct ShopTab: View {
     @Environment(\.selectedTabEmptyPath) private var selectedTabEmptyPath
@@ -19,7 +18,7 @@ struct ShopTab: View {
 
     var body: some View {
         NavigationStack(path: $router.path) {
-            ShopPageView()
+            Colors.green
                 .toolbar(.hidden, for: .navigationBar)
                 .withAppRouter(appState: appState, apiServiceManager: apiManager, router: router)
                 .withSheetDestinations(sheetDestinations: $router.presentedSheet, apiServiceManager: apiManager)

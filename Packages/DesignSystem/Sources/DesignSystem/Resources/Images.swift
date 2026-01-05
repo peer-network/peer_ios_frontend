@@ -114,4 +114,6 @@ public enum IconsNew {
     public static let bubbleLines = Image(.icBubbleLines)
     public static let placeholder = Image(.icPlaceholder)
     public static let flag = Image(.icFlag)
+    public static let houseLocation = Image(.icHouseLocation)
+    public static let globe = Image(.icGlobe)
 }
