@@ -16,6 +16,8 @@ struct ShopProfileView: View {
     
     @StateObject private var viewModel: ProfileViewModel
 
+    @State private var typeSelected = ShopItemsDisplayType.list
+
     init() {
         _viewModel = .init(wrappedValue: .init(userId: "4cca9cfe-762b-416f-8e15-571f4d6798c9"))
     }
@@ -37,7 +39,35 @@ struct ShopProfileView: View {
     @ViewBuilder
     private var pageContent: some View {
         if let user = viewModel.user {
-            headerView(user: user)
+            ScrollView {
+                LazyVStack(alignment: .center, spacing: 0, pinnedViews: [.sectionHeaders]) {
+                    Section {
+                        LazyVStack(spacing: 8) {
+                            ForEach(0...100, id: \.self) { idx in
+                                Rectangle()
+                                    .fill(Colors.inactiveDark)
+                                    .frame(height: 120)
+                                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                                    .overlay(
+                                        Text("Post \(idx)")
+                                            .appFont(.bodyRegular)
+                                            .foregroundStyle(Colors.whitePrimary.opacity(0.7))
+                                    )
+                            }
+                        }
+                    } header: {
+                        VStack(spacing: 10) {
+                            headerView(user: user)
+                                .padding(.horizontal, 20)
+
+                            ShopTabControllerView(type: $typeSelected)
+                        }
+                        .padding(.top, 20)
+                        .background(Colors.blackDark)
+                    }
+
+                }
+            }
         } else {
             ProgressView()
         }
@@ -45,7 +75,7 @@ struct ShopProfileView: View {
 
     private func headerView(user: User) -> some View {
         VStack(alignment: .leading, spacing: 20) {
-            HStack(alignment: .top, spacing: 10) {
+            HStack(alignment: .center, spacing: 10) {
                 ProfileAvatarView(url: user.imageURL, name: user.username, config: .shop, ignoreCache: false)
 
                 VStack(alignment: .leading, spacing: 0) {
@@ -53,7 +83,7 @@ struct ShopProfileView: View {
                         .appFont(.bodyBold)
                         .lineLimit(1)
 
-                    Text(user.biography)
+                    Text(viewModel.fetchedBio)
                         .appFont(.smallLabelRegular)
                 }
                 .multilineTextAlignment(.leading)

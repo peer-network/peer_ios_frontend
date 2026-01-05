@@ -11,11 +11,6 @@ import Post
 import NukeUI
 import Environment
 
-enum ShopItemsDisplayType {
-    case list
-    case grid
-}
-
 struct ShopItemTileView: View {
     @EnvironmentObject private var apiManager: APIServiceManager
 
