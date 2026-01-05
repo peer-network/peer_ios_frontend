@@ -116,4 +116,5 @@ public enum IconsNew {
     public static let flag = Image(.icFlag)
     public static let houseLocation = Image(.icHouseLocation)
     public static let globe = Image(.icGlobe)
+    public static let questionmarkCircle = Image(.icQuestionmarkCircle)
 }
