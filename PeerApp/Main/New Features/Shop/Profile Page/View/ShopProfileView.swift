@@ -124,27 +124,28 @@ struct ShopProfileView: View {
         }
     }
 
+    private var gridColumns: [GridItem] {
+        Array(repeating: GridItem(.flexible(), spacing: 10), count: 2)
+    }
+
     @ViewBuilder
     private var gridOrList: some View {
         switch layout {
-            case .grid:
-                let cols = Array(repeating: GridItem(.flexible(), spacing: 10), count: 2)
-                LazyVGrid(columns: cols, spacing: 10) {
-                    ForEach(catalogVM.listings) { listing in
-//                        ShopItemRow(listing: listing)
-                        ShopItemTileView(shopPost: listing, displayType: .grid)
-                            .onFirstAppear { catalogVM.loadMoreIfNeeded(currentListingID: listing.id) }
-                    }
+        case .grid:
+            LazyVGrid(columns: gridColumns, spacing: 10) {
+                ForEach(catalogVM.listings) { listing in
+                    ShopItemTileView(shopPost: listing, displayType: .grid)
+                        .onFirstAppear { catalogVM.loadMoreIfNeeded(currentListingID: listing.id) }
                 }
+            }
 
-            case .list:
-                LazyVStack(spacing: 10) {
-                    ForEach(catalogVM.listings) { listing in
-//                        ShopItemRow(listing: listing)
-                        ShopItemTileView(shopPost: listing, displayType: .list)
-                            .onFirstAppear { catalogVM.loadMoreIfNeeded(currentListingID: listing.id) }
-                    }
+        case .list:
+            LazyVStack(spacing: 10) {
+                ForEach(catalogVM.listings) { listing in
+                    ShopItemTileView(shopPost: listing, displayType: .list)
+                        .onFirstAppear { catalogVM.loadMoreIfNeeded(currentListingID: listing.id) }
                 }
+            }
         }
     }
 
