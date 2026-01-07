@@ -14,76 +14,53 @@ import Models
 
 public struct ImagesContent: View {
     @Environment(\.redactionReasons) private var reasons
-
     @EnvironmentObject private var quickLook: QuickLook
 
     @ObservedObject var postVM: PostViewModel
+    private let forcedAspectRatio: CGFloat?
 
-    public init(postVM: PostViewModel) {
+    public init(postVM: PostViewModel, aspectRatio: CGFloat? = nil) {
         self.postVM = postVM
+        self.forcedAspectRatio = aspectRatio
     }
 
     private var aspectRatio: CGFloat {
-        guard let firstMedia = postVM.post.media.first else { return 1.0 }
-        return firstMedia.aspectRatio
-    }
-
-    private var imageHeight: CGFloat {
-        UIScreen.main.bounds.width * aspectRatio
+        forcedAspectRatio ?? postVM.post.media.first?.aspectRatio ?? 1
     }
 
     public var body: some View {
-        if reasons.contains(.placeholder) {
-            Colors.imageLoadingPlaceholder
-                .frame(
-                    width: UIScreen.main.bounds.width,
-                    height: imageHeight
-                )
-        } else {
-            if !postVM.post.mediaURLs.isEmpty {
+        Group {
+            if reasons.contains(.placeholder) || postVM.post.mediaURLs.isEmpty {
+                Colors.imageLoadingPlaceholder
+            } else {
                 TabView {
-                    ForEach(postVM.post.mediaURLs.indices, id: \.self) { index in
-                        LazyImage(url: postVM.post.mediaURLs[index]) { state in
+                    ForEach(postVM.post.mediaURLs, id: \.self) { url in
+                        LazyImage(url: url) { state in
                             if let image = state.image {
                                 image
                                     .resizable()
-                                    .aspectRatio(contentMode: .fill)
-                                    .frame(
-                                        width: UIScreen.main.bounds.width,
-                                        height: imageHeight
-                                    )
-                                    .clipShape(Rectangle())
+                                    .scaledToFill()
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                    .clipped()
                                     .pinchZoom()
-//                                    .onTapGesture {
-//                                        tapAction(for: index)
-//                                    }
                             } else {
-                                ProgressView()
-                                    .progressViewStyle(.circular)
-                                    .controlSize(.large)
-//                                Colors.imageLoadingPlaceholder
-//                                    .skeleton(isRedacted: true)
+                                Colors.imageLoadingPlaceholder
+                                    .overlay {
+                                        ProgressView()
+                                            .progressViewStyle(.circular)
+                                            .controlSize(.large)
+                                    }
                             }
                         }
                     }
                 }
-                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .automatic))
-                .indexViewStyle(.page(backgroundDisplayMode: .always))
-                .frame(
-                    width: UIScreen.main.bounds.width,
-                    height: imageHeight
-                )
-                .clipped()
-                .background(Colors.imageLoadingPlaceholder)
-                .contentShape(Rectangle())
+                .tabViewStyle(.page(indexDisplayMode: .automatic))
             }
         }
-    }
-
-    private func tapAction(for index: Int) {
-        let mediaDataArray = postVM.post.mediaURLs.compactMap { url in
-            MediaData(url: url, type: postVM.post.contentType)
-        }
-        quickLook.prepareFor(selectedMediaAttachment: mediaDataArray[index], mediaAttachments: mediaDataArray)
+        .frame(maxWidth: .infinity)
+        .aspectRatio(aspectRatio, contentMode: .fit)
+        .background(Colors.imageLoadingPlaceholder)
+        .clipped()
+        .contentShape(Rectangle())
     }
 }

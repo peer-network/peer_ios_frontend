@@ -132,7 +132,7 @@ struct ShopProfileView: View {
                 LazyVGrid(columns: cols, spacing: 10) {
                     ForEach(catalogVM.listings) { listing in
 //                        ShopItemRow(listing: listing)
-                        ShopItemTileView(shopPost: listing, displayType: .constant(.grid))
+                        ShopItemTileView(shopPost: listing, displayType: .grid)
                             .onFirstAppear { catalogVM.loadMoreIfNeeded(currentListingID: listing.id) }
                     }
                 }
@@ -141,7 +141,7 @@ struct ShopProfileView: View {
                 LazyVStack(spacing: 10) {
                     ForEach(catalogVM.listings) { listing in
 //                        ShopItemRow(listing: listing)
-                        ShopItemTileView(shopPost: listing, displayType: .constant(.list))
+                        ShopItemTileView(shopPost: listing, displayType: .list)
                             .onFirstAppear { catalogVM.loadMoreIfNeeded(currentListingID: listing.id) }
                     }
                 }

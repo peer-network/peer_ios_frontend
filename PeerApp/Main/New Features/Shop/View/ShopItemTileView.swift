@@ -18,12 +18,12 @@ struct ShopItemTileView: View {
 
     let shopPost: ShopListing
 
-    @Binding var displayType: ShopItemsDisplayType
+    private let displayType: ShopItemsDisplayType
 
     @State private var shareSheetHeight: Double = 20
 
-    init(shopPost: ShopListing, displayType: Binding<ShopItemsDisplayType>) {
-        self._displayType = displayType
+    init(shopPost: ShopListing, displayType: ShopItemsDisplayType) {
+        self.displayType = displayType
         self.shopPost = shopPost
         _postVM = .init(wrappedValue: PostViewModel(post: shopPost.post))
     }
@@ -80,8 +80,8 @@ struct ShopItemTileView: View {
 
     private var listTileView: some View {
         VStack(alignment: .leading, spacing: 0) {
-//            ImagesContent(postVM: postVM)
-//                .padding(.bottom, 10)
+            ImagesContent(postVM: postVM, aspectRatio: 1)
+                .padding(.bottom, 10)
 
             Group {
                 HStack(spacing: 0) {
@@ -125,12 +125,12 @@ struct ShopItemTileView: View {
 
     private var gridTileView: some View {
         VStack(alignment: .leading, spacing: 10) {
-//            ImagesContent(postVM: postVM)
-//                .overlay(alignment: .topTrailing) {
-//                    shareButtonView
-//                        .padding(.top, 5)
-//                        .padding(.trailing, 5)
-//                }
+            ImagesContent(postVM: postVM, aspectRatio: 1)
+                .overlay(alignment: .topTrailing) {
+                    shareButtonView
+                        .padding(.top, 5)
+                        .padding(.trailing, 5)
+                }
 
             Group {
                 HStack(spacing: 0) {
@@ -139,6 +139,7 @@ struct ShopItemTileView: View {
 
                 Text(shopPost.item.name)
                     .appFont(.bodyBold)
+                    .lineLimit(2, reservesSpace: true)
 
                 HStack(spacing: 0) {
                     Text("Price")
@@ -167,7 +168,14 @@ struct ShopItemTileView: View {
 
     @ViewBuilder
     private var shareButtonView: some View {
-        let btnCfg = StateButtonConfig(buttonSize: .small, buttonType: .custom(textColor: Colors.whitePrimary, fillColor: Colors.blackDark), title: "", icon: Icons.share, iconPlacement: .trailing)
+        let btnCfg = StateButtonConfig(
+            buttonSize: .small,
+            buttonType: .custom(textColor: Colors.whitePrimary, fillColor: Colors.blackDark),
+            title: "",
+            icon: Icons.share,
+            iconPlacement: .trailing
+        )
+        
 
         StateButton(config: btnCfg) {
             postVM.showShareSheet = true
