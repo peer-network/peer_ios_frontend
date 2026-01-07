@@ -118,6 +118,11 @@ struct ShopItemTileView: View {
             }
             .padding(.horizontal, 10)
         }
+        .modifier(ViewVisibilityModifier(viewed: postVM.isViewed, viewAction: {
+            Task {
+                try? await postVM.view()
+            }
+        }))
     }
 
     private var gridTileView: some View {
