@@ -6,13 +6,13 @@
 //
 
 import Foundation
-import FirebaseFirestore
 import Models
+import FirebaseFirestore
 
-struct ShopPost: Identifiable, Hashable {
+struct ShopListing: Identifiable, Hashable {
     var id: String { post.id }
     let post: Post
-    let item: ShopItem?   // nil while loading / if missing
+    let item: ShopItem
 }
 
 enum SizeOption: String, Codable {
@@ -22,27 +22,32 @@ enum SizeOption: String, Codable {
 
 struct ShopItem: Identifiable, Codable, Hashable {
     @DocumentID var id: String?
+
     var name: String
     var description: String
     var price: Int
-    var sizeOption: SizeOption
 
     // sized
     var sizes: [String: Int]?
 
-    // one-size
+    // one-size (Firestore field: "one_size_stock")
     var oneSizeStock: Int?
+
+    enum CodingKeys: String, CodingKey {
+        case id, name, description, price, sizes
+        case oneSizeStock = "one_size_stock"
+    }
+
+    var sizeOption: SizeOption {
+        oneSizeStock != nil ? .oneSize : .sized
+    }
 
     var inStock: Bool {
         switch sizeOption {
-            case .sized:
-                return (sizes?.values.reduce(0, +) ?? 0) > 0
-            case .oneSize:
-                return (oneSizeStock ?? 0) > 0
+            case .sized:   return (sizes?.values.reduce(0, +) ?? 0) > 0
+            case .oneSize: return (oneSizeStock ?? 0) > 0
         }
     }
 
-    func stock(for size: String) -> Int {
-        sizes?[size] ?? 0
-    }
+    func stock(for size: String) -> Int { sizes?[size] ?? 0 }
 }

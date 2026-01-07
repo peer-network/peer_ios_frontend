@@ -16,13 +16,13 @@ struct ShopItemTileView: View {
 
     @StateObject private var postVM: PostViewModel
 
-    let shopPost: ShopPost
+    let shopPost: ShopListing
 
     @Binding var displayType: ShopItemsDisplayType
 
     @State private var shareSheetHeight: Double = 20
 
-    init(shopPost: ShopPost, displayType: Binding<ShopItemsDisplayType>) {
+    init(shopPost: ShopListing, displayType: Binding<ShopItemsDisplayType>) {
         self._displayType = displayType
         self.shopPost = shopPost
         _postVM = .init(wrappedValue: PostViewModel(post: shopPost.post))
@@ -80,8 +80,8 @@ struct ShopItemTileView: View {
 
     private var listTileView: some View {
         VStack(alignment: .leading, spacing: 0) {
-            ImagesContent(postVM: postVM)
-                .padding(.bottom, 10)
+//            ImagesContent(postVM: postVM)
+//                .padding(.bottom, 10)
 
             Group {
                 HStack(spacing: 0) {
@@ -90,14 +90,14 @@ struct ShopItemTileView: View {
                 .padding(.bottom, 5)
 
                 HStack(spacing: 0) {
-                    Text(shopPost.item?.name ?? "")
+                    Text(shopPost.item.name)
                         .appFont(.bodyBold)
 
                     Spacer(minLength: 10)
                         .layoutPriority(-1)
 
                     HStack(spacing: 5) {
-                        Text(shopPost.item?.price ?? 0, format: .number)
+                        Text(shopPost.item.price, format: .number)
                             .appFont(.largeTitleBold)
 
                         Icons.logoCircleWhite
@@ -106,7 +106,7 @@ struct ShopItemTileView: View {
                 }
                 .padding(.bottom, 10)
 
-                Text(shopPost.item?.description ?? "")
+                Text(shopPost.item.description)
                     .appFont(.smallLabelRegular)
                     .padding(.bottom, 10)
 
@@ -125,19 +125,19 @@ struct ShopItemTileView: View {
 
     private var gridTileView: some View {
         VStack(alignment: .leading, spacing: 10) {
-            ImagesContent(postVM: postVM)
-                .overlay(alignment: .topTrailing) {
-                    shareButtonView
-                        .padding(.top, 5)
-                        .padding(.trailing, 5)
-                }
+//            ImagesContent(postVM: postVM)
+//                .overlay(alignment: .topTrailing) {
+//                    shareButtonView
+//                        .padding(.top, 5)
+//                        .padding(.trailing, 5)
+//                }
 
             Group {
                 HStack(spacing: 0) {
                     PostActionsView(layout: .horizontal, postViewModel: postVM)
                 }
 
-                Text(shopPost.item?.name ?? "")
+                Text(shopPost.item.name)
                     .appFont(.bodyBold)
 
                 HStack(spacing: 0) {
@@ -149,7 +149,7 @@ struct ShopItemTileView: View {
                         .layoutPriority(-1)
 
                     HStack(spacing: 2) {
-                        Text(shopPost.item?.price ?? 0, format: .number)
+                        Text(shopPost.item.price, format: .number)
                             .appFont(.bodyBold)
 
                         Icons.logoCircleWhite
