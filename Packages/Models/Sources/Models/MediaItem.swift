@@ -72,10 +72,6 @@ extension MediaItem {
         else {
             return 1.0 // Default to square if resolution format is invalid
         }
-        print(width)
-        print(height)
-        print("\(height > width ? 4/5 : 1.0)")
-        print("OPFDASDFOAPPOKDFSPODFPOOPDFS")
 
         // If height is greater than width, use 5:4 ratio
         return height > width ? 4/5 : 1.0

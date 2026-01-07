@@ -36,20 +36,19 @@ public struct ImagesContent: View {
                 TabView {
                     ForEach(postVM.post.mediaURLs, id: \.self) { url in
                         LazyImage(url: url) { state in
-                            if let image = state.image {
-                                image
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                    .clipped()
-                                    .pinchZoom()
-                            } else {
-                                Colors.imageLoadingPlaceholder
-                                    .overlay {
-                                        ProgressView()
-                                            .progressViewStyle(.circular)
-                                            .controlSize(.large)
-                                    }
+                            ZoomableClippedPage {
+                                if let image = state.image {
+                                    image
+                                        .resizable()
+                                        .scaledToFill()
+                                } else {
+                                    Colors.imageLoadingPlaceholder
+                                        .overlay {
+                                            ProgressView()
+                                                .progressViewStyle(.circular)
+                                                .controlSize(.large)
+                                        }
+                                }
                             }
                         }
                     }
@@ -61,6 +60,20 @@ public struct ImagesContent: View {
         .aspectRatio(aspectRatio, contentMode: .fit)
         .background(Colors.imageLoadingPlaceholder)
         .clipped()
-        .contentShape(Rectangle())
+        .contentShape(.rect)
+    }
+}
+
+fileprivate struct ZoomableClippedPage<Content: View>: View {
+    @ViewBuilder var content: Content
+
+    var body: some View {
+        GeometryReader { geo in
+            content
+                .frame(width: geo.size.width, height: geo.size.height)
+                .clipped()
+                .contentShape(Rectangle())
+                .pinchZoom()
+        }
     }
 }
