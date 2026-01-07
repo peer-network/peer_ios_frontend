@@ -111,10 +111,7 @@ struct ShopItemTileView: View {
                     .padding(.bottom, 10)
 
                 HStack(spacing: 10) {
-                    let btnCfg = StateButtonConfig(buttonSize: .small, buttonType: .primary, title: "Buy")
-                    StateButton(config: btnCfg) {
-                        //
-                    }
+                    buyButtonView
 
                     shareButtonView
                 }
@@ -133,9 +130,7 @@ struct ShopItemTileView: View {
                 }
 
             Group {
-                HStack(spacing: 0) {
-                    PostActionsView(layout: .horizontal, postViewModel: postVM)
-                }
+                PostActionsSmallView(postViewModel: postVM)
 
                 Text(shopPost.item.name)
                     .appFont(.bodyBold)
@@ -157,13 +152,27 @@ struct ShopItemTileView: View {
                             .iconSize(height: 11)
                     }
                 }
-                let btnCfg = StateButtonConfig(buttonSize: .small, buttonType: .primary, title: "Buy")
-                StateButton(config: btnCfg) {
-                    //
-                }
+
+                buyButtonView
             }
             .padding(.horizontal, 10)
         }
+    }
+
+    @ViewBuilder
+    private var buyButtonView: some View {
+        var btnCfg: StateButtonConfig {
+            if shopPost.item.inStock {
+                StateButtonConfig(buttonSize: .small, buttonType: .primary, title: "Buy")
+            } else {
+                StateButtonConfig(buttonSize: .small, buttonType: .custom(textColor: Colors.whiteSecondary, fillColor: Colors.blackDark), title: "Out of stock")
+            }
+        }
+
+        StateButton(config: btnCfg) {
+            //
+        }
+        .disabled(!shopPost.item.inStock)
     }
 
     @ViewBuilder
