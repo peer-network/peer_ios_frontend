@@ -62,7 +62,6 @@ struct ShopProfileView: View {
                                 .padding(.horizontal, 20)
                             ShopTabControllerView(type: $layout)
                         }
-                        .padding(.top, 20)
                         .background(Colors.blackDark)
                     }
                 }

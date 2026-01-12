@@ -119,4 +119,5 @@ public enum IconsNew {
     public static let questionmarkCircle = Image(.icQuestionmarkCircle)
     public static let displayTypeList = Image(.icDisplayTypeList)
     public static let displayTypeGrid = Image(.icDisplayTypeGrid)
+    public static let dropPin = Image(.icDropPin)
 }

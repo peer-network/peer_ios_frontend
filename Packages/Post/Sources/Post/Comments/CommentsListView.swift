@@ -87,6 +87,7 @@ public struct CommentsListView: View {
                 }
                 .padding(.top, 5)
                 .padding(.horizontal, 20)
+                .geometryGroup()
             }
         }
         .padding(.vertical, 10)

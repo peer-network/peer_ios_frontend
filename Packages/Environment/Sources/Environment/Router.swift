@@ -54,7 +54,7 @@ public enum SheetDestination: Identifiable, Hashable {
     case following(userId: String)
     case friends(userId: String)
     case shareImage(image: UIImage, post: Post)
-    
+
     public var id: String {
         switch self {
             case .shareImage:
@@ -67,11 +67,11 @@ public enum SheetDestination: Identifiable, Hashable {
                 return "friends"
         }
     }
-    
+
     public func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
-    
+
     public static func == (lhs: SheetDestination, rhs: SheetDestination) -> Bool {
         lhs.id == rhs.id
     }
@@ -82,14 +82,14 @@ public final class Router: ObservableObject {
     @Published public var presentedSheet: SheetDestination?
 
     public var urlHandler: ((URL) -> OpenURLAction.Result)?
-    
+
     public init() {}
-    
+
     public func navigate(to destination: RouterDestination) {
         presentedSheet = nil
         path.append(destination)
     }
-    
+
     public func handle(url: URL) -> OpenURLAction.Result {
         if url.scheme == "peer" && url.host == "hashtag",
            let tag = url.pathComponents.last {
@@ -103,14 +103,14 @@ public final class Router: ObservableObject {
             return .handled
         }
 
-//        if url.scheme == "https",
-//           url.host?.lowercased() == "peernetwork.eu" || url.host?.lowercased() == "www.peernetwork.eu" {
-//            let comps = url.pathComponents  // ["/", "post", "<id>"]
-//            if comps.count >= 3, comps[1] == "post" {
-//                let id = comps[2]
-//                path.append(.postDetailsWithPostId(id: id))
-//            }
-//        }
+        //        if url.scheme == "https",
+        //           url.host?.lowercased() == "peernetwork.eu" || url.host?.lowercased() == "www.peernetwork.eu" {
+        //            let comps = url.pathComponents  // ["/", "post", "<id>"]
+        //            if comps.count >= 3, comps[1] == "post" {
+        //                let id = comps[2]
+        //                path.append(.postDetailsWithPostId(id: id))
+        //            }
+        //        }
 
         return urlHandler?(url) ?? .systemAction
     }

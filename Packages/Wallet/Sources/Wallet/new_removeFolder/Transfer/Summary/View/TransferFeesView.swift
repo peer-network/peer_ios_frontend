@@ -88,7 +88,6 @@ struct TransferFeesModel {
 struct TransferFeesView: View {
     let model: TransferFeesModel
 
-    // same behavior as your original
     @State private var expandDistribution: Bool = false
 
     private var hasInviter: Bool { model.hasInviter }

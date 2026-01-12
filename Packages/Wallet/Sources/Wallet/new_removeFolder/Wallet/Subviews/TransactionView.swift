@@ -230,7 +230,7 @@ struct TransactionView: View {
         HStack(spacing: 5) {
             let amountPrefix = isAmountPositive() ? "+" : ""
 
-            Text(amountPrefix + "\(formatDecimal(transaction.tokenAmount))")
+            Text(amountPrefix + "\(formatDecimal(amountToDisplay))")
                 .appFont(.bodyBold)
 
             Icons.logoCircleWhite
@@ -245,6 +245,15 @@ struct TransactionView: View {
         .lineLimit(1)
     }
 
+    private var amountToDisplay: Foundation.Decimal {
+        switch transaction.type {
+            case .extraPost, .extraLike, .extraComment, .dislike, .transferTo, .pinPost, .referralReward, .shop, .dailyMint, .unknown:
+                return transaction.tokenAmount
+            case .transferFrom:
+                return transaction.netTokenAmount
+        }
+    }
+
     @ViewBuilder
     private func expandedView(fees: TransactionFee) -> some View {
         Capsule()
@@ -253,31 +262,35 @@ struct TransactionView: View {
             .foregroundStyle(Colors.whiteSecondary)
 
         Group {
-            textAmountLine(text: "Transaction amount", amount: transaction.tokenAmount, amountIsBold: true)
+            textAmountLine(text: "Transaction amount", amount: amountToDisplay, amountIsBold: true)
 
-            textAmountLine(text: "Base amount", amount: transaction.netTokenAmount, amountIsBold: true)
+            if transaction.type != .transferFrom {
+                textAmountLine(text: "Base amount", amount: transaction.netTokenAmount, amountIsBold: true)
 
-            if let total = fees.total {
-                textAmountLine(text: "Fees included", amount: total, amountIsBold: true)
+                if let total = fees.total {
+                    textAmountLine(text: "Fees included", amount: total, amountIsBold: true)
+                }
             }
         }
         .appFont(.bodyRegular)
         .foregroundStyle(Colors.whitePrimary)
 
-        Group {
-            if let peer = fees.peer {
-                textAmountLine(text: "\(Int(appState.getConstants()!.data.tokenomics.fees.peer * 100))% to Peer Bank (platform fee)", amount: peer)
-            }
+        if transaction.type != .transferFrom {
+            Group {
+                if let peer = fees.peer {
+                    textAmountLine(text: "\(Int(appState.getConstants()!.data.tokenomics.fees.peer * 100))% to Peer Bank (platform fee)", amount: peer)
+                }
 
-            if let burn = fees.burn {
-                textAmountLine(text: "\(Int(appState.getConstants()!.data.tokenomics.fees.burn * 100))% Burned (removed from supply)", amount: burn)
-            }
+                if let burn = fees.burn {
+                    textAmountLine(text: "\(Int(appState.getConstants()!.data.tokenomics.fees.burn * 100))% Burned (removed from supply)", amount: burn)
+                }
 
-            if let inviter = fees.inviter {
-                textAmountLine(text: "\(Int(appState.getConstants()!.data.tokenomics.fees.invitation * 100))% to your Inviter", amount: inviter)
+                if let inviter = fees.inviter {
+                    textAmountLine(text: "\(Int(appState.getConstants()!.data.tokenomics.fees.invitation * 100))% to your Inviter", amount: inviter)
+                }
             }
+            .appFont(.smallLabelRegular)
         }
-        .appFont(.smallLabelRegular)
 
         if
             transaction.type == .transferTo || transaction.type == .transferFrom,

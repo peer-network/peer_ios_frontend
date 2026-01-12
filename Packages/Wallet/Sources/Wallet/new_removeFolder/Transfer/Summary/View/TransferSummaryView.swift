@@ -160,6 +160,7 @@ public struct TransferSummaryView: View {
                     .appFont(.smallLabelBold)
 
                 Spacer(minLength: 5)
+                    .layoutPriority(-1)
 
                 HStack(spacing: 5) {
                     Text(formatDecimal(model.totalWithFees))
