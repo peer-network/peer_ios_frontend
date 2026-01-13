@@ -156,21 +156,27 @@ struct ShopItemPurchaseView: View {
     }
 
     private func sizeSelectionView(sizes: [String: Int]) -> some View {
-        VStack(alignment: .leading, spacing: 10) {
+        let orderedKeys = sortOptionKeys(Array(sizes.keys))
+
+        return VStack(alignment: .leading, spacing: 10) {
             Text("Select size")
                 .appFont(.bodyRegular)
                 .foregroundStyle(Colors.whitePrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             HStack(spacing: 0) {
-                ForEach(sizes.keys.sorted(), id: \.self) { key in
+                ForEach(orderedKeys, id: \.self) { key in
                     let quantity = sizes[key] ?? 0
 
-                    SizeOptionView(name: key, isAvailable: quantity > 0, isSelected: flow.viewModel.selectedSize == key) {
+                    SizeOptionView(
+                        name: key,
+                        isAvailable: quantity > 0,
+                        isSelected: flow.viewModel.selectedSize == key
+                    ) {
                         flow.viewModel.selectedSize = key
                     }
 
-                    if key != sizes.keys.sorted().last! {
+                    if key != orderedKeys.last {
                         Spacer()
                     }
                 }
@@ -361,5 +367,66 @@ struct ShopItemPurchaseView: View {
                 }
             )
         }
+    }
+
+    /// Sorts option keys like ["xs", "s", "m", "l"] or ["128gb", "1tb", "256gb"] into a nice display order.
+    func sortOptionKeys(_ keys: [String]) -> [String] {
+        let normalized = keys.map { ($0, normalizeKey($0)) }
+
+        // Clothing sizes
+        let clothingOrder: [String: Int] = [
+            "xxxs": 0, "xxs": 1, "xs": 2, "s": 3, "m": 4, "l": 5,
+            "xl": 6, "xxl": 7, "xxxl": 8, "xxxxl": 9, "xxxxxl": 10
+        ]
+
+        func rank(_ pair: (raw: String, norm: String)) -> (group: Int, a: Double, b: Int, c: String) {
+            let raw = pair.raw
+            let norm = pair.norm
+
+            // 0) Clothing size
+            if let idx = clothingOrder[norm] {
+                return (0, 0, idx, norm)
+            }
+
+            // 1) Storage size (gb/tb)
+            if let gb = parseStorageToGB(norm) {
+                return (1, gb, 0, norm)
+            }
+
+            // 2) Pure numeric (shoe sizes etc.)
+            if let number = Double(norm) {
+                return (2, number, 0, norm)
+            }
+
+            // 3) Fallback alphabetical
+            return (3, 0, 0, norm)
+        }
+
+        return normalized
+            .sorted {
+                let lhs = rank(($0.0, $0.1))
+                let rhs = rank(($1.0, $1.1))
+
+                if lhs.group != rhs.group { return lhs.group < rhs.group }
+                if lhs.a != rhs.a { return lhs.a < rhs.a }
+                if lhs.b != rhs.b { return lhs.b < rhs.b }
+
+                // If ranks tie, keep it stable-ish and human friendly
+                return $0.1.localizedStandardCompare($1.1) == .orderedAscending
+            }
+            .map(\.0)
+    }
+
+    private func normalizeKey(_ s: String) -> String {
+        s.trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+            .replacingOccurrences(of: " ", with: "")
+    }
+
+    // "128gb" -> 128, "1tb" -> 1024 (GB). Returns nil if it doesn't look like storage.
+    private func parseStorageToGB(_ s: String) -> Double? {
+        if s.hasSuffix("gb"), let val = Double(s.dropLast(2)) { return val }
+        if s.hasSuffix("tb"), let val = Double(s.dropLast(2)) { return val * 1024 }
+        return nil
     }
 }
