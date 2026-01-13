@@ -15,7 +15,7 @@ struct ResetPasswordView: View {
         case email
     }
 
-    @FocusState private var focusedField: FocusField?
+    @State private var focusedField: FocusField?
     
     var body: some View {
         pageContent

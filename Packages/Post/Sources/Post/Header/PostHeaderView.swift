@@ -30,7 +30,7 @@ struct PostHeaderView: View {
     var body: some View {
         HStack(alignment: .center, spacing: 10) {
             Button {
-                router.navigate(to: .accountDetail(id: postVM.post.owner.id))
+                router.navigate(to: RouterDestination.accountDetail(id: postVM.post.owner.id))
             } label: {
                 if postVM.post.owner.visibilityStatus == .illegal {
                     Circle()
@@ -126,16 +126,16 @@ struct PostHeaderView: View {
                                             tokenomics: appState.getConstants()!.data.tokenomics,
                                             popupManager: SystemPopupManager.shared,
                                             onGoToProfile: {
-                                                router.navigate(to: .accountDetail(id: postVM.post.owner.id))
+                                                router.navigate(to: RouterDestination.accountDetail(id: postVM.post.owner.id))
                                             },
                                             onGoToPost: {
-                                                router.navigate(to: .postDetailsWithPostId(id: postVM.post.id))
+                                                router.navigate(to: RouterDestination.postDetailsWithPostId(id: postVM.post.id))
                                             },
                                             onFinish: { [weak router] in
                                                 // Dismiss entire flow; we pop to wherever we want.
                                             }
                                         )
-                                        router.path.append(.promotePost(flowID: flowID, step: .config))
+                                        router.navigate(to: RouterDestination.promotePost(flowID: flowID, step: .config))
                                     }
                                 } else if postVM.post.hasActiveReports {
                                     SystemPopupManager.shared.presentPopup(.postPromotionReview) {
@@ -145,16 +145,16 @@ struct PostHeaderView: View {
                                             tokenomics: appState.getConstants()!.data.tokenomics,
                                             popupManager: SystemPopupManager.shared,
                                             onGoToProfile: {
-                                                router.navigate(to: .accountDetail(id: postVM.post.owner.id))
+                                                router.navigate(to: RouterDestination.accountDetail(id: postVM.post.owner.id))
                                             },
                                             onGoToPost: {
-                                                router.navigate(to: .postDetailsWithPostId(id: postVM.post.id))
+                                                router.navigate(to: RouterDestination.postDetailsWithPostId(id: postVM.post.id))
                                             },
                                             onFinish: { [weak router] in
                                                 // Dismiss entire flow; we pop to wherever we want.
                                             }
                                         )
-                                        router.path.append(.promotePost(flowID: flowID, step: .config))
+                                        router.navigate(to: RouterDestination.promotePost(flowID: flowID, step: .config))
                                     }
                                 } else {
                                     SystemPopupManager.shared.presentPopup(.postPromotion) {
@@ -164,16 +164,16 @@ struct PostHeaderView: View {
                                             tokenomics: appState.getConstants()!.data.tokenomics,
                                             popupManager: SystemPopupManager.shared,
                                             onGoToProfile: {
-                                                router.navigate(to: .accountDetail(id: postVM.post.owner.id))
+                                                router.navigate(to: RouterDestination.accountDetail(id: postVM.post.owner.id))
                                             },
                                             onGoToPost: {
-                                                router.navigate(to: .postDetailsWithPostId(id: postVM.post.id))
+                                                router.navigate(to: RouterDestination.postDetailsWithPostId(id: postVM.post.id))
                                             },
                                             onFinish: { [weak router] in
                                                 // Dismiss entire flow; we pop to wherever we want.
                                             }
                                         )
-                                        router.path.append(.promotePost(flowID: flowID, step: .config))
+                                        router.navigate(to: RouterDestination.promotePost(flowID: flowID, step: .config))
                                     }
                                 }
                             } label: {

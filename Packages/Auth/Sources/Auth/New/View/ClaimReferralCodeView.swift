@@ -17,7 +17,7 @@ struct ClaimReferralCodeView: View {
         case referralCode
     }
 
-    @FocusState private var focusedField: FocusField?
+    @State private var focusedField: FocusField?
 
     var body: some View {
         pageContent

@@ -11,9 +11,10 @@ import NukeUI
 import Environment
 
 struct ShopItemCheckoutView: View {
+    @EnvironmentObject private var router: Router
     @EnvironmentObject private var appState: AppState
 
-    @ObservedObject var viewModel: ShopItemPurchaseViewModel
+    @EnvironmentObject private var flow: ShopPurchaseFlow
 
     var body: some View {
         HeaderContainer(actionsToDisplay: .commentsAndLikes) {
@@ -29,17 +30,21 @@ struct ShopItemCheckoutView: View {
                 titleView
                     .padding(.bottom, 20)
 
+                itemView
+                    .padding(.bottom, 20)
+
                 deilveryView
                     .padding(.bottom, 10)
 
                 CheckoutTotalAmountView(
-                    model: CheckoutAmount(tokenomics: appState.getConstants()!.data.tokenomics, baseAmount: Decimal(viewModel.item.item.price), areFeesIncluded: true, hasInviter: AccountManager.shared.inviter != nil),
+                    model: CheckoutAmount(tokenomics: appState.getConstants()!.data.tokenomics, baseAmount: Decimal(flow.viewModel.item.item.price), areFeesIncluded: true, hasInviter: AccountManager.shared.inviter != nil),
                     basePurposeText: "Item price",
                     feesText: "Fees included"
                 )
             }
             .padding(.horizontal, 20)
             .padding(.bottom, 20)
+            .padding(.bottom, ButtonSize.small.height + 20)
         }
         .scrollIndicators(.hidden)
         .scrollDismissesKeyboard(.interactively)
@@ -48,7 +53,7 @@ struct ShopItemCheckoutView: View {
                 let backButtonConfig = StateButtonConfig(buttonSize: .large, buttonType: .teritary, title: "Back")
 
                 StateButton(config: backButtonConfig) {
-
+                    router.pop()
                 }
 
                 let payButtonConfig = StateButtonConfig(buttonSize: .large, buttonType: .primary, title: "Pay")
@@ -80,7 +85,7 @@ struct ShopItemCheckoutView: View {
 
     private var itemView: some View {
         HStack(spacing: 10) {
-            LazyImage(url: viewModel.item.post.mediaURLs.first) { state in
+            LazyImage(url: flow.viewModel.item.post.mediaURLs.first) { state in
                 if let image = state.image {
                     image
                         .resizable()
@@ -98,18 +103,20 @@ struct ShopItemCheckoutView: View {
             .clipShape(RoundedRectangle(cornerRadius: 24))
 
             VStack(spacing: 5) {
-                Text(viewModel.item.item.name)
+                Text(flow.viewModel.item.item.name)
                     .appFont(.bodyBold)
                     .foregroundStyle(Colors.whitePrimary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
-                Text(viewModel.item.item.description)
+                Text(flow.viewModel.item.item.description)
                     .appFont(.bodyRegular)
                     .foregroundStyle(Colors.whiteSecondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
 
                 Spacer(minLength: 10)
                     .layoutPriority(-1)
 
-                if let selectedSize = viewModel.selectedSize {
+                if let selectedSize = flow.viewModel.selectedSize {
                     HStack(spacing: 20) {
                         Text("Size")
                             .appFont(.bodyRegular)
@@ -140,21 +147,21 @@ struct ShopItemCheckoutView: View {
                 .frame(height: 1)
                 .foregroundStyle(Colors.whiteSecondary)
 
-            addressLineView(title: "Name", value: viewModel.name)
+            addressLineView(title: "Name", value: flow.viewModel.name)
 
-            addressLineView(title: "E-mail", value: viewModel.email)
+            addressLineView(title: "E-mail", value: flow.viewModel.email)
 
-            addressLineView(title: "Address line 1", value: viewModel.address1)
+            addressLineView(title: "Address line 1", value: flow.viewModel.address1)
 
-            if !viewModel.address2.isEmpty {
-                addressLineView(title: "Address line 2", value: viewModel.address2)
+            if !flow.viewModel.address2.isEmpty {
+                addressLineView(title: "Address line 2", value: flow.viewModel.address2)
             }
 
-            addressLineView(title: "City", value: viewModel.city)
+            addressLineView(title: "City", value: flow.viewModel.city)
 
-            addressLineView(title: "ZIP code", value: viewModel.zip)
+            addressLineView(title: "ZIP code", value: flow.viewModel.zip)
 
-            addressLineView(title: "Country", value: viewModel.country)
+            addressLineView(title: "Country", value: flow.viewModel.country)
         }
         .padding(20)
         .background(Colors.inactiveDark)

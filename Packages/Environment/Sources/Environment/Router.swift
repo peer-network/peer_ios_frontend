@@ -26,9 +26,9 @@ public enum RouterDestination: Hashable {
     case blockedUsers
     case deleteAccount
     case commentLikes(comment: Comment)
-
+    
     case promotePost(flowID: UUID, step: PromotePostStep)
-
+    
     case adsHistoryOverview
     case adsHistoryDetails(ad: SingleAdStats)
 }
@@ -40,7 +40,7 @@ public enum PromotePostStep: Hashable {
 
 public enum FullScreenCoverDestination: Hashable, Identifiable {
     case postDetailsWithPostId(id: String)
-
+    
     public var id: String {
         switch self {
             case .postDetailsWithPostId:
@@ -54,7 +54,7 @@ public enum SheetDestination: Identifiable, Hashable {
     case following(userId: String)
     case friends(userId: String)
     case shareImage(image: UIImage, post: Post)
-
+    
     public var id: String {
         switch self {
             case .shareImage:
@@ -67,42 +67,45 @@ public enum SheetDestination: Identifiable, Hashable {
                 return "friends"
         }
     }
-
+    
     public func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
-
+    
     public static func == (lhs: SheetDestination, rhs: SheetDestination) -> Bool {
         lhs.id == rhs.id
     }
 }
 
 public final class Router: ObservableObject {
-    @Published public var path: [RouterDestination] = []
+    @Published public var path = NavigationPath()
     @Published public var presentedSheet: SheetDestination?
-
+    
+    // Type-erased storage for app-owned flow objects (ShopPurchaseFlow, etc.)
+    private var objectStore: [UUID: AnyObject] = [:]
+    
     public var urlHandler: ((URL) -> OpenURLAction.Result)?
-
+    
     public init() {}
-
-    public func navigate(to destination: RouterDestination) {
+    
+    public func navigate<T: Hashable>(to destination: T) {
         presentedSheet = nil
         path.append(destination)
     }
-
+    
     public func handle(url: URL) -> OpenURLAction.Result {
         if url.scheme == "peer" && url.host == "hashtag",
            let tag = url.pathComponents.last {
-            navigate(to: .hashTag(tag: tag))
+            navigate(to: RouterDestination.hashTag(tag: tag))
             return .handled
         }
-
+        
         if url.scheme == "peer" && url.host == "post",
            let postId = url.pathComponents.last {
-            navigate(to: .postDetailsWithPostId(id: postId))
+            navigate(to: RouterDestination.postDetailsWithPostId(id: postId))
             return .handled
         }
-
+        
         //        if url.scheme == "https",
         //           url.host?.lowercased() == "peernetwork.eu" || url.host?.lowercased() == "www.peernetwork.eu" {
         //            let comps = url.pathComponents  // ["/", "post", "<id>"]
@@ -111,12 +114,31 @@ public final class Router: ObservableObject {
         //                path.append(.postDetailsWithPostId(id: id))
         //            }
         //        }
-
+        
         return urlHandler?(url) ?? .systemAction
     }
-
+    
+    public func pop() {
+        guard !path.isEmpty else { return }
+        path.removeLast()
+    }
+    
     public func emptyPath() {
-        path.removeAll()
+        path = NavigationPath()
+    }
+    
+    // MARK: - Object Store (type-erased)
+    
+    public func store(_ object: AnyObject, id: UUID) {
+        objectStore[id] = object
+    }
+    
+    public func object(id: UUID) -> AnyObject? {
+        objectStore[id]
+    }
+    
+    public func removeObject(id: UUID) {
+        objectStore[id] = nil
     }
 }
 

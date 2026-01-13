@@ -48,7 +48,7 @@ struct AdHistoryAdDetailView: View {
             }
 
           Button {
-                router.navigate(to: .postDetailsWithPost(post: ad.post))
+                router.navigate(to: RouterDestination.postDetailsWithPost(post: ad.post))
             } label: {
                 RowAdPostViewBig(adStats: ad, showDates: false, showModerationBadge: false)
                     .contentShape(.rect)

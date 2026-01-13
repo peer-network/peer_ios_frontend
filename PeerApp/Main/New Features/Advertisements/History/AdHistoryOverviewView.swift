@@ -161,7 +161,7 @@ struct AdHistoryOverviewView: View {
             LazyVStack(spacing: 10) {
                 ForEach(viewModel.ads) { ad in
                     Button {
-                        router.navigate(to: .adsHistoryDetails(ad: ad))
+                        router.navigate(to: RouterDestination.adsHistoryDetails(ad: ad))
                     } label: {
                         RowAdPostViewBig(adStats: ad, showDates: true, showModerationBadge: true)
                             .contentShape(.rect)

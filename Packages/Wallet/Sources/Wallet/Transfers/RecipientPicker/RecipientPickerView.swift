@@ -15,7 +15,7 @@ struct RecipientPickerView: View {
         case recipient
     }
 
-    @FocusState private var focusedField: FocusField?
+    @State private var focusedField: FocusField?
 
     var body: some View {
         DataInputTextField(

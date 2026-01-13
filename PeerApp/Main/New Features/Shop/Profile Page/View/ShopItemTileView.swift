@@ -12,6 +12,7 @@ import NukeUI
 import Environment
 
 struct ShopItemTileView: View {
+    @EnvironmentObject private var router: Router
     @EnvironmentObject private var apiManager: APIServiceManager
 
     @StateObject private var postVM: PostViewModel
@@ -175,7 +176,7 @@ struct ShopItemTileView: View {
         }
 
         StateButton(config: btnCfg) {
-            //
+            router.navigate(to: ShopRoute.purchase(item: shopPost))
         }
         .disabled(!shopPost.item.inStock)
     }

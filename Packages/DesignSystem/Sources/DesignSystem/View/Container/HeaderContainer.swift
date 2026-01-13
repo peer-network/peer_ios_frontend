@@ -108,9 +108,9 @@ public struct HeaderContainer<Header: View, Content: View>: View {
 
                 if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
                     Button {
-                        if router.path.last != .versionHistory {
-                            router.navigate(to: .versionHistory)
-                        }
+//                        if router.path.last != .versionHistory {
+                            router.navigate(to: RouterDestination.versionHistory)
+//                        }
                     } label: {
                         Text("v \(version)")
                             .appFont(.bodyRegular)

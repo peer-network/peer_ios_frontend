@@ -190,7 +190,7 @@ struct ProfileHeader: View {
         let config = StateButtonConfig(buttonSize: .small, buttonType: .secondary, title: "Invite a friend")
 
         StateButton(config: config) {
-            router.navigate(to: .referralProgram)
+            router.navigate(to: RouterDestination.referralProgram)
         }
     }
 
@@ -199,7 +199,7 @@ struct ProfileHeader: View {
         let config = StateButtonConfig(buttonSize: .small, buttonType: .custom(textColor: Colors.whitePrimary, fillColor: Colors.inactiveDark), title: "Settings", icon: Icons.gear, iconPlacement: .trailing)
 
         StateButton(config: config) {
-            router.navigate(to: .settings)
+            router.navigate(to: RouterDestination.settings)
         }
     }
 
@@ -250,7 +250,7 @@ struct ProfileHeader: View {
             } else {
                 Section {
                     Button {
-                        router.navigate(to: .adsHistoryOverview)
+                        router.navigate(to: RouterDestination.adsHistoryOverview)
                     } label: {
                         Label("My ads", systemImage: "megaphone")
                     }

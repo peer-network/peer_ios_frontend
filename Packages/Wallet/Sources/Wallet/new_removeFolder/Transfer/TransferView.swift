@@ -51,7 +51,7 @@ public struct TransferView: View {
                     else {
                         return
                     }
-                    router.navigate(to: .transferSummary(balance: transferVM.currentBalance, recipient: recipient, amount: amount, message: transferVM.message))
+                    router.navigate(to: RouterDestination.transferSummary(balance: transferVM.currentBalance, recipient: recipient, amount: amount, message: transferVM.message))
                 }
                 .disabled(!transferVM.canDoTransfer)
                 .padding(.bottom, 20)

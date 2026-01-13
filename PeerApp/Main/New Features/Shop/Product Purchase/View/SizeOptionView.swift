@@ -34,7 +34,7 @@ struct SizeOptionView: View {
                         }
                     }
                 }
-                .ifCondition(isAvailable) {
+                .ifCondition(isAvailable && !isSelected) {
                     $0.overlay {
                         RoundedRectangle(cornerRadius: 10)
                             .strokeBorder(Colors.whitePrimary, lineWidth: 1)
