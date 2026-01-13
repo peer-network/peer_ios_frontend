@@ -38,6 +38,12 @@ public final class SystemPopupManager: SystemPopupManaging {
         }
     }
 
+    public func presentCustomPopup<Content: View>(
+        @ViewBuilder _ content: @escaping () -> Content
+    ) {
+        presentedPopupBuilder = { AnyView(content()) }
+    }
+    
     public func dismiss() {
         presentedPopupBuilder = nil
     }
