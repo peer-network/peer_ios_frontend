@@ -21,6 +21,7 @@ struct SizeOptionView: View {
             Text(name)
                 .appFont(isSelected ? .bodyBold : .bodyRegular)
                 .foregroundStyle(isAvailable ? Colors.whitePrimary : Colors.whiteSecondary)
+                .padding(.horizontal, 10)
                 .frame(height: 45)
                 .frame(minWidth: 45)
                 .background {
