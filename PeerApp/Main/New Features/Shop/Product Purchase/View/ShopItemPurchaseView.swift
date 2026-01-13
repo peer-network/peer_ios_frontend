@@ -179,34 +179,43 @@ struct ShopItemPurchaseView: View {
     }
 
     private var deliveryInformationView: some View {
-        VStack(spacing: 0) {
-            HStack(spacing: 0) {
-                Text("Delivery")
-                    .appFont(.bodyRegular)
-                    .foregroundStyle(Colors.whitePrimary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+        Button {
+            withAnimation {
+                expandDeliveryInfo.toggle()
+            }
+        } label: {
+            VStack(spacing: 0) {
+                HStack(spacing: 0) {
+                    Text("Delivery")
+                        .appFont(.bodyRegular)
+                        .foregroundStyle(Colors.whitePrimary)
 
-                Button {
-                    withAnimation {
-                        expandDeliveryInfo.toggle()
+                    Spacer(minLength: 5)
+                        .layoutPriority(-1)
+
+                    if !expandDeliveryInfo {
+                        Text("1-3 working days, **only within Germany**")
+                            .appFont(.smallLabelRegular)
+                            .lineLimit(1)
+                            .padding(.trailing, 5)
                     }
-                } label: {
+
                     Icons.arrowDown
                         .iconSize(width: 16)
                         .rotationEffect(.degrees(expandDeliveryInfo ? 180 : 0))
                         .animation(.easeInOut, value: expandDeliveryInfo)
-                        .contentShape(.rect)
+                }
+
+                if expandDeliveryInfo {
+                    Text("We’ll email your delivery details within 1–3 days after your payment is confirmed. Please make sure your email and address are correct, they can’t be changed after you place the order. **Delivery is available only within Germany.**")
+                        .appFont(.smallLabelRegular)
+                        .multilineTextAlignment(.leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
-
-            if expandDeliveryInfo {
-                Text("We’ll email your delivery details within 1–3 days after your payment is confirmed. Please make sure your email and address are correct, they can’t be changed after you place the order. **Delivery is available only within Germany.**")
-                    .appFont(.smallLabelRegular)
-                    .multilineTextAlignment(.leading)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
+            .contentShape(.rect)
+            .foregroundStyle(Colors.whiteSecondary)
         }
-        .foregroundStyle(Colors.whiteSecondary)
     }
 
     private var addressInformationFormView: some View {
