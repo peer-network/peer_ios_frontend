@@ -21,6 +21,8 @@ public struct FeedView: View {
     @State private var showFilters = false
     @State private var filtersPosition: CGRect = .zero
 
+    @StateObject private var feedContentSortingAndFiltering = FeedContentSortingAndFiltering.shared
+
     public init() {}
 
     public var body: some View {
@@ -33,27 +35,70 @@ public struct FeedView: View {
             oldContentView
             //            }
         }
-        .overlay(alignment: .topLeading) {
-            ZStack(alignment: .topLeading) {
-                Rectangle()
-                    .foregroundStyle(.clear)
-                    .contentShape(.rect)
-                    .onTapGesture {
-                        withAnimation(.snappy(duration: 0.3, extraBounce: 0)) {
-                            showFilters = false
+        .overlay {
+            if showFilters {
+                ZStack(alignment: .topLeading) {
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                        .onTapGesture {
+                            withAnimation(.snappy(duration: 0.3, extraBounce: 0)) {
+                                showFilters = false
+                            }
                         }
-                    }
-                    .allowsHitTesting(showFilters)
 
-                ZStack {
-                    if showFilters {
+                    VStack(alignment: .leading, spacing: 0) {
+                        HStack(spacing: 8.75) {
+                            Icons.magnifyingglass
+                                .iconSize(height: 19.25)
+                                .frame(width: 21, height: 21)
+
+                            Text("Search")
+                                .appFont(.bodyRegular)
+                        }
+                        .foregroundStyle(Colors.whitePrimary)
+                        .allowsHitTesting(false)
+                        .padding(.bottom, 12.5)
+
+                        FeedSearchBarView()
+                            .padding(.bottom, 16)
+
+                        HStack(spacing: 0) {
+                            IconsNew.filter
+                                .iconSize(height: 19.92)
+                                .frame(width: 24, height: 24)
+                                .padding(.trailing, 10)
+
+                            Text("Filters")
+                                .appFont(.bodyRegular)
+
+                            Spacer(minLength: 10)
+
+                            Button {
+                                withAnimation(.snappy(duration: 0.3, extraBounce: 0)) {
+                                    feedContentSortingAndFiltering.filterByRelationship = .all
+                                    feedContentSortingAndFiltering.sortByPopularity = .newest
+                                    feedContentSortingAndFiltering.sortByTime = .allTime
+                                    showFilters = false
+                                }
+                            } label: {
+                                Text("Clear all")
+                                    .appFont(.bodyBold)
+                                    .foregroundStyle(Colors.whiteSecondary)
+                                    .contentShape(.rect)
+                            }
+
+                        }
+                        .foregroundStyle(Colors.whitePrimary)
+                        .padding(.bottom, 16)
+
                         SortingPopupView()
-                            .transition(.blurReplace)
                     }
+                    .padding(.horizontal, 20)
+                    .offset(y: filtersPosition.minY)
+                    .transition(.blurReplace)
                 }
-                .offset(x: 20, y: filtersPosition.maxY + 10)
+                .ignoresSafeArea(.container)
             }
-            .ignoresSafeArea()
         }
         .trackScreen(AppScreen.feed)
         .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
@@ -133,7 +178,7 @@ public struct FeedView: View {
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
         }
     }
-    
+
     private var headerView: some View {
         Button {
             withAnimation(.smooth(duration: 0.3, extraBounce: 0)) {

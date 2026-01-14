@@ -88,7 +88,7 @@ struct ShopProfileView: View {
                         updateHeaderState(contentOffsetY: newValue)
                     }
                 } else {
-                    OffsetTrackingScrollView(offsetY: $offsetY17, showsIndicators: false) {
+                    ScrollView(.vertical, showsIndicators: false) {
                         VStack(spacing: 0) {
                             Color.clear
                                 .frame(height: fullHeaderHeight + tabControllerHeight + 10)
@@ -98,11 +98,12 @@ struct ShopProfileView: View {
                                 .padding(.vertical, 20)
                         }
                     }
+                    .background(ScrollViewOffsetObserver(offsetY: $offsetY17))
                     .onChange(of: offsetY17) {
+                        print("offsetY17:", offsetY17)
                         updateHeaderState(contentOffsetY: offsetY17)
                     }
                 }
-
 
                 VStack(spacing: 10) {
                     if showFullHeader {
@@ -265,77 +266,85 @@ struct ShopProfileView: View {
     }
 }
 
-// MARK: - iOS 17 offset tracking scroll view (stable)
+// MARK: - iOS 17 ScrollView offset observer
 
-private struct OffsetTrackingScrollView<Content: View>: UIViewRepresentable {
+private struct ScrollViewOffsetObserver: UIViewRepresentable {
     @Binding var offsetY: CGFloat
-    let showsIndicators: Bool
-    let content: Content
-
-    init(offsetY: Binding<CGFloat>, showsIndicators: Bool, @ViewBuilder content: () -> Content) {
-        _offsetY = offsetY
-        self.showsIndicators = showsIndicators
-        self.content = content()
-    }
 
     func makeCoordinator() -> Coordinator {
         Coordinator(offsetY: $offsetY)
     }
 
-    func makeUIView(context: Context) -> UIScrollView {
-        let scrollView = UIScrollView()
-        scrollView.backgroundColor = .clear
-        scrollView.showsVerticalScrollIndicator = showsIndicators
-        scrollView.showsHorizontalScrollIndicator = false
-        scrollView.alwaysBounceVertical = true
-        scrollView.delegate = context.coordinator
+    func makeUIView(context: Context) -> UIView {
+        let view = UIView(frame: .zero)
+        view.backgroundColor = .clear
 
-        let host = UIHostingController(rootView: AnyView(content))
-        host.view.backgroundColor = .clear
-        host.view.translatesAutoresizingMaskIntoConstraints = false
+        // Attach after the view is in hierarchy
+        DispatchQueue.main.async {
+            context.coordinator.attachIfPossible(from: view)
+        }
 
-        scrollView.addSubview(host.view)
-
-        NSLayoutConstraint.activate([
-            host.view.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor),
-            host.view.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor),
-            host.view.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor),
-            host.view.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor),
-
-            // lock width so it scrolls vertically like SwiftUI ScrollView
-            host.view.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor)
-        ])
-
-        context.coordinator.host = host
-        return scrollView
+        return view
     }
 
-    func updateUIView(_ uiView: UIScrollView, context: Context) {
-        uiView.showsVerticalScrollIndicator = showsIndicators
-        context.coordinator.host?.rootView = AnyView(content)
+    func updateUIView(_ uiView: UIView, context: Context) {
+        // Re-attach if SwiftUI rebuilt hierarchy
+        DispatchQueue.main.async {
+            context.coordinator.attachIfPossible(from: uiView)
+        }
     }
 
-    final class Coordinator: NSObject, UIScrollViewDelegate {
+    final class Coordinator: NSObject {
         @Binding var offsetY: CGFloat
-        var host: UIHostingController<AnyView>?
-
+        private weak var scrollView: UIScrollView?
+        private var observation: NSKeyValueObservation?
         private var lastSent: CGFloat = .zero
 
         init(offsetY: Binding<CGFloat>) {
             _offsetY = offsetY
         }
 
-        func scrollViewDidScroll(_ scrollView: UIScrollView) {
-            let y = scrollView.contentOffset.y
+        func attachIfPossible(from view: UIView) {
+            guard let sv = view.findEnclosingScrollView() else { return }
 
-            // tiny throttle to avoid spamming SwiftUI updates
-            if abs(y - lastSent) < 0.5 { return }
-            lastSent = y
+            // Already attached
+            if scrollView === sv { return }
 
-            // ensure state updates happen cleanly
-            DispatchQueue.main.async {
-                self.offsetY = y
+            scrollView = sv
+            observation?.invalidate()
+
+            // Set initial value (top should be 0)
+            sendOffset(from: sv)
+
+            observation = sv.observe(\.contentOffset, options: [.new]) { [weak self] sv, _ in
+                guard let self else { return }
+                self.sendOffset(from: sv)
             }
         }
+
+        private func sendOffset(from sv: UIScrollView) {
+            // SwiftUI ScrollView usually sits at -adjustedContentInset.top at rest.
+            let y = sv.contentOffset.y + sv.adjustedContentInset.top
+            let clamped = max(0, y)
+
+            // tiny throttle
+            if abs(clamped - lastSent) < 0.5 { return }
+            lastSent = clamped
+
+            DispatchQueue.main.async {
+                self.offsetY = clamped
+            }
+        }
+    }
+}
+
+private extension UIView {
+    func findEnclosingScrollView() -> UIScrollView? {
+        var v: UIView? = self
+        while let current = v {
+            if let sv = current as? UIScrollView { return sv }
+            v = current.superview
+        }
+        return nil
     }
 }

@@ -167,12 +167,12 @@ extension ExploreView {
 
             typeButton(.title)
 
-            Spacer()
+            Spacer(minLength: 10)
 
-            Icons.magnifyingglassFill
-                .iconSize(height: 18)
+            Icons.magnifyingglass
+                .iconSize(height: 22)
                 .foregroundStyle(Colors.whitePrimary)
-                .padding(.horizontal, 10)
+                .padding(.trailing, 10)
         }
     }
 
