@@ -24,8 +24,20 @@ final class ShopCatalogViewModel: ObservableObject {
     private let cache = ShopItemCache()
 
     private var fetchTask: Task<Void, Never>?
-    private var currentOffset: Int = 0
+
+    // MARK: - Pagination
+
+    private let pageSize: Int = 10
+
+    // Ads (pinned) pagination
+    private var currentOffsetAds: Int = 0
+    private var hasMoreAds: Bool = true
+
+    // Regular posts pagination
+    private var currentOffsetPosts: Int = 0
     private var hasMorePosts: Bool = true
+
+    // MARK: - Output
 
     @Published private(set) var state: State = .loading
     @Published private(set) var listings: [ShopListing] = []
@@ -48,66 +60,136 @@ final class ShopCatalogViewModel: ObservableObject {
 
         if reset {
             state = .loading
-            currentOffset = 0
+
+            currentOffsetAds = 0
+            hasMoreAds = true
+
+            currentOffsetPosts = 0
             hasMorePosts = true
+
             listings.removeAll()
-            Task { await cache.resetAll() }
         }
 
-        guard hasMorePosts else {
+        // Nothing left to load at all
+        guard hasMoreAds || hasMorePosts else {
             state = .ready(hasMore: false)
             return
         }
 
         fetchTask = Task {
-            // if network failed earlier, allow retry on new fetch
-            await cache.resetForRefresh()
+            // If reset, fully reset cache before fetching anything
+            if reset {
+                await cache.resetAll()
+            } else {
+                // transient failures should be retriable on next fetch
+                await cache.resetForRefresh()
+            }
 
             let maxEmptyPagesToSkip = 3
             var emptyPagesSkipped = 0
             var appendedAny = false
 
-            while !Task.isCancelled, hasMorePosts {
-                let page = await fetchPostsPage(apiService: apiService)
-                switch page {
-                case .failure(let err):
-                    state = .error(err.userFriendlyDescription)
-                    fetchTask = nil
-                    return
+            // For dedupe (ads might overlap with regular posts)
+            var seenIDs = Set(listings.map(\.id))
 
-                case .success(let fetchedPosts):
-                    if fetchedPosts.isEmpty {
-                        hasMorePosts = false
-                        state = .ready(hasMore: false)
+            enum Stage { case ads, posts }
+
+            while !Task.isCancelled, (hasMoreAds || hasMorePosts) {
+
+                let stage: Stage = hasMoreAds ? .ads : .posts
+
+                let pageResult: Result<[Post], APIError> = await {
+                    switch stage {
+                        case .ads:
+                            return await fetchAdsPage(apiService: apiService)
+                        case .posts:
+                            return await fetchPostsPage(apiService: apiService)
+                    }
+                }()
+
+                switch pageResult {
+                    case .failure(let err):
+                        state = .error(err.userFriendlyDescription)
                         fetchTask = nil
                         return
-                    }
 
-                    // Firestore hydration (only unresolved)
-                    let newListings = await hydrateAndBuildListings(from: fetchedPosts)
+                    case .success(let fetchedPosts):
+                        // If the backend returns nothing, this stream is finished.
+                        if fetchedPosts.isEmpty {
+                            switch stage {
+                                case .ads:
+                                    hasMoreAds = false
+                                    // Continue the loop → start fetching regular posts in this same call
+                                    continue
+                                case .posts:
+                                    hasMorePosts = false
+                                    state = .ready(hasMore: false)
+                                    fetchTask = nil
+                                    return
+                            }
+                        }
 
-                    if !newListings.isEmpty {
-                        listings.append(contentsOf: newListings) // single publish
-                        appendedAny = true
-                    } else {
-                        emptyPagesSkipped += 1
-                    }
+                        // Firestore hydration (ads and regular posts use the same logic)
+                        let newListingsAll = await hydrateAndBuildListings(from: fetchedPosts)
 
-                    // pagination end check
-                    if fetchedPosts.count != 10 {
-                        hasMorePosts = false
-                    } else {
-                        currentOffset += 10
-                    }
+                        // Dedupe (in case ads are also returned in normal posts)
+                        let newListings = newListingsAll.filter { seenIDs.insert($0.id).inserted }
 
-                    // stop conditions for this fetch call
-                    if appendedAny || emptyPagesSkipped >= maxEmptyPagesToSkip || !hasMorePosts {
-                        state = .ready(hasMore: hasMorePosts)
-                        fetchTask = nil
-                        return
-                    }
+                        if !newListings.isEmpty {
+                            listings.append(contentsOf: newListings) // single publish
+                            appendedAny = true
+                        } else {
+                            emptyPagesSkipped += 1
+                        }
 
-                    // else: this page produced 0 listings (all missing/failed) → loop and fetch next page
+                        // Update pagination for the current stage
+                        if fetchedPosts.count != pageSize {
+                            switch stage {
+                                case .ads:
+                                    hasMoreAds = false
+                                case .posts:
+                                    hasMorePosts = false
+                            }
+                        } else {
+                            switch stage {
+                                case .ads:
+                                    currentOffsetAds += pageSize
+                                case .posts:
+                                    currentOffsetPosts += pageSize
+                            }
+                        }
+
+                        let hasMoreAnything = hasMoreAds || hasMorePosts
+
+                        // Stop conditions (same spirit as your original implementation)
+                        if !hasMoreAnything {
+                            state = .ready(hasMore: false)
+                            fetchTask = nil
+                            return
+                        }
+
+                        if appendedAny {
+                            // Important nuance:
+                            // If we just finished ads (hasMoreAds == false), keep looping once
+                            // so regular posts can start immediately right after ads.
+                            if stage == .ads && !hasMoreAds {
+                                appendedAny = false
+                                emptyPagesSkipped = 0
+                                continue
+                            }
+
+                            state = .ready(hasMore: hasMoreAnything)
+                            fetchTask = nil
+                            return
+                        }
+
+                        if emptyPagesSkipped >= maxEmptyPagesToSkip {
+                            state = .ready(hasMore: hasMoreAnything)
+                            fetchTask = nil
+                            return
+                        }
+
+                        // else: page produced 0 listings (all missing/failed) → loop and fetch next page
                 }
             }
 
@@ -124,16 +206,26 @@ final class ShopCatalogViewModel: ObservableObject {
 
     // MARK: - Internals
 
+    private func fetchAdsPage(apiService: APIService) async -> Result<[Post], APIError> {
+        // Same call pattern as NormalFeedViewModel, but scoped to this shop user.
+        await apiService.getListOfAds(
+            userID: shopUserId,
+            with: .regular,
+            after: currentOffsetAds,
+            amount: pageSize
+        )
+    }
+
     private func fetchPostsPage(apiService: APIService) async -> Result<[Post], APIError> {
         await apiService.fetchPosts(
-            with: .regular,    // your shop posts type (keep as-is if that’s correct)
+            with: .regular,
             sort: .newest,
             showHiddenContent: true,
             filter: .all,
             in: .allTime,
-            after: currentOffset,
+            after: currentOffsetPosts,
             for: shopUserId,
-            amount: 10
+            amount: pageSize
         )
     }
 
@@ -167,5 +259,4 @@ final class ShopCatalogViewModel: ObservableObject {
             return ShopListing(post: post, item: item)
         }
     }
-
 }

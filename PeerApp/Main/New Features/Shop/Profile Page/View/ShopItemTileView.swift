@@ -85,6 +85,13 @@ struct ShopItemTileView: View {
     private var listTileView: some View {
         VStack(alignment: .leading, spacing: 0) {
             ImagesContent(postVM: postVM, aspectRatio: 1)
+                .ifCondition(postVM.post.advertisement != nil) {
+                    $0.overlay(alignment: .topTrailing) {
+                        PinIndicatorView()
+                            .padding(.top, 10)
+                            .padding(.trailing, 10)
+                    }
+                }
                 .padding(.bottom, 10)
 
             Group {
@@ -138,9 +145,15 @@ struct ShopItemTileView: View {
         VStack(alignment: .leading, spacing: 10) {
             ImagesContent(postVM: postVM, aspectRatio: 1)
                 .overlay(alignment: .topTrailing) {
-                    shareButtonView
-                        .padding(.top, 5)
-                        .padding(.trailing, 5)
+                    HStack(spacing: 5) {
+                        if postVM.post.advertisement != nil {
+                            PinIndicatorView()
+                        }
+
+                        shareButtonView
+                    }
+                    .padding(.top, 5)
+                    .padding(.trailing, 5)
                 }
 
             Group {
@@ -229,5 +242,18 @@ struct ShopItemTileView: View {
             postVM.showShareSheet = true
         }
         .fixedSize()
+    }
+}
+
+private struct PinIndicatorView: View {
+    var body: some View {
+        Icons.pin
+            .iconSize(height: 19)
+            .foregroundStyle(Colors.whitePrimary)
+            .frame(width: 45, height: 45)
+            .background {
+                Circle()
+                    .foregroundStyle(Colors.version)
+            }
     }
 }
