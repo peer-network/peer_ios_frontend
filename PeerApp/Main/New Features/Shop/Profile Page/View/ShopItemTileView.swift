@@ -189,12 +189,18 @@ struct ShopItemTileView: View {
         }
 
         AsyncStateButton(config: btnCfg) {
+            withAnimation {
+                showNotEnoughtTokensError = false
+            }
+
             let balance = await accountManager.fetchUserBalance()
 
             if balance >= Decimal(shopPost.item.price) {
                 router.navigate(to: ShopRoute.purchase(item: shopPost))
             } else {
-                showNotEnoughtTokensError = true
+                withAnimation {
+                    showNotEnoughtTokensError = true
+                }
             }
         }
         .disabled(!shopPost.item.inStock)
