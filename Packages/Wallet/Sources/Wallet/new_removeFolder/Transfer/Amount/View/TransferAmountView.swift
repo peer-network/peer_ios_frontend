@@ -23,9 +23,9 @@ struct TransferAmountView<Value: Hashable>: View {
 
     @State private var committedAmount: Decimal? = nil
 
-    private let minAmount: Decimal = Decimal(string: "0.00000001", locale: Locale(identifier: "en_US_POSIX"))!
-    private let maxFractionDigits = 8
-    private let maxFractionDigitsForFees = 10
+    private let minAmount: Decimal = Decimal(string: "0.000001", locale: Locale(identifier: "en_US_POSIX"))!
+    private let maxFractionDigits = 6
+    private let maxFractionDigitsForFees = 8
 
     @State private var expandDistribution: Bool = false
 
@@ -40,7 +40,7 @@ struct TransferAmountView<Value: Hashable>: View {
                 backgroundColor: Colors.blackDark,
                 trailingIcon: Icons.logoCircleWhite,
                 text: $text,
-                placeholder: "min: 0.00000001",
+                placeholder: "min: 0.000001",
                 maxLength: 100,
                 focusState: $focusState,
                 focusEquals: focusEquals,

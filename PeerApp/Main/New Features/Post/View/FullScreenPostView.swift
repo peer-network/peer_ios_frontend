@@ -1,13 +1,14 @@
 //
 //  FullScreenPostView.swift
-//  Post
+//  PeerApp
 //
-//  Created by Artem Vasin on 20.05.25.
+//  Created by Artem Vasin on 14.01.26.
 //
 
 import SwiftUI
 import DesignSystem
 import Environment
+import Post
 
 public struct FullScreenPostView: View {
     @EnvironmentObject private var apiManager: APIServiceManager

@@ -151,7 +151,7 @@ public struct TransferSummaryView: View {
             amount: transferSummaryVM.amount,
             tokenomics: appState.getConstants()!.data.tokenomics,
             hasInviter: AccountManager.shared.inviter != nil,
-            maxFractionDigits: 10
+            maxFractionDigits: 8
         )
 
         return VStack(spacing: 10) {
@@ -186,7 +186,7 @@ public struct TransferSummaryView: View {
     private func formatDecimal(_ value: Decimal) -> String {
         let f = TransferAmountFormatters.numberFormatter
         f.locale = Locale.current
-        f.maximumFractionDigits = 10
+        f.maximumFractionDigits = 8
         return f.string(from: value as NSDecimalNumber) ?? "\(value)"
     }
 

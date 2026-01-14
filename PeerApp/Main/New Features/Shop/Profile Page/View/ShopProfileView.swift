@@ -120,6 +120,8 @@ struct ShopProfileView: View {
             }
         } else {
             ProgressView()
+                .controlSize(.large)
+                .padding(.top, 100)
         }
     }
 
