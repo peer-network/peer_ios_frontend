@@ -1196,7 +1196,7 @@ public final class APIServiceGraphQL: APIService {
     //MARK: Tags
     public func fetchTags(with query: String) async -> Result<[String], APIError> {
         do {
-            let operation = SearchTagsQuery(tagName: query, offset: 0, limit: 20)
+            let operation = SearchTagsQuery(tagName: query, offset: 0, limit: 10)
             let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
 
             guard result.isResponseCodeSuccess else {

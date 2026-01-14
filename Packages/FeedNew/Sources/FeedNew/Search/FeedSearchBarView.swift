@@ -7,8 +7,11 @@
 
 import SwiftUI
 import DesignSystem
+import Environment
 
 struct FeedSearchBarView: View {
+    @EnvironmentObject private var router: Router
+
     var body: some View {
         HStack(spacing: 10) {
             typeButton(.username)
@@ -34,7 +37,7 @@ struct FeedSearchBarView: View {
 
     private func typeButton(_ type: SearchType) -> some View {
         Button {
-            //
+            router.navigate(to: RouterDestination.search(type: type))
         } label: {
             Text(type.rawValue)
                 .ifCondition(type == .username) {

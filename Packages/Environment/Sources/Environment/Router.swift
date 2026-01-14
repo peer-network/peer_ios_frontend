@@ -31,11 +31,31 @@ public enum RouterDestination: Hashable {
     
     case adsHistoryOverview
     case adsHistoryDetails(ad: SingleAdStats)
+
+    case search(type: SearchType)
 }
 
 public enum PromotePostStep: Hashable {
     case config
     case checkout
+}
+
+public enum SearchType: String {
+    case none
+    case username = "@username"
+    case tag = "#tag"
+    case title = "Title"
+
+    public var prefix: String {
+        switch self {
+            case .username:
+                return "@"
+            case .tag:
+                return "#"
+            default:
+                return ""
+        }
+    }
 }
 
 public enum FullScreenCoverDestination: Hashable, Identifiable {

@@ -16,11 +16,11 @@ import Post
 public struct ExploreView: View {
     @EnvironmentObject private var router: Router
     @EnvironmentObject private var apiManager: APIServiceManager
-    @Environment(\.selectedTabScrollToTop) private var selectedTabScrollToTop
 
     @StateObject private var viewModel = ExploreViewModel()
 
-    @State private var searchType: SearchType = .none
+    @State private var searchType: SearchType
+    @State private var showTrendingPosts = true
     @State private var searchText = ""
     var fixedText: String {
         searchText.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
@@ -42,10 +42,17 @@ public struct ExploreView: View {
         ]
     }
 
-    public init() {}
+    public init() {
+        self.searchType = .none
+    }
 
     public init(searchTag: String) {
+        self.searchType = .none
         self._initialSearchTag = State(initialValue: searchTag)
+    }
+
+    public init(searchType: SearchType) {
+        self.searchType = searchType
     }
 
     public var body: some View {
@@ -56,22 +63,12 @@ public struct ExploreView: View {
                 searchBar
                     .padding(.horizontal, 10)
 
-                ScrollViewReader { proxy in
-                    ScrollView {
-                        ScrollToView()
-                        searchResultsView
-                            .padding(.top, 10)
-                    }
-                    .scrollDismissesKeyboard(.interactively)
-                    .scrollDisabled(viewModel.isLoading)
-                    .onChange(of: selectedTabScrollToTop) {
-                        if selectedTabScrollToTop == 1, router.path.isEmpty {
-                            withAnimation {
-                                proxy.scrollTo(ScrollToView.Constants.scrollToTop, anchor: .top)
-                            }
-                        }
-                    }
+                ScrollView {
+                    searchResultsView
+                        .padding(.top, 10)
                 }
+                .scrollDismissesKeyboard(.interactively)
+                .scrollDisabled(viewModel.isLoading)
             }
             .padding(.top, 10)
         }
@@ -81,6 +78,9 @@ public struct ExploreView: View {
             }
 
             debounceSearch(fixedText)
+        }
+        .onAppear {
+            focusedField = .search
         }
         .onFirstAppear {
             viewModel.apiService = apiManager.apiService
@@ -111,6 +111,7 @@ public struct ExploreView: View {
     }
 
     private func performSearch(_ text: String) async {
+        showTrendingPosts = false
         switch searchType {
             case .none:
                 break
@@ -142,20 +143,14 @@ extension ExploreView {
                     defaultSearchBar
                 default:
                     searchTextFieldView(searchType)
-                        .padding(.horizontal, 5)
+                        .padding(.horizontal, 10)
             }
         }
         .frame(height: 50)
         .padding(.horizontal, 5)
         .background {
-            switch searchType {
-                case .none:
-                    RoundedRectangle(cornerRadius: 24)
-                        .foregroundStyle(Colors.inactiveDark)
-                default:
-                    RoundedRectangle(cornerRadius: 24)
-                        .strokeBorder(Colors.whitePrimary, lineWidth: 1)
-            }
+            RoundedRectangle(cornerRadius: 25)
+                .foregroundStyle(Colors.inactiveDark)
         }
     }
 
@@ -211,12 +206,12 @@ extension ExploreView {
             Text(type.prefix)
                 .ifCondition(type == .username) {
                     $0
-                        .font(.custom(.bodyBoldItalic))
+                        .appFont(.bodyBoldItalic)
                         .foregroundColor(.white.opacity(0.5))
                 }
                 .ifCondition(type == .tag) {
                     $0
-                        .font(.custom(.bodyRegular))
+                        .appFont(.bodyRegular)
                         .foregroundColor(Colors.hashtag)
                 }
 
@@ -238,10 +233,13 @@ extension ExploreView {
             .focused($focusedField, equals: .search)
             .submitLabel(.search)
             .autocorrectionDisabled()
+            .ifCondition(type == .tag) {
+                $0.textInputAutocapitalization(.never)
+            }
             .lineLimit(1)
             .ifCondition(type == .username) {
                 $0
-                    .font(.custom(.bodyBoldItalic))
+                    .appFont(.bodyBoldItalic)
                     .foregroundColor(.white)
             }
             .ifCondition(type == .title) {
@@ -272,8 +270,7 @@ extension ExploreView {
                     .foregroundStyle(Colors.whitePrimary)
             }
         }
-        .font(.custom(.bodyRegular))
-        .background(Colors.textActive)
+        .appFont(.bodyRegular)
     }
 }
 
@@ -282,74 +279,91 @@ extension ExploreView {
 extension ExploreView {
     @ViewBuilder
     private var searchResultsView: some View {
-        switch searchType {
-            case .none:
-                switch viewModel.state2 {
-                    case .loading:
-                        postsGridView(Post.placeholdersImage(count: 30))
-                            .allowsHitTesting(false)
-                            .skeleton(isRedacted: true)
-                    case .display:
-                        postsGridView(viewModel.trendindPosts)
-                    case .error(let error):
-                        errorView(error: error) {
-                            Task {
-                                await viewModel.fetchTrendingPosts(reset: true)
-                            }
+        if showTrendingPosts {
+            switch viewModel.state2 {
+                case .loading:
+                    postsGridView(Post.placeholdersImage(count: 30))
+                        .allowsHitTesting(false)
+                        .skeleton(isRedacted: true)
+                case .display:
+                    postsGridView(viewModel.trendindPosts)
+                case .error(let error):
+                    errorView(error: error) {
+                        Task {
+                            await viewModel.fetchTrendingPosts(reset: true)
                         }
-                }
-            case .username:
-                switch viewModel.state2 {
-                    case .loading:
-                        usersListView(RowUser.placeholders(count: 10))
-                            .allowsHitTesting(false)
-                            .skeleton(isRedacted: true)
-                    case .display:
-                        usersListView(viewModel.users)
-                    case .error(let error):
-                        errorView(error: error) {
-                            Task {
-                                await viewModel.fetchUsers(reset: true, username: fixedText)
+                    }
+            }
+        } else {
+            switch searchType {
+                case .none:
+                    switch viewModel.state2 {
+                        case .loading:
+                            postsGridView(Post.placeholdersImage(count: 30))
+                                .allowsHitTesting(false)
+                                .skeleton(isRedacted: true)
+                        case .display:
+                            postsGridView(viewModel.trendindPosts)
+                        case .error(let error):
+                            errorView(error: error) {
+                                Task {
+                                    await viewModel.fetchTrendingPosts(reset: true)
+                                }
                             }
-                        }
-                }
-            case .tag:
-                switch viewModel.state2 {
-                    case .loading:
-                        postsGridView(Post.placeholdersImage(count: 30))
-                            .allowsHitTesting(false)
-                            .skeleton(isRedacted: true)
-                    case .display:
-                        VStack(spacing: 20) {
-                            tagsView(viewModel.tags)
-                                .padding(.horizontal, 10)
+                    }
+                case .username:
+                    switch viewModel.state2 {
+                        case .loading:
+                            usersListView(RowUser.placeholders(count: 10))
+                                .allowsHitTesting(false)
+                                .skeleton(isRedacted: true)
+                        case .display:
+                            usersListView(viewModel.users)
+                        case .error(let error):
+                            errorView(error: error) {
+                                Task {
+                                    await viewModel.fetchUsers(reset: true, username: fixedText)
+                                }
+                            }
+                    }
+                case .tag:
+                    switch viewModel.state2 {
+                        case .loading:
+                            postsGridView(Post.placeholdersImage(count: 30))
+                                .allowsHitTesting(false)
+                                .skeleton(isRedacted: true)
+                        case .display:
+                            VStack(spacing: 20) {
+                                tagsView(viewModel.tags)
+                                    .padding(.horizontal, 10)
 
+                                postsGridView(viewModel.posts)
+                            }
+                        case .error(let error):
+                            errorView(error: error) {
+                                Task {
+                                    async let result1: () = viewModel.fetchTags(tag: fixedText)
+                                    async let result2: () = viewModel.fetchPosts(reset: true, tag: fixedText)
+                                    (_, _) = await (result1, result2)
+                                }
+                            }
+                    }
+                case .title:
+                    switch viewModel.state2 {
+                        case .loading:
+                            postsGridView(Post.placeholdersImage(count: 30))
+                                .allowsHitTesting(false)
+                                .skeleton(isRedacted: true)
+                        case .display:
                             postsGridView(viewModel.posts)
-                        }
-                    case .error(let error):
-                        errorView(error: error) {
-                            Task {
-                                async let result1: () = viewModel.fetchTags(tag: fixedText)
-                                async let result2: () = viewModel.fetchPosts(reset: true, tag: fixedText)
-                                (_, _) = await (result1, result2)
+                        case .error(let error):
+                            errorView(error: error) {
+                                Task {
+                                    await viewModel.fetchPosts(reset: true, title: fixedText)
+                                }
                             }
-                        }
-                }
-            case .title:
-                switch viewModel.state2 {
-                    case .loading:
-                        postsGridView(Post.placeholdersImage(count: 30))
-                            .allowsHitTesting(false)
-                            .skeleton(isRedacted: true)
-                    case .display:
-                        postsGridView(viewModel.posts)
-                    case .error(let error):
-                        errorView(error: error) {
-                            Task {
-                                await viewModel.fetchPosts(reset: true, title: fixedText)
-                            }
-                        }
-                }
+                    }
+            }
         }
     }
 

@@ -130,6 +130,9 @@ extension View {
                 case .adsHistoryDetails(let ad):
                     AdHistoryAdDetailView(ad: ad)
                         .toolbar(.hidden, for: .navigationBar)
+                case .search(let type):
+                    ExploreView(searchType: type)
+                        .toolbar(.hidden, for: .navigationBar)
             }
         }
     }
