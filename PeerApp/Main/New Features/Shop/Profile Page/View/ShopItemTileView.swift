@@ -12,6 +12,7 @@ import NukeUI
 import Environment
 
 struct ShopItemTileView: View {
+    @EnvironmentObject private var accountManager: AccountManager
     @EnvironmentObject private var router: Router
     @EnvironmentObject private var apiManager: APIServiceManager
 
@@ -22,6 +23,8 @@ struct ShopItemTileView: View {
     private let displayType: ShopItemsDisplayType
 
     @State private var shareSheetHeight: Double = 20
+
+    @State private var showNotEnoughtTokensError = false
 
     init(shopPost: ShopListing, displayType: ShopItemsDisplayType) {
         self.displayType = displayType
@@ -116,6 +119,11 @@ struct ShopItemTileView: View {
 
                     shareButtonView
                 }
+                .padding(.bottom, 5)
+
+                if showNotEnoughtTokensError {
+                    notEnoughtTokensErrorView
+                }
             }
             .padding(.horizontal, 10)
         }
@@ -160,6 +168,11 @@ struct ShopItemTileView: View {
                 }
 
                 buyButtonView
+                    .padding(.bottom, 5)
+
+                if showNotEnoughtTokensError {
+                    notEnoughtTokensErrorView
+                }
             }
             .padding(.horizontal, 10)
         }
@@ -175,10 +188,24 @@ struct ShopItemTileView: View {
             }
         }
 
-        StateButton(config: btnCfg) {
-            router.navigate(to: ShopRoute.purchase(item: shopPost))
+        AsyncStateButton(config: btnCfg) {
+            let balance = await accountManager.fetchUserBalance()
+
+            if balance >= Decimal(shopPost.item.price) {
+                router.navigate(to: ShopRoute.purchase(item: shopPost))
+            } else {
+                showNotEnoughtTokensError = true
+            }
         }
         .disabled(!shopPost.item.inStock)
+    }
+
+    private var notEnoughtTokensErrorView: some View {
+        Text("Not enough tokens. Your balance is \(Text("\(accountManager.balance) Peer Tokens.").bold())")
+            .appFont(.smallLabelRegular)
+            .foregroundStyle(Colors.redAccent)
+            .multilineTextAlignment(.center)
+            .frame(maxWidth: .infinity, alignment: .center)
     }
 
     @ViewBuilder
