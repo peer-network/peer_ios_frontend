@@ -620,6 +620,8 @@ extension PostViewModel {
             let post = try await PostViewModel.fetchPost(id: id, service: apiService)
 
             self.init(post: post)
+
+            self.apiService = apiService
         } catch {
             return nil
         }
