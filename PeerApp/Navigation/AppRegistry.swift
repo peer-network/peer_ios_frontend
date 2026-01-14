@@ -23,7 +23,9 @@ extension View {
         navigationDestination(for: RouterDestination.self) { destination in
             switch destination {
                 case .accountDetail(let id):
-                    if #available(iOS 18, *) {
+                    if id == Env.shopUserId {
+                        ShopProfileView(shopUserId: Env.shopUserId)
+                    } else if #available(iOS 18, *) {
                         ProfilePageView(userId: id)
                             .toolbar(.hidden, for: .navigationBar)
                     } else {

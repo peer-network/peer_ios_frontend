@@ -289,4 +289,12 @@ enum Env {
         return URL(string: "https://api.example.com")!
 #endif
     }()
+
+    static let shopUserId: String = {
+#if STAGING || DEBUG
+        return "292bebb1-0951-47e8-ac8a-759138a2e4a9"
+#else
+        return "c50e2d31-c98e-4a20-b2b6-e1103839de0a"
+#endif
+    }()
 }

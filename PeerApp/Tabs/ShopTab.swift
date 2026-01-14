@@ -18,7 +18,7 @@ struct ShopTab: View {
 
     var body: some View {
         NavigationStack(path: $router.path) {
-            ShopProfileView(shopUserId: "292bebb1-0951-47e8-ac8a-759138a2e4a9")
+            ShopProfileView(shopUserId: Env.shopUserId)
                 .toolbar(.hidden, for: .navigationBar)
                 .withAppRouter(appState: appState, apiServiceManager: apiManager, router: router)
                 .navigationDestination(for: ShopRoute.self, destination: { route in
