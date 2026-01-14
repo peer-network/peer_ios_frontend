@@ -116,6 +116,14 @@ struct PostHeaderView: View {
                             Label("Translate", systemImage: "captions.bubble")
                         }
 
+                        if postVM.post.owner.id == Env.shopUserId {
+                            Button {
+                                router.navigate(to: RouterDestination.postDetailsWithPost(post: postVM.post))
+                            } label: {
+                                Label("To the item", systemImage: "arrow.up.forward")
+                            }
+                        }
+
                         if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.advertisement == nil {
                             Button {
                                 if postVM.post.isHiddenForUsers {
@@ -182,7 +190,7 @@ struct PostHeaderView: View {
                         }
                     }
 
-                    if !AccountManager.shared.isCurrentUser(id: postVM.post.owner.id) {
+                    if !AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.owner.id != Env.shopUserId {
                         Section {
                             Button(role: .destructive) {
                                 Task {
@@ -275,4 +283,14 @@ private struct PinIndicatorView: View {
                     .foregroundStyle(Colors.version)
             }
     }
+}
+
+enum Env {
+    static let shopUserId: String = {
+#if STAGING || DEBUG
+        return "292bebb1-0951-47e8-ac8a-759138a2e4a9"
+#else
+        return "c50e2d31-c98e-4a20-b2b6-e1103839de0a"
+#endif
+    }()
 }

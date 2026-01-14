@@ -144,6 +144,7 @@ struct ShopProfileView: View {
                     Text(user.username)
                         .appFont(.bodyBold)
                         .lineLimit(1)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                         .matchedGeometryEffect(id: "Username", in: animation)
 
                     Text(headerVM.fetchedBio)
@@ -156,6 +157,11 @@ struct ShopProfileView: View {
             HStack(spacing: 10) {
                 if let vm = followButtonVM {
                     FollowButton2(viewModel: vm)
+                        .matchedGeometryEffect(id: "FollowButton", in: animation)
+                } else {
+                    FollowButton2(viewModel: .init(id: "placeholder", isFollowing: false, isFollowed: false))
+                        .skeleton(isRedacted: true)
+                        .allowsHitTesting(false)
                         .matchedGeometryEffect(id: "FollowButton", in: animation)
                 }
 

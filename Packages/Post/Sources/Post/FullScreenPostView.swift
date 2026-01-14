@@ -32,6 +32,7 @@ public struct FullScreenPostView: View {
                 ScrollView {
                     PostView(postVM: postVM, displayType: .list, showFollowButton: true)
                 }
+                .scrollIndicators(.hidden)
             } else {
                 ProgressView()
                     .controlSize(.large)
