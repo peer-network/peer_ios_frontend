@@ -21,21 +21,7 @@ struct ShopTab: View {
             ShopProfileView(shopUserId: Env.shopUserId)
                 .toolbar(.hidden, for: .navigationBar)
                 .withAppRouter(appState: appState, apiServiceManager: apiManager, router: router)
-                .navigationDestination(for: ShopRoute.self, destination: { route in
-                    switch route {
-                        case .purchase(let item):
-                            ShopItemPurchaseView(item: item)
-                                .toolbar(.hidden, for: .navigationBar)
-                        case .checkout(let flowID):
-                            if let flow = router.object(id: flowID) as? ShopPurchaseFlow {
-                                ShopItemCheckoutView()
-                                    .environmentObject(flow)
-                                    .toolbar(.hidden, for: .navigationBar)
-                            } else {
-                                Text("Purchase session expired")
-                            }
-                    }
-                })
+                .withShopRouter(router: router)
                 .withSheetDestinations(sheetDestinations: $router.presentedSheet, apiServiceManager: apiManager)
                 .onChange(of: selectedTabEmptyPath) {
                     if selectedTabEmptyPath == 3, !router.path.isEmpty {

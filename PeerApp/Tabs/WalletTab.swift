@@ -22,6 +22,7 @@ struct WalletTab: View {
             WalletView()
                 .toolbar(.hidden, for: .navigationBar)
                 .withAppRouter(appState: appState, apiServiceManager: apiManager, router: router)
+                .withShopRouter(router: router)
                 .withSheetDestinations(sheetDestinations: $router.presentedSheet, apiServiceManager: apiManager)
                 .onChange(of: selectedTabEmptyPath) {
                     if selectedTabEmptyPath == 2, !router.path.isEmpty {

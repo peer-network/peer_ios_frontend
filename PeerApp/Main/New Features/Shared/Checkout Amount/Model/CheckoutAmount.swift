@@ -45,7 +45,7 @@ struct CheckoutAmount {
     }
 
     var finalTotalAmount: Decimal {
-        rounded(baseAmount + (areFeesIncluded ? totalFee.amount : 0), scale: maxFractionDigits)
+        rounded(baseAmount + (areFeesIncluded ? 0 : totalFee.amount), scale: maxFractionDigits)
     }
 
     // MARK: helpers

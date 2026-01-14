@@ -137,6 +137,24 @@ extension View {
         }
     }
 
+    func withShopRouter(router: Router) -> some View {
+        navigationDestination(for: ShopRoute.self) { destination in
+            switch destination {
+                case .purchase(let item):
+                    ShopItemPurchaseView(item: item)
+                        .toolbar(.hidden, for: .navigationBar)
+                case .checkout(let flowID):
+                    if let flow = router.object(id: flowID) as? ShopPurchaseFlow {
+                        ShopItemCheckoutView()
+                            .environmentObject(flow)
+                            .toolbar(.hidden, for: .navigationBar)
+                    } else {
+                        Text("Purchase session expired")
+                    }
+            }
+        }
+    }
+
     func withSheetDestinations(sheetDestinations: Binding<SheetDestination?>, apiServiceManager: APIServiceManager) -> some View {
         sheet(item: sheetDestinations) { destination in
             switch destination {
