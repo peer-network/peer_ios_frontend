@@ -18,8 +18,8 @@ public struct TransferSummaryView: View {
 
     @StateObject private var transferSummaryVM: TransferSummaryVM
 
-    public init(balance: Foundation.Decimal, recipient: RowUser, amount: Foundation.Decimal, message: String?) {
-        _transferSummaryVM = .init(wrappedValue: .init(currentBalance: balance, recipient: recipient, amount: amount, message: message))
+    public init(balance: Foundation.Decimal, recipient: RowUser, amount: Foundation.Decimal, fees: TransferFeesModel, message: String?) {
+        _transferSummaryVM = .init(wrappedValue: .init(currentBalance: balance, recipient: recipient, amount: amount, fees: fees, message: message))
     }
 
     public var body: some View {
@@ -103,12 +103,12 @@ public struct TransferSummaryView: View {
 
     private var balanceView: some View {
         VStack(spacing: 10) {
-            Text("Available balance")
+            Text("Remaining balance")
                 .appFont(.smallLabelRegular)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             HStack(spacing: 10) {
-                Text("\(formatDecimal(transferSummaryVM.currentBalance))")
+                Text("\(formatDecimal(transferSummaryVM.currentBalance - transferSummaryVM.fees.totalWithFees))")
                     .appFont(.extraLargeTitleBold)
                     .minimumScaleFactor(0.5)
                     .truncationMode(.tail)
@@ -147,13 +147,6 @@ public struct TransferSummaryView: View {
     }
 
     private func transferAmountView() -> some View {
-        let model = TransferFeesModel(
-            amount: transferSummaryVM.amount,
-            tokenomics: appState.getConstants()!.data.tokenomics,
-            hasInviter: AccountManager.shared.inviter != nil,
-            maxFractionDigits: 8
-        )
-
         return VStack(spacing: 10) {
             HStack(spacing: 0) {
                 Text("Total amount")
@@ -163,7 +156,7 @@ public struct TransferSummaryView: View {
                     .layoutPriority(-1)
 
                 HStack(spacing: 5) {
-                    Text(formatDecimal(model.totalWithFees))
+                    Text(formatDecimal(transferSummaryVM.fees.totalWithFees))
                         .appFont(.largeTitleBold)
                         .numericTextIfAvailable()
 
@@ -178,7 +171,7 @@ public struct TransferSummaryView: View {
                     .foregroundStyle(Colors.blackDark)
             }
 
-            TransferFeesView(model: model)
+            TransferFeesView(model: transferSummaryVM.fees)
         }
         .lineLimit(1)
     }

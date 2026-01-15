@@ -16,12 +16,22 @@ struct TransferAmountView<Value: Hashable>: View {
 
     let balance: Decimal
     let tokenomics: ConstantsConfig.Tokenomics
-    let onSubmit: ((Decimal) -> Void)?
+    let onSubmit: ((Decimal, TransferFeesModel) -> Void)?
 
     @State private var text: String = ""
     @State private var isUpdatingText = false
 
     @State private var committedAmount: Decimal? = nil
+
+    private var feesModel: TransferFeesModel? {
+        guard let amount = committedAmount else { return nil }
+        return TransferFeesModel(
+            amount: amount,
+            tokenomics: tokenomics,
+            hasInviter: AccountManager.shared.inviter != nil,
+            maxFractionDigits: maxFractionDigitsForFees
+        )
+    }
 
     private let minAmount: Decimal = Decimal(string: "0.000001", locale: Locale(identifier: "en_US_POSIX"))!
     private let maxFractionDigits = 6
@@ -52,15 +62,8 @@ struct TransferAmountView<Value: Hashable>: View {
                 }
             )
 
-            if let amount = committedAmount {
-                let model = TransferFeesModel(
-                    amount: amount,
-                    tokenomics: tokenomics,
-                    hasInviter: AccountManager.shared.inviter != nil,
-                    maxFractionDigits: maxFractionDigitsForFees
-                )
-
-                TransferFeesView(model: model)
+            if let amount = committedAmount, let feesModel {
+                TransferFeesView(model: feesModel)
                     .padding(.bottom, 10)
 
                 HStack(spacing: 0) {
@@ -70,7 +73,7 @@ struct TransferAmountView<Value: Hashable>: View {
                     Spacer(minLength: 10)
 
                     HStack(spacing: 5) {
-                        Text(formatDecimal10(model.totalWithFees))
+                        Text(formatDecimal10(feesModel.totalWithFees))
                             .appFont(.largeTitleBold)
                             .numericTextIfAvailable()
 
@@ -79,6 +82,14 @@ struct TransferAmountView<Value: Hashable>: View {
                     }
                 }
                 .transition(.opacity.combined(with: .move(edge: .top)))
+
+                if feesModel.totalWithFees > balance {
+                    Text("Insufficient tokens.")
+                        .appFont(.smallLabelRegular)
+                        .foregroundStyle(Colors.redAccent)
+                        .padding(.top, -5)
+                        .transition(.opacity.combined(with: .move(edge: .top)))
+                }
             }
         }
         .lineLimit(1)
@@ -138,7 +149,9 @@ struct TransferAmountView<Value: Hashable>: View {
             committedAmount = clamped
         }
 
-        onSubmit?(clamped)
+        if let feesModel {
+            onSubmit?(clamped, feesModel)
+        }
     }
 
     private func clamp(_ value: Decimal) -> Decimal {

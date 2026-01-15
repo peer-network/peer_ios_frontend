@@ -29,60 +29,6 @@ extension View {
     }
 }
 
-// MARK: - Pure model (no SwiftUI state)
-
-struct TransferFeesModel {
-    let amount: Decimal
-    let tokenomics: ConstantsConfig.Tokenomics
-    let hasInviter: Bool
-    let maxFractionDigits: Int
-
-    var peerRate: Decimal { Decimal(tokenomics.fees.peer) }
-    var burnRate: Decimal { Decimal(tokenomics.fees.burn) }
-    var inviterRate: Decimal { Decimal(tokenomics.fees.invitation) }
-
-    var peerFee: (percent: Int, amount: Decimal) {
-        let a = rounded(amount * peerRate, scale: maxFractionDigits)
-        return (percentInt(from: peerRate), a)
-    }
-
-    var burnFee: (percent: Int, amount: Decimal) {
-        let a = rounded(amount * burnRate, scale: maxFractionDigits)
-        return (percentInt(from: burnRate), a)
-    }
-
-    var inviterFee: (percent: Int, amount: Decimal) {
-        let a = rounded(amount * inviterRate, scale: maxFractionDigits)
-        return (percentInt(from: inviterRate), a)
-    }
-
-    var totalFeeRate: Decimal {
-        peerRate + burnRate + (hasInviter ? inviterRate : 0)
-    }
-
-    var totalFee: (percent: Int, amount: Decimal) {
-        let a = rounded(amount * totalFeeRate, scale: maxFractionDigits)
-        return (percentInt(from: totalFeeRate), a)
-    }
-
-    var totalWithFees: Decimal {
-        rounded(amount + totalFee.amount, scale: maxFractionDigits)
-    }
-
-    // MARK: helpers
-    private func rounded(_ value: Decimal, scale: Int) -> Decimal {
-        var v = value
-        var result = Decimal()
-        NSDecimalRound(&result, &v, scale, .plain)
-        return result
-    }
-
-    private func percentInt(from rate: Decimal) -> Int {
-        let p = rounded(rate * 100, scale: 0)
-        return NSDecimalNumber(decimal: p).intValue
-    }
-}
-
 // MARK: - Reusable View (keeps your exact layout)
 
 struct TransferFeesView: View {

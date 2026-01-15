@@ -47,11 +47,12 @@ public struct TransferView: View {
                 StateButton(config: btnConfig) {
                     guard
                         let recipient = transferVM.recipient,
-                        let amount = transferVM.amount
+                        let amount = transferVM.amount,
+                        let fees = transferVM.fees
                     else {
                         return
                     }
-                    router.navigate(to: RouterDestination.transferSummary(balance: transferVM.currentBalance, recipient: recipient, amount: amount, message: transferVM.message))
+                    router.navigate(to: RouterDestination.transferSummary(balance: transferVM.currentBalance, recipient: recipient, amount: amount, fees: fees, message: transferVM.message))
                 }
                 .disabled(!transferVM.canDoTransfer)
                 .padding(.bottom, 20)
@@ -80,8 +81,9 @@ public struct TransferView: View {
                 transferVM.recipient = user
             }
 
-            TransferAmountView(focusState: $focusedField, focusEquals: .amount, balance: transferVM.currentBalance, tokenomics: appState.getConstants()!.data.tokenomics) { amount in
+            TransferAmountView(focusState: $focusedField, focusEquals: .amount, balance: transferVM.currentBalance, tokenomics: appState.getConstants()!.data.tokenomics) { amount, fees in
                 transferVM.amount = amount
+                transferVM.fees = fees
             }
 
             TransferMessageView(focusState: $focusedField, focusEquals: .message) { message in

@@ -54,8 +54,8 @@ extension View {
                 case .transferV2(let balance):
                     TransferView(balance: balance)
                         .toolbar(.hidden, for: .navigationBar)
-                case .transferSummary(let balance, let recipient, let amount, let message):
-                    TransferSummaryView(balance: balance, recipient: recipient, amount: amount, message: message)
+                case .transferSummary(let balance, let recipient, let amount, let fees, let message):
+                    TransferSummaryView(balance: balance, recipient: recipient, amount: amount, fees: fees, message: message)
                         .toolbar(.hidden, for: .navigationBar)
                 case .changePassword:
                     EditPasswordView { newPassword, currentPassword in

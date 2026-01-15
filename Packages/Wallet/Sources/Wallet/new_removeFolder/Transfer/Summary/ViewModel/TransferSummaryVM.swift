@@ -18,13 +18,15 @@ final class TransferSummaryVM: ObservableObject {
     let currentBalance: Foundation.Decimal
     let recipient: RowUser
     let amount: Foundation.Decimal
+    let fees: TransferFeesModel
     let message: String?
     var onTransferCompleted: (() -> Void)?
 
-    init(currentBalance: Foundation.Decimal, recipient: RowUser, amount: Foundation.Decimal, message: String?) {
+    init(currentBalance: Foundation.Decimal, recipient: RowUser, amount: Foundation.Decimal, fees: TransferFeesModel, message: String?) {
         self.currentBalance = currentBalance
         self.recipient = recipient
         self.amount = amount
+        self.fees = fees
         self.message = message
     }
 
