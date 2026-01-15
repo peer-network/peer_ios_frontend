@@ -11,6 +11,7 @@ import NukeUI
 import Environment
 
 struct ShopItemCheckoutView: View {
+    @Environment(\.tabSwitch) private var tabSwitch
     @EnvironmentObject private var router: Router
     @EnvironmentObject private var appState: AppState
 
@@ -59,7 +60,10 @@ struct ShopItemCheckoutView: View {
                 let payButtonConfig = StateButtonConfig(buttonSize: .large, buttonType: .primary, title: "Pay")
 
                 AsyncStateButton(config: payButtonConfig) {
-
+                    let result = await flow.viewModel.purchase()
+                    if result {
+                        tabSwitch(.wallet)
+                    }
                 }
             }
             .padding(20)

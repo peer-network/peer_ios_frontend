@@ -121,4 +121,6 @@ public enum IconsNew {
     public static let displayTypeGrid = Image(.icDisplayTypeGrid)
     public static let dropPin = Image(.icDropPin)
     public static let filter = Image(.icFilter)
+    public static let shopSuccess = Image(.icShopSuccess)
+    public static let shopFail = Image(.icShopFail)
 }

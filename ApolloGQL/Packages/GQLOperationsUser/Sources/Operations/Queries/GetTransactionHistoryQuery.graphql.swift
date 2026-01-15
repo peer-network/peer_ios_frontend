@@ -77,8 +77,8 @@ public class GetTransactionHistoryQuery: GraphQLQuery {
           .field("operationid", String.self),
           .field("transactionCategory", GraphQLEnum<GQLOperationsUser.TransactionCategory>?.self),
           .field("transactiontype", String.self),
-          .field("tokenamount", GQLOperationsUser.Decimal.self),
-          .field("netTokenAmount", GQLOperationsUser.Decimal.self),
+          .field("tokenamount", String.self),
+          .field("netTokenAmount", String.self),
           .field("message", String?.self),
           .field("createdat", String.self),
           .field("fees", Fees?.self),
@@ -92,8 +92,8 @@ public class GetTransactionHistoryQuery: GraphQLQuery {
         public var operationid: String { __data["operationid"] }
         public var transactionCategory: GraphQLEnum<GQLOperationsUser.TransactionCategory>? { __data["transactionCategory"] }
         public var transactiontype: String { __data["transactiontype"] }
-        public var tokenamount: GQLOperationsUser.Decimal { __data["tokenamount"] }
-        public var netTokenAmount: GQLOperationsUser.Decimal { __data["netTokenAmount"] }
+        public var tokenamount: String { __data["tokenamount"] }
+        public var netTokenAmount: String { __data["netTokenAmount"] }
         public var message: String? { __data["message"] }
         public var createdat: String { __data["createdat"] }
         public var fees: Fees? { __data["fees"] }

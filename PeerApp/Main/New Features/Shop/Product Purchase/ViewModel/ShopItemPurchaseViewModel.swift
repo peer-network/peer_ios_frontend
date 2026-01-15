@@ -8,10 +8,14 @@
 import Combine
 import Environment
 import Models
+import Foundation
 
 @MainActor
 final class ShopItemPurchaseViewModel: ObservableObject {
     var apiService: APIService?
+    var router: Router?
+    var tabSwitch: TabSwitchAction?
+    var popupService: (any SystemPopupManaging)?
 
     let item: ShopListing
 
@@ -39,5 +43,40 @@ final class ShopItemPurchaseViewModel: ObservableObject {
 
     init(item: ShopListing) {
         self.item = item
+    }
+
+    func purchase() async -> Bool {
+        guard let apiService else { return false }
+
+        let fixedAddress2 = address2.isEmpty ? nil : address2.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        let deliveryData = DeliveryData(
+            name: name.trimmingCharacters(in: .whitespacesAndNewlines),
+            email: email.trimmingCharacters(in: .whitespacesAndNewlines),
+            address1: address1.trimmingCharacters(in: .whitespacesAndNewlines),
+            address2: fixedAddress2,
+            city: city.trimmingCharacters(in: .whitespacesAndNewlines),
+            zip: zip.trimmingCharacters(in: .whitespacesAndNewlines),
+            country: country.trimmingCharacters(in: .whitespacesAndNewlines)
+        )
+
+        let result = await apiService.performShopOrder(deliveryData: deliveryData, price: Foundation.Decimal(item.item.price), itemId: item.id, size: selectedSize ?? "")
+
+        switch result {
+            case .success:
+                popupService?.presentPopup(.shopPurchaseSuccess) {
+                    self.router?.pop(amount: 2)
+                } cancel: {
+                    self.router?.pop(amount: 2)
+                }
+                return true
+            case .failure(let apiError):
+                popupService?.presentPopup(.shopPurchaseFailed(error: apiError.userFriendlyMessage)) {
+                    Task {
+                        await self.purchase()
+                    }
+                }
+                return false
+        }
     }
 }

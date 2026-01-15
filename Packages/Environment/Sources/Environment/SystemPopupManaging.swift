@@ -22,6 +22,9 @@ public enum SystemPopupType {
     case reportComment
 
     case transferSuccess
+
+    case shopPurchaseSuccess
+    case shopPurchaseFailed(error: String)
 }
 
 /// Protocol defining the interface for system popup management

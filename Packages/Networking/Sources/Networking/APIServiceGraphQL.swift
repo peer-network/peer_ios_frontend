@@ -1403,4 +1403,46 @@ public final class APIServiceGraphQL: APIService {
             return .failure(.unknownError(error: error))
         }
     }
+
+    // MARK: Shop
+    public func performShopOrder(deliveryData: DeliveryData, price: Decimal, itemId: String, size: String) async -> Result<Void, APIError> {
+        do {
+            let result = try await qlClient.mutate(mutation: PerformShopOrderMutation(tokenAmount: price, shopItemId: itemId, name: deliveryData.name, email: deliveryData.email, addressline1: deliveryData.address1, addressline2: deliveryData.address2 == nil ? nil : GraphQLNullable(stringLiteral: deliveryData.address2!), city: deliveryData.city, zipcode: deliveryData.zip, country: .case(.germany), size: size))
+
+            guard result.isResponseCodeSuccess else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            return .success(())
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
+
+    public func getShopOrderDetails(transactionId: String) async -> Result<ShopOrder, APIError> {
+        do {
+            let result = try await qlClient.fetch(query: GetShopOrderDetailsQuery(transactionId: transactionId), cachePolicy: .fetchIgnoringCacheCompletely)
+
+            guard result.isSuccessStatus else {
+                if let errorCode = result.getResponseCode {
+                    return .failure(.serverError(code: errorCode))
+                } else {
+                    return .failure(.missingResponseCode)
+                }
+            }
+
+            let deliveryData = result.shopOrderDetails.affectedRows.deliveryDetails
+            let deliveryDetails = DeliveryData(name: deliveryData.name, email: deliveryData.email, address1: deliveryData.addressline1, address2: deliveryData.addressline2, city: deliveryData.city, zip: deliveryData.zipcode, country: deliveryData.country.rawValue)
+
+            let order = ShopOrder(id: result.shopOrderDetails.affectedRows.shopOrderId, itemId: result.shopOrderDetails.affectedRows.shopItemId, size: result.shopOrderDetails.affectedRows.shopItemSpecs?.size, deilveryData: deliveryDetails)
+
+            return .success(order)
+        } catch {
+            return .failure(.unknownError(error: error))
+        }
+    }
 }

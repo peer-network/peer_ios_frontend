@@ -138,9 +138,9 @@ public final class Router: ObservableObject {
         return urlHandler?(url) ?? .systemAction
     }
     
-    public func pop() {
-        guard !path.isEmpty else { return }
-        path.removeLast()
+    public func pop(amount: Int = 1) {
+        guard !path.isEmpty, path.count >= amount else { return }
+        path.removeLast(amount)
     }
     
     public func emptyPath() {

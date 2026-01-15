@@ -234,4 +234,13 @@ public final class APIServiceStub: APIService {
     public func promotePostPinned(for postID: String) async -> Result<String, APIError> {
         .failure(.missingData)
     }
+
+    // MARK: Shop
+    public func performShopOrder(deliveryData: DeliveryData, price: Decimal, itemId: String, size: String) async -> Result<Void, APIError> {
+        .failure(.missingData)
+    }
+
+    public func getShopOrderDetails(transactionId: String) async -> Result<ShopOrder, APIError> {
+        .failure(.missingData)
+    }
 }

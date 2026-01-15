@@ -119,4 +119,8 @@ public protocol APIService: AnyObject {
     func getAdsHistoryList(userID: String, after offset: Int, amount: Int) async -> Result<[SingleAdStats], APIError>
     func getAdsHistoryStats(userID: String) async -> Result<AdsStats, APIError>
     func promotePostPinned(for postID: String) async -> Result<String, APIError>
+
+    // MARK: Shop
+    func performShopOrder(deliveryData: DeliveryData, price: Foundation.Decimal, itemId: String, size: String) async -> Result<Void, APIError>
+    func getShopOrderDetails(transactionId: String) async -> Result<ShopOrder, APIError>
 }

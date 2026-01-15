@@ -14,10 +14,13 @@ struct TransactionView: View {
     @Environment(\.redactionReasons) private var reasons
 
     @EnvironmentObject private var appState: AppState
+    @EnvironmentObject private var apiManager: APIServiceManager
 
     let transaction: Models.Transaction
 
     @State private var expanded: Bool = false
+
+    @State private var shopOrder: ShopOrder?
 
     var body: some View {
         Button {
@@ -57,7 +60,24 @@ struct TransactionView: View {
                         .foregroundStyle(Colors.inactiveDark)
                 }
         }
+        .onFirstAppear {
+            if transaction.type == .shop {
+                Task {
+                    await getShopOrderDetails()
+                }
+            }
+        }
         .geometryGroup()
+    }
+
+    private func getShopOrderDetails() async {
+        let result = await apiManager.apiService.getShopOrderDetails(transactionId: transaction.id)
+        switch result {
+            case .success(let shopOrder):
+                self.shopOrder = shopOrder
+            case .failure(let apiError):
+                break
+        }
     }
 
     @ViewBuilder
@@ -264,7 +284,7 @@ struct TransactionView: View {
         Group {
             textAmountLine(text: "Transaction amount", amount: amountToDisplay, amountIsBold: true)
 
-            if transaction.type != .transferFrom {
+            if transaction.type != .transferFrom, transaction.type != .dailyMint {
                 textAmountLine(text: "Base amount", amount: transaction.netTokenAmount, amountIsBold: true)
 
                 if let total = fees.total {
@@ -275,7 +295,7 @@ struct TransactionView: View {
         .appFont(.bodyRegular)
         .foregroundStyle(Colors.whitePrimary)
 
-        if transaction.type != .transferFrom {
+        if transaction.type != .transferFrom, transaction.type != .dailyMint {
             Group {
                 if let peer = fees.peer {
                     textAmountLine(text: "\(Int(appState.getConstants()!.data.tokenomics.fees.peer * 100))% to Peer Bank (platform fee)", amount: peer)
@@ -311,6 +331,10 @@ struct TransactionView: View {
                     RoundedRectangle(cornerRadius: 20)
                         .foregroundStyle(Colors.blackDark)
                 }
+        }
+
+        if transaction.type == .shop, let shopOrder {
+            deliveryInfoView(shopOrder)
         }
     }
 
@@ -398,5 +422,67 @@ struct TransactionView: View {
         formatter.locale = Locale.current
         formatter.maximumFractionDigits = 10
         return formatter.string(from: value as NSDecimalNumber) ?? "\(value)"
+    }
+
+    private func deliveryInfoView(_ data: ShopOrder) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 5) {
+                IconsNew.dropPin
+                    .iconSize(height: 15)
+
+                Text("Delivery information")
+            }
+
+            HStack(spacing: 0) {
+                Text("Item")
+                    .foregroundStyle(Colors.whiteSecondary)
+
+                Spacer(minLength: 5)
+
+                if let size = data.size {
+                    Text("\(data.itemId), \(size)")
+                } else {
+                    Text(data.itemId)
+                }
+            }
+
+            HStack(spacing: 0) {
+                Text("Name")
+                    .foregroundStyle(Colors.whiteSecondary)
+
+                Spacer(minLength: 5)
+
+                Text(data.deilveryData.name)
+            }
+
+            HStack(spacing: 0) {
+                Text("Email")
+                    .foregroundStyle(Colors.whiteSecondary)
+
+                Spacer(minLength: 5)
+
+                Text(data.deilveryData.email)
+            }
+
+            HStack(spacing: 0) {
+                Text("Item")
+                    .foregroundStyle(Colors.whiteSecondary)
+
+                Spacer(minLength: 5)
+
+                if let address2 = data.deilveryData.address2 {
+                    Text("\(data.deilveryData.address1), \(address2), \(data.deilveryData.city), \(data.deilveryData.zip), \(data.deilveryData.country)")
+                } else {
+
+                }
+            }
+        }
+        .appFont(.smallLabelBold)
+        .foregroundStyle(Colors.whitePrimary)
+        .padding(10)
+        .background {
+            RoundedRectangle(cornerRadius: 20)
+                .foregroundStyle(Colors.blackDark)
+        }
     }
 }

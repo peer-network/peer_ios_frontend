@@ -11,6 +11,7 @@ import Environment
 import NukeUI
 
 struct ShopItemPurchaseView: View {
+    @Environment(\.tabSwitch) private var tabSwitch
     @EnvironmentObject private var router: Router
     @EnvironmentObject private var apiManager: APIServiceManager
 
@@ -66,6 +67,8 @@ struct ShopItemPurchaseView: View {
         }
         .onFirstAppear {
             flow.viewModel.apiService = apiManager.apiService
+            flow.viewModel.router = router
+            flow.viewModel.popupService = SystemPopupManager.shared
         }
         .onAppear {
             guard !didStoreFlow else { return }

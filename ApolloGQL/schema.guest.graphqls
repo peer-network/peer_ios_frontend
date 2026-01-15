@@ -207,6 +207,10 @@ enum ContentVisibilityStatus {
   ILLEGAL
 }
 
+enum ShopSupportedDeliveryCountry {
+  GERMANY
+}
+
 input AdvertisementHistoryFilter {
   from: Date
   to: Date
@@ -247,12 +251,27 @@ input UserPreferencesInput {
   shownOnboardings: [OnboardingType!]
 }
 
+input ShopOrderDetailsInput {
+  name: String!
+  email: String!
+  addressline1: String!
+  addressline2: String
+  city: String!
+  zipcode: String!
+  country: ShopSupportedDeliveryCountry!
+  shopItemSpecs: ShopItemSpecsInput
+}
+
+input ShopItemSpecsInput {
+  size: String!
+}
+
 type TransactionHistoryItem {
   operationid: String!
   transactionCategory: TransactionCategory
   transactiontype: String!
-  tokenamount: Decimal!
-  netTokenAmount: Decimal!
+  tokenamount: String!
+  netTokenAmount: String!
   message: String
   createdat: String!
   sender: BasicUserInfo!
@@ -793,12 +812,42 @@ type ModerationItem {
   createdat: String!
   targetcontent: TargetContent!
   reporters: [BasicUserInfo!]!
+  moderatedBy: BasicUserInfo
 }
 
 type TargetContent {
   post: Post
   comment: Comment
   user: BasicUserInfo
+}
+
+type ShopItemSpecs {
+  size: String!
+}
+
+type ShopOrderDetailsResponse {
+  meta: DefaultResponse!
+  status: String!
+  ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
+  affectedRows: ShopOrderDetails!
+}
+
+type ShopOrderDetails {
+  shopOrderId: String!
+  shopItemId: String!
+  shopItemSpecs: ShopItemSpecs
+  deliveryDetails: ShopOrderDeliveryDetails!
+  createdat: Date!
+}
+
+type ShopOrderDeliveryDetails {
+  name: String!
+  email: String!
+  addressline1: String!
+  addressline2: String
+  city: String!
+  zipcode: String!
+  country: ShopSupportedDeliveryCountry
 }
 
 type DefaultResponse {
