@@ -24,8 +24,6 @@ struct ShopProfileView: View {
     private let collapsedHeaderHeight: CGFloat = 65
     private let tabControllerHeight: CGFloat = 34
 
-    @State private var offsetY17: CGFloat = 0
-
     @State private var followButtonVM: FollowButtonViewModel?
 
     @Namespace private var animation
@@ -90,6 +88,14 @@ struct ShopProfileView: View {
                 } else {
                     ScrollView(.vertical, showsIndicators: false) {
                         VStack(spacing: 0) {
+
+                            ScrollViewOffsetObserver { y in
+                                updateHeaderState(contentOffsetY: y)
+                            }
+                            .frame(height: 1)          // non-zero so it isn't optimized away
+                            .opacity(0.01)             // effectively invisible, but still lays out
+                            .allowsHitTesting(false)
+
                             Color.clear
                                 .frame(height: fullHeaderHeight + tabControllerHeight + 10)
 
@@ -97,11 +103,6 @@ struct ShopProfileView: View {
                                 .padding(.horizontal, 20)
                                 .padding(.vertical, 20)
                         }
-                    }
-                    .background(ScrollViewOffsetObserver(offsetY: $offsetY17))
-                    .onChange(of: offsetY17) {
-                        print("offsetY17:", offsetY17)
-                        updateHeaderState(contentOffsetY: offsetY17)
                     }
                 }
 
@@ -145,9 +146,9 @@ struct ShopProfileView: View {
                 VStack(alignment: .leading, spacing: 0) {
                     Text(user.username)
                         .appFont(.bodyBold)
+                        .matchedGeometryEffect(id: "Username", in: animation)
                         .lineLimit(1)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .matchedGeometryEffect(id: "Username", in: animation)
 
                     Text(headerVM.fetchedBio)
                         .appFont(.smallLabelRegular)
@@ -191,9 +192,9 @@ struct ShopProfileView: View {
 
             Text(user.username)
                 .appFont(.bodyBold)
-                .lineLimit(1)
                 .foregroundStyle(Colors.whitePrimary)
                 .matchedGeometryEffect(id: "Username", in: animation)
+                .lineLimit(1)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             if let vm = followButtonVM {
@@ -274,85 +275,55 @@ struct ShopProfileView: View {
     }
 }
 
-// MARK: - iOS 17 ScrollView offset observer
-
 private struct ScrollViewOffsetObserver: UIViewRepresentable {
-    @Binding var offsetY: CGFloat
+    let onChange: (CGFloat) -> Void
 
-    func makeCoordinator() -> Coordinator {
-        Coordinator(offsetY: $offsetY)
-    }
+    func makeCoordinator() -> Coordinator { Coordinator(onChange: onChange) }
 
     func makeUIView(context: Context) -> UIView {
-        let view = UIView(frame: .zero)
-        view.backgroundColor = .clear
-
-        // Attach after the view is in hierarchy
-        DispatchQueue.main.async {
-            context.coordinator.attachIfPossible(from: view)
-        }
-
-        return view
+        let v = UIView(frame: .zero)
+        v.backgroundColor = .clear
+        return v
     }
 
     func updateUIView(_ uiView: UIView, context: Context) {
-        // Re-attach if SwiftUI rebuilt hierarchy
+        context.coordinator.onChange = onChange
+
+        // Attach after it's actually in the hierarchy
         DispatchQueue.main.async {
-            context.coordinator.attachIfPossible(from: uiView)
+            context.coordinator.attachIfNeeded(from: uiView)
         }
     }
 
     final class Coordinator: NSObject {
-        @Binding var offsetY: CGFloat
+        var onChange: (CGFloat) -> Void
         private weak var scrollView: UIScrollView?
         private var observation: NSKeyValueObservation?
-        private var lastSent: CGFloat = .zero
 
-        init(offsetY: Binding<CGFloat>) {
-            _offsetY = offsetY
+        init(onChange: @escaping (CGFloat) -> Void) {
+            self.onChange = onChange
         }
 
-        func attachIfPossible(from view: UIView) {
-            guard let sv = view.findEnclosingScrollView() else { return }
+        func attachIfNeeded(from view: UIView) {
+            guard scrollView == nil else { return }
 
-            // Already attached
-            if scrollView === sv { return }
+            // Walk up to find the nearest UIScrollView
+            var v: UIView? = view
+            while let current = v {
+                if let sv = current as? UIScrollView {
+                    scrollView = sv
 
-            scrollView = sv
-            observation?.invalidate()
-
-            // Set initial value (top should be 0)
-            sendOffset(from: sv)
-
-            observation = sv.observe(\.contentOffset, options: [.new]) { [weak self] sv, _ in
-                guard let self else { return }
-                self.sendOffset(from: sv)
+                    observation = sv.observe(\.contentOffset, options: [.initial, .new]) { [weak self] sv, _ in
+                        guard let self else { return }
+                        let normalizedY = sv.contentOffset.y + sv.adjustedContentInset.top
+                        self.onChange(max(0, normalizedY))
+                    }
+                    return
+                }
+                v = current.superview
             }
         }
 
-        private func sendOffset(from sv: UIScrollView) {
-            // SwiftUI ScrollView usually sits at -adjustedContentInset.top at rest.
-            let y = sv.contentOffset.y + sv.adjustedContentInset.top
-            let clamped = max(0, y)
-
-            // tiny throttle
-            if abs(clamped - lastSent) < 0.5 { return }
-            lastSent = clamped
-
-            DispatchQueue.main.async {
-                self.offsetY = clamped
-            }
-        }
-    }
-}
-
-private extension UIView {
-    func findEnclosingScrollView() -> UIScrollView? {
-        var v: UIView? = self
-        while let current = v {
-            if let sv = current as? UIScrollView { return sv }
-            v = current.superview
-        }
-        return nil
+        deinit { observation?.invalidate() }
     }
 }

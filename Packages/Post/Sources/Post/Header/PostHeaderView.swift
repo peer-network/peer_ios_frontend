@@ -288,7 +288,7 @@ private struct PinIndicatorView: View {
 enum Env {
     static let shopUserId: String = {
 #if STAGING || DEBUG
-        return "bcc868f9-48f4-414c-a4d1-245b6bb0e091"
+        return "292bebb1-0951-47e8-ac8a-759138a2e4a9"
 #else
         return "c50e2d31-c98e-4a20-b2b6-e1103839de0a"
 #endif
