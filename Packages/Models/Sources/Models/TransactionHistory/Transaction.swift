@@ -9,7 +9,6 @@ import Foundation
 import GQLOperationsUser
 
 public struct Transaction: Identifiable, Hashable {
-
     public enum TransactionType {
         case extraPost
         case extraLike
@@ -91,7 +90,7 @@ public struct Transaction: Identifiable, Hashable {
             return nil
         }
 
-        self.id = gqlTransaction.operationid
+        self.id = gqlTransaction.transactionId
 
         if let gqlType = gqlTransaction.transactionCategory?.value {
             self.type = TransactionType.normalizedValue(from: gqlType, amount: netTokenAmount)

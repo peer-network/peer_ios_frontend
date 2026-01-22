@@ -236,7 +236,7 @@ public final class APIServiceStub: APIService {
     }
 
     // MARK: Shop
-    public func performShopOrder(deliveryData: DeliveryData, price: Decimal, itemId: String, size: String) async -> Result<Void, APIError> {
+    public func performShopOrder(deliveryData: DeliveryData, price: Decimal, itemId: String, size: String?) async -> Result<Void, APIError> {
         .failure(.missingData)
     }
 

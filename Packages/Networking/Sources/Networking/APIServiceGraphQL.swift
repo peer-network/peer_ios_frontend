@@ -1405,9 +1405,9 @@ public final class APIServiceGraphQL: APIService {
     }
 
     // MARK: Shop
-    public func performShopOrder(deliveryData: DeliveryData, price: Decimal, itemId: String, size: String) async -> Result<Void, APIError> {
+    public func performShopOrder(deliveryData: DeliveryData, price: Decimal, itemId: String, size: String?) async -> Result<Void, APIError> {
         do {
-            let result = try await qlClient.mutate(mutation: PerformShopOrderMutation(tokenAmount: price, shopItemId: itemId, name: deliveryData.name, email: deliveryData.email, addressline1: deliveryData.address1, addressline2: deliveryData.address2 == nil ? nil : GraphQLNullable(stringLiteral: deliveryData.address2!), city: deliveryData.city, zipcode: deliveryData.zip, country: .case(.germany), size: size))
+            let result = try await qlClient.mutate(mutation: PerformShopOrderMutation(tokenAmount: price, shopItemId: itemId, name: deliveryData.name, email: deliveryData.email, addressline1: deliveryData.address1, addressline2: deliveryData.address2 == nil ? nil : GraphQLNullable(stringLiteral: deliveryData.address2!), city: deliveryData.city, zipcode: deliveryData.zip, country: .case(.germany), size: size == nil ? nil : GraphQLNullable(stringLiteral: size!)))
 
             guard result.isResponseCodeSuccess else {
                 if let errorCode = result.getResponseCode {
@@ -1436,7 +1436,7 @@ public final class APIServiceGraphQL: APIService {
             }
 
             let deliveryData = result.shopOrderDetails.affectedRows.deliveryDetails
-            let deliveryDetails = DeliveryData(name: deliveryData.name, email: deliveryData.email, address1: deliveryData.addressline1, address2: deliveryData.addressline2, city: deliveryData.city, zip: deliveryData.zipcode, country: deliveryData.country.rawValue)
+            let deliveryDetails = DeliveryData(name: deliveryData.name, email: deliveryData.email, address1: deliveryData.addressline1, address2: deliveryData.addressline2, city: deliveryData.city, zip: deliveryData.zipcode, country: deliveryData.country)
 
             let order = ShopOrder(id: result.shopOrderDetails.affectedRows.shopOrderId, itemId: result.shopOrderDetails.affectedRows.shopItemId, size: result.shopOrderDetails.affectedRows.shopItemSpecs?.size, deilveryData: deliveryDetails)
 

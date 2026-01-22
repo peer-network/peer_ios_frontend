@@ -12,6 +12,9 @@ import Models
 import Environment
 
 struct ShopProfileView: View {
+    @Environment(\.selectedTabScrollToTop) private var selectedTabScrollToTop
+
+    @EnvironmentObject private var router: Router
     @EnvironmentObject private var apiManager: APIServiceManager
 
     @StateObject private var headerVM: ProfileViewModel
@@ -69,39 +72,58 @@ struct ShopProfileView: View {
         if let user = headerVM.user {
             ZStack(alignment: .top) {
                 if #available(iOS 18.0, *) {
-                    ScrollView {
-                        VStack(spacing: 0) {
-                            Color.clear
-                                .frame(height: fullHeaderHeight + tabControllerHeight + 10)
-                            
-                            shopItemsView
-                                .padding(.horizontal, 20)
-                                .padding(.vertical, 20)
+                    ScrollViewReader { scrollProxy in
+                        ScrollView {
+                            ScrollToView()
+                            VStack(spacing: 0) {
+                                Color.clear
+                                    .frame(height: fullHeaderHeight + tabControllerHeight + 10)
+
+                                shopItemsView
+                                    .padding(.horizontal, 20)
+                                    .padding(.vertical, 20)
+                            }
+                        }
+                        .scrollIndicators(.hidden)
+                        .onScrollGeometryChange(for: CGFloat.self) { geo in
+                            geo.contentOffset.y
+                        } action: { _, newValue in
+                            updateHeaderState(contentOffsetY: newValue)
+                        }
+                        .onChange(of: selectedTabScrollToTop) {
+                            if selectedTabScrollToTop == 3, router.path.isEmpty {
+                                withAnimation {
+                                    scrollProxy.scrollTo(ScrollToView.Constants.scrollToTop, anchor: .top)
+                                }
+                            }
                         }
                     }
-                    .scrollIndicators(.hidden)
-                    .onScrollGeometryChange(for: CGFloat.self) { geo in
-                        geo.contentOffset.y
-                    } action: { _, newValue in
-                        updateHeaderState(contentOffsetY: newValue)
-                    }
                 } else {
-                    ScrollView(.vertical, showsIndicators: false) {
-                        VStack(spacing: 0) {
+                    ScrollViewReader { scrollProxy in
+                        ScrollView(.vertical, showsIndicators: false) {
+                            ScrollToView()
+                            VStack(spacing: 0) {
+                                ScrollViewOffsetObserver { y in
+                                    updateHeaderState(contentOffsetY: y)
+                                }
+                                .frame(height: 1)          // non-zero so it isn't optimized away
+                                .opacity(0.01)             // effectively invisible, but still lays out
+                                .allowsHitTesting(false)
 
-                            ScrollViewOffsetObserver { y in
-                                updateHeaderState(contentOffsetY: y)
+                                Color.clear
+                                    .frame(height: fullHeaderHeight + tabControllerHeight + 10)
+
+                                shopItemsView
+                                    .padding(.horizontal, 20)
+                                    .padding(.vertical, 20)
                             }
-                            .frame(height: 1)          // non-zero so it isn't optimized away
-                            .opacity(0.01)             // effectively invisible, but still lays out
-                            .allowsHitTesting(false)
-
-                            Color.clear
-                                .frame(height: fullHeaderHeight + tabControllerHeight + 10)
-
-                            shopItemsView
-                                .padding(.horizontal, 20)
-                                .padding(.vertical, 20)
+                        }
+                        .onChange(of: selectedTabScrollToTop) {
+                            if selectedTabScrollToTop == 3, router.path.isEmpty {
+                                withAnimation {
+                                    scrollProxy.scrollTo(ScrollToView.Constants.scrollToTop, anchor: .top)
+                                }
+                            }
                         }
                     }
                 }

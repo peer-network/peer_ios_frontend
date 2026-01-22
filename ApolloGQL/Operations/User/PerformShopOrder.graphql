@@ -8,7 +8,7 @@ mutation PerformShopOrder(
         $city: String!
         $zipcode: String!
         $country: ShopSupportedDeliveryCountry!
-        $size: String!
+        $size: String
     ) {
     performShopOrder(
         tokenAmount: $tokenAmount

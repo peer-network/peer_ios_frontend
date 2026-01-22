@@ -17,13 +17,13 @@ enum Constants {
 //#if DEBUG || STAGING
     static var mediaURL: String {
         if let urlString = UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")?.string(forKey: "customAPIEndpoint") {
-            return urlString.replacingOccurrences(of: "/graphql", with: "").replacingOccurrences(of: "//", with: "//media.")
+            return urlString.replacingOccurrences(of: "/graphql", with: "").replacingOccurrences(of: "//backend", with: "//media")
         }
-        return "https://media.peernetwork.eu"
+        return "https://media.peerapp.de"
     }
 //#else
 //    static let mediaURL: String = "https://media.peernetwork.eu"
 //#endif
 
-    static let errorCodesURL = URL(string: "https://media.peernetwork.eu/assets/response-codes.json")!
+    static let errorCodesURL = URL(string: "https://media.peerapp.de/assets/response-codes.json")!
 }

@@ -263,11 +263,12 @@ input ShopOrderDetailsInput {
 }
 
 input ShopItemSpecsInput {
-  size: String!
+  size: String
 }
 
 type TransactionHistoryItem {
   operationid: String!
+  transactionId: String!
   transactionCategory: TransactionCategory
   transactiontype: String!
   tokenamount: String!
@@ -602,6 +603,13 @@ type MintingData {
   tokensMintedYesterday: Float!
 }
 
+type MintAccount {
+  accountid: ID!
+  initialBalance: Decimal!
+  currentBalance: Decimal!
+  updatedat: String!
+}
+
 type CurrentLiquidity {
   status: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
@@ -847,7 +855,7 @@ type ShopOrderDeliveryDetails {
   addressline2: String
   city: String!
   zipcode: String!
-  country: ShopSupportedDeliveryCountry
+  country: String!
 }
 
 type DefaultResponse {
@@ -912,6 +920,11 @@ type AuthPayload {
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   accessToken: String
   refreshToken: String
+}
+
+type MintAccountResponse {
+  meta: DefaultResponse!
+  mintAccount: MintAccount!
 }
 
 type TransactionResponse {

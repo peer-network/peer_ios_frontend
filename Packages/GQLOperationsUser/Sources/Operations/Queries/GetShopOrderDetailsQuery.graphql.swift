@@ -118,7 +118,7 @@ public class GetShopOrderDetailsQuery: GraphQLQuery {
             .field("addressline2", String?.self),
             .field("city", String.self),
             .field("zipcode", String.self),
-            .field("country", GraphQLEnum<GQLOperationsUser.ShopSupportedDeliveryCountry>.self),
+            .field("country", String.self),
           ] }
           public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
             GetShopOrderDetailsQuery.Data.ShopOrderDetails.AffectedRows.DeliveryDetails.self
@@ -130,7 +130,7 @@ public class GetShopOrderDetailsQuery: GraphQLQuery {
           public var addressline2: String? { __data["addressline2"] }
           public var city: String { __data["city"] }
           public var zipcode: String { __data["zipcode"] }
-          public var country: GraphQLEnum<GQLOperationsUser.ShopSupportedDeliveryCountry> { __data["country"] }
+          public var country: String { __data["country"] }
         }
       }
 

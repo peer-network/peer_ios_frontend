@@ -352,9 +352,10 @@ struct ShopItemPurchaseView: View {
 
             DataInputTextField(
                 leadingIcon: IconsNew.globe,
-                text: flow.binding(\.country),
+                text: .constant("Germany"),
                 placeholder: "Country",
                 maxLength: 71,
+                isEditable: false,
                 focusState: $focusedField,
                 focusEquals: .country,
                 keyboardType: .default,

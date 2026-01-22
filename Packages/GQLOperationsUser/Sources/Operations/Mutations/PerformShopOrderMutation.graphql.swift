@@ -7,7 +7,7 @@ public class PerformShopOrderMutation: GraphQLMutation {
   public static let operationName: String = "PerformShopOrder"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"mutation PerformShopOrder($tokenAmount: Decimal!, $shopItemId: String!, $name: String!, $email: String!, $addressline1: String!, $addressline2: String, $city: String!, $zipcode: String!, $country: ShopSupportedDeliveryCountry!, $size: String!) { performShopOrder( tokenAmount: $tokenAmount shopItemId: $shopItemId orderDetails: { name: $name email: $email addressline1: $addressline1 addressline2: $addressline2 country: $country zipcode: $zipcode city: $city shopItemSpecs: { size: $size } } ) { __typename status RequestId ResponseCode ResponseMessage } }"#
+      #"mutation PerformShopOrder($tokenAmount: Decimal!, $shopItemId: String!, $name: String!, $email: String!, $addressline1: String!, $addressline2: String, $city: String!, $zipcode: String!, $country: ShopSupportedDeliveryCountry!, $size: String) { performShopOrder( tokenAmount: $tokenAmount shopItemId: $shopItemId orderDetails: { name: $name email: $email addressline1: $addressline1 addressline2: $addressline2 country: $country zipcode: $zipcode city: $city shopItemSpecs: { size: $size } } ) { __typename status RequestId ResponseCode ResponseMessage } }"#
     ))
 
   public var tokenAmount: Decimal
@@ -19,7 +19,7 @@ public class PerformShopOrderMutation: GraphQLMutation {
   public var city: String
   public var zipcode: String
   public var country: GraphQLEnum<ShopSupportedDeliveryCountry>
-  public var size: String
+  public var size: GraphQLNullable<String>
 
   public init(
     tokenAmount: Decimal,
@@ -31,7 +31,7 @@ public class PerformShopOrderMutation: GraphQLMutation {
     city: String,
     zipcode: String,
     country: GraphQLEnum<ShopSupportedDeliveryCountry>,
-    size: String
+    size: GraphQLNullable<String>
   ) {
     self.tokenAmount = tokenAmount
     self.shopItemId = shopItemId

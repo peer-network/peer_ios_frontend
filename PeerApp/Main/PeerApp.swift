@@ -161,16 +161,16 @@ struct PeerApp: App {
                                     .foregroundStyle(Colors.whitePrimary)
 
                                 Menu(APIConfiguration.getCustomEndpoint() ?? "not set") {
-                                    Button("Test Backend - https://peer-network.eu/graphql") {
-                                        APIConfiguration.setCustomEndpoint("https://peer-network.eu/graphql")
+                                    Button("Test Backend - peer-network.eu") {
+                                        APIConfiguration.setCustomEndpoint("https://backend.peer-network.eu/graphql")
                                     }
 
-                                    Button("Test Prod - https://getpeer.eu/graphql") {
-                                        APIConfiguration.setCustomEndpoint("https://getpeer.eu/graphql")
+                                    Button("Test Prod - peerapp.eu") {
+                                        APIConfiguration.setCustomEndpoint("https://backend.peerapp.eu/graphql")
                                     }
 
-                                    Button("Prod - https://peernetwork.eu/graphql") {
-                                        APIConfiguration.setCustomEndpoint("https://peernetwork.eu/graphql")
+                                    Button("Prod - peerapp.de") {
+                                        APIConfiguration.setCustomEndpoint("https://backend.peerapp.de/graphql")
                                     }
                                 }
                             }

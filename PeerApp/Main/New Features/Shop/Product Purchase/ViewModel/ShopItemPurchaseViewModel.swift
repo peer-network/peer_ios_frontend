@@ -27,7 +27,7 @@ final class ShopItemPurchaseViewModel: ObservableObject {
     @Published var address2: String = ""
     @Published var city: String = ""
     @Published var zip: String = ""
-    @Published var country: String = ""
+    @Published var country: String = "Germany"
 
     var canDoPurchase: Bool {
         guard !name.isEmpty && !email.isEmpty && !address1.isEmpty && !city.isEmpty && !zip.isEmpty && !country.isEmpty else {
@@ -60,7 +60,7 @@ final class ShopItemPurchaseViewModel: ObservableObject {
             country: country.trimmingCharacters(in: .whitespacesAndNewlines)
         )
 
-        let result = await apiService.performShopOrder(deliveryData: deliveryData, price: Foundation.Decimal(item.item.price), itemId: item.id, size: selectedSize ?? "")
+        let result = await apiService.performShopOrder(deliveryData: deliveryData, price: Foundation.Decimal(item.item.price), itemId: item.id, size: selectedSize)
 
         switch result {
             case .success:

@@ -439,7 +439,7 @@ struct TransactionView: View {
 
                 Spacer(minLength: 5)
 
-                if let size = data.size {
+                if let size = data.size, !size.isEmpty {
                     Text("\(data.itemId), \(size)")
                 } else {
                     Text(data.itemId)
@@ -465,15 +465,15 @@ struct TransactionView: View {
             }
 
             HStack(spacing: 0) {
-                Text("Item")
+                Text("Address")
                     .foregroundStyle(Colors.whiteSecondary)
 
                 Spacer(minLength: 5)
 
-                if let address2 = data.deilveryData.address2 {
+                if let address2 = data.deilveryData.address2, !address2.isEmpty {
                     Text("\(data.deilveryData.address1), \(address2), \(data.deilveryData.city), \(data.deilveryData.zip), \(data.deilveryData.country)")
                 } else {
-
+                    Text("\(data.deilveryData.address1), \(data.deilveryData.city), \(data.deilveryData.zip), \(data.deilveryData.country)")
                 }
             }
         }

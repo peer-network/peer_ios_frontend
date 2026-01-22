@@ -121,6 +121,6 @@ public protocol APIService: AnyObject {
     func promotePostPinned(for postID: String) async -> Result<String, APIError>
 
     // MARK: Shop
-    func performShopOrder(deliveryData: DeliveryData, price: Foundation.Decimal, itemId: String, size: String) async -> Result<Void, APIError>
+    func performShopOrder(deliveryData: DeliveryData, price: Foundation.Decimal, itemId: String, size: String?) async -> Result<Void, APIError>
     func getShopOrderDetails(transactionId: String) async -> Result<ShopOrder, APIError>
 }

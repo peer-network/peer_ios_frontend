@@ -17,8 +17,8 @@ public enum EnvironmentType {
 
 public struct APIConfiguration: GQLClientConfigurable {
     public enum Endpoint: String {
-        case production = "https://peernetwork.eu/graphql"
-        case staging = "https://getpeer.eu/graphql"
+        case production = "https://backend.peerapp.de/graphql"
+        case staging = "https://backend.peerapp.eu/graphql"
         case custom
 
         public var url: URL {
@@ -30,7 +30,7 @@ public struct APIConfiguration: GQLClientConfigurable {
                        let url = URL(string: urlString) {
                         return url
                     }
-                    return URL(string: "https://peer-network.eu/graphql")! // Fallback
+                    return URL(string: "https://backend.peerapp.de/graphql")! // Fallback
             }
         }
     }
@@ -47,7 +47,7 @@ public struct APIConfiguration: GQLClientConfigurable {
     }
 
     public static func getCustomEndpoint() -> String? {
-        return UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")?.string(forKey: "customAPIEndpoint")
+        UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")?.string(forKey: "customAPIEndpoint")
     }
 }
 
