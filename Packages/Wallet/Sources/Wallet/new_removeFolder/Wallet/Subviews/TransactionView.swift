@@ -61,7 +61,7 @@ struct TransactionView: View {
                 }
         }
         .onFirstAppear {
-            if transaction.type == .shop {
+            if transaction.type == .shop, AccountManager.shared.userId == Env.shopUserId {
                 Task {
                     await getShopOrderDetails()
                 }
@@ -75,7 +75,7 @@ struct TransactionView: View {
         switch result {
             case .success(let shopOrder):
                 self.shopOrder = shopOrder
-            case .failure(let apiError):
+            case .failure(_):
                 break
         }
     }
@@ -485,4 +485,14 @@ struct TransactionView: View {
                 .foregroundStyle(Colors.blackDark)
         }
     }
+}
+
+enum Env {
+    static let shopUserId: String = {
+#if STAGING || DEBUG
+        return "292bebb1-0951-47e8-ac8a-759138a2e4a9"
+#else
+        return "c50e2d31-c98e-4a20-b2b6-e1103839de0a"
+#endif
+    }()
 }
