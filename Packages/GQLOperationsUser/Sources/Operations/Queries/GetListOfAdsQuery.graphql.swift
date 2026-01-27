@@ -7,7 +7,7 @@ public class GetListOfAdsQuery: GraphQLQuery {
   public static let operationName: String = "GetListOfAds"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetListOfAds($userID: ID, $filterBy: [ContentType!], $contentFilterBy: ContentFilterType, $offset: Int, $limit: Int) { listAdvertisementPosts( userid: $userID filterBy: $filterBy offset: $offset limit: $limit contentFilterBy: $contentFilterBy ) { __typename status ResponseCode counter affectedRows { __typename advertisement { __typename advertisementid postid advertisementtype startdate enddate createdat user { __typename id username slug img isfollowed isfollowing isfriend visibilityStatus hasActiveReports isHiddenForUsers } } post { __typename id contenttype title media cover mediadescription createdat visibilityStatus hasActiveReports isHiddenForUsers amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags url user { __typename id username slug img isfollowed isfollowing isfriend visibilityStatus hasActiveReports isHiddenForUsers } } } } }"#
+      #"query GetListOfAds($userID: ID, $filterBy: [ContentType!], $contentFilterBy: ContentFilterType, $offset: Int, $limit: Int) { listAdvertisementPosts( userid: $userID filterBy: $filterBy offset: $offset limit: $limit contentFilterBy: $contentFilterBy ) { __typename meta { __typename status RequestId ResponseCode ResponseMessage } counter affectedRows { __typename advertisement { __typename advertisementid postid advertisementtype startdate enddate createdat user { __typename id username slug img isfollowed isfollowing isfriend visibilityStatus hasActiveReports isHiddenForUsers } } post { __typename id contenttype title media cover mediadescription createdat visibilityStatus hasActiveReports isHiddenForUsers amountlikes amountviews amountcomments amountdislikes amounttrending isliked isviewed isreported isdisliked issaved tags url user { __typename id username slug img isfollowed isfollowing isfriend visibilityStatus hasActiveReports isHiddenForUsers } } } } }"#
     ))
 
   public var userID: GraphQLNullable<ID>
@@ -68,8 +68,7 @@ public class GetListOfAdsQuery: GraphQLQuery {
       public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.ListAdvertisementPostsResponse }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
-        .field("status", String.self),
-        .field("ResponseCode", String?.self),
+        .field("meta", Meta.self),
         .field("counter", Int.self),
         .field("affectedRows", [AffectedRow]?.self),
       ] }
@@ -77,12 +76,35 @@ public class GetListOfAdsQuery: GraphQLQuery {
         GetListOfAdsQuery.Data.ListAdvertisementPosts.self
       ] }
 
-      @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")
-      public var status: String { __data["status"] }
-      @available(*, deprecated, message: "use meta.ResponseCode . this field will be removed after 15 October`.")
-      public var responseCode: String? { __data["ResponseCode"] }
+      public var meta: Meta { __data["meta"] }
       public var counter: Int { __data["counter"] }
       public var affectedRows: [AffectedRow]? { __data["affectedRows"] }
+
+      /// ListAdvertisementPosts.Meta
+      ///
+      /// Parent Type: `DefaultResponse`
+      public struct Meta: GQLOperationsUser.SelectionSet {
+        public let __data: DataDict
+        public init(_dataDict: DataDict) { __data = _dataDict }
+
+        public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.DefaultResponse }
+        public static var __selections: [ApolloAPI.Selection] { [
+          .field("__typename", String.self),
+          .field("status", String.self),
+          .field("RequestId", String?.self),
+          .field("ResponseCode", String?.self),
+          .field("ResponseMessage", String?.self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          GetListOfAdsQuery.Data.ListAdvertisementPosts.Meta.self
+        ] }
+
+        public var status: String { __data["status"] }
+        public var requestId: String? { __data["RequestId"] }
+        @available(*, deprecated, message: "use meta.ResponseCode . this field will be removed after 15 October`.")
+        public var responseCode: String? { __data["ResponseCode"] }
+        public var responseMessage: String? { __data["ResponseMessage"] }
+      }
 
       /// ListAdvertisementPosts.AffectedRow
       ///

@@ -250,7 +250,7 @@ struct TransactionView: View {
         HStack(spacing: 5) {
             let amountPrefix = isAmountPositive() ? "+" : ""
 
-            Text(amountPrefix + "\(formatDecimal(amountToDisplay))")
+            Text(amountPrefix + "\(formatDecimal(isAmountPositive() ? transaction.netTokenAmount : transaction.tokenAmount))")
                 .appFont(.bodyBold)
 
             Icons.logoCircleWhite
@@ -265,14 +265,14 @@ struct TransactionView: View {
         .lineLimit(1)
     }
 
-    private var amountToDisplay: Foundation.Decimal {
-        switch transaction.type {
-            case .extraPost, .extraLike, .extraComment, .dislike, .transferTo, .pinPost, .referralReward, .shop, .dailyMint, .unknown:
-                return transaction.tokenAmount
-            case .transferFrom:
-                return transaction.netTokenAmount
-        }
-    }
+//    private var amountToDisplay: Foundation.Decimal {
+//        switch transaction.type {
+//            case .extraPost, .extraLike, .extraComment, .dislike, .transferTo, .pinPost, .referralReward, .shop, .dailyMint, .unknown:
+//                return transaction.tokenAmount
+//            case .transferFrom:
+//                return transaction.netTokenAmount
+//        }
+//    }
 
     @ViewBuilder
     private func expandedView(fees: TransactionFee) -> some View {
@@ -282,7 +282,7 @@ struct TransactionView: View {
             .foregroundStyle(Colors.whiteSecondary)
 
         Group {
-            textAmountLine(text: "Transaction amount", amount: amountToDisplay, amountIsBold: true)
+            textAmountLine(text: "Transaction amount", amount: isAmountPositive() ? transaction.netTokenAmount : transaction.tokenAmount, amountIsBold: true)
 
             if transaction.type != .transferFrom, transaction.type != .dailyMint {
                 textAmountLine(text: "Base amount", amount: transaction.netTokenAmount, amountIsBold: true)

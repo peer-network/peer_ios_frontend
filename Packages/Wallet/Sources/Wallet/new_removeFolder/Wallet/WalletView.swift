@@ -8,7 +8,6 @@
 import SwiftUI
 import DesignSystem
 import Environment
-import Analytics
 
 public struct WalletView: View {
     @Environment(\.selectedTabScrollToTop) private var selectedTabScrollToTop
@@ -61,7 +60,7 @@ public struct WalletView: View {
             viewModel.fetchContent()
             viewModel.fetchTransactionHistory(reset: true)
         }
-        .trackScreen(AppScreen.wallet)
+//        .trackScreen(AppScreen.wallet)
     }
 
     private var transferButton: some View {
