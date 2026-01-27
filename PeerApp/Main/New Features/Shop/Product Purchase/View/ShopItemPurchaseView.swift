@@ -167,7 +167,7 @@ struct ShopItemPurchaseView: View {
                 .foregroundStyle(Colors.whitePrimary)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-            HStack(spacing: 0) {
+            HStack(spacing: 10) {
                 ForEach(orderedKeys, id: \.self) { key in
                     let quantity = sizes[key] ?? 0
 
@@ -177,10 +177,6 @@ struct ShopItemPurchaseView: View {
                         isSelected: flow.viewModel.selectedSize == key
                     ) {
                         flow.viewModel.selectedSize = key
-                    }
-
-                    if key != orderedKeys.last {
-                        Spacer()
                     }
                 }
             }
