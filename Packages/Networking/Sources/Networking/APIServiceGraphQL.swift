@@ -36,11 +36,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: LoginMutation(email: email, password: password))
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -60,11 +61,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: VerifyReferralCodeMutation(code: code))
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -78,11 +80,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: RegisterMutation(email: email, password: password, username: username, referralUuid: referralUuid))
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -111,11 +114,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: RequestPasswordResetMutation(email: email))
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -129,11 +133,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: VerifyResetPasswordCodeMutation(token: code))
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -147,11 +152,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: ConfirmPasswordResetMutation(token: token, password: newPassword))
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -165,11 +171,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: DeleteAccountMutation(password: password))
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -184,11 +191,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.fetch(query: GetMyInviterQuery(), cachePolicy: .fetchIgnoringCacheCompletely)
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -210,11 +218,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.fetch(query: GetMyReferralInfoQuery(), cachePolicy: .fetchIgnoringCacheCompletely)
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -234,11 +243,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.fetch(query: GetMyReferredUsersQuery(offset: GraphQLNullable<Int>(integerLiteral: offset), limit: 20), cachePolicy: .fetchIgnoringCacheCompletely)
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -256,11 +266,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.fetch(query: GetUserInfoQuery(), cachePolicy: .fetchIgnoringCacheCompletely)
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -294,11 +305,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: UpdateShownOnboardingsMutation(shownOnboardings: [onboarding.apiValue]))
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -314,11 +326,12 @@ public final class APIServiceGraphQL: APIService {
 
             let result = try await qlClient.fetch(query: GetProfileQuery(contentFilterBy: offensiveContentFilter.apiValue, userid: userId), cachePolicy: .fetchIgnoringCacheCompletely)
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -348,11 +361,12 @@ public final class APIServiceGraphQL: APIService {
             
             let result = try await GQLClient.shared.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -383,11 +397,12 @@ public final class APIServiceGraphQL: APIService {
             
             let result = try await GQLClient.shared.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -418,11 +433,12 @@ public final class APIServiceGraphQL: APIService {
 
             let result = try await GQLClient.shared.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -453,11 +469,12 @@ public final class APIServiceGraphQL: APIService {
             )
             let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -479,11 +496,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.fetch(query: GetDailyFreeQuery(), cachePolicy: .fetchIgnoringCacheCompletely)
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -515,11 +533,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: FollowUserMutation(userid: id))
             
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -533,11 +552,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: UpdateBioMutation(biography: bio))
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -551,11 +571,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: UpdateAvatarMutation(img: image))
             
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -569,11 +590,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: UpdateNameMutation(username: username, password: currentPassword))
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -587,11 +609,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: UpdatePasswordMutation(password: password, expassword: currentPassword))
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -605,11 +628,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: UpdateMailMutation(email: email, password: currentPassword))
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -623,16 +647,13 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: BlockUserMutation(userid: id))
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
-            }
-
-            if result.getResponseCode == "11105" {
-
             }
 
             switch result.getResponseCode {
@@ -641,7 +662,7 @@ public final class APIServiceGraphQL: APIService {
                 case "11106":
                     return .success(false)
                 default:
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
             }
         } catch {
             return .failure(.unknownError(error: error))
@@ -657,11 +678,12 @@ public final class APIServiceGraphQL: APIService {
 
             let result = try await GQLClient.shared.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -683,11 +705,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: ReportUserMutation(userid: id))
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -704,11 +727,12 @@ public final class APIServiceGraphQL: APIService {
 
             let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -748,11 +772,12 @@ public final class APIServiceGraphQL: APIService {
             )
             let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -792,11 +817,12 @@ public final class APIServiceGraphQL: APIService {
             )
             let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -820,14 +846,15 @@ public final class APIServiceGraphQL: APIService {
 
             let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
-            
+
             return .success(result.postEligibility.eligibilityToken)
         } catch {
             return .failure(.unknownError(error: error))
@@ -859,11 +886,12 @@ public final class APIServiceGraphQL: APIService {
             
             let result = try await qlClient.mutate(mutation: operation)
             
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -891,11 +919,12 @@ public final class APIServiceGraphQL: APIService {
 
             let result = try await qlClient.mutate(mutation: operation)
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -947,11 +976,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -973,11 +1003,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: PostActionMutation(postid: id, action: .case(.like)))
             
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -991,11 +1022,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: PostActionMutation(postid: id, action: .case(.dislike)))
             
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -1009,11 +1041,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: PostActionMutation(postid: id, action: .case(.view)))
             
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -1027,11 +1060,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: PostActionMutation(postid: id, action: .case(.report)))
             
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -1047,11 +1081,12 @@ public final class APIServiceGraphQL: APIService {
 
             let result = try await qlClient.fetch(query: PostInteractionsQuery(getOnly: type.apiValue, postOrCommentId: id, offset: GraphQLNullable<Int>(integerLiteral: offset), limit: GraphQLNullable<Int>(integerLiteral: 20), contentFilterBy: offensiveContentFilter.apiValue), cachePolicy: .fetchIgnoringCacheCompletely)
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -1082,11 +1117,12 @@ public final class APIServiceGraphQL: APIService {
             )
             let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -1108,11 +1144,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: CreateCommentMutation(postid: postID, parentid: nil, content: content))
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -1133,11 +1170,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: LikeCommentMutation(commentid: id))
             
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -1151,11 +1189,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: ReportCommentMutation(commentid: id))
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -1171,11 +1210,12 @@ public final class APIServiceGraphQL: APIService {
 
             let result = try await qlClient.fetch(query: PostInteractionsQuery(getOnly: .case(.commentlike), postOrCommentId: id, offset: GraphQLNullable<Int>(integerLiteral: offset), limit: GraphQLNullable<Int>(integerLiteral: 20), contentFilterBy: offensiveContentFilter.apiValue), cachePolicy: .fetchIgnoringCacheCompletely)
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -1199,11 +1239,12 @@ public final class APIServiceGraphQL: APIService {
             let operation = SearchTagsQuery(tagName: query, offset: 0, limit: 10)
             let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -1226,11 +1267,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.fetch(query: GetLiquidityQuery(), cachePolicy: .fetchIgnoringCacheCompletely)
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -1250,11 +1292,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: TransferTokensMutation(recipient: id, numberoftokens: amount, message: message != nil ? GraphQLNullable(stringLiteral: message!) : nil))
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -1267,6 +1310,15 @@ public final class APIServiceGraphQL: APIService {
     public func fetchTransactionsHistory(after offset: Int) async -> Result<[Transaction], APIError> {
         do {
             let result = try await qlClient.fetch(query: GetTransactionHistoryQuery(offset: GraphQLNullable<Int>(integerLiteral: offset), limit: 20), cachePolicy: .fetchIgnoringCacheCompletely)
+
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
+                } else {
+                    return .failure(.missingResponseCode())
+                }
+            }
 
             guard let data = result.transactionHistory.affectedRows else {
                 return .failure(.missingData)
@@ -1299,11 +1351,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -1331,11 +1384,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -1361,11 +1415,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.fetch(query: operation, cachePolicy: .fetchIgnoringCacheCompletely)
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -1386,11 +1441,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: PromotePostPinnedMutation(postid: postID))
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -1409,11 +1465,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.mutate(mutation: PerformShopOrderMutation(tokenAmount: price, shopItemId: itemId, name: deliveryData.name, email: deliveryData.email, addressline1: deliveryData.address1, addressline2: deliveryData.address2 == nil ? nil : GraphQLNullable(stringLiteral: deliveryData.address2!), city: deliveryData.city, zipcode: deliveryData.zip, country: .case(.germany), size: size == nil ? nil : GraphQLNullable(stringLiteral: size!)))
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
@@ -1427,11 +1484,12 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.fetch(query: GetShopOrderDetailsQuery(transactionId: transactionId), cachePolicy: .fetchIgnoringCacheCompletely)
 
-            guard result.isResponseCodeSuccess else {
-                if let errorCode = result.getResponseCode {
-                    return .failure(.serverError(code: errorCode))
+            let meta = result.apiMeta
+            guard meta.isSuccess else {
+                if meta.hasAnyInfo {
+                    return .failure(.serverError(meta: meta))
                 } else {
-                    return .failure(.missingResponseCode)
+                    return .failure(.missingResponseCode())
                 }
             }
 
