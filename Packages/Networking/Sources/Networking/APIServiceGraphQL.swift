@@ -1427,7 +1427,7 @@ public final class APIServiceGraphQL: APIService {
         do {
             let result = try await qlClient.fetch(query: GetShopOrderDetailsQuery(transactionId: transactionId), cachePolicy: .fetchIgnoringCacheCompletely)
 
-            guard result.isSuccessStatus else {
+            guard result.isResponseCodeSuccess else {
                 if let errorCode = result.getResponseCode {
                     return .failure(.serverError(code: errorCode))
                 } else {
