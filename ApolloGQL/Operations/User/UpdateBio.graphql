@@ -1,6 +1,8 @@
 mutation UpdateBio($biography: String!) {
     updateBio(biography: $biography) {
         status
+        RequestId
         ResponseCode
+        ResponseMessage
     }
 }

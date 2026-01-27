@@ -1,6 +1,8 @@
 mutation UpdateAvatar($img: String!) {
     updateProfileImage(img: $img) {
         status
+        RequestId
         ResponseCode
+        ResponseMessage
     }
 }

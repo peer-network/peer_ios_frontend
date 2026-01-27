@@ -5,8 +5,12 @@ query GetFollowings($contentFilterBy: ContentFilterType, $userid: ID, $offset: I
         offset: $offset
         limit: $limit
     ) {
-        status
-        ResponseCode
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
         affectedRows {
             following {
                 id

@@ -3,9 +3,13 @@ query GetPostById($postid: ID!) {
         postid: $postid
         contentFilterBy: MYGRANDMAHATES
     ) {
-        status
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
         counter
-        ResponseCode
         affectedRows {
             id
             contenttype

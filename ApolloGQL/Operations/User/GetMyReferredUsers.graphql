@@ -1,8 +1,12 @@
 query GetMyReferredUsers($offset: Int, $limit: Int) {
     referralList(offset: $offset, limit: $limit) {
-        status
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
         counter
-        ResponseCode
         affectedRows {
             iInvited {
                 id

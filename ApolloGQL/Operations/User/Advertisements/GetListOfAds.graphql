@@ -6,8 +6,12 @@ query GetListOfAds($userID: ID, $filterBy: [ContentType!], $contentFilterBy: Con
         limit: $limit
         contentFilterBy: $contentFilterBy
     ) {
-        status
-        ResponseCode
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
         counter
         affectedRows {
             advertisement {

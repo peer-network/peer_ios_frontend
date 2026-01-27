@@ -2,8 +2,12 @@ query GetShopOrderDetails($transactionId: String!) {
     shopOrderDetails(
         transactionId: $transactionId
     ) {
-        status
-        ResponseCode
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
         affectedRows {
             shopOrderId
             shopItemId

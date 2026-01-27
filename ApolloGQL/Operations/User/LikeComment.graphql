@@ -1,6 +1,8 @@
 mutation LikeComment($commentid: ID!) {
     likeComment(commentid: $commentid) {
         status
+        RequestId
         ResponseCode
+        ResponseMessage
     }
 }

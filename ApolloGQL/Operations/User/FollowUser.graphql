@@ -1,7 +1,11 @@
 mutation FollowUser($userid: ID!) {
     toggleUserFollowStatus(userid: $userid) {
-        status
-        ResponseCode
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
         isfollowing
     }
 }

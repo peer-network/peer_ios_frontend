@@ -1,7 +1,11 @@
 query GetMediaUploadToken {
     postEligibility {
-        status
-        ResponseCode
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
         eligibilityToken
     }
 }

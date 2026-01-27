@@ -3,8 +3,12 @@ query GetBlockedUsers($offset: Int, $limit: Int) {
         offset: $offset
         limit: $limit
     ) {
-        status
-        ResponseCode
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
         affectedRows {
             iBlocked {
                 userid

@@ -15,8 +15,12 @@ query GetAllPosts($filterBy: [PostFilterType!], $contentFilterBy: ContentFilterT
         postid: $postid
         userid: $userid
     ) {
-        status
-        ResponseCode
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
         affectedRows {
             id
             contenttype
