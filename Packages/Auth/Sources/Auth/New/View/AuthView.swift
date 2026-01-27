@@ -197,7 +197,7 @@ public struct AuthView: View {
 
     private var privacyPolicyButton: some View {
         Button {
-            openURL(URL(string: "https://peerapp.de/privacy.html")!)
+            openURL(URL(string: "https://peernetwork.eu/privacy.html")!)
         } label: {
             Text("Privacy Policy")
                 .underline(true, pattern: .solid)

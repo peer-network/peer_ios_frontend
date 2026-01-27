@@ -26,7 +26,7 @@ public class ConfigurationService: ConfigurationServiceProtocol {
     public convenience init() {
         let cacheManager = try! FileConfigCacheManager()
         self.init(
-            configURL: URL(string: "https://media.peerapp.de/assets/config.json")!,
+            configURL: URL(string: "https://media.peernetwork.eu/assets/config.json")!,
             cacheManager: cacheManager
         )
     }
