@@ -5,6 +5,8 @@
 //  Created by Artem Vasin on 06.01.26.
 //
 
+import Models
+
 actor ShopItemCache {
     private var items: [String: ShopItem] = [:]
     private var permanentlyMissing: Set<String> = []

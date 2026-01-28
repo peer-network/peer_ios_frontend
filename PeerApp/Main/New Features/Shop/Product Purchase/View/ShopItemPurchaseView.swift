@@ -9,6 +9,7 @@ import SwiftUI
 import DesignSystem
 import Environment
 import NukeUI
+import Models
 
 struct ShopItemPurchaseView: View {
     @Environment(\.tabSwitch) private var tabSwitch

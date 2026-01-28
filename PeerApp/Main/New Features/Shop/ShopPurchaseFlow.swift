@@ -7,6 +7,7 @@
 
 import Combine
 import SwiftUI
+import Models
 
 @MainActor
 final class ShopPurchaseFlow: ObservableObject {

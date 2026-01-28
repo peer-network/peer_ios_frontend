@@ -6,10 +6,22 @@
 //
 
 import FirebaseFirestore
+import Models
 
 protocol ShopItemRepository {
     /// Keyed by documentID (postId)
     func fetchItems(postIDs: [String]) async throws -> [String: ShopItem]
+
+    /// Single doc fetch (documentID == postId)
+    func fetchItem(postID: String) async throws -> ShopItem?
+}
+
+extension ShopItemRepository {
+    // Default impl (still works for any repo)
+    func fetchItem(postID: String) async throws -> ShopItem? {
+        let map = try await fetchItems(postIDs: [postID])
+        return map[postID]
+    }
 }
 
 final class FirestoreShopItemRepository: ShopItemRepository {
@@ -17,6 +29,18 @@ final class FirestoreShopItemRepository: ShopItemRepository {
 
     init(db: Firestore = .firestore(), collectionName: String = "shop") {
         self.collection = db.collection(collectionName)
+    }
+
+    func fetchItem(postID: String) async throws -> ShopItem? {
+        let id = postID.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !id.isEmpty else { return nil }
+
+
+        let doc = try await collection.document(id).getDocument()
+        guard doc.exists else { return nil }
+
+        // If decoding fails -> treat as missing
+        return try? doc.data(as: ShopItem.self)
     }
 
     func fetchItems(postIDs: [String]) async throws -> [String: ShopItem] {

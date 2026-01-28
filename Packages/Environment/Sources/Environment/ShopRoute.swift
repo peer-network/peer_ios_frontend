@@ -6,8 +6,10 @@
 //
 
 import Foundation
+import Models
 
-enum ShopRoute: Hashable {
+public enum ShopRoute: Hashable {
     case purchase(item: ShopListing)
+    case purchaseWithPost(post: Post)
     case checkout(flowID: UUID)
 }

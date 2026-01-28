@@ -118,7 +118,7 @@ struct PostHeaderView: View {
 
                         if postVM.post.owner.id == Env.shopUserId {
                             Button {
-                                router.navigate(to: RouterDestination.postDetailsWithPost(post: postVM.post))
+                                router.navigate(to: ShopRoute.purchaseWithPost(post: postVM.post))
                             } label: {
                                 Label("To the item", systemImage: "arrow.up.forward")
                             }

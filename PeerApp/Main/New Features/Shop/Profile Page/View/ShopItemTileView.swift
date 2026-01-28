@@ -10,6 +10,7 @@ import DesignSystem
 import Post
 import NukeUI
 import Environment
+import Models
 
 struct ShopItemTileView: View {
     @EnvironmentObject private var accountManager: AccountManager

@@ -140,8 +140,11 @@ extension View {
     func withShopRouter(router: Router) -> some View {
         navigationDestination(for: ShopRoute.self) { destination in
             switch destination {
-                case .purchase(let item):
-                    ShopItemPurchaseView(item: item)
+                case .purchase(let listing):
+                    ShopItemPurchaseView(item: listing)
+                        .toolbar(.hidden, for: .navigationBar)
+                case .purchaseWithPost(let post):
+                    ShopItemPurchaseEntryView(post: post)
                         .toolbar(.hidden, for: .navigationBar)
                 case .checkout(let flowID):
                     if let flow = router.object(id: flowID) as? ShopPurchaseFlow {
