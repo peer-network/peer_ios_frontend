@@ -242,7 +242,11 @@ struct ShopProfileView: View {
                     catalogVM.fetchNextPage(reset: true)
                 }
             case .ready:
-                gridOrList
+                if catalogVM.listings.isEmpty {
+                    Text("No items yet...")
+                } else {
+                    gridOrList
+                }
         }
     }
 

@@ -19,6 +19,7 @@ let package = Package(
         .package(name: "GQLOperationsUser", path: "../GQLOperationsUser"),
         .package(name: "Models", path: "../Models"),
         .package(name: "Environment", path: "../Environment"),
+        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "12.1.0"))
     ],
     targets: [
         .target(
@@ -28,7 +29,8 @@ let package = Package(
                 .product(name: "Networking", package: "Networking"),
                 .product(name: "GQLOperationsUser", package: "GQLOperationsUser"),
                 .product(name: "Models", package: "Models"),
-                .product(name: "Environment", package: "Environment")
+                .product(name: "Environment", package: "Environment"),
+                .product(name: "FirebaseFirestore", package: "firebase-ios-sdk")
             ]
         ),
     ],

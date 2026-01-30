@@ -22,9 +22,6 @@ let package = Package(
             name: "Models",
             dependencies: [
                 .product(name: "GQLOperationsUser", package: "GQLOperationsUser"),
-                .product(name: "FirebaseCore", package: "firebase-ios-sdk"),
-                .product(name: "FirebaseCoreExtension", package: "firebase-ios-sdk"),
-                .product(name: "FirebaseFirestoreInternalWrapper", package: "firebase-ios-sdk"),
                 .product(name: "FirebaseFirestore", package: "firebase-ios-sdk")
             ]
         ),

@@ -24,28 +24,51 @@ struct ShopItemPurchaseEntryView: View {
     var body: some View {
         Group {
             switch vm.state {
-            case .loading:
-                ProgressView()
-                    .controlSize(.large)
+                case .loading:
+                    HeaderContainer(actionsToDisplay: .commentsAndLikes) {
+                        Text("Back")
+                    } content: {
+                        ProgressView()
+                            .controlSize(.large)
+                            .padding(.top, 100)
+                    }
 
-            case .missing:
-                ErrorView(
-                    title: "Not available",
-                    description: "This item is no longer available."
-                ) {
-                    vm.load(post: post)
-                }
+                case .missing:
+                    HeaderContainer(actionsToDisplay: .commentsAndLikes) {
+                        Text("Back")
+                    } content: {
+                        ErrorView(
+                            title: "Not available",
+                            description: "This item is no longer available."
+                        ) {
+                            vm.load(post: post)
+                        }
+                        .padding(.top, 100)
+                    }
 
-            case .error(let msg):
-                ErrorView(
-                    title: "Error",
-                    description: msg
-                ) {
-                    vm.load(post: post)
-                }
+                case .error(let msg):
+                    HeaderContainer(actionsToDisplay: .commentsAndLikes) {
+                        Text("Back")
+                    } content: {
+                        ErrorView(
+                            title: "Error",
+                            description: msg
+                        ) {
+                            vm.load(post: post)
+                        }
+                        .padding(.top, 100)
+                    }
 
-            case .ready(let listing):
-                ShopItemPurchaseView(item: listing)
+                case .ready(let listing):
+                    HeaderContainer(actionsToDisplay: .commentsAndLikes) {
+                        Text("Back")
+                    } content: {
+                        ScrollView {
+                            ShopItemTileView(shopPost: listing, displayType: .list)
+                                .padding(20)
+                        }
+                        .scrollIndicators(.hidden)
+                    }
             }
         }
         .task(id: post.id) {

@@ -9,6 +9,7 @@ import SwiftUI
 import DesignSystem
 import Models
 import Environment
+import FirebaseFirestore
 
 struct TransactionView: View {
     @Environment(\.redactionReasons) private var reasons
@@ -21,6 +22,7 @@ struct TransactionView: View {
     @State private var expanded: Bool = false
 
     @State private var shopOrder: ShopOrder?
+    @State private var shopOrderItemName: String?
 
     var body: some View {
         Button {
@@ -75,9 +77,14 @@ struct TransactionView: View {
         switch result {
             case .success(let shopOrder):
                 self.shopOrder = shopOrder
+                await fetchShopOrderItem(postID: shopOrder.itemId)
             case .failure(_):
                 break
         }
+    }
+
+    private func fetchShopOrderItem(postID: String) async {
+        shopOrderItemName = try? await FirestoreShopItemRepository().fetchItem(postID: postID)?.name
     }
 
     @ViewBuilder
@@ -284,8 +291,12 @@ struct TransactionView: View {
         Group {
             textAmountLine(text: "Transaction amount", amount: isAmountPositive() ? transaction.netTokenAmount : transaction.tokenAmount, amountIsBold: true)
 
-            if transaction.type != .transferFrom, transaction.type != .dailyMint {
-                textAmountLine(text: "Base amount", amount: transaction.netTokenAmount, amountIsBold: true)
+            if transaction.type != .transferFrom, transaction.type != .dailyMint, !(transaction.type == .shop && isAmountPositive()) {
+                if transaction.type == .shop {
+                    textAmountLine(text: "Item price", amount: transaction.netTokenAmount, amountIsBold: true)
+                } else {
+                    textAmountLine(text: "Base amount", amount: transaction.netTokenAmount, amountIsBold: true)
+                }
 
                 if let total = fees.total {
                     textAmountLine(text: "Fees included", amount: total, amountIsBold: true)
@@ -295,7 +306,7 @@ struct TransactionView: View {
         .appFont(.bodyRegular)
         .foregroundStyle(Colors.whitePrimary)
 
-        if transaction.type != .transferFrom, transaction.type != .dailyMint {
+        if transaction.type != .transferFrom, transaction.type != .dailyMint, !(transaction.type == .shop && isAmountPositive()) {
             Group {
                 if let peer = fees.peer {
                     textAmountLine(text: "\(Int(appState.getConstants()!.data.tokenomics.fees.peer * 100))% to Peer Bank (platform fee)", amount: peer)
@@ -439,10 +450,12 @@ struct TransactionView: View {
 
                 Spacer(minLength: 5)
 
+                let itemName = shopOrderItemName ?? data.itemId
+
                 if let size = data.size, !size.isEmpty {
-                    Text("\(data.itemId), \(size)")
+                    Text("\(itemName), \(size)")
                 } else {
-                    Text(data.itemId)
+                    Text(itemName)
                 }
             }
 
@@ -479,6 +492,7 @@ struct TransactionView: View {
         }
         .appFont(.smallLabelBold)
         .foregroundStyle(Colors.whitePrimary)
+        .multilineTextAlignment(.trailing)
         .padding(10)
         .background {
             RoundedRectangle(cornerRadius: 20)
@@ -495,4 +509,24 @@ enum Env {
         return "c50e2d31-c98e-4a20-b2b6-e1103839de0a"
 #endif
     }()
+}
+
+final class FirestoreShopItemRepository {
+    private let collection: CollectionReference
+
+    init(db: Firestore = .firestore(), collectionName: String = "shop") {
+        self.collection = db.collection(collectionName)
+    }
+
+    func fetchItem(postID: String) async throws -> ShopItem? {
+        let id = postID.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !id.isEmpty else { return nil }
+
+
+        let doc = try await collection.document(id).getDocument()
+        guard doc.exists else { return nil }
+
+        // If decoding fails -> treat as missing
+        return try? doc.data(as: ShopItem.self)
+    }
 }
