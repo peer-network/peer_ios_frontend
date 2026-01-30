@@ -1,0 +1,32 @@
+mutation PerformShopOrder(
+        $tokenAmount: Decimal!
+        $shopItemId: String!
+        $name: String!
+        $email: String!
+        $addressline1: String!
+        $addressline2: String
+        $city: String!
+        $zipcode: String!
+        $country: ShopSupportedDeliveryCountry!
+        $size: String
+    ) {
+    performShopOrder(
+        tokenAmount: $tokenAmount
+        shopItemId: $shopItemId
+        orderDetails: {
+            name: $name
+            email: $email
+            addressline1: $addressline1
+            addressline2: $addressline2
+            country: $country
+            zipcode: $zipcode
+            city: $city
+            shopItemSpecs: { size: $size }
+        }
+    ) {
+        status
+        RequestId
+        ResponseCode
+        ResponseMessage
+    }
+}

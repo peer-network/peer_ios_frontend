@@ -11,14 +11,14 @@ import Models
 import Environment
 import Analytics
 
-struct CommentsListView: View {
+public struct CommentsListView: View {
     @ObservedObject var viewModel: PostViewModel
 
     public init(viewModel: PostViewModel) {
         self.viewModel = viewModel
     }
 
-    var body: some View {
+    public var body: some View {
         VStack(alignment: .center, spacing: 0) {
             Capsule()
                 .frame(width: 44.5, height: 1)
@@ -87,6 +87,7 @@ struct CommentsListView: View {
                 }
                 .padding(.top, 5)
                 .padding(.horizontal, 20)
+                .geometryGroup()
             }
         }
         .padding(.vertical, 10)

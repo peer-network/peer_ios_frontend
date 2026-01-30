@@ -207,6 +207,10 @@ enum ContentVisibilityStatus {
   ILLEGAL
 }
 
+enum ShopSupportedDeliveryCountry {
+  GERMANY
+}
+
 input AdvertisementHistoryFilter {
   from: Date
   to: Date
@@ -247,12 +251,28 @@ input UserPreferencesInput {
   shownOnboardings: [OnboardingType!]
 }
 
+input ShopOrderDetailsInput {
+  name: String!
+  email: String!
+  addressline1: String!
+  addressline2: String
+  city: String!
+  zipcode: String!
+  country: ShopSupportedDeliveryCountry!
+  shopItemSpecs: ShopItemSpecsInput
+}
+
+input ShopItemSpecsInput {
+  size: String
+}
+
 type TransactionHistoryItem {
   operationid: String!
+  transactionId: String!
   transactionCategory: TransactionCategory
   transactiontype: String!
-  tokenamount: Decimal!
-  netTokenAmount: Decimal!
+  tokenamount: String!
+  netTokenAmount: String!
   message: String
   createdat: String!
   sender: BasicUserInfo!
@@ -583,6 +603,13 @@ type MintingData {
   tokensMintedYesterday: Float!
 }
 
+type MintAccount {
+  accountid: ID!
+  initialBalance: Decimal!
+  currentBalance: Decimal!
+  updatedat: String!
+}
+
 type CurrentLiquidity {
   status: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
@@ -793,12 +820,42 @@ type ModerationItem {
   createdat: String!
   targetcontent: TargetContent!
   reporters: [BasicUserInfo!]!
+  moderatedBy: BasicUserInfo
 }
 
 type TargetContent {
   post: Post
   comment: Comment
   user: BasicUserInfo
+}
+
+type ShopItemSpecs {
+  size: String!
+}
+
+type ShopOrderDetailsResponse {
+  meta: DefaultResponse!
+  status: String!
+  ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
+  affectedRows: ShopOrderDetails!
+}
+
+type ShopOrderDetails {
+  shopOrderId: String!
+  shopItemId: String!
+  shopItemSpecs: ShopItemSpecs
+  deliveryDetails: ShopOrderDeliveryDetails!
+  createdat: Date!
+}
+
+type ShopOrderDeliveryDetails {
+  name: String!
+  email: String!
+  addressline1: String!
+  addressline2: String
+  city: String!
+  zipcode: String!
+  country: String!
 }
 
 type DefaultResponse {
@@ -863,6 +920,11 @@ type AuthPayload {
   ResponseCode: String @deprecated(reason: "use meta.ResponseCode . this field will be removed after 15 October`.")
   accessToken: String
   refreshToken: String
+}
+
+type MintAccountResponse {
+  meta: DefaultResponse!
+  mintAccount: MintAccount!
 }
 
 type TransactionResponse {
@@ -1156,10 +1218,11 @@ type Query {
   getActionPrices: GetActionPricesResponse!
   postEligibility: PostEligibilityResponse!
   getTransactionHistory(type: TokenMovementFilterType, direction: DirectionFilterType, start_date: String, end_date: String, limit: Int, offset: Int, sort: SortFilterType): TransactionResponse!
-  transactionHistory(transactionCategory: TransactionCategory, type: TokenMovementFilterType, direction: DirectionFilterType, start_date: String, end_date: String, limit: Int, offset: Int, sort: SortFilterType): TransactionHistoryResponse!
+  transactionHistory(type: TokenMovementFilterType, start_date: String, end_date: String, limit: Int, offset: Int, sort: SortFilterType): TransactionHistoryResponse!
   postInteractions(getOnly: GetOnly!, contentFilterBy: ContentFilterType, postOrCommentId: ID!, offset: Int, limit: Int): PostInteractionResponse
   getTokenomics: TokenomicsResponse!
   advertisementHistory(filter: AdvertisementHistoryFilter, sort: AdvertisementSort, offset: Int, limit: Int): ListedAdvertisementData!
+  shopOrderDetails(transactionId: String!): ShopOrderDetailsResponse!
 }
 
 type Mutation {
@@ -1182,4 +1245,5 @@ type Mutation {
   resolveTransferV2(recipient: ID!, numberoftokens: Decimal!, message: String): TransferTokenResponse!
   advertisePostBasic(postid: ID!, startday: Date!, durationInDays: AdDuration!, advertisePlan: AdvertisementBasicPlan!): ListAdvertisementData!
   advertisePostPinned(postid: ID!, advertisePlan: AdvertisementPinnedPlan!): ListAdvertisementData!
+  performShopOrder(tokenAmount: Decimal!, shopItemId: String!, orderDetails: ShopOrderDetailsInput!): DefaultResponse!
 }

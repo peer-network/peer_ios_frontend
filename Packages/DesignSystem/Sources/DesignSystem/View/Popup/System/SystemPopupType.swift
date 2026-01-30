@@ -33,6 +33,10 @@ public extension SystemPopupType {
                 return IconsNew.exclamaitionMarkCircle
             case .transferSuccess:
                 return IconsNew.checkCircle2
+            case .shopPurchaseSuccess:
+                return IconsNew.shopSuccess
+            case .shopPurchaseFailed:
+                return IconsNew.shopFail
         }
     }
 
@@ -60,6 +64,10 @@ public extension SystemPopupType {
                 return Colors.redAccent
             case .transferSuccess:
                 return Colors.passwordBarsGreen
+            case .shopPurchaseSuccess:
+                return Color(red: 0.67, green: 1, blue: 0.4)
+            case .shopPurchaseFailed:
+                return Colors.redAccent
         }
     }
 
@@ -87,6 +95,10 @@ public extension SystemPopupType {
                 return Colors.redAccent.opacity(0.2)
             case .transferSuccess:
                 return Colors.passwordBarsGreen.opacity(0.2)
+            case .shopPurchaseSuccess:
+                return Color(red: 0.67, green: 1, blue: 0.4).opacity(0.2)
+            case .shopPurchaseFailed:
+                return Color(red: 1, green: 0.23, blue: 0.23).opacity(0.2)
         }
     }
 
@@ -114,6 +126,10 @@ public extension SystemPopupType {
                 return "Are you sure you want to report this comment?"
             case .transferSuccess:
                 return "Completed"
+            case .shopPurchaseSuccess:
+                return "Order Successfully Placed!"
+            case .shopPurchaseFailed:
+                return "Order Failed"
         }
     }
 
@@ -141,6 +157,10 @@ public extension SystemPopupType {
                 return Colors.redAccent
             case .transferSuccess:
                 return Colors.passwordBarsGreen
+            case .shopPurchaseSuccess:
+                return Color(red: 0.67, green: 1, blue: 0.4)
+            case .shopPurchaseFailed:
+                return Colors.redAccent
         }
     }
 
@@ -168,6 +188,10 @@ public extension SystemPopupType {
                 return nil
             case .transferSuccess:
                 return "Your transfer was sent successfully."
+            case .shopPurchaseSuccess:
+                return "Your order has been confirmed. You’ll receive an email with delivery details within 1–3 days."
+            case .shopPurchaseFailed(let errorText):
+                return errorText
         }
     }
 
@@ -195,6 +219,10 @@ public extension SystemPopupType {
                 return .init(buttonSize: .small, buttonType: .teritary, title: "Cancel")
             case .transferSuccess:
                 return nil
+            case .shopPurchaseSuccess:
+                return .init(buttonSize: .small, buttonType: .teritary, title: "Close")
+            case .shopPurchaseFailed:
+                return .init(buttonSize: .small, buttonType: .teritary, title: "Cancel")
         }
     }
 
@@ -222,6 +250,10 @@ public extension SystemPopupType {
                 return .init(buttonSize: .small, buttonType: .secondary, title: "Report")
             case .transferSuccess:
                 return .init(buttonSize: .small, buttonType: .primary, title: "Got it")
+            case .shopPurchaseSuccess:
+                return .init(buttonSize: .small, buttonType: .secondary, title: "To wallet")
+            case .shopPurchaseFailed:
+                return .init(buttonSize: .small, buttonType: .primary, title: "Try again")
         }
     }
 }

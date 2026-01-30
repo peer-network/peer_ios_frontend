@@ -3,6 +3,7 @@ query Hello {
         currentuserid
         currentVersion
         wikiLink
+        lastMergedPullRequestNumber
         companyAccountId
     }
 }

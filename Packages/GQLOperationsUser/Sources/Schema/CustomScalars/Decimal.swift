@@ -23,11 +23,9 @@ extension Foundation.Decimal: CustomScalarType {
       self = decimal
 
     case let number as NSNumber:
-      // Backend currently sends JSON numbers (Double under the hood).
-      // Convert to Decimal and normalize to 9 fractional digits (adjust if needed).
       var decimal = number.decimalValue
       var rounded = Decimal()
-      NSDecimalRound(&rounded, &decimal, 9, .plain) // 9 = backend's scale
+      NSDecimalRound(&rounded, &decimal, 10, .plain) // 10 = backend's scale
       self = rounded
 
     default:

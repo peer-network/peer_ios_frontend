@@ -30,7 +30,7 @@ struct PostHeaderView: View {
     var body: some View {
         HStack(alignment: .center, spacing: 10) {
             Button {
-                router.navigate(to: .accountDetail(id: postVM.post.owner.id))
+                router.navigate(to: RouterDestination.accountDetail(id: postVM.post.owner.id))
             } label: {
                 if postVM.post.owner.visibilityStatus == .illegal {
                     Circle()
@@ -116,6 +116,14 @@ struct PostHeaderView: View {
                             Label("Translate", systemImage: "captions.bubble")
                         }
 
+                        if postVM.post.owner.id == Env.shopUserId {
+                            Button {
+                                router.navigate(to: ShopRoute.purchaseWithPost(post: postVM.post))
+                            } label: {
+                                Label("To the item", systemImage: "arrow.up.forward")
+                            }
+                        }
+
                         if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.advertisement == nil {
                             Button {
                                 if postVM.post.isHiddenForUsers {
@@ -126,16 +134,16 @@ struct PostHeaderView: View {
                                             tokenomics: appState.getConstants()!.data.tokenomics,
                                             popupManager: SystemPopupManager.shared,
                                             onGoToProfile: {
-                                                router.navigate(to: .accountDetail(id: postVM.post.owner.id))
+                                                router.navigate(to: RouterDestination.accountDetail(id: postVM.post.owner.id))
                                             },
                                             onGoToPost: {
-                                                router.navigate(to: .postDetailsWithPostId(id: postVM.post.id))
+                                                router.navigate(to: RouterDestination.postDetailsWithPostId(id: postVM.post.id))
                                             },
                                             onFinish: { [weak router] in
                                                 // Dismiss entire flow; we pop to wherever we want.
                                             }
                                         )
-                                        router.path.append(.promotePost(flowID: flowID, step: .config))
+                                        router.navigate(to: RouterDestination.promotePost(flowID: flowID, step: .config))
                                     }
                                 } else if postVM.post.hasActiveReports {
                                     SystemPopupManager.shared.presentPopup(.postPromotionReview) {
@@ -145,16 +153,16 @@ struct PostHeaderView: View {
                                             tokenomics: appState.getConstants()!.data.tokenomics,
                                             popupManager: SystemPopupManager.shared,
                                             onGoToProfile: {
-                                                router.navigate(to: .accountDetail(id: postVM.post.owner.id))
+                                                router.navigate(to: RouterDestination.accountDetail(id: postVM.post.owner.id))
                                             },
                                             onGoToPost: {
-                                                router.navigate(to: .postDetailsWithPostId(id: postVM.post.id))
+                                                router.navigate(to: RouterDestination.postDetailsWithPostId(id: postVM.post.id))
                                             },
                                             onFinish: { [weak router] in
                                                 // Dismiss entire flow; we pop to wherever we want.
                                             }
                                         )
-                                        router.path.append(.promotePost(flowID: flowID, step: .config))
+                                        router.navigate(to: RouterDestination.promotePost(flowID: flowID, step: .config))
                                     }
                                 } else {
                                     SystemPopupManager.shared.presentPopup(.postPromotion) {
@@ -164,16 +172,16 @@ struct PostHeaderView: View {
                                             tokenomics: appState.getConstants()!.data.tokenomics,
                                             popupManager: SystemPopupManager.shared,
                                             onGoToProfile: {
-                                                router.navigate(to: .accountDetail(id: postVM.post.owner.id))
+                                                router.navigate(to: RouterDestination.accountDetail(id: postVM.post.owner.id))
                                             },
                                             onGoToPost: {
-                                                router.navigate(to: .postDetailsWithPostId(id: postVM.post.id))
+                                                router.navigate(to: RouterDestination.postDetailsWithPostId(id: postVM.post.id))
                                             },
                                             onFinish: { [weak router] in
                                                 // Dismiss entire flow; we pop to wherever we want.
                                             }
                                         )
-                                        router.path.append(.promotePost(flowID: flowID, step: .config))
+                                        router.navigate(to: RouterDestination.promotePost(flowID: flowID, step: .config))
                                     }
                                 }
                             } label: {
@@ -182,7 +190,7 @@ struct PostHeaderView: View {
                         }
                     }
 
-                    if !AccountManager.shared.isCurrentUser(id: postVM.post.owner.id) {
+                    if !AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.owner.id != Env.shopUserId {
                         Section {
                             Button(role: .destructive) {
                                 Task {
@@ -275,4 +283,14 @@ private struct PinIndicatorView: View {
                     .foregroundStyle(Colors.version)
             }
     }
+}
+
+enum Env {
+    static let shopUserId: String = {
+#if STAGING || DEBUG
+        return "292bebb1-0951-47e8-ac8a-759138a2e4a9"
+#else
+        return "c50e2d31-c98e-4a20-b2b6-e1103839de0a"
+#endif
+    }()
 }

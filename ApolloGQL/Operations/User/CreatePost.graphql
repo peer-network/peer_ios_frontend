@@ -3,8 +3,12 @@ mutation CreatePost($contentType: ContentType!, $title: String!, $media: [String
         action: POST
         input: { contenttype: $contentType, title: $title, media: $media, mediadescription: $mediadescription, tags: $tags, cover: $cover }
     ) {
-        status
-        ResponseCode
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
         affectedRows {
             id
             contenttype

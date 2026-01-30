@@ -75,7 +75,7 @@ struct ProfileInfoHeaderView: View {
             if redactionReasons != .placeholder {
                 if accountManager.isCurrentUser(id: user.id) {
                     Button {
-                        router.navigate(to: .settings)
+                        router.navigate(to: RouterDestination.settings)
                     } label: {
                         Icons.gear
                             .iconSize(height: 15)

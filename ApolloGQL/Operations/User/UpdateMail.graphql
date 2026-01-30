@@ -1,6 +1,8 @@
 mutation UpdateMail($email: String!, $password: String!) {
     updateEmail(email: $email, password: $password) {
         status
+        RequestId
         ResponseCode
+        ResponseMessage
     }
 }

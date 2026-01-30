@@ -63,7 +63,7 @@ public struct PostView: View {
                                         }
                                         .clipped()
                                         .onTapGesture {
-                                            router.navigate(to: .postDetailsWithPost(post: postVM.post))
+                                            router.navigate(to: RouterDestination.postDetailsWithPost(post: postVM.post))
                                         }
                                 }
                                 .ifCondition(postVM.showIllegalBlur) {
@@ -82,7 +82,7 @@ public struct PostView: View {
                                         }
                                         .clipped()
                                         .onTapGesture {
-                                            router.navigate(to: .postDetailsWithPost(post: postVM.post))
+                                            router.navigate(to: RouterDestination.postDetailsWithPost(post: postVM.post))
                                         }
                                 }
                     }
@@ -108,7 +108,7 @@ public struct PostView: View {
                                         }
                                         .clipped()
                                         .onTapGesture {
-                                            router.navigate(to: .postDetailsWithPost(post: postVM.post))
+                                            router.navigate(to: RouterDestination.postDetailsWithPost(post: postVM.post))
                                         }
                                 }
                                 .ifCondition(postVM.showIllegalBlur) {
@@ -127,7 +127,7 @@ public struct PostView: View {
                                         }
                                         .clipped()
                                         .onTapGesture {
-                                            router.navigate(to: .postDetailsWithPost(post: postVM.post))
+                                            router.navigate(to: RouterDestination.postDetailsWithPost(post: postVM.post))
                                         }
                                 }
                     }
@@ -431,7 +431,7 @@ public struct PostView: View {
         .aspectRatio(1, contentMode: .fit)
         .contentShape(.rect)
         .onTapGesture {
-            router.navigate(to: .postDetailsWithPost(post: postVM.post))
+            router.navigate(to: RouterDestination.postDetailsWithPost(post: postVM.post))
         }
     }
 
@@ -463,7 +463,7 @@ public struct PostView: View {
                 }
             }
             .onTapGesture {
-                router.navigate(to: .postDetailsWithPost(post: postVM.post))
+                router.navigate(to: RouterDestination.postDetailsWithPost(post: postVM.post))
             }
         }
         .clipped()

@@ -23,7 +23,7 @@ public class ConfigurationService: ConfigurationServiceProtocol {
         encoder.dateEncodingStrategy = .secondsSince1970
     }
 
-    public convenience init() { // TODO: Get rid of this init
+    public convenience init() {
         let cacheManager = try! FileConfigCacheManager()
         self.init(
             configURL: URL(string: "https://media.peernetwork.eu/assets/config.json")!,

@@ -9,7 +9,6 @@ import Foundation
 import GQLOperationsUser
 
 public struct Transaction: Identifiable, Hashable {
-
     public enum TransactionType {
         case extraPost
         case extraLike
@@ -84,19 +83,23 @@ public struct Transaction: Identifiable, Hashable {
     public init?(gqlTransaction: GetTransactionHistoryQuery.Data.TransactionHistory.AffectedRow) {
         guard
             let sender = RowUser(gqlUser: gqlTransaction.sender),
-            let recipient = RowUser(gqlUser: gqlTransaction.recipient)
+            let recipient = RowUser(gqlUser: gqlTransaction.recipient),
+            let tokenAmount = Decimal(graphqlNumericString: gqlTransaction.tokenamount),
+            let netTokenAmount = Decimal(graphqlNumericString: gqlTransaction.netTokenAmount)
         else {
             return nil
         }
 
-        self.id = gqlTransaction.operationid
+        self.id = gqlTransaction.transactionId
+
         if let gqlType = gqlTransaction.transactionCategory?.value {
-            self.type = TransactionType.normalizedValue(from: gqlType, amount: gqlTransaction.netTokenAmount)
+            self.type = TransactionType.normalizedValue(from: gqlType, amount: netTokenAmount)
         } else {
             self.type = .unknown
         }
-        self.tokenAmount = gqlTransaction.tokenamount
-        self.netTokenAmount = gqlTransaction.netTokenAmount
+
+        self.tokenAmount = tokenAmount
+        self.netTokenAmount = netTokenAmount
         self.message = gqlTransaction.message
         self.createdAt = gqlTransaction.createdat
         self.sender = sender

@@ -30,7 +30,7 @@ public struct APIConfiguration: GQLClientConfigurable {
                        let url = URL(string: urlString) {
                         return url
                     }
-                    return URL(string: "https://peer-network.eu/graphql")! // Fallback
+                    return URL(string: "https://peernetwork.eu/graphql")! // Fallback
             }
         }
     }
@@ -47,7 +47,7 @@ public struct APIConfiguration: GQLClientConfigurable {
     }
 
     public static func getCustomEndpoint() -> String? {
-        return UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")?.string(forKey: "customAPIEndpoint")
+        UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")?.string(forKey: "customAPIEndpoint")
     }
 }
 

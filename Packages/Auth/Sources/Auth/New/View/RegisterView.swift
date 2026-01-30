@@ -22,7 +22,7 @@ struct RegisterView: View {
         case confirmPassword
     }
 
-    @FocusState private var focusedField: FocusField?
+    @State private var focusedField: FocusField?
 
     @State private var passwordsDoNotMatch: Bool = false
 
@@ -182,10 +182,10 @@ struct RegisterView: View {
 
     private var agreementsCheckmarks: some View {
         VStack(alignment: .leading, spacing: 10) {
-            let privacyText = Text("I agree to the ") + Text("[Privacy Policy](https://peerapp.de/privacy.html)").underline(true, pattern: .solid) + Text(".")
+            let privacyText = Text("I agree to the ") + Text("[Privacy Policy](https://peer.berlin/privacy/)").underline(true, pattern: .solid) + Text(".")
             CheckmarkButton(text: privacyText, isChecked: $authVM.agreedToPrivacyPolicy)
 
-            let eulaText = Text("I agree to the ") + Text("[End User License Agreement](https://peerapp.de/EULA.html)").underline(true, pattern: .solid) + Text(".")
+            let eulaText = Text("I agree to the ") + Text("[End User License Agreement](https://peer.berlin/eula/)").underline(true, pattern: .solid) + Text(".")
             CheckmarkButton(text: eulaText, isChecked: $authVM.agreedToEULA)
         }
         .tint(Colors.whitePrimary) // For making links white

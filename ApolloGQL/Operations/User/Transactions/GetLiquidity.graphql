@@ -1,7 +1,11 @@
 query GetLiquidity {
     balance {
-        status
-        ResponseCode
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
         currentliquidity
     }
 }

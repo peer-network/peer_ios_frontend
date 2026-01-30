@@ -1,6 +1,16 @@
 mutation VerifyReferralCode($code: String!) {
     verifyReferralString(referralString: $code) {
-        status
-        ResponseCode
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
+        affectedRows {
+            uid
+            username
+            slug
+            img
+        }
     }
 }

@@ -1,7 +1,11 @@
 mutation UpdateShownOnboardings($shownOnboardings: [OnboardingType!]!) {
     updateUserPreferences(userPreferences: { shownOnboardings: $shownOnboardings }) {
-        status
-        ResponseCode
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
         affectedRows {
             onboardingsWereShown
         }

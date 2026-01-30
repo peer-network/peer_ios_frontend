@@ -7,7 +7,7 @@ public class GetTransactionHistoryQuery: GraphQLQuery {
   public static let operationName: String = "GetTransactionHistory"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetTransactionHistory($offset: Int, $limit: Int) { transactionHistory(limit: $limit, offset: $offset, sort: NEWEST) { __typename affectedRows { __typename operationid transactionCategory transactiontype tokenamount netTokenAmount message createdat fees { __typename total burn peer inviter } recipient { __typename userid img username slug biography visibilityStatus isHiddenForUsers hasActiveReports updatedat } sender { __typename userid img username slug biography visibilityStatus isHiddenForUsers hasActiveReports updatedat } } meta { __typename status RequestId ResponseCode ResponseMessage } } }"#
+      #"query GetTransactionHistory($offset: Int, $limit: Int) { transactionHistory(limit: $limit, offset: $offset, sort: NEWEST) { __typename affectedRows { __typename operationid transactionId transactionCategory transactiontype tokenamount netTokenAmount message createdat fees { __typename total burn peer inviter } recipient { __typename userid img username slug biography visibilityStatus isHiddenForUsers hasActiveReports updatedat } sender { __typename userid img username slug biography visibilityStatus isHiddenForUsers hasActiveReports updatedat } } meta { __typename status RequestId ResponseCode ResponseMessage } } }"#
     ))
 
   public var offset: GraphQLNullable<Int>
@@ -75,10 +75,11 @@ public class GetTransactionHistoryQuery: GraphQLQuery {
         public static var __selections: [ApolloAPI.Selection] { [
           .field("__typename", String.self),
           .field("operationid", String.self),
+          .field("transactionId", String.self),
           .field("transactionCategory", GraphQLEnum<GQLOperationsUser.TransactionCategory>?.self),
           .field("transactiontype", String.self),
-          .field("tokenamount", GQLOperationsUser.Decimal.self),
-          .field("netTokenAmount", GQLOperationsUser.Decimal.self),
+          .field("tokenamount", String.self),
+          .field("netTokenAmount", String.self),
           .field("message", String?.self),
           .field("createdat", String.self),
           .field("fees", Fees?.self),
@@ -90,10 +91,11 @@ public class GetTransactionHistoryQuery: GraphQLQuery {
         ] }
 
         public var operationid: String { __data["operationid"] }
+        public var transactionId: String { __data["transactionId"] }
         public var transactionCategory: GraphQLEnum<GQLOperationsUser.TransactionCategory>? { __data["transactionCategory"] }
         public var transactiontype: String { __data["transactiontype"] }
-        public var tokenamount: GQLOperationsUser.Decimal { __data["tokenamount"] }
-        public var netTokenAmount: GQLOperationsUser.Decimal { __data["netTokenAmount"] }
+        public var tokenamount: String { __data["tokenamount"] }
+        public var netTokenAmount: String { __data["netTokenAmount"] }
         public var message: String? { __data["message"] }
         public var createdat: String { __data["createdat"] }
         public var fees: Fees? { __data["fees"] }

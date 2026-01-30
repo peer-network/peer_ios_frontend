@@ -14,7 +14,7 @@ extension AppTab {
     func makeContentView() -> some View {
         switch self {
         case .feed: FeedTab()
-        case .explore: ExploreTab()
+        case .shop: ShopTab()
         case .newPost: PostCreationTab()
         case .wallet: WalletTab()
         case .profile: ProfileTab()
@@ -24,7 +24,7 @@ extension AppTab {
     var icon: Image {
         switch self {
         case .feed: Icons.house
-        case .explore: Icons.magnifyingglass
+        case .shop: IconsNew.shop
         case .profile: Icons.person
         case .newPost: Icons.plustSquare
         case .wallet: Icons.wallet
@@ -34,7 +34,7 @@ extension AppTab {
     var iconFilled: Image {
         switch self {
         case .feed: Icons.houseFill
-        case .explore: Icons.magnifyingglassFill
+        case .shop: IconsNew.shopFill
         case .profile: Icons.personFill
         case .newPost: Icons.plustSquareFill
         case .wallet: Icons.walletFill

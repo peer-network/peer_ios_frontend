@@ -15,13 +15,15 @@ let package = Package(
             targets: ["VersionHistory"]),
     ],
     dependencies: [
-        .package(name: "DesignSystem", path: "../DesignSystem")
+        .package(name: "DesignSystem", path: "../DesignSystem"),
+        .package(url: "https://github.com/firebase/firebase-ios-sdk.git", .upToNextMajor(from: "12.1.0"))
     ],
     targets: [
         .target(
             name: "VersionHistory",
             dependencies: [
-                .product(name: "DesignSystem", package: "DesignSystem")
+                .product(name: "DesignSystem", package: "DesignSystem"),
+                .product(name: "FirebaseAnalytics", package: "firebase-ios-sdk")
             ]
         ),
     ],

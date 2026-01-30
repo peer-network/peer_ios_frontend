@@ -1,7 +1,11 @@
 query GetDailyFree {
     getDailyFreeStatus {
-        status
-        ResponseCode
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
         affectedRows {
             name
             used

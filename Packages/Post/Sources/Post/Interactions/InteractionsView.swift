@@ -50,14 +50,14 @@ enum InteractionType {
     }
 }
 
-struct InteractionsView: View {
+public struct InteractionsView: View {
     @ObservedObject var viewModel: PostViewModel
 
-    init(viewModel: PostViewModel) {
+    public init(viewModel: PostViewModel) {
         self.viewModel = viewModel
     }
 
-    var body: some View {
+    public var body: some View {
         VStack(alignment: .center, spacing: 0) {
             Capsule()
                 .frame(width: 44.5, height: 1)

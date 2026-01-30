@@ -2,8 +2,12 @@ query GetAdsHistoryStats($userId: ID) {
 	advertisementHistory(
         filter: { userId: $userId }
     ) {
-        status
-        ResponseCode
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
         affectedRows {
             stats {
                 tokenSpent

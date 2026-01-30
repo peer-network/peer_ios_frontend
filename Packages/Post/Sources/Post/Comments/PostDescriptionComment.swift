@@ -23,7 +23,7 @@ struct PostDescriptionComment: View {
                 if !isInFeed {
                     dismiss()
                 }
-                router.navigate(to: .accountDetail(id: postVM.post.owner.id))
+                router.navigate(to: RouterDestination.accountDetail(id: postVM.post.owner.id))
             } label: {
                 Text(postVM.showHeaderSensitiveWarning ? "hidden_account" : postVM.post.owner.username)
                     .font(.custom(.bodyBoldItalic))

@@ -8,7 +8,6 @@
 import SwiftUI
 import DesignSystem
 import Environment
-import Analytics
 
 public struct WalletView: View {
     @Environment(\.selectedTabScrollToTop) private var selectedTabScrollToTop
@@ -47,7 +46,7 @@ public struct WalletView: View {
                     viewModel.fetchTransactionHistory(reset: true)
                 }
                 .onChange(of: selectedTabScrollToTop) {
-                    if selectedTabScrollToTop == 3, router.path.isEmpty {
+                    if selectedTabScrollToTop == 2, router.path.isEmpty {
                         withAnimation {
                             scrollProxy.scrollTo(ScrollToView.Constants.scrollToTop, anchor: .top)
                         }
@@ -61,13 +60,13 @@ public struct WalletView: View {
             viewModel.fetchContent()
             viewModel.fetchTransactionHistory(reset: true)
         }
-        .trackScreen(AppScreen.wallet)
+//        .trackScreen(AppScreen.wallet)
     }
 
     private var transferButton: some View {
         Button {
             if let balance = viewModel.balance?.amount {
-                router.navigate(to: .transferV2(balance: balance))
+                router.navigate(to: RouterDestination.transferV2(balance: balance))
             }
         } label: {
             HStack(alignment: .center, spacing: 10) {

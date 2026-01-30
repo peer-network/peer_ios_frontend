@@ -7,7 +7,7 @@ public class GetFollowingsQuery: GraphQLQuery {
   public static let operationName: String = "GetFollowings"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"query GetFollowings($contentFilterBy: ContentFilterType, $userid: ID, $offset: Int, $limit: Int) { listFollowRelations( contentFilterBy: $contentFilterBy userid: $userid offset: $offset limit: $limit ) { __typename status ResponseCode affectedRows { __typename following { __typename id username slug img visibilityStatus isHiddenForUsers hasActiveReports isfollowed isfollowing isfriend } } } }"#
+      #"query GetFollowings($contentFilterBy: ContentFilterType, $userid: ID, $offset: Int, $limit: Int) { listFollowRelations( contentFilterBy: $contentFilterBy userid: $userid offset: $offset limit: $limit ) { __typename meta { __typename status RequestId ResponseCode ResponseMessage } affectedRows { __typename following { __typename id username slug img visibilityStatus isHiddenForUsers hasActiveReports isfollowed isfollowing isfriend } } } }"#
     ))
 
   public var contentFilterBy: GraphQLNullable<GraphQLEnum<ContentFilterType>>
@@ -63,19 +63,41 @@ public class GetFollowingsQuery: GraphQLQuery {
       public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.FollowRelationsResponse }
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
-        .field("status", String.self),
-        .field("ResponseCode", String?.self),
+        .field("meta", Meta.self),
         .field("affectedRows", AffectedRows?.self),
       ] }
       public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
         GetFollowingsQuery.Data.ListFollowRelations.self
       ] }
 
-      @available(*, deprecated, message: "use meta.status . this field will be removed after 15 October`.")
-      public var status: String { __data["status"] }
-      @available(*, deprecated, message: "use meta.ResponseCode . this field will be removed after 15 October`.")
-      public var responseCode: String? { __data["ResponseCode"] }
+      public var meta: Meta { __data["meta"] }
       public var affectedRows: AffectedRows? { __data["affectedRows"] }
+
+      /// ListFollowRelations.Meta
+      ///
+      /// Parent Type: `DefaultResponse`
+      public struct Meta: GQLOperationsUser.SelectionSet {
+        public let __data: DataDict
+        public init(_dataDict: DataDict) { __data = _dataDict }
+
+        public static var __parentType: any ApolloAPI.ParentType { GQLOperationsUser.Objects.DefaultResponse }
+        public static var __selections: [ApolloAPI.Selection] { [
+          .field("__typename", String.self),
+          .field("status", String.self),
+          .field("RequestId", String?.self),
+          .field("ResponseCode", String?.self),
+          .field("ResponseMessage", String?.self),
+        ] }
+        public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
+          GetFollowingsQuery.Data.ListFollowRelations.Meta.self
+        ] }
+
+        public var status: String { __data["status"] }
+        public var requestId: String? { __data["RequestId"] }
+        @available(*, deprecated, message: "use meta.ResponseCode . this field will be removed after 15 October`.")
+        public var responseCode: String? { __data["ResponseCode"] }
+        public var responseMessage: String? { __data["ResponseMessage"] }
+      }
 
       /// ListFollowRelations.AffectedRows
       ///

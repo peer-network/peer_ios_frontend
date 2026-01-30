@@ -7,7 +7,7 @@ public class ConfirmPasswordResetMutation: GraphQLMutation {
   public static let operationName: String = "ConfirmPasswordReset"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"mutation ConfirmPasswordReset($token: String!, $password: String!) { resetPassword(token: $token, password: $password) { __typename status ResponseCode } }"#
+      #"mutation ConfirmPasswordReset($token: String!, $password: String!) { resetPassword(token: $token, password: $password) { __typename status RequestId ResponseCode ResponseMessage } }"#
     ))
 
   public var token: String
@@ -54,15 +54,19 @@ public class ConfirmPasswordResetMutation: GraphQLMutation {
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("status", String.self),
+        .field("RequestId", String?.self),
         .field("ResponseCode", String?.self),
+        .field("ResponseMessage", String?.self),
       ] }
       public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
         ConfirmPasswordResetMutation.Data.ResetPassword.self
       ] }
 
       public var status: String { __data["status"] }
+      public var requestId: String? { __data["RequestId"] }
       @available(*, deprecated, message: "use meta.ResponseCode . this field will be removed after 15 October`.")
       public var responseCode: String? { __data["ResponseCode"] }
+      public var responseMessage: String? { __data["ResponseMessage"] }
     }
   }
 }

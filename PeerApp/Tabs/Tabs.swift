@@ -16,9 +16,9 @@ final class AppTabManager: ObservableObject {
     
     class Storage {
         @AppStorage(TabEntries.first.rawValue) var firstTab = AppTab.feed
-        @AppStorage(TabEntries.second.rawValue) var secondTab = AppTab.explore
-        @AppStorage(TabEntries.third.rawValue) var thirdTab = AppTab.newPost
-        @AppStorage(TabEntries.fourth.rawValue) var fourthTab = AppTab.wallet
+        @AppStorage(TabEntries.second.rawValue) var secondTab = AppTab.newPost
+        @AppStorage(TabEntries.third.rawValue) var thirdTab = AppTab.wallet
+        @AppStorage(TabEntries.fourth.rawValue) var fourthTab = AppTab.shop
         @AppStorage(TabEntries.fifth.rawValue) var fifthTab = AppTab.profile
     }
 

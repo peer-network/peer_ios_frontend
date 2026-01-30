@@ -23,7 +23,10 @@ extension View {
         navigationDestination(for: RouterDestination.self) { destination in
             switch destination {
                 case .accountDetail(let id):
-                    if #available(iOS 18, *) {
+                    if id == Env.shopUserId {
+                        ShopProfileView(shopUserId: Env.shopUserId)
+                            .toolbar(.hidden, for: .navigationBar)
+                    } else if #available(iOS 18, *) {
                         ProfilePageView(userId: id)
                             .toolbar(.hidden, for: .navigationBar)
                     } else {
@@ -51,8 +54,8 @@ extension View {
                 case .transferV2(let balance):
                     TransferView(balance: balance)
                         .toolbar(.hidden, for: .navigationBar)
-                case .transferSummary(let balance, let recipient, let amount, let message):
-                    TransferSummaryView(balance: balance, recipient: recipient, amount: amount, message: message)
+                case .transferSummary(let balance, let recipient, let amount, let fees, let message):
+                    TransferSummaryView(balance: balance, recipient: recipient, amount: amount, fees: fees, message: message)
                         .toolbar(.hidden, for: .navigationBar)
                 case .changePassword:
                     EditPasswordView { newPassword, currentPassword in
@@ -127,6 +130,30 @@ extension View {
                 case .adsHistoryDetails(let ad):
                     AdHistoryAdDetailView(ad: ad)
                         .toolbar(.hidden, for: .navigationBar)
+                case .search(let type):
+                    ExploreView(searchType: type)
+                        .toolbar(.hidden, for: .navigationBar)
+            }
+        }
+    }
+
+    func withShopRouter(router: Router) -> some View {
+        navigationDestination(for: ShopRoute.self) { destination in
+            switch destination {
+                case .purchase(let listing):
+                    ShopItemPurchaseView(item: listing)
+                        .toolbar(.hidden, for: .navigationBar)
+                case .purchaseWithPost(let post):
+                    ShopItemPurchaseEntryView(post: post)
+                        .toolbar(.hidden, for: .navigationBar)
+                case .checkout(let flowID):
+                    if let flow = router.object(id: flowID) as? ShopPurchaseFlow {
+                        ShopItemCheckoutView()
+                            .environmentObject(flow)
+                            .toolbar(.hidden, for: .navigationBar)
+                    } else {
+                        Text("Purchase session expired")
+                    }
             }
         }
     }

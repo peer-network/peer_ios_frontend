@@ -116,7 +116,7 @@ public struct SettingsView: View {
 
                         HStack(spacing: 15) {
                             Button {
-                                router.navigate(to: .changePassword)
+                                router.navigate(to: RouterDestination.changePassword)
                             } label: {
                                 Text("Change password")
                                     .font(.customFont(weight: .regular, style: .footnote))
@@ -130,7 +130,7 @@ public struct SettingsView: View {
                             }
 
                             Button {
-                                router.navigate(to: .changeEmail)
+                                router.navigate(to: RouterDestination.changeEmail)
                             } label: {
                                 Text("Change e-mail")
                                     .font(.customFont(weight: .regular, style: .footnote))
@@ -144,7 +144,7 @@ public struct SettingsView: View {
                             }
 
                             Button {
-                                router.navigate(to: .changeUsername)
+                                router.navigate(to: RouterDestination.changeUsername)
                             } label: {
                                 Text("Change username")
                                     .font(.customFont(weight: .regular, style: .footnote))
@@ -234,7 +234,7 @@ public struct SettingsView: View {
         let config = StateButtonConfig(buttonSize: .large, buttonType: .teritary, title: "Blocked users")
 
         StateButton(config: config) {
-            router.navigate(to: .blockedUsers)
+            router.navigate(to: RouterDestination.blockedUsers)
         }
     }
 
@@ -244,7 +244,7 @@ public struct SettingsView: View {
 
         StateButton(config: config) {
             SystemPopupManager.shared.presentPopup(.deactivateAccount) {
-                router.navigate(to: .deleteAccount)
+                router.navigate(to: RouterDestination.deleteAccount)
             }
         }
     }

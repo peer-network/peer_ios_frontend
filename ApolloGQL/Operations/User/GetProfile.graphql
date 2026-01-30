@@ -3,8 +3,12 @@ query GetProfile($contentFilterBy: ContentFilterType, $userid: ID!) {
         contentFilterBy: $contentFilterBy
         userid: $userid
     ) {
-        status
-        ResponseCode
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
         affectedRows {
             id
             username

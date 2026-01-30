@@ -1,6 +1,8 @@
 mutation ReportComment($commentid: ID!) {
     reportComment(commentid: $commentid) {
         status
+        RequestId
         ResponseCode
+        ResponseMessage
     }
 }
