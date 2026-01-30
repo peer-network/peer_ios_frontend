@@ -38,7 +38,7 @@ public struct RowProfileView<TrailingContent: View>: View {
             Button {
                 dismissAction?()
                 router.presentedSheet = nil
-                router.navigate(to: .accountDetail(id: user.id))
+                router.navigate(to: RouterDestination.accountDetail(id: user.id))
             } label: {
                 HStack(spacing: 0) {
                     if user.visibilityStatus == .illegal {

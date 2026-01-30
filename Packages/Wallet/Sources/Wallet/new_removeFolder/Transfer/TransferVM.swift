@@ -14,12 +14,15 @@ import Models
 final class TransferVM: ObservableObject {
     @Published var recipient: RowUser? = nil
     @Published var amount: Foundation.Decimal? = nil
+    @Published var fees: TransferFeesModel? = nil
     @Published var message: String? = nil
 
     let currentBalance: Foundation.Decimal
 
     var canDoTransfer: Bool {
-        !(recipient == nil || amount == nil)
+        guard let fees else { return false }
+
+        return !(recipient == nil || amount == nil || fees.totalWithFees > currentBalance)
     }
 
     init(balance: Foundation.Decimal) {

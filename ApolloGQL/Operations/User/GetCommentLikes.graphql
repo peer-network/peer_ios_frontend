@@ -5,8 +5,12 @@ query CommentLikes($commentId: ID!, $offset: Int, $limit: Int) {
         offset: $offset
         limit: $limit
     ) {
-        status
-        ResponseCode
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
         affectedRows {
             id
             username

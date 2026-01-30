@@ -4,9 +4,13 @@ query SearchTags($tagName: String!, $offset: Int, $limit: Int) {
         offset: $offset
         limit: $limit
     ) {
-        status
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
         counter
-        ResponseCode
         affectedRows {
             name
         }

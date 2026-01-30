@@ -6,8 +6,12 @@ query PostInteractions($getOnly: GetOnly!, $postOrCommentId: ID!, $offset: Int, 
         limit: $limit
         contentFilterBy: $contentFilterBy
     ) {
-        status
-        ResponseCode
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
         affectedRows {
             id
             username

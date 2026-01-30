@@ -21,7 +21,7 @@ public struct FeedView: View {
     @State private var showFilters = false
     @State private var filtersPosition: CGRect = .zero
 
-    @State private var displayLogoInHeader = true
+    @StateObject private var feedContentSortingAndFiltering = FeedContentSortingAndFiltering.shared
 
     public init() {}
 
@@ -29,33 +29,76 @@ public struct FeedView: View {
         HeaderContainer(actionsToDisplay: .commentsAndLikes) {
             headerView
         } content: {
-//            if #available(iOS 18, *) {
-//                newContentView
-//            } else {
-                oldContentView
-//            }
+            //            if #available(iOS 18, *) {
+            //                newContentView
+            //            } else {
+            oldContentView
+            //            }
         }
-        .overlay(alignment: .topLeading) {
-            ZStack(alignment: .topLeading) {
-                Rectangle()
-                    .foregroundStyle(.clear)
-                    .contentShape(.rect)
-                    .onTapGesture {
-                        withAnimation(.snappy(duration: 0.3, extraBounce: 0)) {
-                            showFilters = false
+        .overlay {
+            if showFilters {
+                ZStack(alignment: .topLeading) {
+                    Rectangle()
+                        .fill(.ultraThinMaterial)
+                        .onTapGesture {
+                            withAnimation(.snappy(duration: 0.3, extraBounce: 0)) {
+                                showFilters = false
+                            }
                         }
-                    }
-                    .allowsHitTesting(showFilters)
 
-                ZStack {
-                    if showFilters {
+                    VStack(alignment: .leading, spacing: 0) {
+                        HStack(spacing: 8.75) {
+                            Icons.magnifyingglass
+                                .iconSize(height: 19.25)
+                                .frame(width: 21, height: 21)
+
+                            Text("Search")
+                                .appFont(.bodyRegular)
+                        }
+                        .foregroundStyle(Colors.whitePrimary)
+                        .allowsHitTesting(false)
+                        .padding(.bottom, 12.5)
+
+                        FeedSearchBarView()
+                            .padding(.bottom, 16)
+
+                        HStack(spacing: 0) {
+                            IconsNew.filter
+                                .iconSize(height: 19.92)
+                                .frame(width: 24, height: 24)
+                                .padding(.trailing, 10)
+
+                            Text("Filters")
+                                .appFont(.bodyRegular)
+
+                            Spacer(minLength: 10)
+
+                            Button {
+                                withAnimation(.snappy(duration: 0.3, extraBounce: 0)) {
+                                    feedContentSortingAndFiltering.filterByRelationship = .all
+                                    feedContentSortingAndFiltering.sortByPopularity = .newest
+                                    feedContentSortingAndFiltering.sortByTime = .allTime
+                                    showFilters = false
+                                }
+                            } label: {
+                                Text("Clear all")
+                                    .appFont(.bodyBold)
+                                    .foregroundStyle(Colors.whiteSecondary)
+                                    .contentShape(.rect)
+                            }
+
+                        }
+                        .foregroundStyle(Colors.whitePrimary)
+                        .padding(.bottom, 16)
+
                         SortingPopupView()
-                            .transition(.blurReplace)
                     }
+                    .padding(.horizontal, 20)
+                    .offset(y: filtersPosition.minY)
+                    .transition(.blurReplace)
                 }
-                .offset(x: 20, y: filtersPosition.maxY + 10)
+                .ignoresSafeArea(.container)
             }
-            .ignoresSafeArea()
         }
         .trackScreen(AppScreen.feed)
         .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
@@ -82,15 +125,15 @@ public struct FeedView: View {
 
             Text("123")
 
-//            ReelsFeedView()
-//                .ignoresSafeArea(.container, edges: .all)
-//                .onAppear {
-//                    audioManager.isInRestrictedView = true
-//                }
-//                .onDisappear {
-//                    audioManager.isInRestrictedView = false
-//                }
-//                .trackScreen(AppScreen.videoFeed)
+            //            ReelsFeedView()
+            //                .ignoresSafeArea(.container, edges: .all)
+            //                .onAppear {
+            //                    audioManager.isInRestrictedView = true
+            //                }
+            //                .onDisappear {
+            //                    audioManager.isInRestrictedView = false
+            //                }
+            //                .trackScreen(AppScreen.videoFeed)
 
             AudioFeedView()
                 .trackScreen(AppScreen.audioFeed)
@@ -137,41 +180,20 @@ public struct FeedView: View {
     }
 
     private var headerView: some View {
-        Group {
-            if displayLogoInHeader {
-                Images.logoText
-                    .iconSize(height: 33.5)
-                    .transition(.opacity)
-            } else {
-                Button {
-                    withAnimation(.smooth(duration: 0.3, extraBounce: 0)) {
-                        showFilters.toggle()
-                    }
-                } label: {
-                    HStack(alignment: .center, spacing: 10) {
-                        Text("Feed")
-
-                        Icons.arrowDown
-                            .iconSize(height: 7)
-                            .rotationEffect(.degrees(showFilters ? 180 : 0))
-                            .animation(.default, value: showFilters)
-                    }
-                    .contentShape(Rectangle())
-                    .onGeometryChange(for: CGRect.self) {
-                        $0.frame(in: .global)
-                    } action: { newValue in
-                        filtersPosition = newValue
-                    }
-                }
+        Button {
+            withAnimation(.smooth(duration: 0.3, extraBounce: 0)) {
+                showFilters.toggle()
             }
-        }
-        .onFirstAppear {
-            Task {
-                try? await Task.sleep(for: .seconds(3))
-                withAnimation {
-                    displayLogoInHeader = false
+        } label: {
+            Icons.magnifyingglass
+                .iconSize(height: 19.25)
+                .frame(width: 21, height: 21)
+                .contentShape(.rect)
+                .onGeometryChange(for: CGRect.self) {
+                    $0.frame(in: .global)
+                } action: { newValue in
+                    filtersPosition = newValue
                 }
-            }
         }
     }
 }

@@ -4,7 +4,11 @@ mutation TransferTokens($recipient: ID!, $numberoftokens: Decimal!, $message: St
         numberoftokens: $numberoftokens
         message: $message
     ) {
-        status
-        ResponseCode
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
     }
 }

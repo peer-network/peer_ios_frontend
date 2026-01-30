@@ -3,8 +3,12 @@ mutation CreatePostMultipart($contentType: ContentType!, $title: String!, $uploa
         action: POST
         input: { contenttype: $contentType, title: $title, uploadedFiles: $uploadedFiles, mediadescription: $mediadescription, tags: $tags, cover: $cover }
     ) {
-        status
-        ResponseCode
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
         affectedRows {
             id
             contenttype

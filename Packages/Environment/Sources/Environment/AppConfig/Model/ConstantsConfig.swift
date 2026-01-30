@@ -158,3 +158,9 @@ public struct ConstantsConfig: Codable {
         }
     }
 }
+
+extension ConstantsConfig: Equatable {
+    public static func == (lhs: ConstantsConfig, rhs: ConstantsConfig) -> Bool {
+        return lhs.hash == rhs.hash
+    }
+}

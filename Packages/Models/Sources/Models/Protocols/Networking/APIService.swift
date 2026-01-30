@@ -8,23 +8,82 @@
 import GQLOperationsUser
 import Foundation
 
-public enum APIError: Error {
+public enum APIError: Error, LocalizedError {
     case unknownError(error: Error)
-    case missingResponseCode // Server did not return any response code
-    case missingData // Server returns success, but since most of the fields are optional, they can be missed
-    case serverError(code: String)
+    case missingResponseCode(meta: APIResponseMeta? = nil)
+    case missingData
+    case serverError(meta: APIResponseMeta)
+
+    /// Backwards-compatible helper so old call sites like `.serverError(code: ...)` still compile
+    public static func serverError(
+        code: String,
+        message: String? = nil,
+        requestId: String? = nil,
+        status: String? = nil
+    ) -> APIError {
+        .serverError(meta: APIResponseMeta(
+            status: status,
+            responseCode: code,
+            responseMessage: message,
+            requestId: requestId
+        ))
+    }
+
+    // MARK: - Convenience accessors
+
+    public var meta: APIResponseMeta? {
+        switch self {
+            case .serverError(let meta): return meta
+            case .missingResponseCode(let meta): return meta
+            default: return nil
+        }
+    }
+
+    public var errorDescription: String? { userFriendlyMessage } // LocalizedError
 
     public var userFriendlyMessage: String {
         switch self {
             case .unknownError(let error):
-                error.userFriendlyDescription
-            case .missingResponseCode:
-                "An unexpected error from the server occurred"
+                // If the underlying error is already an APIError, it'll use *its* user message
+                return (error as? LocalizedError)?.errorDescription ?? error.localizedDescription
+
+            case .missingResponseCode(let meta):
+                return APIError.composeUserMessage(
+                    base: "An unexpected error from the server occurred",
+                    requestId: meta?.requestId
+                )
+
             case .missingData:
-                "Data from the server is missing"
-            case .serverError(let code):
-                ErrorCodeManager.shared.getUserFriendlyMessage(for: code)
+                return "Data from the server is missing"
+
+            case .serverError(let meta):
+                let base: String = {
+                    if let msg = meta.responseMessage?.trimmingCharacters(in: .whitespacesAndNewlines),
+                       !msg.isEmpty {
+                        return msg
+                    }
+                    if let code = meta.responseCode {
+                        return ErrorCodeManager.shared.getUserFriendlyMessage(for: code)
+                    }
+                    return "An unexpected error from the server occurred"
+                }()
+
+                return APIError.composeUserMessage(base: base, requestId: meta.requestId)
         }
+    }
+
+    private static func composeUserMessage(base: String, requestId: String?) -> String {
+        guard let id = requestId?.trimmingCharacters(in: .whitespacesAndNewlines), !id.isEmpty else {
+            return base
+        }
+        return "\(base) (Request ID: \(id))"
+    }
+}
+
+public extension Error {
+    var userFriendlyDescription: String {
+        // If it’s APIError, use the message above; otherwise fall back to localizedDescription
+        (self as? LocalizedError)?.errorDescription ?? localizedDescription
     }
 }
 
@@ -108,7 +167,7 @@ public protocol APIService: AnyObject {
 
     //MARK: Tags
     func fetchTags(with query: String) async -> Result<[String], APIError>
-    
+
     //MARK: Wallet
     func fetchLiquidityState() async -> Result<Decimal, APIError>
     func transferTokens(to id: String, amount: Foundation.Decimal, message: String?) async -> Result<Void, APIError>
@@ -119,4 +178,8 @@ public protocol APIService: AnyObject {
     func getAdsHistoryList(userID: String, after offset: Int, amount: Int) async -> Result<[SingleAdStats], APIError>
     func getAdsHistoryStats(userID: String) async -> Result<AdsStats, APIError>
     func promotePostPinned(for postID: String) async -> Result<String, APIError>
+
+    // MARK: Shop
+    func performShopOrder(deliveryData: DeliveryData, price: Foundation.Decimal, itemId: String, size: String?) async -> Result<Void, APIError>
+    func getShopOrderDetails(transactionId: String) async -> Result<ShopOrder, APIError>
 }

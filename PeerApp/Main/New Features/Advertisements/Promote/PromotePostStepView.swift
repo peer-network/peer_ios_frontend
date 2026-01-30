@@ -31,7 +31,7 @@ struct PromotePostStepView: View {
                         router.path.removeLast()
                     },
                     onNext: {
-                        router.path.append(.promotePost(flowID: flowID, step: .checkout))
+                        router.path.append(RouterDestination.promotePost(flowID: flowID, step: .checkout))
                     }
                 )
             )
@@ -47,9 +47,9 @@ struct PromotePostStepView: View {
                         // Pop checkout
                         router.path.removeLast()
                         // Pop config (flow root) if you want to leave entirely
-                        if let last = router.path.last, case .promotePost(let lastID, .config) = last, lastID == flowID {
+//                        if let last = router.path.last, case .promotePost(let lastID, .config) = last, lastID == flowID {
                             router.path.removeLast()
-                        }
+//                        }
                         flows.endFlow(flowID)
                     }
                 )

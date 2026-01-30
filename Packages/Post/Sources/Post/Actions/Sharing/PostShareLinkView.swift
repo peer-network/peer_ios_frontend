@@ -20,7 +20,7 @@ struct PostShareLinkView<ButtonView: View>: View {
 
         self.post = post
 
-        let title = "Post from @\(post.owner.username)"
+        let title = "\(post.owner.id == Env.shopUserId ? "Product" : "Post") from @\(post.owner.username)"
 
         let imageURL: URL? = {
             switch post.contentType {

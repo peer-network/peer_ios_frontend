@@ -99,7 +99,7 @@ public struct RowAdPostViewBig: View {
                     .frame(maxHeight: .infinity)
                     .layoutPriority(-1)
 
-                if showModerationBadge, postVM.post.visibilityStatus == .hidden {
+                if showModerationBadge, postVM.post.isHiddenForUsers {
                     HiddenBadgeDarkView()
 
                     Spacer()

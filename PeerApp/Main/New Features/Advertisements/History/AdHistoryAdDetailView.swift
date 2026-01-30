@@ -34,12 +34,12 @@ struct AdHistoryAdDetailView: View {
 
     private var adView: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("Pin post statistics")
+            Text("Pinned post statistics")
                 .appFont(.largeTitleRegular)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.bottom, 10)
 
-            if ad.post.visibilityStatus == .hidden {
+            if ad.post.isHiddenForUsers {
                 HiddenBadgeLongView()
                     .padding(.bottom, 10)
             } else if ad.post.visibilityStatus == .illegal {
@@ -48,7 +48,7 @@ struct AdHistoryAdDetailView: View {
             }
 
           Button {
-                router.navigate(to: .postDetailsWithPost(post: ad.post))
+                router.navigate(to: RouterDestination.postDetailsWithPost(post: ad.post))
             } label: {
                 RowAdPostViewBig(adStats: ad, showDates: false, showModerationBadge: false)
                     .contentShape(.rect)

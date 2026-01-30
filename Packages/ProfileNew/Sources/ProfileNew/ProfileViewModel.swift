@@ -10,26 +10,26 @@ import Models
 import Environment
 
 @MainActor
-final class ProfileViewModel: ObservableObject {
+public final class ProfileViewModel: ObservableObject {
     enum ProfileState {
         case loading
         case data(user: User)
         case error(error: APIError)
     }
 
-    unowned var apiService: APIService!
-    
+    public unowned var apiService: APIService!
+
     let userId: String
 
     @Published private(set) var profileState: ProfileState = .loading
-    @Published private(set) var user: User?
-    @Published private(set) var fetchedBio = ""
+    @Published public private(set) var user: User?
+    @Published public private(set) var fetchedBio = ""
 
-    init(userId: String) {
+    public init(userId: String) {
         self.userId = userId
     }
 
-    func fetchUser() async {
+    public func fetchUser() async {
         do {
             let result = await apiService.fetchUser(with: userId)
             
@@ -45,7 +45,7 @@ final class ProfileViewModel: ObservableObject {
         }
     }
 
-    func fetchBio() async {
+    public func fetchBio() async {
         try? Task.checkCancellation()
         guard let url = user?.bioURL else { return }
 

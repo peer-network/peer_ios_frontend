@@ -28,7 +28,7 @@ public enum ActionFeedbackType {
             case .noFreeLikes, .noTokensForLike:
                 return 3
             case .noTokensForDislike, .dislikeConfirmaion:
-                return 5
+                return 3
             case .freeLikeConfirmaion, .freeCommentConfirmaion:
                 return 0
         }

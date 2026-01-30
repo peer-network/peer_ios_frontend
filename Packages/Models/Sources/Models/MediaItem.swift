@@ -63,7 +63,7 @@ public struct MediaItem: Codable, Hashable {
 extension MediaItem {
     public var aspectRatio: CGFloat {
         // Default to square if no resolution
-        guard let resolution = self.resolution else { return 1.0 }
+        guard let resolution else { return 1 }
 
         let components = resolution.components(separatedBy: "x")
         guard components.count == 2,
@@ -74,7 +74,7 @@ extension MediaItem {
         }
 
         // If height is greater than width, use 5:4 ratio
-        return height > width ? 5/4 : 1.0
+        return height > width ? 4/5 : 1.0
     }
 
     public var videoAspectRatio: CGFloat {

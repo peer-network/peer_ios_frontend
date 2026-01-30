@@ -33,7 +33,6 @@ struct SortingPopupView: View {
                 .frame(maxWidth: .infinity)
             }
         }
-        .frame(maxWidth: getRect().width * 0.8)
     }
 
     private func filterButton(_ type: FeedFilterByRelationship) -> some View {

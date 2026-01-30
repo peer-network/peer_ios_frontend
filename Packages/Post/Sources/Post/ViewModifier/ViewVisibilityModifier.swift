@@ -16,12 +16,17 @@ struct ViewVisibilityPreferenceKey: PreferenceKey {
 }
 
 
-struct ViewVisibilityModifier: ViewModifier {
-    let viewed: Bool
-    let viewAction: () -> Void
+public struct ViewVisibilityModifier: ViewModifier {
+    private let viewed: Bool
+    private let viewAction: () -> Void
     @State private var visibilityTimer: Timer?
 
-    func body(content: Content) -> some View {
+    public init(viewed: Bool, viewAction: @escaping () -> Void) {
+        self.viewed = viewed
+        self.viewAction = viewAction
+    }
+
+    public func body(content: Content) -> some View {
         content
             .background(
                 GeometryReader { geometry in

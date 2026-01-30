@@ -9,7 +9,6 @@ import UserNotifications
 import Intents
 
 class NotificationService: UNNotificationServiceExtension {
-    
     var contentHandler: ((UNNotificationContent) -> Void)?
     var bestAttemptContent: UNMutableNotificationContent?
     
@@ -35,7 +34,7 @@ class NotificationService: UNNotificationServiceExtension {
     }
     
     override func serviceExtensionTimeWillExpire() {
-        if let contentHandler = contentHandler, let bestAttemptContent =  bestAttemptContent {
+        if let contentHandler = contentHandler, let bestAttemptContent = bestAttemptContent {
             bestAttemptContent.body = "Sent you a new message"
             contentHandler(bestAttemptContent)
         }
@@ -69,7 +68,6 @@ class NotificationService: UNNotificationServiceExtension {
         
         if let groupChatName = bestAttemptContent.userInfo["chat-name"] as? String {
             // add recipients, set speakable group name
-            
         }
         
         let intent = INSendMessageIntent(recipients: nil, outgoingMessageType: .outgoingMessageText, content: bestAttemptContent.body, speakableGroupName: INSpeakableString(spokenPhrase: "Something"), conversationIdentifier: chatId, serviceName: nil, sender: sender, attachments: nil)

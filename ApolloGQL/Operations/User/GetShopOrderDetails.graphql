@@ -1,0 +1,35 @@
+query GetShopOrderDetails($transactionId: String!) {
+    shopOrderDetails(
+        transactionId: $transactionId
+    ) {
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
+        affectedRows {
+            shopOrderId
+            shopItemId
+            createdat
+            shopItemSpecs {
+                size
+            }
+            deliveryDetails {
+                name
+                email
+                addressline1
+                addressline2
+                city
+                zipcode
+                country
+            }
+        }
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
+    }
+}

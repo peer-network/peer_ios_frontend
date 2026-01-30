@@ -1,7 +1,11 @@
 query GetUserInfo {
     getUserInfo {
-        status
-        ResponseCode
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
         affectedRows {
             userid
             liquidity

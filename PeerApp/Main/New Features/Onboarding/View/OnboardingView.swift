@@ -749,7 +749,7 @@ private struct OnboardingFifthPageView: View {
                 RoundedRectangle(cornerRadius: 23)
                     .foregroundStyle(Colors.inactiveDark)
                     .overlay {
-                        usageTileView(title: "Shop in-app", description: "Coming soon...", icon: Icons.shop)
+                        usageTileView(title: "Shop in-app", icon: Icons.shop)
                     }
 
                 RoundedRectangle(cornerRadius: 23)

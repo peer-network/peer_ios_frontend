@@ -167,7 +167,7 @@ struct TransferAmountInputView: View {
             if let amount, amount > 0 {
                 Button {
                     guard let recipient = viewModel.recipient else { return }
-                    router.navigate(to: .transfer(recipient: recipient, amount: amount))
+                    router.navigate(to: RouterDestination.transfer(recipient: recipient, amount: amount))
                 } label: {
                     Circle()
                         .frame(height: 40)

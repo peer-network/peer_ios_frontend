@@ -38,7 +38,7 @@ public struct PopupTransparentStyleView<Content: View>: View {
     @ViewBuilder
     private func backgroundView() -> some View {
         RoundedRectangle(cornerRadius: 24, style: .continuous)
-            .fill(.ultraThinMaterial)
+            .fill(Colors.inactiveDark)
     }
 }
 

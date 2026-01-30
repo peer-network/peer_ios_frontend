@@ -1,7 +1,11 @@
 query GetPostComments($contentFilterBy: ContentFilterType, $postid: ID!, $commentLimit: Int, $commentOffset: Int) {
     listPosts(postid: $postid, commentLimit: $commentLimit, commentOffset: $commentOffset, contentFilterBy: $contentFilterBy) {
-        status
-        ResponseCode
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
         affectedRows {
             amountcomments
             comments {

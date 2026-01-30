@@ -30,7 +30,7 @@ struct SingleCommentView: View {
         HStack(alignment: .top, spacing: 5) {
             Button {
                 dismiss()
-                router.navigate(to: .accountDetail(id: commentVM.comment.user.id))
+                router.navigate(to: RouterDestination.accountDetail(id: commentVM.comment.user.id))
             } label: {
                 Text(commentVM.comment.user.visibilityStatus != .hidden ? commentVM.comment.user.username : "hidden_account")
                     .font(.custom(.bodyBoldItalic))
@@ -126,7 +126,7 @@ struct SingleCommentView: View {
 
                         Button {
                             dismiss()
-                            router.navigate(to: .commentLikes(comment: commentVM.comment))
+                            router.navigate(to: RouterDestination.commentLikes(comment: commentVM.comment))
                         } label: {
                             Text("\(commentVM.amountLikes)")
                                 .contentShape(.rect)

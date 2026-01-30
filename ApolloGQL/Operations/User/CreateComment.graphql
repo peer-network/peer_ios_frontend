@@ -5,8 +5,12 @@ mutation CreateComment($postid: ID!, $parentid: ID, $content: String!) {
         parentid: $parentid
         content: $content
     ) {
-        status
-        ResponseCode
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
         affectedRows {
             commentid
             userid

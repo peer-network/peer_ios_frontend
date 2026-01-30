@@ -1,7 +1,11 @@
 query GetMyReferralInfo {
     getReferralInfo {
-        status
-        ResponseCode
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
         referralUuid
         referralLink
     }

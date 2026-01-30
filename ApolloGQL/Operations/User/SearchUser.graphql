@@ -6,9 +6,13 @@ query SearchUser($contentFilterBy: ContentFilterType, $userid: ID, $username: St
         offset: $offset
         limit: $limit
     ) {
-        status
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
         counter
-        ResponseCode
         affectedRows {
             id
             username

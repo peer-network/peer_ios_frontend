@@ -9,7 +9,6 @@ import SwiftUI
 import Models
 import Environment
 import DesignSystem
-import Analytics
 
 public struct TransferPageView: View {
     @EnvironmentObject private var router: Router

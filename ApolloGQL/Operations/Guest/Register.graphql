@@ -2,8 +2,12 @@ mutation Register($email: String!, $password: String!, $username: String!, $refe
     register(
         input: { email: $email, password: $password, username: $username, referralUuid: $referralUuid }
     ) {
-        status
-        ResponseCode
         userid
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
     }
 }

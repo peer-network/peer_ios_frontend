@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Models
+import Foundation
 import TokenKeychainManager
 
 @MainActor
@@ -24,6 +25,8 @@ public final class AccountManager: ObservableObject {
     @Published public private(set) var dailyFreeLikes: Int = 0
     @Published public private(set) var dailyFreeComments: Int = 0
     @Published public private(set) var dailyFreePosts: Int = 0
+
+    @Published public private(set) var balance: Decimal = 0
 
     public private(set) var userId: String?
     public private(set) var user: User?
@@ -137,6 +140,20 @@ public final class AccountManager: ObservableObject {
             case .failure(let apiError):
                 throw apiError
         }
+    }
+
+    public func fetchUserBalance() async -> Decimal {
+        let result = await apiService.fetchLiquidityState()
+
+        switch result {
+            case .success(let amount):
+                self.balance = amount
+            case .failure(let apiError):
+                break
+//                throw apiError
+        }
+
+        return balance
     }
 
     public func markOnboardingShown(_ onboarding: Onboarding) {

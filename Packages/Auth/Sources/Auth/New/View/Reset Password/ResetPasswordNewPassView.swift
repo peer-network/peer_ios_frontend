@@ -18,7 +18,7 @@ struct ResetPasswordNewPassView: View {
         case confirmPassword
     }
 
-    @FocusState private var focusedField: FocusField?
+    @State private var focusedField: FocusField?
 
     @State private var passwordsDoNotMatch: Bool = false
 

@@ -9,96 +9,81 @@ import SwiftUI
 
 public extension View {
     @ViewBuilder
-    func pinchZoom(_ dimsBackground: Bool = true) -> some View {
-        PinchZoomHelper(dimsBackground: dimsBackground) {
-            self
-        }
+    func pinchZoom(_ dimsBackground: Bool = true, snapshot: Bool = true) -> some View {
+        PinchZoomHelper(dimsBackground: dimsBackground, snapshot: snapshot) { self }
     }
 }
 
-/// Zoom Container View
-/// Where the Zooming View will be displayed and zoomed
+/// A root wrapper that renders a zoomed copy of the active view above everything else.
 public struct ZoomContainer<Content: View>: View {
-    private var content: Content
-    private var containerData = ZoomContainerData()
+    private let content: Content
 
-    public init(@ViewBuilder content: @escaping () -> Content) {
+    // MUST be @State so the instance survives view re-renders
+    @State private var containerData = ZoomContainerData()
+
+    public init(@ViewBuilder content: () -> Content) {
         self.content = content()
     }
 
     public var body: some View {
-        GeometryReader { _ in
+        ZStack(alignment: .topLeading) {
             content
                 .environment(containerData)
 
-            ZStack(alignment: .topLeading) {
-                if let view = containerData.zoomingView {
-                    Group {
-                        if containerData.dimsBackground {
-                            Color.black
-                                .opacity((containerData.zoom - 1) * 0.5)
-                        }
-
-                        view
-                            .scaleEffect(containerData.zoom, anchor: containerData.zoomAnchor)
-                            .offset(containerData.dragOffset)
-                        /// View Position
-                            .offset(x: containerData.viewRect.minX, y: containerData.viewRect.minY)
-                    }
+            if let view = containerData.zoomingView {
+                if containerData.dimsBackground {
+                    Color.black
+                        .opacity(containerData.backgroundOpacity)
+                        .ignoresSafeArea()
+                        .transition(.opacity)
                 }
+
+                // Force the zoomed copy to keep the ORIGINAL size
+                view
+                    .frame(width: containerData.viewRect.width,
+                           height: containerData.viewRect.height)
+                    .scaleEffect(containerData.zoom, anchor: containerData.zoomAnchor)
+                    .position(x: containerData.viewRect.midX,
+                              y: containerData.viewRect.midY)
+                    .offset(containerData.dragOffset)
+                    .ignoresSafeArea()
+                    .allowsHitTesting(false) // don't steal touches
             }
-            .ignoresSafeArea()
         }
+        // Coordinate space so frame math is consistent everywhere
+        .coordinateSpace(name: ZoomContainerData.coordinateSpaceName)
     }
 }
 
-/// Observable Class to share data between Container and it's Views inside it
+/// Shared data between the container and pinch views.
+@MainActor
 @Observable
-fileprivate class ZoomContainerData {
+fileprivate final class ZoomContainerData {
+    static let coordinateSpaceName: String = "ZoomContainerSpace"
+
     var zoomingView: AnyView?
     var viewRect: CGRect = .zero
     var dimsBackground: Bool = false
 
-    // Use private storage with computed properties to reduce unnecessary updates
-    private var _zoom: CGFloat = 1
-    private var _dragOffset: CGSize = .zero
-
-    var zoom: CGFloat {
-        get { _zoom }
-        set {
-            // Only update if significantly different to reduce view updates
-            if abs(newValue - _zoom) > 0.001 {
-                _zoom = newValue
-            }
-        }
-    }
-
-    var dragOffset: CGSize {
-        get { _dragOffset }
-        set {
-            // Only update if significantly different
-            if abs(newValue.width - _dragOffset.width) > 0.1 ||
-               abs(newValue.height - _dragOffset.height) > 0.1 {
-                _dragOffset = newValue
-            }
-        }
-    }
-
+    var zoom: CGFloat = 1
+    var dragOffset: CGSize = .zero
     var zoomAnchor: UnitPoint = .center
+
     var isResetting: Bool = false
 
-    // Computed property for background opacity to avoid constant Rectangle updates
     var backgroundOpacity: Double {
-        min(0.7, max(0, (zoom - 1) * 0.4))
+        // clamp 0...0.7
+        let value = (zoom - 1) * 0.45
+        return min(0.7, max(0, value))
     }
 }
 
-
-/// Helper View
+/// Helper that lives on the zoomable view and talks to the container.
 fileprivate struct PinchZoomHelper<Content: View>: View {
     @Environment(ZoomContainerData.self) private var containerData
 
-    var dimsBackground: Bool
+    let dimsBackground: Bool
+    let snapshot: Bool
     @ViewBuilder var content: Content
 
     @State private var config: ZoomConfig = .init()
@@ -111,123 +96,157 @@ fileprivate struct PinchZoomHelper<Content: View>: View {
             .overlay {
                 GeometryReader { geometry in
                     Color.clear
-                        .onChange(of: config.isGestureActive) { oldValue, newValue in
+                        .onChange(of: config.isGestureActive) { _, isActive in
                             guard !containerData.isResetting else { return }
-                            if newValue {
-                                /// Showing View on Zoom Container
-                                let rect = geometry.frame(in: .global)
+
+                            if isActive {
+                                let rect = geometry.frame(in: .named(ZoomContainerData.coordinateSpaceName))
                                 containerData.viewRect = rect
                                 containerData.zoomAnchor = config.zoomAnchor
                                 containerData.dimsBackground = dimsBackground
-                                containerData.zoomingView = .init(erasing: content)
-                                /// Hiding Source View
+
+                                if snapshot, rect.width > 1, rect.height > 1,
+                                   let img = renderSnapshot(size: rect.size) {
+                                    // zoom exactly what user saw (cropped/masked)
+                                    containerData.zoomingView = AnyView(
+                                        Image(uiImage: img)
+                                            .resizable()
+                                            .scaledToFill()
+                                            .frame(width: rect.width, height: rect.height)
+                                            .clipped()
+                                    )
+                                } else {
+                                    // Fallback: re-host view (can relayout)
+                                    containerData.zoomingView = AnyView(content)
+                                }
+
                                 config.hidesSourceView = true
                             } else {
-                                /// Resetting to it's Intial Position With Animation
                                 containerData.isResetting = true
-                                withAnimation(.spring(response: 0.18, dampingFraction: 0.85), completionCriteria: .logicallyComplete) {
+                                withAnimation(.spring(response: 0.20, dampingFraction: 0.86)) {
                                     containerData.dragOffset = .zero
                                     containerData.zoom = 1
-                                } completion: {
-                                    /// Resetting Config
+                                }
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.22) {
                                     config = .init()
-                                    /// Removing View From Container Layer
                                     containerData.zoomingView = nil
                                     containerData.isResetting = false
                                 }
                             }
                         }
-                        .onChange(of: config) { oldValue, newValue in
-                            if config.isGestureActive && !containerData.isResetting {
-                                /// Updating View's Position and Scale in Zoom Container
-                                containerData.zoom = config.zoom
-                                containerData.dragOffset = config.dragOffset
-                            }
+                        .onChange(of: config.zoom) { _, newZoom in
+                            guard config.isGestureActive, !containerData.isResetting else { return }
+                            containerData.zoom = newZoom
+                        }
+                        .onChange(of: config.dragOffset) { _, newOffset in
+                            guard config.isGestureActive, !containerData.isResetting else { return }
+                            containerData.dragOffset = newOffset
                         }
                 }
             }
     }
+
+    @MainActor
+    private func renderSnapshot(size: CGSize) -> UIImage? {
+        // Render the *already modified* content at the exact on-screen size
+        let renderer = ImageRenderer(
+            content: content
+                .frame(width: size.width, height: size.height)
+                .clipped()
+        )
+        renderer.scale = UIScreen.main.scale
+        renderer.isOpaque = false
+        return renderer.uiImage
+    }
 }
 
-/// UIKit Gestures Overlay
+
+/// UIKit gesture layer. We keep it UIKit so pinch+pan feels great.
 fileprivate struct GestureOverlay: UIViewRepresentable {
     @Binding var config: ZoomConfig
-    func makeCoordinator() -> Coordinator {
-        Coordinator(config: $config)
-    }
+
+    func makeCoordinator() -> Coordinator { Coordinator(config: $config) }
 
     func makeUIView(context: Context) -> UIView {
         let view = UIView(frame: .zero)
         view.backgroundColor = .clear
+        view.isMultipleTouchEnabled = true
 
-        /// Pan Gesture
-        let panGesture = UIPanGestureRecognizer()
-        panGesture.name = "PINCHPANGESTURE"
-        panGesture.minimumNumberOfTouches = 2
-        panGesture.maximumNumberOfTouches = 2
-        panGesture.addTarget(context.coordinator, action: #selector(Coordinator.panGesture(gesture:)))
-        panGesture.delegate = context.coordinator
-        view.addGestureRecognizer(panGesture)
+        let pan = UIPanGestureRecognizer(target: context.coordinator,
+                                         action: #selector(Coordinator.handlePan(_:)))
+        pan.name = "PINCHPANGESTURE"
+        pan.minimumNumberOfTouches = 2
+        pan.maximumNumberOfTouches = 2
+        pan.cancelsTouchesInView = true
+        pan.delaysTouchesBegan = true
+        pan.delegate = context.coordinator
+        view.addGestureRecognizer(pan)
 
-        /// Pinch Gesture
-        let pinchGesture = UIPinchGestureRecognizer()
-        pinchGesture.name = "PINCHZOOMGESTURE"
-        pinchGesture.addTarget(context.coordinator, action: #selector(Coordinator.pinchGesture(gesture:)))
-        pinchGesture.delegate = context.coordinator
-        view.addGestureRecognizer(pinchGesture)
+        let pinch = UIPinchGestureRecognizer(target: context.coordinator,
+                                             action: #selector(Coordinator.handlePinch(_:)))
+        pinch.name = "PINCHZOOMGESTURE"
+        pinch.cancelsTouchesInView = true
+        pinch.delaysTouchesBegan = true
+        pinch.delegate = context.coordinator
+        view.addGestureRecognizer(pinch)
 
         return view
     }
 
-    func updateUIView(_ uiView: UIView, context: Context) {  }
 
-    class Coordinator: NSObject, UIGestureRecognizerDelegate {
+    func updateUIView(_ uiView: UIView, context: Context) {}
+
+    final class Coordinator: NSObject, UIGestureRecognizerDelegate {
         @Binding var config: ZoomConfig
 
-        init(config: Binding<ZoomConfig>) {
-            self._config = config
-        }
+        private var isPinching = false
+        private var isPanning = false
 
-        @objc
-        func panGesture(gesture: UIPanGestureRecognizer) {
-            if gesture.state == .began || gesture.state == .changed {
-                let translation = gesture.translation(in: gesture.view)
-                config.dragOffset = .init(width: translation.x, height: translation.y)
-                config.isGestureActive = true
-            } else {
-                config.isGestureActive = false
+        init(config: Binding<ZoomConfig>) { self._config = config }
+
+        @objc func handlePan(_ gesture: UIPanGestureRecognizer) {
+            switch gesture.state {
+            case .began, .changed:
+                isPanning = true
+                let t = gesture.translation(in: gesture.view)
+                config.dragOffset = .init(width: t.x, height: t.y)
+            default:
+                isPanning = false
             }
+            config.isGestureActive = isPinching || isPanning
         }
 
-        @objc
-        func pinchGesture(gesture: UIPinchGestureRecognizer) {
-            if gesture.state == .began {
-                let location = gesture.location(in: gesture.view)
-                if let bounds = gesture.view?.bounds {
-                    config.zoomAnchor = .init(x: location.x / bounds.width, y: location.y / bounds.height)
+        @objc func handlePinch(_ gesture: UIPinchGestureRecognizer) {
+            switch gesture.state {
+            case .began:
+                isPinching = true
+                if let view = gesture.view, view.bounds.width > 0, view.bounds.height > 0 {
+                    let p = gesture.location(in: view)
+                    config.zoomAnchor = .init(x: p.x / view.bounds.width,
+                                              y: p.y / view.bounds.height)
                 }
+                fallthrough
+            case .changed:
+                isPinching = true
+                config.zoom = max(gesture.scale, 1)
+            default:
+                isPinching = false
             }
-
-            if gesture.state == .began || gesture.state == .changed {
-                let scale = max(gesture.scale, 1)
-                config.zoom = scale
-                config.isGestureActive = true
-            } else {
-                config.isGestureActive = false
-            }
+            config.isGestureActive = isPinching || isPanning
         }
 
-        func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-            if gestureRecognizer.name == "PINCHPANGESTURE" && otherGestureRecognizer.name == "PINCHZOOMGESTURE" {
-                return true
-            }
+        func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
+                               shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+            let a = gestureRecognizer.name
+            let b = otherGestureRecognizer.name
 
-            return false
+            return (a == "PINCHPANGESTURE" && b == "PINCHZOOMGESTURE")
+                || (a == "PINCHZOOMGESTURE" && b == "PINCHPANGESTURE")
         }
     }
+
 }
 
-/// Config
 fileprivate struct ZoomConfig: Equatable {
     var isGestureActive: Bool = false
     var zoom: CGFloat = 1

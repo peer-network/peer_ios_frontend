@@ -7,7 +7,7 @@ public class PostActionMutation: GraphQLMutation {
   public static let operationName: String = "PostAction"
   public static let operationDocument: ApolloAPI.OperationDocument = .init(
     definition: .init(
-      #"mutation PostAction($postid: ID!, $action: PostActionType!) { resolvePostAction(postid: $postid, action: $action) { __typename status ResponseCode } }"#
+      #"mutation PostAction($postid: ID!, $action: PostActionType!) { resolvePostAction(postid: $postid, action: $action) { __typename status RequestId ResponseCode ResponseMessage } }"#
     ))
 
   public var postid: ID
@@ -54,15 +54,19 @@ public class PostActionMutation: GraphQLMutation {
       public static var __selections: [ApolloAPI.Selection] { [
         .field("__typename", String.self),
         .field("status", String.self),
+        .field("RequestId", String?.self),
         .field("ResponseCode", String?.self),
+        .field("ResponseMessage", String?.self),
       ] }
       public static var __fulfilledFragments: [any ApolloAPI.SelectionSet.Type] { [
         PostActionMutation.Data.ResolvePostAction.self
       ] }
 
       public var status: String { __data["status"] }
+      public var requestId: String? { __data["RequestId"] }
       @available(*, deprecated, message: "use meta.ResponseCode . this field will be removed after 15 October`.")
       public var responseCode: String? { __data["ResponseCode"] }
+      public var responseMessage: String? { __data["ResponseMessage"] }
     }
   }
 }

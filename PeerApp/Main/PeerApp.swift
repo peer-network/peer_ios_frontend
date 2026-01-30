@@ -161,15 +161,11 @@ struct PeerApp: App {
                                     .foregroundStyle(Colors.whitePrimary)
 
                                 Menu(APIConfiguration.getCustomEndpoint() ?? "not set") {
-                                    Button("Test Backend - https://peer-network.eu/graphql") {
-                                        APIConfiguration.setCustomEndpoint("https://peer-network.eu/graphql")
-                                    }
-
-                                    Button("Test Prod - https://getpeer.eu/graphql") {
+                                    Button("Testing - getpeer.eu") {
                                         APIConfiguration.setCustomEndpoint("https://getpeer.eu/graphql")
                                     }
 
-                                    Button("Prod - https://peernetwork.eu/graphql") {
+                                    Button("Prod - peerapp.de") {
                                         APIConfiguration.setCustomEndpoint("https://peernetwork.eu/graphql")
                                     }
                                 }
@@ -287,6 +283,14 @@ enum Env {
         return URL(string: "https://staging.api.example.com")!
 #else
         return URL(string: "https://api.example.com")!
+#endif
+    }()
+
+    static let shopUserId: String = {
+#if STAGING || DEBUG
+        return "292bebb1-0951-47e8-ac8a-759138a2e4a9"
+#else
+        return "c50e2d31-c98e-4a20-b2b6-e1103839de0a"
 #endif
     }()
 }

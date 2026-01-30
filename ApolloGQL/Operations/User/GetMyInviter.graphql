@@ -1,7 +1,11 @@
 query GetMyInviter {
     referralList {
-        status
-        ResponseCode
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
         affectedRows {
             invitedBy {
                 id

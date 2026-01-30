@@ -10,16 +10,28 @@ import Models
 import DesignSystem
 import Environment
 
-struct PostShareBottomSheet: View {
+public struct PostShareBottomSheet: View {
     @ObservedObject var viewModel: PostViewModel
 
+    private var titleText: String {
+        if viewModel.post.owner.id == Env.shopUserId {
+            return "Share product"
+        } else {
+            return "Share post"
+        }
+    }
+
+    public init(viewModel: PostViewModel) {
+        self.viewModel = viewModel
+    }
+    
     public var body: some View {
         VStack(alignment: .center, spacing: 20) {
             Capsule()
                 .frame(width: 44.5, height: 1)
                 .foregroundStyle(Colors.whitePrimary)
 
-            Text("Share post")
+            Text(titleText)
                 .font(.customFont(weight: .bold, size: .title))
                 .lineLimit(1)
                 .foregroundStyle(Colors.whitePrimary)

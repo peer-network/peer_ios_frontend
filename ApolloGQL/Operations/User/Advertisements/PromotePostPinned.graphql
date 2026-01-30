@@ -3,8 +3,12 @@ mutation PromotePostPinned($postid: ID!) {
         postid: $postid
         advertisePlan: PINNED
     ) {
-        status
-        ResponseCode
+        meta {
+            status
+            RequestId
+            ResponseCode
+            ResponseMessage
+        }
         affectedRows {
             timeframeEnd
         }
