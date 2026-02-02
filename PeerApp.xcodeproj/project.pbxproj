@@ -575,6 +575,8 @@
 /* Begin XCBuildConfiguration section */
 		7ECF06F92D0C6DA300CA7852 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReferenceAnchor = 7ECF06D92D0C6DA200CA7852 /* PeerApp */;
+			baseConfigurationReferenceRelativePath = Config/Debug.xcconfig;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;

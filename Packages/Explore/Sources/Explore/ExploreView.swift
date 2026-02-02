@@ -369,10 +369,6 @@ extension ExploreView {
 
     @ViewBuilder
     private func usersListView(_ users: [RowUser]) -> some View {
-        //        if !fixedText.isEmpty, users.isEmpty {
-        //            nothingFoundView ??
-        //        }
-
         LazyVStack(spacing: 20) {
             ForEach(users) { user in
                 RowProfileView(user: user)
@@ -409,10 +405,6 @@ extension ExploreView {
 
     @ViewBuilder
     private func postsGridView(_ posts: [Post]) -> some View {
-        //        if !fixedText.isEmpty, posts.isEmpty {
-        //            nothingFoundView ??
-        //        }
-
         LazyVStack(spacing: 20) {
             LazyVGrid(columns: columns, spacing: 1) {
                 ForEach(posts) { post in
@@ -445,12 +437,5 @@ extension ExploreView {
                 }
             }
         }
-    }
-
-    private var nothingFoundView: some View {
-        Text("Nothing found...")
-            .font(.customFont(weight: .regular, style: .body))
-            .foregroundStyle(Colors.whitePrimary)
-            .frame(maxWidth: .infinity, alignment: .center)
     }
 }
