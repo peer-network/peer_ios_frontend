@@ -501,16 +501,6 @@ struct TransactionView: View {
     }
 }
 
-//enum Env {
-//    static let shopUserId: String = {
-//#if STAGING || DEBUG
-//        return "292bebb1-0951-47e8-ac8a-759138a2e4a9"
-//#else
-//        return "c50e2d31-c98e-4a20-b2b6-e1103839de0a"
-//#endif
-//    }()
-//}
-
 enum Env {
     static var shopUserId: String {
         guard let value = Bundle.main.object(forInfoDictionaryKey: "SHOP_USER_ID") as? String,
