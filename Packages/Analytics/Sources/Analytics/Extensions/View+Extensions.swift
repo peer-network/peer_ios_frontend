@@ -5,7 +5,7 @@
 //  Created by Artem Vasin on 22.04.25.
 //
 
-import SwiftUICore
+import SwiftUI
 
 struct ScreenTrackingModifier: ViewModifier {
     let screen: ScreenTrackable

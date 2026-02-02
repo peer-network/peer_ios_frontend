@@ -5,7 +5,7 @@
 //  Created by Artem Vasin on 14.04.25.
 //
 
-import SwiftUICore
+import SwiftUI
 
 public extension View {
     func onFirstAppear(_ action: @escaping () -> Void) -> some View {

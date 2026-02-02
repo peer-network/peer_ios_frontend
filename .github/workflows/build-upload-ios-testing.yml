@@ -31,12 +31,12 @@ jobs:
           ref: ${{ github.event.inputs.ref || github.ref }}
 
       - name: Select Xcode version
-        run: sudo xcode-select -s /Applications/Xcode_16.4.app
+        run: sudo xcode-select -s /Applications/Xcode_26.2.app
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 3.1.4
+          ruby-version: 3.4
           bundler-cache: true
 
       - name: Decode signing certificate into a file

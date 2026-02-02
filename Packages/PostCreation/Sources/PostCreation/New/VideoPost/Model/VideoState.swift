@@ -5,7 +5,7 @@
 //  Created by Artem Vasin on 04.06.25.
 //
 
-import SwiftUICore
+import SwiftUI
 
 struct VideoState {
     enum LoadingState {
