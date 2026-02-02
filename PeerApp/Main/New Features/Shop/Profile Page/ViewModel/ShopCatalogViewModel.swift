@@ -210,6 +210,8 @@ final class ShopCatalogViewModel: ObservableObject {
         // Same call pattern as NormalFeedViewModel, but scoped to this shop user.
         await apiService.getListOfAds(
             userID: shopUserId,
+            title: nil,
+            tag: nil,
             with: .regular,
             after: currentOffsetAds,
             amount: pageSize

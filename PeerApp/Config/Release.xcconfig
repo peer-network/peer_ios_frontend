@@ -7,3 +7,5 @@
 
 PRODUCT_BUNDLE_IDENTIFIER = eu.peernetwork.PeerApp
 PRODUCT_BUNDLE_IDENTIFIER_EXTENSION = eu.peernetwork.PeerApp.PayloadModification
+
+SHOP_USER_ID = c50e2d31-c98e-4a20-b2b6-e1103839de0a
