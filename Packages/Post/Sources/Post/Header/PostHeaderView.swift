@@ -19,7 +19,7 @@ struct PostHeaderView: View {
     @EnvironmentObject private var flows: PromotePostFlowStore
 
     @ObservedObject var postVM: PostViewModel
-    
+
     @Binding var showAppleTranslation: Bool
     let showFollowButton: Bool
 
@@ -100,7 +100,7 @@ struct PostHeaderView: View {
             if postVM.post.advertisement != nil {
                 PinIndicatorView()
             }
-            
+
             if !postVM.showIllegalBlur {
                 Menu {
                     Section {
