@@ -113,7 +113,7 @@ final class AudioFeedViewModel: ObservableObject, PostsFetcher {
     }
 
     private func fetchAdvertisements() async throws -> [Post] {
-        let result = await apiService.getListOfAds(userID: userId, with: .audio, after: currentOffsetAds, amount: Constants.postsFetchLimit)
+        let result = await apiService.getListOfAds(userID: userId, title: nil, tag: nil, with: .audio, after: currentOffsetAds, amount: Constants.postsFetchLimit)
 
         try Task.checkCancellation()
 
