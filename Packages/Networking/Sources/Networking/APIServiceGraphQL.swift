@@ -1335,13 +1335,15 @@ public final class APIServiceGraphQL: APIService {
     }
 
     // MARK: Advertisements
-    public func getListOfAds(userID: String?, with contentType: PostContentType, after offset: Int, amount: Int) async -> Result<[Post], APIError> {
+    public func getListOfAds(userID: String? = nil, title: String? = nil, tag: String? = nil, with contentType: PostContentType, after offset: Int, amount: Int) async -> Result<[Post], APIError> {
         let filterBy: [GraphQLEnum<ContentType>] = contentType.apiValue
 
         let offensiveContentFilter =  UserDefaults(suiteName: "group.eu.peernetwork.PeerApp")?.string(forKey: "offensiveContentFilter").flatMap(OffensiveContentFilter.init(rawValue:)) ?? .blocked
 
         let operation = GetListOfAdsQuery(
             userID: userID == nil ? nil : GraphQLNullable(stringLiteral: userID!),
+            title: title == nil ? nil : GraphQLNullable(stringLiteral: title!),
+            tag: tag == nil ? nil : GraphQLNullable(stringLiteral: tag!),
             filterBy: GraphQLNullable<[GraphQLEnum<ContentType>]>.some(filterBy),
             contentFilterBy: offensiveContentFilter.apiValue,
             offset: GraphQLNullable<Int>(integerLiteral: offset),

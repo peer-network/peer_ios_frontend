@@ -5,7 +5,7 @@
 //  Created by Artem Vasin on 22.04.25.
 //
 
-import SwiftUICore
+import SwiftUI
 
 struct AnalyticsEnvironmentKey: EnvironmentKey {
     static let defaultValue: AnalyticsServiceProtocol = MockAnalyticsService()

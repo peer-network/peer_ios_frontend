@@ -29,6 +29,8 @@ struct ShopProfileView: View {
 
     @State private var followButtonVM: FollowButtonViewModel?
 
+    @StateObject private var postVMStore = PostViewModelStore()
+
     @Namespace private var animation
 
     init(shopUserId: String) {
@@ -240,6 +242,7 @@ struct ShopProfileView: View {
             case .error(let msg):
                 ErrorView(title: "Error", description: msg) {
                     catalogVM.fetchNextPage(reset: true)
+                    postVMStore.reset()
                 }
             case .ready:
                 if catalogVM.listings.isEmpty {
@@ -260,16 +263,24 @@ struct ShopProfileView: View {
         case .grid:
             LazyVGrid(columns: gridColumns, spacing: 10) {
                 ForEach(catalogVM.listings) { listing in
-                    ShopItemTileView(shopPost: listing, displayType: .grid)
-                        .onFirstAppear { catalogVM.loadMoreIfNeeded(currentListingID: listing.id) }
+                    ShopItemTileView(
+                        shopPost: listing,
+                        postVM: postVMStore.viewModel(for: listing, apiService: apiManager.apiService),
+                        displayType: .grid
+                    )
+                    .onFirstAppear { catalogVM.loadMoreIfNeeded(currentListingID: listing.id) }
                 }
             }
 
         case .list:
             LazyVStack(spacing: 10) {
                 ForEach(catalogVM.listings) { listing in
-                    ShopItemTileView(shopPost: listing, displayType: .list)
-                        .onFirstAppear { catalogVM.loadMoreIfNeeded(currentListingID: listing.id) }
+                    ShopItemTileView(
+                        shopPost: listing,
+                        postVM: postVMStore.viewModel(for: listing, apiService: apiManager.apiService),
+                        displayType: .list
+                    )
+                    .onFirstAppear { catalogVM.loadMoreIfNeeded(currentListingID: listing.id) }
                 }
             }
         }

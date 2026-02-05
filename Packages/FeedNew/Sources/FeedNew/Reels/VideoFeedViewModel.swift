@@ -117,7 +117,7 @@ final class VideoFeedViewModel: ObservableObject, PostsFetcher {
     }
 
     private func fetchAdvertisements() async throws -> [Post] {
-        let result = await apiService.getListOfAds(userID: nil, with: .video, after: currentOffsetAds, amount: Constants.postsFetchLimit)
+        let result = await apiService.getListOfAds(userID: nil, title: nil, tag: nil, with: .video, after: currentOffsetAds, amount: Constants.postsFetchLimit)
 
         try Task.checkCancellation()
 
