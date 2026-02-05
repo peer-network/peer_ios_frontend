@@ -194,7 +194,6 @@ extension View {
 
     func withEnvironments() -> some View {
         environmentObject(AccountManager.shared)
-            .environmentObject(QuickLook.shared)
     }
 }
 
@@ -223,15 +222,25 @@ struct ActivityView: UIViewControllerRepresentable {
             image
         }
 
-        func activityViewController(_: UIActivityViewController, itemForActivityType _: UIActivity.ActivityType?) -> Any?
-        {
+        func activityViewController(
+            _: UIActivityViewController,
+            itemForActivityType _: UIActivity.ActivityType?
+        ) -> Any? {
             nil
         }
     }
 
-    func makeUIViewController(context _: UIViewControllerRepresentableContext<ActivityView>) -> UIActivityViewController {
-        UIActivityViewController(activityItems: [image, LinkDelegate(image: image, post: post)], applicationActivities: nil)
+    func makeUIViewController(
+        context _: UIViewControllerRepresentableContext<ActivityView>
+    ) -> UIActivityViewController {
+        UIActivityViewController(
+            activityItems: [image, LinkDelegate(image: image, post: post)],
+            applicationActivities: nil
+        )
     }
 
-    func updateUIViewController(_: UIActivityViewController, context _: UIViewControllerRepresentableContext<ActivityView>) {}
+    func updateUIViewController(
+        _: UIActivityViewController,
+        context _: UIViewControllerRepresentableContext<ActivityView>
+    ) {}
 }

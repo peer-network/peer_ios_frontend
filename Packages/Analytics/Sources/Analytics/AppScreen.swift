@@ -16,7 +16,7 @@ public enum AppScreen: ScreenTrackable {
     case search
     case postCreation
     case wallet
-    case profile // TODO: Separate into ownProfile and otherProfile ?
+    case profile
     case settings
     case referrals
 

@@ -13,7 +13,6 @@ import Environment
 struct ProfileInfoHeaderView: View {
     @EnvironmentObject private var apiManager: APIServiceManager
     @EnvironmentObject private var accountManager: AccountManager
-    @EnvironmentObject private var quickLook: QuickLook
     @EnvironmentObject private var router: Router
 
     @Environment(\.redactionReasons) private var redactionReasons
@@ -48,10 +47,6 @@ struct ProfileInfoHeaderView: View {
                     }
             } else {
                 ProfileAvatarView(url: user.imageURL, name: user.username, config: .profile, ignoreCache: false)
-                    .onTapGesture {
-                        let mediaData = MediaData(url: user.imageURL, type: .image)
-                        quickLook.prepareFor(selectedMediaAttachment: mediaData, mediaAttachments: [mediaData])
-                    }
             }
 
             VStack(alignment: .leading, spacing: 0) {

@@ -10,7 +10,6 @@ import Models
 import Environment
 import AVFAudio
 import DesignSystem
-import MediaUI
 import Auth
 import FirebaseCore
 import Messages
@@ -30,7 +29,6 @@ struct PeerApp: App {
     @StateObject private var apiManager = APIServiceManager()
     @StateObject private var authManager: AuthManager
     @StateObject private var accountManager: AccountManager = AccountManager.shared
-    @StateObject private var quickLook = QuickLook.shared
     @StateObject private var audioManager = AudioSessionManager.shared
 
     @StateObject private var remoteConfigViewModel: RemoteConfigViewModel
@@ -112,7 +110,6 @@ struct PeerApp: App {
             }
             .task {
                 await appState.initializeApp()
-                //                dump(appState.getConstants())
             }
             .preferredColorScheme(.dark)
         }
@@ -165,17 +162,17 @@ struct PeerApp: App {
                                         APIConfiguration.setCustomEndpoint("https://getpeer.eu/graphql")
                                     }
 
-                                    Button("Prod - peerapp.de") {
+                                    Button("Prod - peernetwork.eu") {
                                         APIConfiguration.setCustomEndpoint("https://peernetwork.eu/graphql")
                                     }
                                 }
                             }
 
                             Text("Restart the app after changing!!!")
-                                .font(.customFont(weight: .regular, style: .footnote))
+                                .appFont(.smallLabelRegular)
                                 .multilineTextAlignment(.center)
                         }
-                        .font(.customFont(weight: .bold, style: .callout))
+                        .appFont(.bodyBold)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
                         .padding(.horizontal, 20)
@@ -194,18 +191,10 @@ struct PeerApp: App {
                 ContentView(appRouter: appRouter)
                     .environmentObject(apiManager)
                     .environmentObject(accountManager)
-                    .environmentObject(quickLook)
                     .environmentObject(authManager)
                     .environmentObject(audioManager)
                     .environmentObject(appState)
                     .environmentObject(promotePostFlows)
-                    .sheet(item: $quickLook.selectedMediaAttachment) { selectedMediaAttachment in
-                        MediaUIView(data: quickLook.mediaAttachments, initialItem: selectedMediaAttachment)
-                            .presentationBackground(.ultraThinMaterial)
-                            .presentationCornerRadius(16)
-                            .withEnvironments()
-                            .preferredColorScheme(.dark)
-                    }
                     .onFirstAppear {
                         analyticsService.setUserID(userId)
                     }

@@ -14,7 +14,6 @@ import Models
 
 public struct ImagesContent: View {
     @Environment(\.redactionReasons) private var reasons
-    @EnvironmentObject private var quickLook: QuickLook
 
     @ObservedObject var postVM: PostViewModel
     private let forcedAspectRatio: CGFloat?
@@ -72,7 +71,7 @@ fileprivate struct ZoomableClippedPage<Content: View>: View {
             content
                 .frame(width: geo.size.width, height: geo.size.height)
                 .clipped()
-                .contentShape(Rectangle())
+                .contentShape(.rect)
                 .pinchZoom()
         }
     }

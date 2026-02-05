@@ -40,8 +40,10 @@ class NotificationService: UNNotificationServiceExtension {
         }
     }
     
-    private func updateCommunicationNotification(_ bestAttemptContent: UNMutableNotificationContent, contentHandler: @escaping (UNNotificationContent) -> Void) async {
-        
+    private func updateCommunicationNotification(
+        _ bestAttemptContent: UNMutableNotificationContent,
+        contentHandler: @escaping (UNNotificationContent) -> Void
+    ) async {
         guard
             let userInfo = bestAttemptContent.userInfo as? [String: Any],
             let senderId = userInfo["sender-id"] as? String,

@@ -29,6 +29,7 @@ struct TagsView<Content: View, Tag: Equatable>: View where Tag: Hashable {
 
 fileprivate struct CustomChipLayout: Layout {
     var spacing: CGFloat
+
     func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
         let width = proposal.width ?? 0
         return .init(width: width, height: maxHeight(proposal: proposal, subviews: subviews))

@@ -14,7 +14,6 @@
 		7ED27FE62D4BCF3100A6EFE0 /* TokenKeychainManager in Frameworks */ = {isa = PBXBuildFile; productRef = 7ED27FE52D4BCF3100A6EFE0 /* TokenKeychainManager */; };
 		7EE1447B2D1435DD0054FBB2 /* DesignSystem in Frameworks */ = {isa = PBXBuildFile; productRef = 7EE1447A2D1435DD0054FBB2 /* DesignSystem */; };
 		7EE144D32D1454AB0054FBB2 /* Environment in Frameworks */ = {isa = PBXBuildFile; productRef = 7EE144D22D1454AB0054FBB2 /* Environment */; };
-		7EE9D1772D369DAA00D03B20 /* MediaUI in Frameworks */ = {isa = PBXBuildFile; productRef = 7E8DFE652D31304700C1725E /* MediaUI */; settings = {ATTRIBUTES = (Required, ); }; };
 		7EEBA9C22D4CF2BF001B6E76 /* FeedNew in Frameworks */ = {isa = PBXBuildFile; productRef = 7EEBA9C12D4CF2BF001B6E76 /* FeedNew */; };
 		AC104D652DB7A864005F07F0 /* Analytics in Frameworks */ = {isa = PBXBuildFile; productRef = AC104D642DB7A864005F07F0 /* Analytics */; };
 		AC10E9882D9C2D0800A72988 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = AC10E9872D9C2D0800A72988 /* SFSafeSymbols */; };
@@ -84,7 +83,6 @@
 		7ECF06E72D0C6DA300CA7852 /* PeerAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PeerAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7ECF06F12D0C6DA300CA7852 /* PeerAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PeerAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		7ECF07042D0C6DE300CA7852 /* Networking */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = Networking; path = Packages/Networking; sourceTree = "<group>"; };
-		7ECFE79E2D15CB96002D98DD /* MediaUI */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = MediaUI; path = Packages/MediaUI; sourceTree = "<group>"; };
 		7ED0F7A02D0DD8410027A49B /* PayloadModification.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PayloadModification.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		7ED27FE42D4BC6A000A6EFE0 /* TokenKeychainManager */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = TokenKeychainManager; path = Packages/TokenKeychainManager; sourceTree = "<group>"; };
 		7EE144782D142B150054FBB2 /* DesignSystem */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = DesignSystem; path = Packages/DesignSystem; sourceTree = "<group>"; };
@@ -161,7 +159,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7EE9D1772D369DAA00D03B20 /* MediaUI in Frameworks */,
 				ACE05B192DA90C7900DD6E79 /* VersionHistory in Frameworks */,
 				7EE1447B2D1435DD0054FBB2 /* DesignSystem in Frameworks */,
 				AC7BD8C02DEDCEEE0094BC9A /* FirebaseMessaging in Frameworks */,
@@ -231,7 +228,6 @@
 				AC8295F12D876DAD00C554D1 /* Explore */,
 				AC6041E72DDB3FFB00D8DD5B /* FeedList */,
 				7EEBA9C02D4CDC97001B6E76 /* FeedNew */,
-				7ECFE79E2D15CB96002D98DD /* MediaUI */,
 				7EE144D02D1452230054FBB2 /* Models */,
 				7ECF07042D0C6DE300CA7852 /* Networking */,
 				AC6041E62DDB18B200D8DD5B /* Post */,
@@ -291,7 +287,6 @@
 				7E3C09862D130AEF001D8227 /* Networking */,
 				7EE1447A2D1435DD0054FBB2 /* DesignSystem */,
 				7EE144D22D1454AB0054FBB2 /* Environment */,
-				7E8DFE652D31304700C1725E /* MediaUI */,
 				7E043B5A2D43EAD300CD365B /* Auth */,
 				7ED27FE52D4BCF3100A6EFE0 /* TokenKeychainManager */,
 				7EEBA9C12D4CF2BF001B6E76 /* FeedNew */,
@@ -732,7 +727,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.13.0;
+				MARKETING_VERSION = 1.14.0;
 				PRODUCT_BUNDLE_IDENTIFIER = eu.peernetwork.PeerApp.Staging;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -773,7 +768,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.13.0;
+				MARKETING_VERSION = 1.14.0;
 				PRODUCT_BUNDLE_IDENTIFIER = eu.peernetwork.PeerApp.Staging;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -876,7 +871,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.13.0;
+				MARKETING_VERSION = 1.14.0;
 				PRODUCT_BUNDLE_IDENTIFIER = eu.peernetwork.PeerApp.Staging.PayloadModification;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -904,7 +899,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.13.0;
+				MARKETING_VERSION = 1.14.0;
 				PRODUCT_BUNDLE_IDENTIFIER = eu.peernetwork.PeerApp.Staging.PayloadModification;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1006,7 +1001,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.13.0;
+				MARKETING_VERSION = 1.14.0;
 				PRODUCT_BUNDLE_IDENTIFIER = eu.peernetwork.PeerApp.Staging;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -1073,7 +1068,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.13.0;
+				MARKETING_VERSION = 1.14.0;
 				PRODUCT_BUNDLE_IDENTIFIER = eu.peernetwork.PeerApp.Staging.PayloadModification;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1188,10 +1183,6 @@
 		7E3C09862D130AEF001D8227 /* Networking */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = Networking;
-		};
-		7E8DFE652D31304700C1725E /* MediaUI */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = MediaUI;
 		};
 		7ECFE7892D1577AB002D98DD /* Environment */ = {
 			isa = XCSwiftPackageProductDependency;

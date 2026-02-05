@@ -22,7 +22,7 @@ public struct CollapsibleText: View {
         let moreStringAttributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: Colors.whiteSecondary.uiColor
         ]
-        moreAttributedString = NSAttributedString(string: "more", attributes: moreStringAttributes)
+        moreAttributedString = NSAttributedString(string: "See more", attributes: moreStringAttributes)
     }
 
     @State private var truncatedText: AttributedString?

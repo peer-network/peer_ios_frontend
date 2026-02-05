@@ -31,9 +31,6 @@ struct WalletTab: View {
                         }
                     }
                 }
-                .onAppear {
-//                    analytics.track(event: .tabSelected(.wallet))
-                }
         }
         .withSafariRouter()
         .environmentObject(router)
