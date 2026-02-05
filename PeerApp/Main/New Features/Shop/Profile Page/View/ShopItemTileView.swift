@@ -33,6 +33,12 @@ struct ShopItemTileView: View {
         _postVM = .init(wrappedValue: PostViewModel(post: shopPost.post))
     }
 
+    init(shopPost: ShopListing, postVM: PostViewModel, displayType: ShopItemsDisplayType) {
+        self.displayType = displayType
+        self.shopPost = shopPost
+        _postVM = .init(wrappedValue: postVM)
+    }
+
     var body: some View {
         Group {
             switch displayType {
