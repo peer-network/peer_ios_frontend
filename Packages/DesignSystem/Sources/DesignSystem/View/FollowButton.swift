@@ -122,16 +122,6 @@ public struct FollowButton2: View {
         }
     }
 
-    var icon: Image? {
-        if viewModel.isFollowing && viewModel.isFollowed {
-            return nil
-        } else if viewModel.isFollowed {
-            return nil
-        } else {
-            return Icons.plus
-        }
-    }
-
     public init(viewModel: FollowButtonViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
     }

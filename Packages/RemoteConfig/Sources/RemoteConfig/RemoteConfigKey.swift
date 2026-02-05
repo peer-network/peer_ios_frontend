@@ -30,7 +30,7 @@ public enum RemoteConfigValueKey: CaseIterable {
             case .forceUpdateCurrentVersion:
                 return "1.0.0"
             case .forceUpdateStoreURL:
-                return "https://testflight.apple.com/join/xcCR5A67"
+                return "https://apps.apple.com/app/id6744612499"
             case .isForceUpdateRequired:
                 return false
             case .backendURLs:

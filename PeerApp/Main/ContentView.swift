@@ -182,7 +182,7 @@ struct ContentView: View {
                     .foregroundStyle(Colors.whitePrimary)
                     .frame(maxWidth: .infinity)
                     .frame(height: 50)
-                    .contentShape(Rectangle())
+                    .contentShape(.rect)
                 }
             }
         }

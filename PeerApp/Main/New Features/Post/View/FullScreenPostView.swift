@@ -13,7 +13,7 @@ import Post
 public struct FullScreenPostView: View {
     @EnvironmentObject private var apiManager: APIServiceManager
 
-    @State private var postVM: PostViewModel?
+    @State private var postVM: Post.PostViewModel?
     private let postId: String?
 
     public init(postVM: PostViewModel) {
@@ -43,7 +43,7 @@ public struct FullScreenPostView: View {
         .onFirstAppear {
             if let postId {
                 Task {
-                    postVM = await PostViewModel(id: postId, apiService: apiManager.apiService)
+                    postVM = await Post.PostViewModel(id: postId, apiService: apiManager.apiService)
                 }
             }
         }

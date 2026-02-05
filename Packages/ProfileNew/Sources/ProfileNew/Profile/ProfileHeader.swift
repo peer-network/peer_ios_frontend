@@ -16,7 +16,6 @@ struct ProfileHeader: View {
     @EnvironmentObject private var apiManager: APIServiceManager
 
     @EnvironmentObject private var accountManager: AccountManager
-    @EnvironmentObject private var quickLook: QuickLook
     @EnvironmentObject private var router: Router
 
     let user: User
@@ -138,10 +137,6 @@ struct ProfileHeader: View {
                     .foregroundStyle(Colors.inactiveDark)
             } else {
                 ProfileAvatarView(url: user.imageURL, name: user.username, config: .profile, ignoreCache: false)
-                    .onTapGesture {
-                        let mediaData = MediaData(url: user.imageURL, type: .image)
-                        quickLook.prepareFor(selectedMediaAttachment: mediaData, mediaAttachments: [mediaData])
-                    }
             }
         }
     }

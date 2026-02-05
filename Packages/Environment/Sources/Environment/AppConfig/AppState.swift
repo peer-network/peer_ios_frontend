@@ -26,7 +26,6 @@ public class AppState: ObservableObject {
             try await configService.loadAllConfigurations()
         } catch {
             self.error = error
-            // The service already handles fallback to cache
         }
 
         isLoading = false

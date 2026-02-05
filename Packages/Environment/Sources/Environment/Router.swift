@@ -126,15 +126,6 @@ public final class Router: ObservableObject {
             return .handled
         }
         
-        //        if url.scheme == "https",
-        //           url.host?.lowercased() == "peernetwork.eu" || url.host?.lowercased() == "www.peernetwork.eu" {
-        //            let comps = url.pathComponents  // ["/", "post", "<id>"]
-        //            if comps.count >= 3, comps[1] == "post" {
-        //                let id = comps[2]
-        //                path.append(.postDetailsWithPostId(id: id))
-        //            }
-        //        }
-        
         return urlHandler?(url) ?? .systemAction
     }
     
@@ -161,7 +152,6 @@ public final class Router: ObservableObject {
         objectStore[id] = nil
     }
 }
-
 
 // MARK: - Comment Likes Things
 
