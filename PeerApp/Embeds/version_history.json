@@ -191,11 +191,17 @@
     },
     {
         "version": "1.13.0",
-        "date": "2 Feb 2026",
+        "date": "4 Feb 2026",
         "releaseNotes": [
             "Peer Shop: discover official Peer merch and exchange Peer Tokens for real-world goodies",
-            "Improved search: search is now at the top with filters for easier discovery",
-            "Feed filters: see only content from peers who follow you back"
+            "Improved search: search is now at the top with filters for easier discovery"
+        ]
+    },
+    {
+        "version": "1.13.1",
+        "date": "9 Feb 2026",
+        "releaseNotes": [
+            "Overall improvements and fixes"
         ]
     }
 ]
