@@ -16,9 +16,9 @@ public struct FullScreenPostView: View {
     @State private var postVM: Post.PostViewModel?
     private let postId: String?
 
-    public init(postVM: Post.PostViewModel) {
-        self.postVM = postVM
-        self.postId = nil
+    public init(postVM: PostViewModel) {
+//        self.postVM = postVM
+        self.postId = postVM.post.id
     }
 
     public init(postId: String) {

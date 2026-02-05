@@ -106,7 +106,7 @@ public struct FollowButton2: View {
         if viewModel.isFollowing && viewModel.isFollowed {
             return .primary
         } else if viewModel.isFollowed {
-            return .primary
+            return .secondary
         } else {
             return .teritary
         }
