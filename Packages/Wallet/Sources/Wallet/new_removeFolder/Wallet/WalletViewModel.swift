@@ -2,7 +2,7 @@
 //  WalletViewModel.swift
 //  Wallet
 //
-//  Created by Артем Васин on 22.01.25.
+//  Created by Artem Vasin on 09.02.26.
 //
 
 import SwiftUI

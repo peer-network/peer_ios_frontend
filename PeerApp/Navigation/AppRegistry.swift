@@ -48,9 +48,6 @@ extension View {
                 case .versionHistory:
                     VersionHistoryView()
                         .toolbar(.hidden, for: .navigationBar)
-                case .transfer(let recipient, let amount):
-                    TransferPageView(recipient: recipient, amount: amount)
-                        .toolbar(.hidden, for: .navigationBar)
                 case .transferV2(let balance):
                     TransferView(balance: balance)
                         .toolbar(.hidden, for: .navigationBar)

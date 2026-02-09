@@ -56,7 +56,7 @@ enum OnboardingCloseButtonType {
             case .skip:
                     .init(buttonSize: .small, buttonType: .teritary, title: "Skip")
             case .close:
-                    .init(buttonSize: .small, buttonType: .teritary, title: "Close"/*, icon: Icons.x, iconPlacement: .leading*/)
+                    .init(buttonSize: .small, buttonType: .teritary, title: "Close")
         }
     }
 }

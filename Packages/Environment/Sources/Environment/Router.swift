@@ -16,7 +16,6 @@ public enum RouterDestination: Hashable {
     case settings
     case hashTag(tag: String)
     case versionHistory
-    case transfer(recipient: RowUser, amount: Int)
     case transferV2(balance: Foundation.Decimal)
     case transferSummary(balance: Foundation.Decimal, recipient: RowUser, amount: Foundation.Decimal, fees: TransferFeesModel, message: String?)
     case changePassword
