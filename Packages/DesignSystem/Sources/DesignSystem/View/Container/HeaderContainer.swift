@@ -62,21 +62,21 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                     switch actionsToDisplay {
                         case .commentsAndLikes:
                             HStack(alignment: .center, spacing: 5) {
-                                Icons.bubbleFill
-                                    .iconSize(height: 10)
-
-                                Text("\(accountManager.dailyFreeComments)")
-                                    .contentTransition(.numericText())
-                                    .animation(.snappy, value: accountManager.dailyFreeComments)
-                            }
-
-                            HStack(alignment: .center, spacing: 5) {
                                 Icons.heartFill
-                                    .iconSize(height: 10)
+                                    .iconSize(height: 16)
 
                                 Text("\(accountManager.dailyFreeLikes)")
                                     .contentTransition(.numericText())
                                     .animation(.snappy, value: accountManager.dailyFreeLikes)
+                            }
+
+                            HStack(alignment: .center, spacing: 5) {
+                                Icons.bubbleFill
+                                    .iconSize(height: 16)
+
+                                Text("\(accountManager.dailyFreeComments)")
+                                    .contentTransition(.numericText())
+                                    .animation(.snappy, value: accountManager.dailyFreeComments)
                             }
                         case .posts:
                             HStack(alignment: .center, spacing: 5) {
