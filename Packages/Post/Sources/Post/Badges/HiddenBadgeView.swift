@@ -10,23 +10,15 @@ import DesignSystem
 
 struct HiddenBadgeView: View {
     var body: some View {
-        HStack(spacing: 7) {
-            IconsNew.eyeWithSlash
-                .iconSize(height: 15)
-                .fixedSize(horizontal: true, vertical: false)
-
-            Text("Hidden")
-                .appFont(.smallLabelRegular)
-                .lineLimit(1)
-                .fixedSize(horizontal: true, vertical: false)
-        }
-        .foregroundStyle(Colors.whiteSecondary)
-        .padding(.vertical, 5)
-        .padding(.horizontal, 10)
-        .background {
-            RoundedRectangle(cornerRadius: 24)
-                .foregroundStyle(Colors.inactiveDark)
-        }
+        Circle()
+            .foregroundStyle(Colors.whitePrimary.opacity(0.2))
+            .overlay {
+                IconsNew.eyeWithSlash
+                    .iconSize(width: 18, height: 16)
+                    .fixedSize(horizontal: true, vertical: false)
+                    .foregroundStyle(Colors.whitePrimary)
+            }
+            .frame(width: 24, height: 24, alignment: .center)
     }
 }
 

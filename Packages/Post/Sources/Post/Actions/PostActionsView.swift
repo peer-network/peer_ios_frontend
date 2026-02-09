@@ -72,8 +72,7 @@ public struct PostActionsView: View {
                         }
                     } label: {
                         action.getIcon(viewModel: postViewModel)
-                            .iconSize(height: 19)
-                            .frame(height: 24)
+                            .iconSize(height: 24)
                             .contentShape(.rect)
                     }
 
@@ -103,7 +102,7 @@ public struct PostActionsView: View {
                             Text(amount, format: .number.notation(.compactName))
                                 .contentTransition(.numericText())
                                 .animation(.snappy, value: amount)
-                                .font(.custom(.bodyRegular))
+                                .appFont(.bodyRegular)
                                 .lineLimit(1)
                                 .foregroundStyle(action.getDefaultColor())
                                 .monospacedDigit()
@@ -135,9 +134,7 @@ public struct PostActionsView: View {
                         }
                     } label: {
                         action.getIcon(viewModel: postViewModel)
-                            .iconSize(height: 19)
-                            .padding(2.5)
-                            .padding(.horizontal, 2.5)
+                            .iconSize(height: 24)
                             .contentShape(.rect)
                             .fixedSize(horizontal: true, vertical: true)
                     }
@@ -172,9 +169,7 @@ public struct PostActionsView: View {
                                 .lineLimit(1)
                                 .foregroundStyle(action.getDefaultColor())
                                 .monospacedDigit()
-                                .padding(2.5)
-                                .padding(.horizontal, 2.5)
-                                .padding(.bottom, 10)
+                                .padding(.bottom, 16)
                                 .contentShape(.rect)
                                 .fixedSize(horizontal: true, vertical: true)
                         }

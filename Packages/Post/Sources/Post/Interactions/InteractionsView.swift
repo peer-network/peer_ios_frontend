@@ -17,15 +17,15 @@ enum InteractionType {
         switch self {
             case .likes:
                 Icons.heartFill
-                    .iconSize(height: 19)
+                    .iconSize(height: 24)
                     .foregroundStyle(Colors.redAccent)
             case .dislikes:
                 Icons.heartBrokeFill
-                    .iconSize(height: 19)
+                    .iconSize(height: 24)
                     .foregroundStyle(Colors.redAccent)
             case .views:
-                Icons.eyeCircledFill
-                    .iconSize(height: 19)
+                IconsNew.eye
+                    .iconSize(height: 24)
                     .foregroundStyle(Colors.whitePrimary)
         }
     }

@@ -25,30 +25,31 @@ struct InteractionsHeaderView: View {
                         interactionsPage = interaction
                     } label: {
                         VStack(alignment: .center, spacing: 0) {
-                            HStack(spacing: 7) {
+                            HStack(spacing: 5) {
                                 interaction.icon
 
                                 if let amount = interaction.getAmount(viewModel: viewModel) {
                                     Text(amount, format: .number.notation(.compactName))
-                                        .font(.customFont(weight: .regular, size: .body))
+                                        .appFont(.bodyRegular)
                                         .lineLimit(1)
                                         .monospacedDigit()
                                 }
                             }
-                            .padding(.horizontal, 15)
+                            .frame(width: 60, height: 30)
+                            .padding(.horizontal, 5)
 
                             if interactionsPage == interaction {
                                 RoundedRectangle(cornerRadius: 24)
                                     .frame(height: 1)
                                     .matchedGeometryEffect(id: "Interaction", in: interactionsTabNamespace)
-                                    .padding(.top, 14)
+                                    .padding(.top, 9)
                             } else {
                                 Spacer()
-                                    .frame(height: 15)
+                                    .frame(height: 10)
                             }
                         }
                         .opacity(interactionsPage == interaction ? 1 : 0.5)
-                        .padding(.top, 10)
+                        .padding(.top, 5)
                         .contentShape(.rect)
                         .fixedSize(horizontal: true, vertical: false)
                     }

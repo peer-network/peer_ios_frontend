@@ -21,7 +21,7 @@ enum PostAction {
             case .comment:
                 Icons.bubble
             case .views:
-                Icons.eyeCircled
+                IconsNew.eye
         }
     }
 
