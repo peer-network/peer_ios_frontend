@@ -125,6 +125,6 @@ public struct HeaderContainer<Header: View, Content: View>: View {
             content()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(Colors.textActive.ignoresSafeArea())
+        .background(Colors.blackDark.ignoresSafeArea())
     }
 }

@@ -85,6 +85,7 @@ public struct ProfilePageView: View {
                         .padding(.bottom, 20)
 
                     RegularFeedView(viewModel: regularFeedVM)
+                        .padding(.horizontal, 10)
                 }
                 .padding(.bottom, 10)
             }

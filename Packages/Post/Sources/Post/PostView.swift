@@ -241,15 +241,15 @@ public struct PostView: View {
     private func imagePost() -> some View {
         VStack(alignment: .center, spacing: 10) {
             PostHeaderView(postVM: postVM, showAppleTranslation: $showAppleTranslation, showFollowButton: showFollowButton)
-//                .padding(.horizontal, 20)
+                .padding(.horizontal, 10)
 
             if postVM.showIllegalBlur {
-                illegalPostView
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .frame(height: 150)
-                    .background(Colors.inactiveDark)
-                    .clipShape(RoundedRectangle(cornerRadius: 24))
-                    .padding(.horizontal, 20)
+//                illegalPostView
+//                    .frame(maxWidth: .infinity, alignment: .center)
+//                    .frame(height: 150)
+//                    .background(Colors.inactiveDark)
+//                    .clipShape(RoundedRectangle(cornerRadius: 24))
+//                    .padding(.horizontal, 20)
             } else {
                 ImagesContent(postVM: postVM)
                     .doubleTapToLike {
@@ -266,17 +266,46 @@ public struct PostView: View {
                             )
                         }
                     }
-                    .ifCondition(postVM.showSensitiveContentWarning) {
+//                    .ifCondition(postVM.showSensitiveContentWarning) {
+//                        $0
+//                            .allowsHitTesting(false)
+//                            .blur(radius: 25)
+//                            .overlay {
+//                                sensitiveContentWarningForImagePostView
+//                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+//                            }
+//                            .clipped()
+//                    }
+                    .padding(.bottom, 10)
+            }
+
+            HStack(alignment: .top, spacing: 10) {
+                Text(postVM.post.title)
+                    .appFont(.bodyBold)
+                    .foregroundStyle(Colors.whitePrimary)
+                    .multilineTextAlignment(.leading)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                Text(postVM.post.formattedCreatedAtShort)
+                    .appFont(.smallLabelRegular)
+                    .foregroundStyle(Colors.whiteSecondary)
+            }
+            .padding(.horizontal, 10)
+
+            if !postVM.post.media.isEmpty, let text = postVM.attributedDescription {
+                CollapsibleText(text, lineLimit: 1)
+                    .appFont(.bodyRegular)
+                    .ifCondition(postVM.showSensitiveContentWarning || postVM.showIllegalBlur) {
                         $0
                             .allowsHitTesting(false)
-                            .blur(radius: 25)
-                            .overlay {
-                                sensitiveContentWarningForImagePostView
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                            }
-                            .clipped()
+                            .redacted(reason: .placeholder)
                     }
+                    .padding(.bottom, 10)
+                    .padding(.horizontal, 10)
             }
+//            PostDescriptionComment(postVM: postVM, isInFeed: true)
+//                .padding(.horizontal, 10)
+//                .padding(.bottom, 10)
 
             if !reasons.contains(.placeholder) {
                 HStack(alignment: .center, spacing: 0) {
@@ -285,7 +314,6 @@ public struct PostView: View {
 
                     Spacer()
                         .frame(minWidth: 10)
-                        .frame(maxWidth: .infinity)
                         .layoutPriority(-1)
 
                     if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.isHiddenForUsers {
@@ -295,12 +323,15 @@ public struct PostView: View {
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 20)
+                .padding(.horizontal, 10)
             }
-
-            PostDescriptionComment(postVM: postVM, isInFeed: true)
-                .padding(.horizontal, 20)
         }
+        .padding(.vertical, 10)
+        .background {
+            RoundedRectangle(cornerRadius: 24)
+                .foregroundStyle(Colors.inactiveDark)
+        }
+        .shadow(color: .black.opacity(0.25), radius: 5, x: 0, y: 4)
         .geometryGroup()
     }
 

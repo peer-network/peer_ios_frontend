@@ -25,6 +25,7 @@ struct RegularFeedView: View {
                     PostsListView(fetcher: normalFeedVM, displayType: .list, showFollowButton: true)
                 }
                 .padding(.vertical, 10)
+                .padding(.horizontal, 10)
             }
             .refreshable {
                 HapticManager.shared.fireHaptic(.dataRefresh(intensity: 0.3))

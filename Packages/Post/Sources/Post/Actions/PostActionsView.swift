@@ -202,7 +202,6 @@ public struct PostActionsView: View {
 public struct PostActionsSmallView: View {
     @EnvironmentObject private var router: Router
 
-
     private let actions: [PostAction] = [.like, .dislike, .comment, .views]
 
     @ObservedObject var postViewModel: PostViewModel

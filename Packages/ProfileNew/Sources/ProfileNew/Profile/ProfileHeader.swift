@@ -283,7 +283,7 @@ struct ProfileHeader: View {
             }
         } label: {
             Icons.ellipsis
-                .iconSize(width: 16)
+                .iconSize(width: 24)
                 .rotationEffect(.degrees(90))
                 .foregroundStyle(Colors.whitePrimary)
                 .frame(width: 45, height: 45)

@@ -186,7 +186,7 @@ struct ContentView: View {
                 }
             }
         }
-        .background(Colors.textActive)
+        .background(Colors.blackDark)
     }
 
     private func updateTab(with newTab: AppTab) {

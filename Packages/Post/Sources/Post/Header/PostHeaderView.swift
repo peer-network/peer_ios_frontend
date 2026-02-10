@@ -242,7 +242,6 @@ struct PostHeaderView: View {
                 .buttonStyle(PostActionButtonStyle(isOn: false, tintColor: nil, defaultColor: Colors.whitePrimary))
             }
         }
-        .padding(10)
     }
 
     private func usernameTextView(_ username: String) -> some View {
