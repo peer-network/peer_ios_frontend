@@ -301,7 +301,6 @@ public struct PostView: View {
             PostDescriptionComment(postVM: postVM, isInFeed: true)
                 .padding(.horizontal, 20)
         }
-        .padding(.vertical, 10)
         .geometryGroup()
     }
 
