@@ -60,21 +60,21 @@ struct PostHeaderView: View {
                 }
                 .contentShape(.rect)
             }
-//            .ifCondition(postVM.showHeaderSensitiveWarning) {
-//                $0
-//                    .allowsHitTesting(false)
-//                    .blur(radius: 5)
-//                    .overlay(alignment: .leading) {
-//                        Button {
-//                            withAnimation {
-//                                postVM.showHeaderSensitiveWarning = false
-//                            }
-//                        } label: {
-//                            sensitiveContentWarningForPostHeaderView
-//                                .contentShape(.rect)
-//                        }
-//                    }
-//            }
+            .ifCondition(postVM.showHeaderSensitiveWarning) {
+                $0
+                    .allowsHitTesting(false)
+                    .blur(radius: 5)
+                    .overlay(alignment: .leading) {
+                        Button {
+                            withAnimation {
+                                postVM.showHeaderSensitiveWarning = false
+                            }
+                        } label: {
+                            sensitiveContentWarningForPostHeaderView
+                                .contentShape(.rect)
+                        }
+                    }
+            }
 
             Spacer()
                 .frame(minWidth: 10)
@@ -262,11 +262,11 @@ struct PostHeaderView: View {
     private var sensitiveContentWarningForPostHeaderView: some View {
         HStack(spacing: 10) {
             Circle()
-                .frame(height: 40)
+                .frame(height: 37)
                 .foregroundStyle(Colors.whitePrimary.opacity(0.2))
                 .overlay {
                     IconsNew.eyeWithSlash
-                        .iconSize(width: 20)
+                        .iconSize(height: 24)
                         .foregroundStyle(Colors.whitePrimary)
                 }
 
