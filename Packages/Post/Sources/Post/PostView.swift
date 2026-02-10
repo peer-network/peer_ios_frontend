@@ -241,7 +241,7 @@ public struct PostView: View {
     private func imagePost() -> some View {
         VStack(alignment: .center, spacing: 10) {
             PostHeaderView(postVM: postVM, showAppleTranslation: $showAppleTranslation, showFollowButton: showFollowButton)
-                .padding(.horizontal, 20)
+//                .padding(.horizontal, 20)
 
             if postVM.showIllegalBlur {
                 illegalPostView

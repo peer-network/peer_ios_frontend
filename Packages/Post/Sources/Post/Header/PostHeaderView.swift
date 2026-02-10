@@ -28,59 +28,56 @@ struct PostHeaderView: View {
     }
 
     var body: some View {
-        HStack(alignment: .center, spacing: 10) {
+        HStack(alignment: .center, spacing: 0) {
             Button {
                 router.navigate(to: RouterDestination.accountDetail(id: postVM.post.owner.id))
             } label: {
-                if postVM.post.owner.visibilityStatus == .illegal {
-                    Circle()
-                        .foregroundStyle(Colors.inactiveDark)
-                        .frame(height: 40)
-                        .overlay {
-                            IconsNew.exclamaitionMarkCircle
-                                .iconSize(height: 16)
-                                .foregroundStyle(Colors.whiteSecondary)
-                        }
-                } else {
-                    ProfileAvatarView(
-                        url: postVM.post.owner.imageURL,
-                        name: postVM.post.owner.username,
-                        config: .post,
-                        ignoreCache: profileImageIgnoreCache
-                    )
-                }
+                HStack(alignment: .center, spacing: 0) {
+                    if postVM.post.owner.visibilityStatus == .illegal {
+                        Circle()
+                            .foregroundStyle(Colors.inactiveDark)
+                            .frame(height: 37)
+                            .overlay {
+                                Icons.block
+                                    .iconSize(height: 24)
+                                    .foregroundStyle(Colors.whitePrimary)
+                            }
+                    } else {
+                        ProfileAvatarView(
+                            url: postVM.post.owner.imageURL,
+                            name: postVM.post.owner.username,
+                            config: .post,
+                            ignoreCache: profileImageIgnoreCache
+                        )
+                    }
 
-                VStack(alignment: .leading, spacing: 0) {
-                    Text(postVM.post.owner.username)
-                        .font(.custom(.bodyBold))
+                    VStack(alignment: .leading, spacing: 0) {
+                        usernameTextView(postVM.post.owner.visibilityStatus == .illegal ? "removed" : postVM.post.owner.username)
 
-                    Text("#\(String(postVM.post.owner.slug))")
-                        .font(.custom(.smallLabelRegular))
-                        .foregroundStyle(Colors.whiteSecondary)
+                        userSlugTextView
+                    }
+                    .padding(.leading, 10)
                 }
-                .lineLimit(1)
-                .foregroundStyle(Colors.whitePrimary)
                 .contentShape(.rect)
             }
-            .ifCondition(postVM.showHeaderSensitiveWarning) {
-                $0
-                    .allowsHitTesting(false)
-                    .blur(radius: 5)
-                    .overlay(alignment: .leading) {
-                        Button {
-                            withAnimation {
-                                postVM.showHeaderSensitiveWarning = false
-                            }
-                        } label: {
-                            sensitiveContentWarningForPostHeaderView
-                                .contentShape(.rect)
-                        }
-                    }
-            }
+//            .ifCondition(postVM.showHeaderSensitiveWarning) {
+//                $0
+//                    .allowsHitTesting(false)
+//                    .blur(radius: 5)
+//                    .overlay(alignment: .leading) {
+//                        Button {
+//                            withAnimation {
+//                                postVM.showHeaderSensitiveWarning = false
+//                            }
+//                        } label: {
+//                            sensitiveContentWarningForPostHeaderView
+//                                .contentShape(.rect)
+//                        }
+//                    }
+//            }
 
             Spacer()
                 .frame(minWidth: 10)
-                .frame(maxWidth: .infinity)
                 .layoutPriority(-1)
 
             if showFollowButton,
@@ -95,10 +92,12 @@ struct PostHeaderView: View {
                 )
                 FollowButton2(viewModel: vm)
                     .fixedSize(horizontal: true, vertical: false)
+                    .padding(.trailing, 10)
             }
 
             if postVM.post.advertisement != nil {
                 PinIndicatorView()
+                    .padding(.trailing, 10)
             }
 
             if !postVM.showIllegalBlur {
@@ -236,16 +235,28 @@ struct PostHeaderView: View {
                     }
                 } label: {
                     Icons.ellipsis
-                        .iconSize(width: 16)
-                        .padding(.horizontal, 10)
-                        .frame(height: 40)
+                        .iconSize(width: 24)
                         .contentShape(.rect)
                 }
                 .menuStyle(.button)
                 .buttonStyle(PostActionButtonStyle(isOn: false, tintColor: nil, defaultColor: Colors.whitePrimary))
-                .contentShape(.rect)
             }
         }
+        .padding(10)
+    }
+
+    private func usernameTextView(_ username: String) -> some View {
+        Text(username)
+            .appFont(.bodyBoldItalic)
+            .foregroundStyle(Colors.whitePrimary)
+            .lineLimit(2)
+            .multilineTextAlignment(.leading)
+    }
+
+    private var userSlugTextView: some View {
+        Text("#\(String(postVM.post.owner.slug))")
+            .appFont(.smallLabelRegular)
+            .foregroundStyle(Colors.whiteSecondary)
     }
 
     private var sensitiveContentWarningForPostHeaderView: some View {
@@ -274,13 +285,13 @@ struct PostHeaderView: View {
 
 private struct PinIndicatorView: View {
     var body: some View {
-        Icons.pin
-            .iconSize(height: 19)
-            .foregroundStyle(Colors.whitePrimary)
-            .frame(width: 45, height: 45)
-            .background {
-                Circle()
-                    .foregroundStyle(Colors.version)
+        Circle()
+            .frame(height: 37)
+            .foregroundStyle(Colors.version)
+            .overlay {
+                Icons.pin
+                    .iconSize(height: 15.61)
+                    .foregroundStyle(Colors.whitePrimary)
             }
     }
 }

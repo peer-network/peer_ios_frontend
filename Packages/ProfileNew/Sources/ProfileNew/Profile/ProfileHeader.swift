@@ -34,18 +34,15 @@ struct ProfileHeader: View {
                     if user.visibilityStatus == .illegal {
                         ownProfileIllegalView
                             .padding(.horizontal, -10)
-                            .padding(.bottom, 10)
                     } else if user.isHiddenForUsers {
                         ownProfileHiddenView
                             .padding(.horizontal, -10)
-                            .padding(.bottom, 10)
                     }
                 }
 
                 if !reasons.contains(.placeholder), !AccountManager.shared.isCurrentUser(id: user.id), user.visibilityStatus == .illegal {
                     otherProfileIllegalView
                         .padding(.horizontal, -10)
-                        .padding(.bottom, 10)
                 }
 
                 HStack(alignment: .center, spacing: 10) {

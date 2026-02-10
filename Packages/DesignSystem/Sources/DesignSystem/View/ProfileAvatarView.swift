@@ -41,7 +41,7 @@ public struct ProfileAvatarView: View {
             self.cornerRadius = cornerRadius
         }
         
-        public static let post = FrameConfig(width: 40, height: 40, cornerRadius: 91)
+        public static let post = FrameConfig(width: 37, height: 37, cornerRadius: 91)
         public static let rowUser = FrameConfig(width: 40, height: 40, cornerRadius: 91)
         public static let audioPlayer = FrameConfig(width: 35, height: 35, cornerRadius: 91)
         public static let profile = FrameConfig(width: 70, height: 70, cornerRadius: 91)
