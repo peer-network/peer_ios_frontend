@@ -23,8 +23,6 @@ public struct ProfileView: View {
     @StateObject private var regularFeedVM: RegularFeedVM
     @StateObject private var audioFeedVM: AudioFeedViewModel
     @StateObject private var videoFeedVM: VideoFeedViewModel
-
-    @State private var feedPage: FeedPage = .normalFeed
     
     @State private var showAvatarPicker: Bool = false
     @State private var isImagePickerPresented: Bool = false
@@ -102,8 +100,6 @@ public struct ProfileView: View {
                 
                 profileHeader(user: user, isLoading: isLoading)
                 
-                FeedTabControllerView(feedPage: $feedPage)
-                
                 if isLoading {
                     LazyVStack(alignment: .center, spacing: 20) {
                         ForEach(Post.placeholdersImage(count: 5)) { post in
@@ -114,14 +110,11 @@ public struct ProfileView: View {
                     }
                     .padding(.bottom, 10)
                 } else {
-                    switch feedPage {
-                        case .normalFeed:
                             RegularFeedView(viewModel: regularFeedVM)
-                        case .videoFeed:
-                            VideoFeedView(viewModel: videoFeedVM)
-                        case .audioFeed:
-                            AudioFeedView(viewModel: audioFeedVM)
-                    }
+//                            case .videoFeed:
+//                                VideoFeedView(viewModel: videoFeedVM)
+//                            case .audioFeed:
+//                                AudioFeedView(viewModel: audioFeedVM)
                 }
             }
         }
@@ -156,7 +149,8 @@ public struct ProfileView: View {
     
     private func profileHeader(user: User, isLoading: Bool) -> some View {
         ProfileHeader(user: user, bio: viewModel.fetchedBio, showAvatarPicker: $showAvatarPicker)
-            .padding(.horizontal, 20)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 20)
             .skeleton(isRedacted: isLoading ? true : false)
     }
 }

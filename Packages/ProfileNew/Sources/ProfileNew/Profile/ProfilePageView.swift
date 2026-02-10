@@ -79,35 +79,34 @@ public struct ProfilePageView: View {
     }
 
     private func contentView(user: User, isLoading: Bool) -> some View {
-        HeaderPageScrollView {
+//        HeaderPageScrollView {
             profileHeader(user: user, isLoading: isLoading)
-                .padding(.bottom, 15)
-                .padding(.top, 10)
-        } labels: {
-            PageLabel(title: "Regular", icon: Icons.smile)
-            PageLabel(title: "Video", icon: Icons.playRectangle)
-            PageLabel(title: "Audio", icon: Icons.musicNote)
-        } pages: {
-            RegularFeedView(viewModel: regularFeedVM)
-
-            VideoFeedView(viewModel: videoFeedVM)
-
-            AudioFeedView(viewModel: audioFeedVM)
-        } onRefresh: {
-            HapticManager.shared.fireHaptic(.dataRefresh(intensity: 0.3))
-            await fetchEverything()
-        }
-        .onChange(of: selectedTabScrollToTop) {
-            if selectedTabScrollToTop == 4, router.path.isEmpty {
-                    print("➡️ scrollToTop tapped")
-                    NotificationCenter.default.post(name: .scrollToTop, object: nil)
-            }
-        }
+                .padding(.vertical, 20)
+//        } labels: {
+//            PageLabel(title: "Regular", icon: Icons.smile)
+//            PageLabel(title: "Video", icon: Icons.playRectangle)
+//            PageLabel(title: "Audio", icon: Icons.musicNote)
+//        } pages: {
+//            RegularFeedView(viewModel: regularFeedVM)
+//
+//            VideoFeedView(viewModel: videoFeedVM)
+//
+//            AudioFeedView(viewModel: audioFeedVM)
+//        } onRefresh: {
+//            HapticManager.shared.fireHaptic(.dataRefresh(intensity: 0.3))
+//            await fetchEverything()
+//        }
+//        .onChange(of: selectedTabScrollToTop) {
+//            if selectedTabScrollToTop == 4, router.path.isEmpty {
+//                    print("➡️ scrollToTop tapped")
+//                    NotificationCenter.default.post(name: .scrollToTop, object: nil)
+//            }
+//        }
     }
 
     private func profileHeader(user: User, isLoading: Bool) -> some View {
         ProfileHeader(user: user, bio: viewModel.fetchedBio, showAvatarPicker: $showAvatarPicker)
-            .padding(.horizontal, 20)
+            .padding(.horizontal, 10)
             .skeleton(isRedacted: isLoading ? true : false)
     }
 
@@ -115,9 +114,9 @@ public struct ProfilePageView: View {
         await viewModel.fetchUser()
         await viewModel.fetchBio()
 
-        regularFeedVM.fetchPosts(reset: true)
-        audioFeedVM.fetchPosts(reset: true)
-        videoFeedVM.fetchPosts(reset: true)
+//        regularFeedVM.fetchPosts(reset: true)
+//        audioFeedVM.fetchPosts(reset: true)
+//        videoFeedVM.fetchPosts(reset: true)
     }
 
     private func loadImage() {

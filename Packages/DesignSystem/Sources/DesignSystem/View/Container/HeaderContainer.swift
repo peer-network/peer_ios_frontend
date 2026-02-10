@@ -44,7 +44,7 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                         Icons.arrowDown
                             .iconSize(height: 7)
                             .rotationEffect(.degrees(90))
-                            .padding(.leading, 20)
+                            .padding(.leading, 10)
                             .padding(.trailing, 10)
                             .contentShape(.rect)
                     }
@@ -57,6 +57,18 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                     .appFont(.bodyRegular)
 
                 Spacer()
+
+                if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+                    Button {
+                        router.navigate(to: RouterDestination.versionHistory)
+                    } label: {
+                        Text("v \(version)")
+                            .appFont(.bodyRegular)
+                            .foregroundStyle(Colors.version)
+                            .contentShape(.rect)
+                    }
+                    .padding(.trailing, 10)
+                }
 
                 HStack(alignment: .center, spacing: 10) {
                     switch actionsToDisplay {
@@ -93,7 +105,7 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                 .padding(.horizontal, 10)
                 .padding(.vertical, 5)
                 .background(Colors.inactiveDark)
-                .clipShape(RoundedRectangle(cornerRadius: 34))
+                .clipShape(RoundedRectangle(cornerRadius: 31))
                 .contentShape(.rect)
                 .onTapGesture {
                     showPopover = true
@@ -105,24 +117,9 @@ public struct HeaderContainer<Header: View, Content: View>: View {
                         .presentationBackground(Colors.inactiveDark)
                         .presentationCompactAdaptation(.popover)
                 }
-
-                if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
-                    Button {
-//                        if router.path.last != .versionHistory {
-                            router.navigate(to: RouterDestination.versionHistory)
-//                        }
-                    } label: {
-                        Text("v \(version)")
-                            .appFont(.bodyRegular)
-                            .foregroundStyle(Colors.version)
-                            .padding(.vertical, 5)
-                            .contentShape(.rect)
-                    }
-                    .padding(.leading, 10)
-                }
             }
             .foregroundStyle(Colors.whitePrimary)
-            .padding(.trailing, 20)
+            .padding(.trailing, 10)
             .frame(height: 44)
 
             content()

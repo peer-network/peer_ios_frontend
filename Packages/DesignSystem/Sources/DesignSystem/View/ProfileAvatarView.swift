@@ -44,7 +44,7 @@ public struct ProfileAvatarView: View {
         public static let post = FrameConfig(width: 40, height: 40, cornerRadius: 91)
         public static let rowUser = FrameConfig(width: 40, height: 40, cornerRadius: 91)
         public static let audioPlayer = FrameConfig(width: 35, height: 35, cornerRadius: 91)
-        public static let profile = FrameConfig(width: 68, height: 68, cornerRadius: 91)
+        public static let profile = FrameConfig(width: 70, height: 70, cornerRadius: 91)
         public static let shop = FrameConfig(width: 53, height: 53, cornerRadius: 45)
         public static let shopSmall = FrameConfig(width: 40, height: 40, cornerRadius: 34)
         public static let comment = FrameConfig(width: 50, height: 50, cornerRadius: 91)

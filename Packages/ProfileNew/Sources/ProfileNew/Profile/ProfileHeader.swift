@@ -28,25 +28,35 @@ struct ProfileHeader: View {
     @State private var showSensitiveContentWarning: Bool = false
 
     var body: some View {
-        VStack(spacing: 15) {
-            VStack(spacing: 15) {
+        VStack(spacing: 10) {
+            VStack(spacing: 10) {
                 if !reasons.contains(.placeholder), AccountManager.shared.isCurrentUser(id: user.id) {
                     if user.visibilityStatus == .illegal {
                         ownProfileIllegalView
+                            .padding(.horizontal, -10)
+                            .padding(.bottom, 10)
                     } else if user.isHiddenForUsers {
                         ownProfileHiddenView
-                            .padding(.horizontal, -20)
+                            .padding(.horizontal, -10)
+                            .padding(.bottom, 10)
                     }
                 }
 
-                HStack(alignment: .center, spacing: 15) {
+                if !reasons.contains(.placeholder), !AccountManager.shared.isCurrentUser(id: user.id), user.visibilityStatus == .illegal {
+                    otherProfileIllegalView
+                        .padding(.horizontal, -10)
+                        .padding(.bottom, 10)
+                }
+
+                HStack(alignment: .center, spacing: 10) {
                     profileImage
 
                     VStack(alignment: .leading, spacing: 10) {
-                        if !AccountManager.shared.isCurrentUser(id: user.id), user.visibilityStatus == .illegal {
-                            RoundedRectangle(cornerRadius: 24)
-                                .frame(width: 138, height: 21)
-                                .foregroundStyle(Colors.inactiveDark)
+                        if user.visibilityStatus == .illegal {
+                            Text("removed")
+                                .appFont(.bodyBoldItalic)
+                                .foregroundStyle(Colors.whitePrimary)
+                                .frame(height: 25, alignment: .leading)
                         } else {
                             username
                         }
@@ -55,32 +65,30 @@ struct ProfileHeader: View {
                     }
                 }
 
-                if !bio.isEmpty {
-                    if AccountManager.shared.isCurrentUser(id: user.id) || user.visibilityStatus != .illegal {
-                        Text(bio)
-                            .font(.custom(.smallLabelRegular))
-                            .foregroundStyle(Colors.whitePrimary)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .multilineTextAlignment(.leading)
-                    }
-                }
-
-                if !reasons.contains(.placeholder), !AccountManager.shared.isCurrentUser(id: user.id), user.visibilityStatus == .illegal {
-                    otherProfileIllegalView
+                if user.visibilityStatus == .illegal {
+                    RoundedRectangle(cornerRadius: 24)
+                        .foregroundStyle(Colors.inactiveDark)
+                        .frame(height: 21)
+                } else if !bio.isEmpty {
+                    Text(bio)
+                        .appFont(.smallLabelRegular)
+                        .foregroundStyle(Colors.whitePrimary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .multilineTextAlignment(.leading)
                 }
             }
             .ifCondition(showSensitiveContentWarning) {
                 $0
                     .allowsHitTesting(false)
-                    .blur(radius: 5)
+                    .blur(radius: 9.55)
                     .overlay {
                         sensitiveContentWarningView
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .frame(maxWidth: .infinity, alignment: .center)
                     }
             }
 
             if AccountManager.shared.isCurrentUser(id: user.id) {
-                HStack(spacing: 15) {
+                HStack(spacing: 10) {
                     inviteFriendsButton
 
                     settingsButton
@@ -88,7 +96,7 @@ struct ProfileHeader: View {
                     moreButton
                 }
             } else {
-                HStack(spacing: 15) {
+                HStack(spacing: 10) {
                     let vm = FollowButtonViewModel(
                         id: user.id,
                         isFollowing: user.isFollowed,
@@ -99,6 +107,12 @@ struct ProfileHeader: View {
                     moreButton
                 }
             }
+
+            RoundedRectangle(cornerRadius: 50)
+                .foregroundStyle(Colors.inactiveDark)
+                .frame(height: 3)
+                .padding(.top, 10)
+                .padding(.horizontal, 20)
         }
         .onFirstAppear {
             if !reasons.contains(.placeholder), !AccountManager.shared.isCurrentUser(id: user.id), user.visibilityStatus == .hidden {
@@ -133,8 +147,13 @@ struct ProfileHeader: View {
         } else {
             if user.visibilityStatus == .illegal {
                 Circle()
-                    .frame(height: 68)
+                    .frame(height: 70)
                     .foregroundStyle(Colors.inactiveDark)
+                    .overlay {
+                        Icons.block
+                            .iconSize(height: 48)
+                            .foregroundStyle(Colors.whitePrimary)
+                    }
             } else {
                 ProfileAvatarView(url: user.imageURL, name: user.username, config: .profile, ignoreCache: false)
             }
@@ -143,26 +162,27 @@ struct ProfileHeader: View {
 
     private var username: some View {
         HStack(spacing: 0) {
-            Text(user.username)
-                .font(.custom(.bodyBoldItalic))
-                .foregroundStyle(Colors.whitePrimary)
-                .multilineTextAlignment(.leading)
-                .lineLimit(1)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.trailing, 5)
+            ViewThatFits {
+                HStack(spacing: 0) {
+                    usernameText
 
-            Text("#\(String(user.slug))")
-                .font(.custom(.smallLabelRegular))
-                .foregroundStyle(Colors.whiteSecondary)
+                    userSlugText
+                }
+
+                VStack(alignment: .leading, spacing: 0) {
+                    usernameText
+
+                    userSlugText
+                }
+            }
 
             if !reasons.contains(.placeholder), user.hasActiveReports {
                 Spacer()
-                    .frame(minWidth: 5)
-                    .frame(maxWidth: .infinity)
+                    .frame(minWidth: 10)
                     .layoutPriority(-1)
 
                 IconsNew.flag
-                    .iconSize(width: 13)
+                    .iconSize(width: 24)
                     .foregroundStyle(Colors.redAccent)
                     .contentShape(.rect)
                     .onTapGesture {
@@ -175,9 +195,22 @@ struct ProfileHeader: View {
                             .presentationBackground(Colors.inactiveDark)
                             .presentationCompactAdaptation(.popover)
                     }
-                    .fixedSize()
             }
         }
+    }
+
+    private var usernameText: some View {
+        Text(user.username)
+            .appFont(.bodyBoldItalic)
+            .foregroundStyle(Colors.whitePrimary)
+            .multilineTextAlignment(.leading)
+            .lineLimit(1)
+    }
+
+    private var userSlugText: some View {
+        Text("#\(String(user.slug))")
+            .appFont(.smallLabelRegular)
+            .foregroundStyle(Colors.whiteSecondary)
     }
 
     @ViewBuilder
@@ -263,94 +296,103 @@ struct ProfileHeader: View {
     }
 
     private var ownProfileIllegalView: some View {
-        HStack(spacing: 15) {
-            Icons.trashBin
-                .iconSize(width: 15)
+        HStack(spacing: 10) {
+            Circle()
+                .frame(height: 34)
+                .foregroundStyle(Colors.redAccent.opacity(0.2))
+                .overlay {
+                    Icons.trashBin
+                        .iconSize(height: 24)
+                        .foregroundStyle(Colors.redAccent)
+                }
 
-            Text("**Your profile data is removed as illegal.** All changes you make will not be visible for others")
+            Text("Your profile data is removed as illegal. No further changes are possible.")
                 .appFont(.smallLabelRegular)
+                .foregroundStyle(Colors.redAccent)
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .multilineTextAlignment(.leading)
         }
-        .foregroundStyle(Colors.redAccent)
-        .padding(.vertical, 10)
+        .padding(.vertical, 5)
         .padding(.horizontal, 20)
         .background {
-            RoundedRectangle(cornerRadius: 24)
-                .foregroundStyle(Colors.inactiveDark)
+            Colors.inactiveDark
         }
     }
 
     private var otherProfileIllegalView: some View {
-        HStack(spacing: 15) {
-            Icons.trashBin
-                .iconSize(width: 15)
+        HStack(spacing: 10) {
+            Circle()
+                .frame(height: 34)
+                .foregroundStyle(Colors.redAccent.opacity(0.2))
+                .overlay {
+                    Icons.trashBin
+                        .iconSize(height: 24)
+                        .foregroundStyle(Colors.redAccent)
+                }
 
             Text("Profile data is removed as illegal")
-                .appFont(.bodyBold)
+                .appFont(.smallLabelRegular)
+                .foregroundStyle(Colors.redAccent)
+                .multilineTextAlignment(.leading)
         }
         .frame(maxWidth: .infinity, alignment: .center)
-        .foregroundStyle(Colors.whitePrimary)
-        .padding(.vertical, 10)
+        .padding(.vertical, 5)
         .padding(.horizontal, 20)
         .background {
-            RoundedRectangle(cornerRadius: 24)
-                .foregroundStyle(Colors.inactiveDark)
+            Colors.inactiveDark
         }
     }
 
     private var ownProfileHiddenView: some View {
-        HStack(spacing: 5) {
-            IconsNew.eyeWithSlash
-                .iconSize(width: 13)
+        HStack(spacing: 10) {
+            Circle()
+                .frame(height: 34)
+                .foregroundStyle(Colors.whitePrimary.opacity(0.2))
+                .overlay {
+                    IconsNew.eyeWithSlash
+                        .iconSize(height: 24)
+                        .foregroundStyle(Colors.whitePrimary)
+                }
 
-            Text("Profile data is hidden due to reports")
+            Text("Profile data is hidden due to report")
                 .appFont(.smallLabelRegular)
+                .foregroundStyle(Colors.whitePrimary)
+                .multilineTextAlignment(.leading)
         }
         .frame(maxWidth: .infinity, alignment: .center)
-        .foregroundStyle(Colors.whiteSecondary)
-        .padding(.vertical, 10)
+        .padding(.vertical, 5)
         .padding(.horizontal, 20)
         .background(Colors.inactiveDark)
     }
 
     private var sensitiveContentWarningView: some View {
-        VStack(alignment: .leading, spacing: 0) {
-            HStack(spacing: 0) {
-                Group {
-                    Circle()
-                        .frame(height: 30)
-                        .foregroundStyle(Colors.whitePrimary.opacity(0.2))
-                        .overlay {
-                            IconsNew.eyeWithSlash
-                                .iconSize(height: 16.2)
-                                .foregroundStyle(Colors.whitePrimary)
-                        }
-                        .padding(.trailing, 5)
-
-                    Text("Sensitive content")
-                        .appFont(.bodyBold)
+        HStack(alignment: .top, spacing: 10) {
+            Circle()
+                .frame(height: 34)
+                .foregroundStyle(Colors.whitePrimary.opacity(0.2))
+                .overlay {
+                    IconsNew.eyeWithSlash
+                        .iconSize(height: 24)
                         .foregroundStyle(Colors.whitePrimary)
                 }
-                .fixedSize(horizontal: true, vertical: false)
 
-                Spacer()
-                    .frame(minWidth: 10)
-                    .frame(maxWidth: .infinity)
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Sensitive content")
+                    .appFont(.bodyBold)
 
-                let showButtonConfig = StateButtonConfig(buttonSize: .small, buttonType: .teritary, title: "Show")
-                StateButton(config: showButtonConfig) {
-                    withAnimation {
-                        showSensitiveContentWarning = false
-                    }
-                }
-                .fixedSize()
+                Text("This content may be sensitive or abusive.\nDo you want to view it anyway?")
+                    .appFont(.smallLabelRegular)
             }
+            .foregroundStyle(Colors.whitePrimary)
+            .multilineTextAlignment(.leading)
 
-            Text("This content may be sensitive or abusive.\nDo you want to view it anyway?")
-                .appFont(.smallLabelRegular)
-                .foregroundStyle(Colors.whitePrimary)
-                .fixedSize()
+            let showButtonConfig = StateButtonConfig(buttonSize: .small, buttonType: .teritary, title: "Show")
+            StateButton(config: showButtonConfig) {
+                withAnimation {
+                    showSensitiveContentWarning = false
+                }
+            }
+            .fixedSize()
         }
-        .multilineTextAlignment(.leading)
     }
 }
