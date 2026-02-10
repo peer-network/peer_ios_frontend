@@ -26,11 +26,8 @@ extension View {
                     if id == Env.shopUserId {
                         ShopProfileView(shopUserId: Env.shopUserId)
                             .toolbar(.hidden, for: .navigationBar)
-                    } else if #available(iOS 18, *) {
-                        ProfilePageView(userId: id)
-                            .toolbar(.hidden, for: .navigationBar)
                     } else {
-                        ProfileView(userId: id)
+                        ProfilePageView(userId: id)
                             .toolbar(.hidden, for: .navigationBar)
                     }
                 case .hashTag(let tag):

@@ -22,24 +22,18 @@ struct ProfileTab: View {
         NavigationStack(path: $router.path) {
             Group {
                 if let userId = accountManager.userId {
-                    if #available(iOS 18, *) {
-                        ProfilePageView(userId: userId)
-                            .toolbar(.hidden, for: .navigationBar)
-                            .withAppRouter(appState: appState, apiServiceManager: apiManager, router: router)
-                            .withShopRouter(router: router)
-                            .withSheetDestinations(sheetDestinations: $router.presentedSheet, apiServiceManager: apiManager)
-                            .id(userId)
-                    } else {
-                        ProfileView(userId: userId)
-                            .toolbar(.hidden, for: .navigationBar)
-                            .withAppRouter(appState: appState, apiServiceManager: apiManager, router: router)
-                            .withShopRouter(router: router)
-                            .withSheetDestinations(sheetDestinations: $router.presentedSheet, apiServiceManager: apiManager)
-                            .id(userId)
-                    }
-                } else {
-                    ProfileView(userId: "")
+                    ProfilePageView(userId: userId)
                         .toolbar(.hidden, for: .navigationBar)
+                        .withAppRouter(appState: appState, apiServiceManager: apiManager, router: router)
+                        .withShopRouter(router: router)
+                        .withSheetDestinations(sheetDestinations: $router.presentedSheet, apiServiceManager: apiManager)
+                        .id(userId)
+                } else {
+                    ProfilePageView(userId: "")
+                        .toolbar(.hidden, for: .navigationBar)
+                        .withAppRouter(appState: appState, apiServiceManager: apiManager, router: router)
+                        .withShopRouter(router: router)
+                        .withSheetDestinations(sheetDestinations: $router.presentedSheet, apiServiceManager: apiManager)
                         .redacted(reason: .placeholder)
                         .allowsHitTesting(false)
                 }

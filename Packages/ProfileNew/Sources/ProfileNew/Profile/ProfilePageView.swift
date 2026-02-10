@@ -12,7 +12,6 @@ import PhotosUI
 import Analytics
 import Models
 
-@available(iOS 18.0, *)
 public struct ProfilePageView: View {
     @Environment(\.selectedTabScrollToTop) private var selectedTabScrollToTop
     @EnvironmentObject private var router: Router
@@ -26,14 +25,10 @@ public struct ProfilePageView: View {
     @State private var selectedImage: UIImage?
 
     @StateObject private var regularFeedVM: RegularFeedVM
-    @StateObject private var audioFeedVM: AudioFeedViewModel
-    @StateObject private var videoFeedVM: VideoFeedViewModel
 
     public init(userId: String) {
         _viewModel = .init(wrappedValue: .init(userId: userId))
         _regularFeedVM = .init(wrappedValue: .init(userId: userId))
-        _audioFeedVM = .init(wrappedValue: .init(userId: userId))
-        _videoFeedVM = .init(wrappedValue: .init(userId: userId))
     }
 
     public var body: some View {
@@ -53,6 +48,7 @@ public struct ProfilePageView: View {
         }
         .onFirstAppear {
             viewModel.apiService = apiManager.apiService
+            regularFeedVM.apiService = apiManager.apiService
             Task {
                 await fetchEverything()
             }
@@ -79,29 +75,31 @@ public struct ProfilePageView: View {
     }
 
     private func contentView(user: User, isLoading: Bool) -> some View {
-//        HeaderPageScrollView {
-            profileHeader(user: user, isLoading: isLoading)
-                .padding(.vertical, 20)
-//        } labels: {
-//            PageLabel(title: "Regular", icon: Icons.smile)
-//            PageLabel(title: "Video", icon: Icons.playRectangle)
-//            PageLabel(title: "Audio", icon: Icons.musicNote)
-//        } pages: {
-//            RegularFeedView(viewModel: regularFeedVM)
-//
-//            VideoFeedView(viewModel: videoFeedVM)
-//
-//            AudioFeedView(viewModel: audioFeedVM)
-//        } onRefresh: {
-//            HapticManager.shared.fireHaptic(.dataRefresh(intensity: 0.3))
-//            await fetchEverything()
-//        }
-//        .onChange(of: selectedTabScrollToTop) {
-//            if selectedTabScrollToTop == 4, router.path.isEmpty {
-//                    print("➡️ scrollToTop tapped")
-//                    NotificationCenter.default.post(name: .scrollToTop, object: nil)
-//            }
-//        }
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(spacing: 0) {
+                    ScrollToView()
+
+                    profileHeader(user: user, isLoading: isLoading)
+                        .padding(.top, 10)
+                        .padding(.bottom, 20)
+
+                    RegularFeedView(viewModel: regularFeedVM)
+                }
+                .padding(.bottom, 10)
+            }
+            .refreshable {
+                HapticManager.shared.fireHaptic(.dataRefresh(intensity: 0.3))
+                await fetchEverything()
+            }
+            .onChange(of: selectedTabScrollToTop) {
+                if selectedTabScrollToTop == 4, router.path.isEmpty {
+                    withAnimation {
+                        proxy.scrollTo(ScrollToView.Constants.scrollToTop, anchor: .top)
+                    }
+                }
+            }
+        }
     }
 
     private func profileHeader(user: User, isLoading: Bool) -> some View {
@@ -114,9 +112,7 @@ public struct ProfilePageView: View {
         await viewModel.fetchUser()
         await viewModel.fetchBio()
 
-//        regularFeedVM.fetchPosts(reset: true)
-//        audioFeedVM.fetchPosts(reset: true)
-//        videoFeedVM.fetchPosts(reset: true)
+        regularFeedVM.fetchPosts(reset: true)
     }
 
     private func loadImage() {
