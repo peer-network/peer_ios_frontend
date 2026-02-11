@@ -182,59 +182,66 @@ public struct PostView: View {
     private func textPost() -> some View {
         VStack(alignment: .center, spacing: 10) {
             PostHeaderView(postVM: postVM, showAppleTranslation: $showAppleTranslation, showFollowButton: showFollowButton)
+                .padding(.horizontal, 10)
 
-            if postVM.showIllegalBlur {
-                illegalPostView
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .frame(height: 171)
-            } else {
-                TextContent(postVM: postVM)
-                    .ifCondition(postVM.showSensitiveContentWarning) {
-                        $0
-                            .allowsHitTesting(false)
-                            .blur(radius: 15)
-                            .overlay {
-                                sensitiveContentWarningForTextPostView
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-                            }
+            VStack(alignment: .center, spacing: 10) {
+                if postVM.showIllegalBlur {
+                    illegalPostView
+                } else {
+                    VStack(spacing: 10) {
+                        HStack(alignment: .top, spacing: 10) {
+                            PostTitleView(postVM: postVM)
+
+                            Text(postVM.post.formattedCreatedAtShort)
+                                .appFont(.smallLabelRegular)
+                                .foregroundStyle(Colors.whiteSecondary)
+                        }
+
+                        if !postVM.post.media.isEmpty, let text = postVM.attributedDescription {
+                            CollapsibleText(text, lineLimit: 8)
+                                .appFont(.bodyRegular)
+                        }
                     }
+                    .padding(10)
+                }
+
+                if !reasons.contains(.placeholder) {
+                    HStack(alignment: .center, spacing: 0) {
+                        PostActionsView(layout: .horizontal, postViewModel: postVM, restricted: postVM.showIllegalBlur)
+                            .fixedSize(horizontal: true, vertical: false)
+
+                        Spacer()
+                            .frame(minWidth: 10)
+                            .layoutPriority(-1)
+
+                        if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.isHiddenForUsers {
+                            HiddenBadgeView()
+                        } else if postVM.post.hasActiveReports {
+                            ReportedBadgeView()
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 10)
+                    .padding(.bottom, 10)
+                }
             }
-
-            if !reasons.contains(.placeholder) {
-                HStack(alignment: .center, spacing: 0) {
-                    PostActionsView(layout: .horizontal, postViewModel: postVM)
-                        .fixedSize(horizontal: true, vertical: false)
-
-                    Spacer()
-                        .frame(minWidth: 10)
-                        .frame(maxWidth: .infinity)
-                        .layoutPriority(-1)
-
-                    if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.isHiddenForUsers {
-                        HiddenBadgeView()
-                    } else if postVM.post.hasActiveReports {
-                        ReportedBadgeView()
+            .ifCondition(postVM.showSensitiveContentWarning) {
+                $0
+                    .allowsHitTesting(false)
+                    .blur(radius: 25)
+                    .overlay {
+                        sensitiveContentWarningForTextPostView
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                     }
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(10)
-                .background {
-                    Ellipse()
-                        .fill(Color(red: 0, green: 0.412, blue: 1).opacity(0.2))
-                        .frame(width: 195, height: 106)
-                        .offset(x: 195 / 3, y: -20)
-                        .blur(radius: 50)
-                        .frame(maxWidth: .infinity, alignment: .trailing)
-                        .ignoresSafeArea()
-                        .allowsHitTesting(false)
-                }
+                    .clipped()
             }
         }
-        .padding(10)
-        .background(Colors.inactiveDark)
-        .cornerRadius(24)
-        .shadow(color: .black.opacity(0.25), radius: 10, x: 0, y: 4)
-        .padding(.horizontal, 10)
+        .padding(.top, 10)
+        .background {
+            RoundedRectangle(cornerRadius: 24)
+                .foregroundStyle(Colors.inactiveDark)
+                .shadow(color: .black.opacity(0.25), radius: 5, x: 0, y: 4)
+        }
         .geometryGroup()
     }
 
@@ -273,7 +280,7 @@ public struct PostView: View {
                     }
                     .padding(.horizontal, 10)
 
-                    if !postVM.post.media.isEmpty, let text = postVM.attributedDescription {
+                    if let text = postVM.attributedDescription {
                         CollapsibleText(text, lineLimit: 1)
                             .appFont(.bodyRegular)
                             .padding(.bottom, 10)
@@ -488,41 +495,31 @@ public struct PostView: View {
     }
 
     private var sensitiveContentWarningForTextPostView: some View {
-        HStack(alignment: .center, spacing: 0) {
-            VStack(alignment: .leading, spacing: 0) {
+        Button {
+            withAnimation {
+                postVM.showSensitiveContentWarning = false
+            }
+        } label: {
+            HStack(alignment: .center, spacing: 10) {
                 Circle()
                     .frame(height: 50)
                     .foregroundStyle(Colors.whitePrimary.opacity(0.2))
                     .overlay {
                         IconsNew.eyeWithSlash
-                            .iconSize(height: 27)
+                            .iconSize(height: 24)
                             .foregroundStyle(Colors.whitePrimary)
                     }
-                    .padding(.bottom, 5)
 
-                Text("Sensitive content")
-                    .appFont(.bodyBold)
+                VStack(alignment: .leading, spacing: 0) {
+                    Text("Sensitive content")
+                        .appFont(.largeTitleBold)
 
-                Text("This content may be sensitive or abusive.\nDo you want to view it anyway?")
-                    .appFont(.smallLabelRegular)
-            }
-            .foregroundStyle(Colors.whitePrimary)
-            .fixedSize(horizontal: false, vertical: true)
-
-            Spacer()
-                .frame(minWidth: 10)
-                .frame(maxWidth: .infinity)
-                .layoutPriority(-1)
-
-            let showButtonConfig = StateButtonConfig(buttonSize: .small, buttonType: .teritary, title: "Show")
-            StateButton(config: showButtonConfig) {
-                withAnimation {
-                    postVM.showSensitiveContentWarning = false
+                    Text("Tap to view")
+                        .appFont(.bodyRegular)
                 }
+                .foregroundStyle(Colors.whitePrimary)
             }
-            .fixedSize()
         }
-        .multilineTextAlignment(.leading)
     }
 
     private var sensitiveContentWarningForImagePostView: some View {
