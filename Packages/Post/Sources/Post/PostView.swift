@@ -280,11 +280,7 @@ public struct PostView: View {
             }
 
             HStack(alignment: .top, spacing: 10) {
-                Text(postVM.post.title)
-                    .appFont(.bodyBold)
-                    .foregroundStyle(Colors.whitePrimary)
-                    .multilineTextAlignment(.leading)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                PostTitleView(postVM: postVM)
 
                 Text(postVM.post.formattedCreatedAtShort)
                     .appFont(.smallLabelRegular)
@@ -295,17 +291,9 @@ public struct PostView: View {
             if !postVM.post.media.isEmpty, let text = postVM.attributedDescription {
                 CollapsibleText(text, lineLimit: 1)
                     .appFont(.bodyRegular)
-                    .ifCondition(postVM.showSensitiveContentWarning || postVM.showIllegalBlur) {
-                        $0
-                            .allowsHitTesting(false)
-                            .redacted(reason: .placeholder)
-                    }
                     .padding(.bottom, 10)
                     .padding(.horizontal, 10)
             }
-//            PostDescriptionComment(postVM: postVM, isInFeed: true)
-//                .padding(.horizontal, 10)
-//                .padding(.bottom, 10)
 
             if !reasons.contains(.placeholder) {
                 HStack(alignment: .center, spacing: 0) {
