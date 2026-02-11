@@ -309,7 +309,7 @@ public struct PostView: View {
 
             if !reasons.contains(.placeholder) {
                 HStack(alignment: .center, spacing: 0) {
-                    PostActionsView(layout: .horizontal, postViewModel: postVM)
+                    PostActionsView(layout: .horizontal, postViewModel: postVM, restricted: postVM.showIllegalBlur)
                         .fixedSize(horizontal: true, vertical: false)
 
                     Spacer()

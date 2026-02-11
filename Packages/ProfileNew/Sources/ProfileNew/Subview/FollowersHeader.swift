@@ -42,6 +42,8 @@ struct FollowersHeader: View {
             Spacer()
 
             countButton(type: .friends)
+
+            Spacer()
         }
     }
 

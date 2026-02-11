@@ -16,13 +16,16 @@ public struct PostActionsView: View {
 
     private let actions: [PostAction] = [.like, .dislike, .comment, .views]
 
-    let layout: ActionsLayout
+    private let layout: ActionsLayout
 
     @ObservedObject var postViewModel: PostViewModel
 
-    public init(layout: ActionsLayout, postViewModel: PostViewModel) {
+    private let restricted: Bool
+
+    public init(layout: ActionsLayout, postViewModel: PostViewModel, restricted: Bool = false) {
         self.layout = layout
         self.postViewModel = postViewModel
+        self.restricted = restricted
     }
 
     public var body: some View {
@@ -35,14 +38,11 @@ public struct PostActionsView: View {
             case .horizontal:
                 ForEach(actions, id: \.self) { action in
                     actionButton(action: action)
-                        .buttonStyle(PostActionButtonStyle(isOn: action.isOn(viewModel: postViewModel), tintColor: action.tintColor, defaultColor: action.getDefaultColor()))
-                        .contentShape(.rect)
                 }
             case .vertical:
                 VStack(alignment: .center, spacing: 0) {
                     ForEach(actions, id: \.self) { action in
                         actionButton(action: action)
-                            .buttonStyle(PostActionButtonStyle(isOn: action.isOn(viewModel: postViewModel), tintColor: action.tintColor, defaultColor: action.getDefaultColor()))
                     }
                 }
         }
@@ -73,8 +73,15 @@ public struct PostActionsView: View {
                     } label: {
                         action.getIcon(viewModel: postViewModel)
                             .iconSize(height: 24)
+                            .ifCondition(restricted) {
+                                $0
+                                    .foregroundStyle(Colors.whitePrimary)
+                                    .opacity(0.3)
+                            }
+                            .fixedSize(horizontal: true, vertical: true)
                             .contentShape(.rect)
                     }
+                    .buttonStyle(PostActionButtonStyle(isOn: action.isOn(viewModel: postViewModel), tintColor: action.tintColor, defaultColor: action.getDefaultColor()))
 
                     if let amount = action.getAmount(viewModel: postViewModel) {
                         Button {
@@ -104,7 +111,7 @@ public struct PostActionsView: View {
                                 .animation(.snappy, value: amount)
                                 .appFont(.bodyRegular)
                                 .lineLimit(1)
-                                .foregroundStyle(action.getDefaultColor())
+                                .foregroundStyle(restricted ? Colors.whitePrimary : action.getDefaultColor())
                                 .monospacedDigit()
                                 .frame(height: 24)
                                 .padding(.trailing, 20)
@@ -135,9 +142,15 @@ public struct PostActionsView: View {
                     } label: {
                         action.getIcon(viewModel: postViewModel)
                             .iconSize(height: 24)
-                            .contentShape(.rect)
+                            .ifCondition(restricted) {
+                                $0
+                                    .foregroundStyle(Colors.whitePrimary)
+                                    .opacity(0.3)
+                            }
                             .fixedSize(horizontal: true, vertical: true)
+                            .contentShape(.rect)
                     }
+                    .buttonStyle(PostActionButtonStyle(isOn: action.isOn(viewModel: postViewModel), tintColor: action.tintColor, defaultColor: action.getDefaultColor()))
 
                     if let amount = action.getAmount(viewModel: postViewModel) {
                         Button {
@@ -167,7 +180,7 @@ public struct PostActionsView: View {
                                 .animation(.snappy, value: amount)
                                 .appFont(.bodyRegular)
                                 .lineLimit(1)
-                                .foregroundStyle(action.getDefaultColor())
+                                .foregroundStyle(restricted ? Colors.whitePrimary : action.getDefaultColor())
                                 .monospacedDigit()
                                 .padding(.bottom, 16)
                                 .contentShape(.rect)
