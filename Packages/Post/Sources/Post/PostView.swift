@@ -243,73 +243,76 @@ public struct PostView: View {
             PostHeaderView(postVM: postVM, showAppleTranslation: $showAppleTranslation, showFollowButton: showFollowButton)
                 .padding(.horizontal, 10)
 
-            if postVM.showIllegalBlur {
-                illegalPostView
-            } else {
-                ImagesContent(postVM: postVM)
-                    .doubleTapToLike {
-                        try await postVM.like()
-                    } onError: { error in
-                        if let error = error as? PostActionError {
-                            showPopup(
-                                text: error.displayMessage,
-                                icon: error.displayIcon
-                            )
-                        } else {
-                            showPopup(
-                                text: error.userFriendlyDescription
-                            )
+            VStack(alignment: .center, spacing: 10) {
+                if postVM.showIllegalBlur {
+                    illegalPostView
+                } else {
+                    ImagesContent(postVM: postVM)
+                        .doubleTapToLike {
+                            try await postVM.like()
+                        } onError: { error in
+                            if let error = error as? PostActionError {
+                                showPopup(
+                                    text: error.displayMessage,
+                                    icon: error.displayIcon
+                                )
+                            } else {
+                                showPopup(
+                                    text: error.userFriendlyDescription
+                                )
+                            }
+                        }
+                        .padding(.bottom, 10)
+
+                    HStack(alignment: .top, spacing: 10) {
+                        PostTitleView(postVM: postVM)
+
+                        Text(postVM.post.formattedCreatedAtShort)
+                            .appFont(.smallLabelRegular)
+                            .foregroundStyle(Colors.whiteSecondary)
+                    }
+                    .padding(.horizontal, 10)
+
+                    if !postVM.post.media.isEmpty, let text = postVM.attributedDescription {
+                        CollapsibleText(text, lineLimit: 1)
+                            .appFont(.bodyRegular)
+                            .padding(.bottom, 10)
+                            .padding(.horizontal, 10)
+                    }
+                }
+
+                if !reasons.contains(.placeholder) {
+                    HStack(alignment: .center, spacing: 0) {
+                        PostActionsView(layout: .horizontal, postViewModel: postVM, restricted: postVM.showIllegalBlur)
+                            .fixedSize(horizontal: true, vertical: false)
+
+                        Spacer()
+                            .frame(minWidth: 10)
+                            .layoutPriority(-1)
+
+                        if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.isHiddenForUsers {
+                            HiddenBadgeView()
+                        } else if postVM.post.hasActiveReports {
+                            ReportedBadgeView()
                         }
                     }
-                //                    .ifCondition(postVM.showSensitiveContentWarning) {
-                //                        $0
-                //                            .allowsHitTesting(false)
-                //                            .blur(radius: 25)
-                //                            .overlay {
-                //                                sensitiveContentWarningForImagePostView
-                //                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                //                            }
-                //                            .clipped()
-                //                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 10)
                     .padding(.bottom, 10)
-
-                HStack(alignment: .top, spacing: 10) {
-                    PostTitleView(postVM: postVM)
-
-                    Text(postVM.post.formattedCreatedAtShort)
-                        .appFont(.smallLabelRegular)
-                        .foregroundStyle(Colors.whiteSecondary)
-                }
-                .padding(.horizontal, 10)
-
-                if !postVM.post.media.isEmpty, let text = postVM.attributedDescription {
-                    CollapsibleText(text, lineLimit: 1)
-                        .appFont(.bodyRegular)
-                        .padding(.bottom, 10)
-                        .padding(.horizontal, 10)
                 }
             }
-
-            if !reasons.contains(.placeholder) {
-                HStack(alignment: .center, spacing: 0) {
-                    PostActionsView(layout: .horizontal, postViewModel: postVM, restricted: postVM.showIllegalBlur)
-                        .fixedSize(horizontal: true, vertical: false)
-
-                    Spacer()
-                        .frame(minWidth: 10)
-                        .layoutPriority(-1)
-
-                    if AccountManager.shared.isCurrentUser(id: postVM.post.owner.id), postVM.post.isHiddenForUsers {
-                        HiddenBadgeView()
-                    } else if postVM.post.hasActiveReports {
-                        ReportedBadgeView()
+            .ifCondition(postVM.showSensitiveContentWarning) {
+                $0
+                    .allowsHitTesting(false)
+                    .blur(radius: 25)
+                    .overlay {
+                        sensitiveContentWarningForImagePostView
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                     }
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, 10)
+                    .clipped()
             }
         }
-        .padding(.vertical, 10)
+        .padding(.top, 10)
         .background {
             RoundedRectangle(cornerRadius: 24)
                 .foregroundStyle(Colors.inactiveDark)
@@ -529,10 +532,10 @@ public struct PostView: View {
                 .foregroundStyle(Colors.whitePrimary.opacity(0.2))
                 .overlay {
                     IconsNew.eyeWithSlash
-                        .iconSize(height: 27)
+                        .iconSize(height: 24)
                         .foregroundStyle(Colors.whitePrimary)
                 }
-                .padding(.bottom, 14.02)
+                .padding(.bottom, 10)
 
             Text("Sensitive content")
                 .appFont(.largeTitleBold)
