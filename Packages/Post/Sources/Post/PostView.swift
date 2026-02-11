@@ -244,12 +244,7 @@ public struct PostView: View {
                 .padding(.horizontal, 10)
 
             if postVM.showIllegalBlur {
-//                illegalPostView
-//                    .frame(maxWidth: .infinity, alignment: .center)
-//                    .frame(height: 150)
-//                    .background(Colors.inactiveDark)
-//                    .clipShape(RoundedRectangle(cornerRadius: 24))
-//                    .padding(.horizontal, 20)
+                illegalPostView
             } else {
                 ImagesContent(postVM: postVM)
                     .doubleTapToLike {
@@ -266,33 +261,33 @@ public struct PostView: View {
                             )
                         }
                     }
-//                    .ifCondition(postVM.showSensitiveContentWarning) {
-//                        $0
-//                            .allowsHitTesting(false)
-//                            .blur(radius: 25)
-//                            .overlay {
-//                                sensitiveContentWarningForImagePostView
-//                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-//                            }
-//                            .clipped()
-//                    }
+                //                    .ifCondition(postVM.showSensitiveContentWarning) {
+                //                        $0
+                //                            .allowsHitTesting(false)
+                //                            .blur(radius: 25)
+                //                            .overlay {
+                //                                sensitiveContentWarningForImagePostView
+                //                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                //                            }
+                //                            .clipped()
+                //                    }
                     .padding(.bottom, 10)
-            }
 
-            HStack(alignment: .top, spacing: 10) {
-                PostTitleView(postVM: postVM)
+                HStack(alignment: .top, spacing: 10) {
+                    PostTitleView(postVM: postVM)
 
-                Text(postVM.post.formattedCreatedAtShort)
-                    .appFont(.smallLabelRegular)
-                    .foregroundStyle(Colors.whiteSecondary)
-            }
-            .padding(.horizontal, 10)
+                    Text(postVM.post.formattedCreatedAtShort)
+                        .appFont(.smallLabelRegular)
+                        .foregroundStyle(Colors.whiteSecondary)
+                }
+                .padding(.horizontal, 10)
 
-            if !postVM.post.media.isEmpty, let text = postVM.attributedDescription {
-                CollapsibleText(text, lineLimit: 1)
-                    .appFont(.bodyRegular)
-                    .padding(.bottom, 10)
-                    .padding(.horizontal, 10)
+                if !postVM.post.media.isEmpty, let text = postVM.attributedDescription {
+                    CollapsibleText(text, lineLimit: 1)
+                        .appFont(.bodyRegular)
+                        .padding(.bottom, 10)
+                        .padding(.horizontal, 10)
+                }
             }
 
             if !reasons.contains(.placeholder) {
@@ -318,8 +313,8 @@ public struct PostView: View {
         .background {
             RoundedRectangle(cornerRadius: 24)
                 .foregroundStyle(Colors.inactiveDark)
+                .shadow(color: .black.opacity(0.25), radius: 5, x: 0, y: 4)
         }
-        .shadow(color: .black.opacity(0.25), radius: 5, x: 0, y: 4)
         .geometryGroup()
     }
 
@@ -560,12 +555,19 @@ public struct PostView: View {
 
     private var illegalPostView: some View {
         VStack(alignment: .center, spacing: 10) {
-            Icons.trashBin
-                .iconSize(width: 16)
+            Circle()
+                .frame(height: 50)
+                .foregroundStyle(Colors.redAccent.opacity(0.2))
+                .overlay {
+                    Icons.trashBin
+                        .iconSize(width: 24)
+                        .foregroundStyle(Colors.redAccent)
+                }
 
-            Text("This content was removed as illegal")
-                .appFont(.bodyBold)
+            Text("The content is removed as illegal")
+                .appFont(.bodyRegular)
+                .foregroundStyle(Colors.redAccent)
         }
-        .foregroundStyle(Colors.whitePrimary)
+        .frame(height: 251, alignment: .center)
     }
 }
