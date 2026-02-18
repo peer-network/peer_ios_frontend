@@ -240,7 +240,7 @@ public struct SettingsView: View {
 
     @ViewBuilder
     private var deactivateProfileButton: some View {
-        let config = StateButtonConfig(buttonSize: .large, buttonType: .alert, title: "Deactivate profile")
+        let config = StateButtonConfig(buttonSize: .large, buttonType: .alert, title: "Delete profile")
 
         StateButton(config: config) {
             SystemPopupManager.shared.presentPopup(.deactivateAccount) {

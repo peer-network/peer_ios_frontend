@@ -117,7 +117,7 @@ public extension SystemPopupType {
             case .logout:
                 return "Are you sure you want to log out?"
             case .deactivateAccount:
-                return "Are you sure you want to deactivate your profile?"
+                return "Are you sure you want to delete your profile, this can not be reverted?"
             case .reportUser:
                 return "Are you sure you want to report this user?"
             case .reportPost:
@@ -179,7 +179,7 @@ public extension SystemPopupType {
             case .logout:
                 return nil
             case .deactivateAccount:
-                return "Your data will still be storaged for 6 months."
+                return "Your personal will be removed from our system"
             case .reportUser:
                 return nil
             case .reportPost:
